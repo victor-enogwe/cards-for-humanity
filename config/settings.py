@@ -20,8 +20,6 @@ env = environ.Env(DEBUG=(bool, False))
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-print(BASE_DIR)
-
 environ.Env.read_env(env.str('ENV_PATH', '%s/.env' % (BASE_DIR)))  # reading .env file
 
 # Quick-start development settings - unsuitable for production
@@ -59,12 +57,23 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Authentication backends
+AUTHENTICATION_BACKENDS = [
+    'graphql_jwt.backends.JSONWebTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 ROOT_URLCONF = 'config.urls'
+
+gql_middlewares = (
+    'graphql_jwt.middleware.JSONWebTokenMiddleware',
+)
 
 GRAPHENE = {
     'SCHEMA': 'api.schema.schema',  # Where your Graphene schema lives
-    "SCHEMA_INDENT": 2,
-    "MIDDLEWARE": ("graphene_django.debug.DjangoDebugMiddleware",)
+    'SCHEMA_INDENT': 2,
+    'MIDDLEWARE': (('graphene_django.debug.DjangoDebugMiddleware',) if DEBUG else ()) + gql_middlewares,
+    'JWT_VERIFY_EXPIRATION': True,
 }
 
 TEMPLATES = [
@@ -92,10 +101,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': env('DB_NAME'),
-        'HOST': env('DB_HOST'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD')
+        'NAME': env.str('DB_NAME'),
+        'HOST': env.str('DB_HOST'),
+        'USER': env.str('DB_USER'),
+        'PASSWORD': env.str('DB_PASSWORD')
     }
 }
 
