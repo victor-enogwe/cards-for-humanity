@@ -1,25 +1,27 @@
 {
-  "name": "cards-for-humanity-python-django",
-  "version": "1.0.0",
-  "description": "Python/Django version of the cards for humanity game.",
-  "main": "index.js",
-  "directories": {
-    "lib": "lib"
-  },
-  "scripts": {
-    "activate": "source ./bin/activate",
-    "start:dev": "npm run activate && python manage.py runserver",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/victor-enogwe/cards-for-humanity-python-django.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/victor-enogwe/cards-for-humanity-python-django/issues"
-  },
-  "homepage": "https://github.com/victor-enogwe/cards-for-humanity-python-django#readme"
+    "name": "cards-for-humanity-python-django",
+    "version": "1.0.0",
+    "description": "Python/Django version of the cards for humanity game.",
+    "main": "index.js",
+    "directories": {
+        "lib": "lib"
+    },
+    "scripts": {
+        "activate": "source ./bin/activate",
+        "start:dev": "npm run activate && python manage.py runserver",
+        "migrate:create": "python manage.py makemigrations",
+        "migrate:run": "python manage.py migrate",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/victor-enogwe/cards-for-humanity-python-django.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/victor-enogwe/cards-for-humanity-python-django/issues"
+    },
+    "homepage": "https://github.com/victor-enogwe/cards-for-humanity-python-django#readme"
 }
