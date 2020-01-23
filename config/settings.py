@@ -10,8 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-import os
-import environ
+import os, sys, environ
 
 # source enviromment variables
 root = environ.Path(__file__) - 3  # get root of the project
@@ -33,10 +32,14 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
+
 
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+    'channels_api',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,7 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'graphene_django',
-    'api'
+    'api',
+    'public'
 ]
 
 MIDDLEWARE = [
@@ -65,14 +69,17 @@ AUTHENTICATION_BACKENDS = [
 
 ROOT_URLCONF = 'config.urls'
 
-gql_middlewares = (
+GQL_MIDDLEWARE = [
     'graphql_jwt.middleware.JSONWebTokenMiddleware',
-)
+    'api.utils.depromise_subscription'
+]
 
 GRAPHENE = {
     'SCHEMA': 'api.schema.schema',  # Where your Graphene schema lives
     'SCHEMA_INDENT': 2,
-    'MIDDLEWARE': (('graphene_django.debug.DjangoDebugMiddleware',) if DEBUG else ()) + gql_middlewares,
+    'RELAY_CONNECTION_MAX_LIMIT': sys.maxsize,  # we can set the 'max_limit' kwarg on your DjangoConnectionField too
+    'RELAY_CONNECTION_ENFORCE_FIRST_OR_LAST': True,
+    'MIDDLEWARE': (['graphene_django.debug.DjangoDebugMiddleware'] if DEBUG else []) + GQL_MIDDLEWARE,
     'JWT_VERIFY_EXPIRATION': True,
 }
 
@@ -91,6 +98,15 @@ TEMPLATES = [
         },
     },
 ]
+
+# In this simple example we use in-process in-memory Channel layer.
+# In a real-life cases you need Redis or something familiar.
+CHANNEL_LAYERS = {
+  "default": {
+    "BACKEND": "asgiref.inmemory.ChannelLayer",
+    "ROUTING": "config.urls.socketpatterns",  # Our project routing
+  },
+}
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
@@ -135,9 +151,9 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_I18N = False
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 

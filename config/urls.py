@@ -15,12 +15,19 @@ Including another URLconf
 """
 from os import environ
 from django.contrib import admin
-from django.urls import path
-from graphene_django.views import GraphQLView
-from .views import welcome
+from django.conf.urls import url
+from graphene_django_extras.views import AuthenticatedGraphQLView, ExtraGraphQLView
+from channels import include, routing
+from django.views.generic.base import TemplateView
+from config.views import GraphQLCustomCoreBackend, AppGraphQLView, SubscriptionDemultiplexer
+
+
+app_routing = [routing.route_class(SubscriptionDemultiplexer)]
+
+socketpatterns = [include(app_routing, path=r"^/websocket")]
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('graphql', GraphQLView.as_view(graphiql=environ['DEBUG'])),
-    path('', welcome),
+    url('admin/', admin.site.urls),
+    url('graphql', AppGraphQLView.as_view(graphiql=environ['DEBUG'], backend=GraphQLCustomCoreBackend())),
+    url(r'^.*', TemplateView.as_view(template_name="index.html"), name="index")
 ]

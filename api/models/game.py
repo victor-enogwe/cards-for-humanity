@@ -1,6 +1,6 @@
-from django.db import models
+from djongo import models
 from .question import game_type
-from ..utils import min_max_validator, MinValueValidator
+from ..utils import AutoDateTimeField, min_max_validator, MinValueValidator, timezone
 
 
 game_status = (
@@ -12,11 +12,15 @@ game_status = (
 
 
 class Game(models.Model):
+    _id = models.ObjectIdField()
     game_type = models.CharField(max_length=3, choices=game_type, default='cfh')
     round_time = models.SmallIntegerField(default=10, validators=min_max_validator(10, 60), help_text='seconds')
     rounds = models.SmallIntegerField(default=1, validators=min_max_validator(-1, 5))
     num_players = models.PositiveSmallIntegerField(validators=min_max_validator(3, 8))
     status = models.CharField(max_length=3, choices=game_status, default='GAP')
+    created_at = models.DateTimeField(default=timezone.now, editable=False)
+    updated_at = AutoDateTimeField(auto_now=True)
+    objects = models.DjongoManager()
 
     def __str__(self):
-        return 'Game {0}'.format(self.id)
+        return 'Game {0}'.format(self._id)

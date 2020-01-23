@@ -1,4 +1,5 @@
 import graphene
+from graphene import relay
 from django.contrib.auth import get_user_model
 from graphene import Schema, relay, resolve_only_args
 from graphene_django import DjangoConnectionField, DjangoObjectType
@@ -7,6 +8,8 @@ from graphene_django import DjangoConnectionField, DjangoObjectType
 class UserType(DjangoObjectType):
     class Meta:
         model = get_user_model()
+        interfaces = (relay.Node, )
+        exclude_fields = ['password']
 
 
 class UserQuery(graphene.ObjectType):

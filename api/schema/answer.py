@@ -1,12 +1,13 @@
 import graphene
-from graphene import Schema, relay, resolve_only_args
-from graphene_django import DjangoConnectionField, DjangoObjectType
+from graphene import relay
+from graphene_django import DjangoObjectType
 from ..models import Answer
 
 
 class AnswerType(DjangoObjectType):
     class Meta:
         model = Answer
+        interfaces = (relay.Node, )
 
 
 class AnswerQuery(graphene.ObjectType):
