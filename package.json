@@ -1,7 +1,7 @@
 {
-    "name": "cards-for-humanity-python-django",
+    "name": "cards-against-humanity",
     "version": "1.0.0",
-    "description": "Python/Django version of the cards for humanity game.",
+    "description": "Python/Django version of the cards for/against humanity game.",
     "main": "index.js",
     "directories": {
         "lib": "lib"
@@ -15,13 +15,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/victor-enogwe/cards-for-humanity-python-django.git"
+        "url": "git+https://github.com/victor-enogwe/cards-against-humanity.git"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/victor-enogwe/cards-for-humanity-python-django/issues"
+        "url": "https://github.com/victor-enogwe/cards-against-humanity/issues"
     },
-    "homepage": "https://github.com/victor-enogwe/cards-for-humanity-python-django#readme"
+    "homepage": "https://github.com/victor-enogwe/cards-against-humanity#readme",
+    "dependencies": {}
 }
