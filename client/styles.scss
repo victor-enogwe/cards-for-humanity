@@ -1,0 +1,15 @@
+/* You can add global styles to this file, and also import other style files */
+.cah-card {
+    width: 15rem;
+    max-width: 15rem;
+    min-width: 15rem;
+    height: 16.5rem;
+    min-height: 16.5rem;
+    max-height: 16.5rem;
+    overflow: hidden;
+    overflow-y: scroll;
+
+    .card-header {
+        height: calc(16.5rem - 54px)
+    }
+}

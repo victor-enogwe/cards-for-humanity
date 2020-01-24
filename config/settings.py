@@ -30,7 +30,13 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ENV_HOSTS = env('ALLOWED_HOSTS').split(',')
+
+ALLOWED_HOSTS = (['localhost', '127.0.0.1'] if DEBUG else []) + ENV_HOSTS
+
+CORS_ORIGIN_WHITELIST = ENV_HOSTS
+
+CORS_ALLOW_CREDENTIALS = True
 
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 
@@ -40,6 +46,7 @@ DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 INSTALLED_APPS = [
     'channels',
     'channels_api',
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,12 +54,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'graphene_django',
-    'api',
-    'public'
+    'api'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -83,10 +90,12 @@ GRAPHENE = {
     'JWT_VERIFY_EXPIRATION': True,
 }
 
+STATIC_PATH = os.path.join(BASE_DIR, 'static')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [STATIC_PATH],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -98,6 +107,8 @@ TEMPLATES = [
         },
     },
 ]
+
+STATICFILES_DIRS = [STATIC_PATH]
 
 # In this simple example we use in-process in-memory Channel layer.
 # In a real-life cases you need Redis or something familiar.
