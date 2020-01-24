@@ -1,5 +1,4 @@
 from djongo import models
-from .question import game_type
 from ..utils import AutoDateTimeField, min_max_validator, MinValueValidator, timezone
 
 
@@ -10,10 +9,9 @@ game_status = (
     ('GE', 'Game Ended')
 )
 
-
 class Game(models.Model):
     _id = models.ObjectIdField()
-    game_type = models.CharField(max_length=3, choices=game_type, default='cfh')
+    genre = models.ForeignKey('api.Genre', on_delete=models.CASCADE)
     round_time = models.SmallIntegerField(default=10, validators=min_max_validator(10, 60), help_text='seconds')
     rounds = models.SmallIntegerField(default=1, validators=min_max_validator(-1, 5))
     num_players = models.PositiveSmallIntegerField(validators=min_max_validator(3, 8))

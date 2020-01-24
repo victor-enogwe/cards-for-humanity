@@ -1,15 +1,15 @@
 import graphql_jwt
 from graphene import Schema
 from graphql_jwt.decorators import login_required
-from .question import graphene, QuestionQuery, QuestionMutation
-from .user import UserType, UserQuery, UserMutation
-from .answer import AnswerQuery
+from .blackcard import graphene, BlackCardQuery, BlackCardMutation
+from .user import UserNode, UserQuery, UserMutation
+from .whitecard import WhiteCardQuery
 from .game import GameQuery, GameMutation, GameSubscription
 from .player import PlayerQuery
+from .genre import GenreQuery
 
-
-class RootQuery(UserQuery, QuestionQuery, AnswerQuery, GameQuery, PlayerQuery, graphene.ObjectType):
-    viewer = graphene.Field(UserType)
+class RootQuery(UserQuery, BlackCardQuery, WhiteCardQuery, GameQuery, PlayerQuery, GenreQuery, graphene.ObjectType):
+    viewer = graphene.Field(UserNode)
 
     @login_required
     def resolve_viewer(self, info, **kwargs):

@@ -1,6 +1,6 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
-from rest_meets_djongo.serializers import DjongoModelSerializer
 from django.db import models
+from graphene import Int, relay
 from django.utils import timezone
 from promise import is_thenable
 
@@ -26,8 +26,14 @@ class AutoDateTimeField(models.DateTimeField):
         return timezone.now()
 
 
+class ExtendedConnection(relay.Connection):
+    class Meta:
+        abstract = True
 
-# class ModelSerializer(DjongoModelSerializer):
-#     class Meta:
-#         model = YourModel
-#         fields = '__all__'
+    total_count = Int()
+    edge_count = Int()
+
+    def resolve_total_count(root, info, **kwargs):
+        return root.length
+    def resolve_edge_count(root, info, **kwargs):
+        return len(root.edges)

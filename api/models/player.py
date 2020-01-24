@@ -6,7 +6,7 @@ from ..utils import AutoDateTimeField, timezone
 class Player(models.Model):
     _id = models.ObjectIdField()
     game = models.ForeignKey('api.Game', on_delete=models.CASCADE)
-    player = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     score = models.PositiveSmallIntegerField(default=0)
     czar = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
@@ -14,7 +14,10 @@ class Player(models.Model):
     objects = models.DjongoManager()
 
     class Meta:
-        unique_together = ('game', 'player')
+        unique_together = ('game', 'user')
 
     def __str__(self):
-        return 'Player {0}'.format(self.player)
+        return 'Player {0}'.format(self.user)
+
+    class Meta:
+        indexes = (models.Index(fields=('czar',)), models.Index(fields=('score',)),)

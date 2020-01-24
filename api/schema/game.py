@@ -3,17 +3,17 @@ from graphene import relay
 from graphene_django import DjangoObjectType
 from graphene_django_subscriptions.subscription import Subscription
 from rest_framework import serializers
-from ..models import Game
+from api.utils import ExtendedConnection
+from api.models import Game
+from api.models.serializers import GameSerializer
 
-class GameSerializer(serializers.ModelSerializer):
+
+class GameNode(DjangoObjectType):
     class Meta:
         model = Game
-        fields = '__all__' 
-
-class GameType(DjangoObjectType):
-    class Meta:
-        model = Game
+        filter_fields = '__all__'
         interfaces = (relay.Node, )
+        connection_class = ExtendedConnection
 
 class GameSubscriptionType(Subscription):
     class Meta:
@@ -24,13 +24,10 @@ class GameSubscriptionType(Subscription):
     @classmethod
     def subscription_resolver(cls, root, info, **kwargs):
         result = super().subscription_resolver(root, info, **kwargs)
-        #from rx import Observable
-        #result = Observable.from_iterable([result])
         return result
 
 class GameQuery(graphene.ObjectType):
-    game = graphene.Field(GameType, _id=graphene.UUID())
-    # all_games = graphene.List(GameType)
+    game = graphene.Field(GameNode, _id=graphene.String())
 
     def resolve_game(self, info, **kwargs):
         _id = kwargs.get('_id')

@@ -2,7 +2,6 @@ from graphql.backend import GraphQLCoreBackend
 from graphene_django.views import GraphQLView
 from graphene_django_subscriptions.consumers import GraphqlAPIDemultiplexer
 from rx.core import ObservableBase
-from django.contrib.auth.mixins import LoginRequiredMixin
 from api.utils import depromise_subscription
 from api.schema.game import GameSubscriptionType
 
@@ -18,7 +17,7 @@ class GraphQLCustomCoreBackend(GraphQLCoreBackend):
         self.execute_params['allow_subscriptions'] = True
 
 
-class AppGraphQLView(LoginRequiredMixin, GraphQLView):
+class AppGraphQLView(GraphQLView):
     def execute_graphql_request(
             self, request, data, query, variables, operation_name, show_graphiql=False
     ):
