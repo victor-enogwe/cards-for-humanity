@@ -27,11 +27,10 @@ class GameSubscriptionType(Subscription):
         return result
 
 class GameQuery(graphene.ObjectType):
-    game = graphene.Field(GameNode, _id=graphene.String())
+    game = graphene.Field(GameNode, _id=graphene.ID())
 
     def resolve_game(self, info, **kwargs):
         _id = kwargs.get('_id')
-        print(_id)
 
         return  Game.objects.get(pk=_id) if _id else None
 
@@ -44,4 +43,5 @@ class GameMutation(graphene.ObjectType):
     pass
 
 class GameSubscription(graphene.ObjectType):
+    '''Game subscriptions'''
     game_subscription = GameSubscriptionType.Field()

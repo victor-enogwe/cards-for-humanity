@@ -16,7 +16,6 @@ Including another URLconf
 from os import environ
 from django.contrib import admin
 from django.conf.urls import url
-from django.views.decorators.csrf import csrf_exempt
 from graphene_django_extras.views import AuthenticatedGraphQLView, ExtraGraphQLView
 from channels import include, routing
 from django.views.generic.base import TemplateView
@@ -25,10 +24,10 @@ from config.views import GraphQLCustomCoreBackend, AppGraphQLView, SubscriptionD
 
 app_routing = [routing.route_class(SubscriptionDemultiplexer)]
 
-socketpatterns = [include(app_routing, path=r"^/websocket")]
+socketpatterns = [include(app_routing, path=r"^/graphql")]
 
 urlpatterns = [
     url('admin/', admin.site.urls),
-    url(r'^graphql$', csrf_exempt(AppGraphQLView.as_view(graphiql=environ['DEBUG'], backend=GraphQLCustomCoreBackend()))),
+    url(r'^graphql$', AppGraphQLView.as_view(graphiql=environ['DEBUG'], backend=GraphQLCustomCoreBackend())),
     url(r'^.*', TemplateView.as_view(template_name="index.html"), name="index")
 ]

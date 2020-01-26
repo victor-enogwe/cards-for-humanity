@@ -27,7 +27,7 @@ class GenreSubscriptionType(Subscription):
         return result
 
 class GenreQuery(graphene.ObjectType):
-    all_genres = DjangoFilterConnectionField(GenreNode)
+    all_genres = DjangoFilterConnectionField(GenreNode, description='all cards genre')
 
 
 class GenreMutation(graphene.ObjectType):

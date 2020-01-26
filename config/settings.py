@@ -114,10 +114,12 @@ STATICFILES_DIRS = [STATIC_PATH]
 # In a real-life cases you need Redis or something familiar.
 CHANNEL_LAYERS = {
   "default": {
-    "BACKEND": "asgiref.inmemory.ChannelLayer",
+    "BACKEND": "channels_redis.core.RedisChannelLayer",
     "ROUTING": "config.urls.socketpatterns",  # Our project routing
   },
 }
+
+ASGI_APPLICATION = 'config.wsgi.application'
 
 WSGI_APPLICATION = 'config.wsgi.application'
 

@@ -1,4 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+#cah-main {
+    height: 100vh;
+    min-height: 100vh;
+    max-height: 100vh;
+}
+
+.row-eq-height {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.btn-start {
+    height: 5rem;
+}
+
+.cah-text {
+    font-size: 4rem;
+}
+
 .cah-card {
     width: 15rem;
     max-width: 15rem;

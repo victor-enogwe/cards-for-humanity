@@ -10,6 +10,10 @@ class WhiteCardNode(DjangoObjectType):
     class Meta:
         model = WhiteCard
         filter_fields = '__all__'
+        filter_fields = {
+            'text': ['exact', 'icontains', 'istartswith'],
+            'genre': ['exact']
+        }
         interfaces = (relay.Node, )
         connection_class = ExtendedConnection
 
