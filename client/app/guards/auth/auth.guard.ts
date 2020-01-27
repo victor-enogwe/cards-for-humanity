@@ -12,12 +12,16 @@ export class AuthGuard implements CanLoad, CanActivate {
   constructor(private authService: AuthService) { }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): CanActivateType {
-    console.log(next)
-    return true
+    return this.authService.isAuthenticated()
   }
 
   canLoad(route: Route, segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
-    console.log(route)
-    return true
+    this.authService.authState.toPromise().then(console.log)
+    switch (route.path) {
+      case ('play'):
+        return this.authService.isAuthenticated()
+      default:
+        return false
+    }
   }
 }

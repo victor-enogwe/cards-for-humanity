@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   WS_LINK: 'ws://localhost:8000/graphql',
-  HTTP_LINK: 'http://localhost:8000/graphql'
+  HTTP_LINK: 'http://localhost:8000/graphql',
+  GOOGLE_OAUTH_CLIENT_ID: '',
+  FACEBOOK_APP_ID: ''
 }
 
 /*
