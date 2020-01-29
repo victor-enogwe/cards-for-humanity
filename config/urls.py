@@ -15,16 +15,18 @@ Including another URLconf
 """
 from os import environ
 from django.contrib import admin
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
 from django.conf.urls import url
-from graphene_django_extras.views import AuthenticatedGraphQLView, ExtraGraphQLView
-from channels import include, routing
+from django.urls import path
+from api.schema import GraphqlWsConsumer
 from django.views.generic.base import TemplateView
-from config.views import GraphQLCustomCoreBackend, AppGraphQLView, SubscriptionDemultiplexer
+from config.views import GraphQLCustomCoreBackend, AppGraphQLView
 
 
-app_routing = [routing.route_class(SubscriptionDemultiplexer)]
-
-socketpatterns = [include(app_routing, path=r"^/graphql")]
+asgiurlpatterns = ProtocolTypeRouter({
+    'websocket': AuthMiddlewareStack(URLRouter([path('graphql/ws', GraphqlWsConsumer)]))
+})
 
 urlpatterns = [
     url('admin/', admin.site.urls),

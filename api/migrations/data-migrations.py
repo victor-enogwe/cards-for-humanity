@@ -4,7 +4,7 @@ import json, os, re
 from os import listdir, path
 from os.path import isfile, join
 from django.db import migrations
-from django.contrib.auth.models import User 
+from api.models import User 
 from config.settings import env
 
 BASE_DIR = path.dirname(path.dirname(path.dirname(path.abspath(__file__))))

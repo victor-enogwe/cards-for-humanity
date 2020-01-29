@@ -34,3 +34,17 @@
         height: calc(16.5rem - 54px)
     }
 }
+
+.manual {
+    &::after {
+        content: "OR";
+        position: absolute;
+        margin-left: -72px;
+        top: 43%;
+        z-index: 999999;
+        background-color: #ffffff;
+        border: 1px solid #e2e6ea;
+        padding: 10px;
+        border-radius: 50%;
+    }
+}

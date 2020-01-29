@@ -15,7 +15,7 @@ import { CahComponent } from '../../components/cah/cah.component'
     AuthModule,
     GraphqlModule,
     CahRoutingModule,
-    BootstrapModule,
+    BootstrapModule
   ],
   bootstrap: [CahComponent]
 })

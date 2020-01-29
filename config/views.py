@@ -1,14 +1,7 @@
 from graphql.backend import GraphQLCoreBackend
 from graphene_django.views import GraphQLView
-from graphene_django_subscriptions.consumers import GraphqlAPIDemultiplexer
 from rx.core import ObservableBase
-from api.utils import depromise_subscription
 from api.schema.game import GameSubscriptionType
-
-class SubscriptionDemultiplexer(GraphqlAPIDemultiplexer):
-    consumers = {
-      'games': GameSubscriptionType.get_binding().consumer
-    }
 
 class GraphQLCustomCoreBackend(GraphQLCoreBackend):
     def __init__(self, executor=None):

@@ -6,6 +6,7 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
+        "start:tunnel": "ngrok http 8000 -host-header=\"localhost:8000\"",
         "start:server": "npm run activate && python manage.py runserver",
         "start:dev": "concurrently 'npm run start' 'npm run start:server'",
         "build": "ng build --prod=true --deployUrl=static/",
@@ -51,7 +52,8 @@
         "graphql": "^14.5.8",
         "graphql-tag": "^2.10.1",
         "ngx-carousel-lib": "^0.1.2",
-        "rxjs": "~6.5.3",
+        "ngx-cookie-service": "^2.3.0",
+        "rxjs": "^6.5.4",
         "subscriptions-transport-ws": "^0.9.16",
         "tslib": "^1.10.0",
         "zone.js": "~0.10.2"

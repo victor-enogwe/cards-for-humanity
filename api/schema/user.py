@@ -1,7 +1,7 @@
 import graphene
 from graphene import relay
 from graphene_django.filter import DjangoFilterConnectionField
-from django.contrib.auth import get_user_model
+from api.models import User
 from graphene import Schema, relay, resolve_only_args
 from graphene_django import DjangoConnectionField, DjangoObjectType
 from api.utils import ExtendedConnection
@@ -9,7 +9,7 @@ from api.utils import ExtendedConnection
 
 class UserNode(DjangoObjectType):
     class Meta:
-        model = get_user_model()
+        model = User
         interfaces = (relay.Node, )
         exclude_fields = ('password', )
         filter_fields = '__all__'
@@ -17,22 +17,19 @@ class UserNode(DjangoObjectType):
 
 
 class UserQuery(graphene.ObjectType):
-    all_users = DjangoFilterConnectionField(UserNode)
+    # all_users = DjangoFilterConnectionField(UserNode)
+    pass
 
 
 class CreateUser(graphene.Mutation):
     user = graphene.Field(UserNode)
 
     class Arguments:
-        username = graphene.String(required=True)
-        password = graphene.String(required=True)
         email = graphene.String(required=True)
+        password = graphene.String(required=True)
 
-    def mutate(self, info, username, password, email):
-        user = get_user_model()(
-            username=username,
-            email=email,
-        )
+    def mutate(self, info, password, email, **kwargs):
+        user = User(email=email, username=email)
         user.set_password(password)
         user.save()
 

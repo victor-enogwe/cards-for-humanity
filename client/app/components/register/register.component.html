@@ -1,1 +1,39 @@
-<p>register works!</p>
+<cah-auth-container title="Register">
+    <div class="col-md-12 col-lg-6 p-md-5">
+        <button #facebook class="btn btn-lg btn-block btn-primary" [hidden]="google.disabled" [ngClass]="{ 'progress-bar': facebook.disabled, 'progress-bar-striped': facebook.disabled, 'progress-bar-animated': facebook.disabled
+            }" (click)="signUpSocial($event)">Sign up with Facebook</button>
+        <button #google class="btn btn-lg btn-block btn-danger mt-3" [hidden]="facebook.disabled" [ngClass]="{ 'progress-bar': google.disabled, 'progress-bar-striped': google.disabled, 'progress-bar-animated': google.disabled
+            }" (click)="signUpSocial($event)">Sign up with Google</button>
+    </div>
+    <div class="col-md-12 col-lg-6 p-md-5 border-left manual">
+        <h6 class="card-title text-center text-muted">Sign up Manually</h6>
+        <form [formGroup]="registerForm">
+            <div class="form-group">
+                <label for="email" hidden>Email</label>
+                <input type="text" [ngClass]="{ 'border-danger': fieldHasError(registerForm, 'email') }" formControlName="email"
+                    class="form-control" id="email" aria-describedby="emailHelp" placeholder="Email">
+                <small id="emailHelp" class="form-text text-muted">Enter your email. We won't share it.</small>
+            </div>
+            <div class="form-group">
+                <label for="password" hidden>Password</label>
+                <input type="password" [ngClass]="{ 'border-danger': fieldHasError(registerForm, 'password') }" formControlName="password"
+                    class="form-control" id="password" placeholder="Password" aria-describedby="passwordHelp">
+                <small id="emailHelp" class="form-text text-muted">Enter your account password.</small>
+            </div>
+            <div class="form-group">
+                <label for="repeat-password" hidden>Repeat Password</label>
+                <input type="password" [ngClass]="{ 'border-danger': fieldHasError(registerForm, 'repeatPassword') }"
+                    formControlName="repeatPassword" class="form-control" id="repeat-password" placeholder="Repeat Password"
+                    aria-describedby="repeatHelp">
+                <small id="repeatHelp" class="form-text text-muted">Repeat your account password.</small>
+            </div>
+            <button type="submit" class="btn btn-lg btn-block btn-dark"
+                [disabled]="!registerForm.valid || facebook.disabled || google.disabled">Register</button>
+
+            <div class="d-flex flex-row justify-content-between mt-3">
+                <button type="button" class="btn btn-sm btn-link text-dark" routerLink="/auth/login">Back to Login</button>
+            </div>
+
+        </form>
+    </div>
+</cah-auth-container>

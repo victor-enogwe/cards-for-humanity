@@ -2,7 +2,7 @@ import graphene
 from graphene import relay
 from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django import DjangoObjectType
-from graphene_django_subscriptions.subscription import Subscription
+from channels_graphql_ws import Subscription
 from rest_framework import serializers
 from api.utils import ExtendedConnection
 from api.models import Genre
@@ -21,10 +21,24 @@ class GenreSubscriptionType(Subscription):
         serializer_class = GenreSerializer
         stream = 'genres'
 
-    @classmethod
-    def subscription_resolver(cls, root, info, **kwargs):
-        result = super().subscription_resolver(root, info, **kwargs)
-        return result
+    @staticmethod
+    def subscribe(root, info, arg1, arg2):
+        """Called when user subscribes."""
+
+        # Return the list of subscription group names.
+        return ['group42']
+
+    @staticmethod
+    def publish(payload, info, arg1, arg2):
+        """Called to notify the client."""
+
+        # Here `payload` contains the `payload` from the `broadcast()`
+        # invocation (see below). You can return `MySubscription.SKIP`
+        # if you wish to suppress the notification to a particular
+        # client. For example, this allows to avoid notifications for
+        # the actions made by this particular client.
+
+        return GenreSubscriptionType(event='Something has happened!')
 
 class GenreQuery(graphene.ObjectType):
     all_genres = DjangoFilterConnectionField(GenreNode, description='all cards genre')

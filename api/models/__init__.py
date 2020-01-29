@@ -3,3 +3,4 @@ from .whitecard import WhiteCard
 from .game import Game
 from .genre import Genre
 from .player import Player
+from .user import User

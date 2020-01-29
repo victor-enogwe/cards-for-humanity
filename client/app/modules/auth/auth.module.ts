@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core'
-import { CommonModule } from '@angular/common'
 import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login'
 import { environment } from 'client/environments/environment'
 
 
 @NgModule({
   exports: [SocialLoginModule],
-  imports: [CommonModule, SocialLoginModule],
+  imports: [SocialLoginModule],
   providers: [
     {
       provide: AuthServiceConfig,
