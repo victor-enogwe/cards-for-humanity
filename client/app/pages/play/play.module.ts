@@ -1,17 +1,19 @@
 import { NgModule } from '@angular/core'
-import { CommonModule } from '@angular/common'
 import { Routes, RouterModule } from '@angular/router'
+import { SharedModule } from '../../modules/shared/shared.module'
 
 // components
-import { PlayComponent } from 'client/app/components/play/play.component'
+import { PlayComponent } from '../../components/play/play.component'
+import { GenreComponent } from '../../components/genre/genre.component'
+import { GenresComponent } from '../../components/genres/genres.component'
 
 const routes: Routes = [{ path: '', component: PlayComponent }]
 
 @NgModule({
-  declarations: [PlayComponent],
+  declarations: [PlayComponent, GenreComponent, GenresComponent],
   imports: [
-    CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    SharedModule
   ]
 })
 export class PlayModule { }

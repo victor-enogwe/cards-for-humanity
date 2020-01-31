@@ -23,3 +23,9 @@ export interface Definintion {
 export type CanActivateType = Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree
 
 export type CanLoadType = Observable<boolean> | Promise<boolean> | boolean
+
+export interface AuthUser {
+  username: string
+  password: string
+  remember?: boolean
+}

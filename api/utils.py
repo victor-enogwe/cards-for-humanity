@@ -2,7 +2,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from graphene import Int, relay
 from django.utils import timezone
-from promise import is_thenable
 
 
 def game_name(variation='for'):
@@ -12,7 +11,6 @@ def game_name(variation='for'):
 def min_max_validator(min, max):
     message = 'value should be >= {0} and <= {1}'.format(min, max)
     return [MinValueValidator(min), MaxValueValidator(max)]
-
 
 class AutoDateTimeField(models.DateTimeField):
     def pre_save(self, model_instance, add):

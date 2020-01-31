@@ -12,10 +12,16 @@ class GenreNode(DjangoObjectType):
     class Meta:
         model = Genre
         filter_fields = '__all__'
+        filter_fields = {
+            'description': ['exact', 'icontains', 'istartswith']
+        }
         interfaces = (relay.Node, )
         connection_class = ExtendedConnection
 
 class GenreSubscriptionType(Subscription):
+    # Subscription payload.
+    event = graphene.String()
+    
     class Meta:
         queryset = None
         serializer_class = GenreSerializer

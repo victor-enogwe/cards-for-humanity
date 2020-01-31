@@ -49,6 +49,16 @@ SOCIAL_AUTH_FACEBOOK_SECRET = env('FACEBOOK_APP_SECRET', default='')
 
 AUTH_USER_MODEL="api.User"
 
+# SESSION_COOKIE_SECURE = True
+
+# CSRF_COOKIE_SECURE = True
+
+# CSRF_COOKIE_HTTPONLY = True
+
+# SESSION_COOKIE_SAMESITE = 'None'
+
+# CSRF_COOKIE_SAMESITE = 'None'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -82,7 +92,7 @@ AUTHENTICATION_BACKENDS = [
     'graphql_jwt.backends.JSONWebTokenBackend',
     'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.facebook.FacebookOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
+    'api.auth.backends.EmailOrUsernameModelBackend'
 ]
 
 SOCIAL_AUTH_PIPELINE = [
@@ -149,7 +159,7 @@ GRAPHENE = {
     'JWT_VERIFY_EXPIRATION': True,
 }
 
-STATIC_PATH = os.path.join(BASE_DIR, 'static')
+STATIC_PATH = os.path.join(BASE_DIR, 'static/server')
 
 TEMPLATES = [
     {

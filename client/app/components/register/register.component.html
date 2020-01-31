@@ -27,8 +27,9 @@
                     aria-describedby="repeatHelp">
                 <small id="repeatHelp" class="form-text text-muted">Repeat your account password.</small>
             </div>
-            <button type="submit" class="btn btn-lg btn-block btn-dark"
-                [disabled]="!registerForm.valid || facebook.disabled || google.disabled">Register</button>
+            <button #register type="button" class="btn btn-lg btn-block btn-dark" (click)="signUpManual($event, registerForm)"
+                [disabled]="!registerForm.valid || facebook.disabled || google.disabled" [ngClass]="{ 'progress-bar': registerForm.valid && register.disabled, 'progress-bar-striped': registerForm.valid &&
+                register.disabled, 'progress-bar-animated': registerForm.valid && register.disabled}">Register</button>
 
             <div class="d-flex flex-row justify-content-between mt-3">
                 <button type="button" class="btn btn-sm btn-link text-dark" routerLink="/auth/login">Back to Login</button>

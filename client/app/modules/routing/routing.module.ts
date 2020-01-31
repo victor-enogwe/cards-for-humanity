@@ -5,9 +5,6 @@ import { Routes, RouterModule } from '@angular/router'
 import { AuthGuard } from 'client/app/guards/auth/auth.guard'
 import { LoadGuard } from 'client/app/guards/load/load.guard'
 
-// services
-import { AuthService } from 'client/app/services/auth/auth.service'
-
 
 const routes: Routes = [
   { path: 'auth', loadChildren: () => import('../../pages/auth/auth.module').then(m => m.AuthModule), canActivate: [AuthGuard] },
@@ -20,6 +17,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers: [AuthGuard, AuthService, LoadGuard]
+  providers: [AuthGuard, LoadGuard]
 })
 export class CahRoutingModule { }

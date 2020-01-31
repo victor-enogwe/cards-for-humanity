@@ -7,6 +7,7 @@ import { AbstractControl } from '@angular/forms'
 export class FormService {
 
   fieldHasError(form: AbstractControl, field: string): boolean {
-    return Boolean(form.errors && form.errors[field] && (form.touched || form.dirty))
+    const control = form.get(field)
+    return Boolean(control.errors) && (control.touched || control.dirty)
   }
 }

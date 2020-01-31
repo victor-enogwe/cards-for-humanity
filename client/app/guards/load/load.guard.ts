@@ -3,7 +3,7 @@ import { CanLoad, Route, Router } from '@angular/router'
 import { CanLoadType } from '../../@types/global'
 import { AuthService } from '../../services/auth/auth.service'
 import { map, catchError } from 'rxjs/operators'
-import { of } from 'rxjs/internal/observable/of'
+import { of } from 'rxjs'
 
 @Injectable({
   providedIn: 'root'
@@ -12,18 +12,16 @@ export class LoadGuard implements CanLoad {
   constructor(private authService: AuthService, private router: Router) { }
 
   canLoad({ path }: Route): CanLoadType {
-    return this.authService.authState.pipe(
-      map(user => {
-        switch (true) {
-          case (path === 'auth'):
-            return !Boolean(user)
-          case (Boolean(user)):
-            return true
+    return of(Boolean(this.authService.token)).pipe(
+      map((hasToken) => {
+        switch (path) {
+          case ('auth'):
+            return hasToken ? false : true
           default:
-            this.router.navigate(['/auth'])
+            return hasToken ? true : this.router.navigate(['/auth']) && false
         }
       }),
-      catchError(() => of(false))
+      catchError(() => of(false)),
     )
   }
 }

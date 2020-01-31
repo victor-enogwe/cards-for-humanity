@@ -17,10 +17,12 @@ from os import environ
 from django.contrib import admin
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
+from django.views.decorators.csrf import csrf_exempt
 from django.conf.urls import url
 from django.urls import path
 from api.schema import GraphqlWsConsumer
 from django.views.generic.base import TemplateView
+from config.settings import DEBUG
 from config.views import GraphQLCustomCoreBackend, AppGraphQLView
 
 
@@ -28,8 +30,14 @@ asgiurlpatterns = ProtocolTypeRouter({
     'websocket': AuthMiddlewareStack(URLRouter([path('graphql/ws', GraphqlWsConsumer)]))
 })
 
+graphql_view = AppGraphQLView.as_view(graphiql=environ['DEBUG'], backend=GraphQLCustomCoreBackend())
+
+graphql_prod_url = url(r'^graphql$', graphql_view)
+
+graphql_dev_url = url(r'^graphql$', csrf_exempt(graphql_view))
+
 urlpatterns = [
     url('admin/', admin.site.urls),
-    url(r'^graphql$', AppGraphQLView.as_view(graphiql=environ['DEBUG'], backend=GraphQLCustomCoreBackend())),
+    graphql_dev_url if DEBUG else graphql_prod_url,
     url(r'^.*', TemplateView.as_view(template_name="index.html"), name="index")
 ]
