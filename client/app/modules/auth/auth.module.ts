@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core'
 import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login'
-import { environment } from 'client/environments/environment'
+import { environment } from '../../../environments/environment'
 import { CookieService } from 'ngx-cookie-service'
 
 
