@@ -10,6 +10,9 @@ import { RegisterComponent } from '../../components/register/register.component'
 import { ResetPasswordComponent } from '../../components/reset-password/reset-password.component'
 import { AuthContainerComponent } from '../../components/auth-container/auth-container.component'
 
+// utils
+import { login } from '../../utils/seo'
+
 // services
 import { FormService } from '../../services/form/form.service'
 
@@ -19,7 +22,7 @@ const routes: Routes = [
     component: AuthComponent,
     children: [
       { path: '', redirectTo: 'login', pathMatch: 'full' },
-      { path: 'login', component: LoginComponent },
+      { path: 'login', component: LoginComponent, data: { seo: login } },
       { path: 'register', component: RegisterComponent },
       { path: 'reset-password', component: ResetPasswordComponent }
     ]
