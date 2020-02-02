@@ -25,6 +25,16 @@
             "aot": true,
             "assets": [
               "client/favicon.ico",
+              "client/android-chrome-192x192.png",
+              "client/android-chrome-512x512.png",
+              "client/apple-touch-icon.png",
+              "client/browserconfig.xml",
+              "client/favicon-16x16.png",
+              "client/favicon-32x32.png",
+              "client/favicon.svg",
+              "client/mstile-150x150.png",
+              "client/safari-pinned-tab.svg",
+              "client/site.webmanifest",
               "client/assets"
             ],
             "styles": [
@@ -32,7 +42,8 @@
               "node_modules/bootstrap/scss/bootstrap.scss",
               "client/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "deployUrl": "static/browser/"
           },
           "configurations": {
             "production": {
@@ -62,17 +73,40 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "ssr": {
+              "optimization": true,
+              "outputHashing": "none",
+              "sourceMap": true,
+              "extractLicenses": true,
+              "extractCss": false
             }
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "cards-against-humanity:build"
+            "browserTarget": "cards-against-humanity:build",
+            "deployUrl": "/"
           },
           "configurations": {
             "production": {
               "browserTarget": "cards-against-humanity:build:production"
+            }
+          }
+        },
+        "serve-ssr": {
+          "builder": "./ssr:ssr-dev-server",
+          "options": {
+            "browserTarget": "cards-against-humanity:build",
+            "serverTarget": "cards-against-humanity:server",
+            "serverUrl": "localhost:8000",
+            "serverStartCommand": "python manage.py runserver"
+          },
+          "configurations": {
+            "dev": {
+              "browserTarget": "cards-against-humanity:build:ssr",
+              "serverTarget": "cards-against-humanity:server:ssr"
             }
           }
         },
@@ -91,6 +125,16 @@
             "karmaConfig": "karma.conf.js",
             "assets": [
               "client/favicon.ico",
+              "client/android-chrome-192x192.png",
+              "client/android-chrome-512x512.png",
+              "client/apple-touch-icon.png",
+              "client/browserconfig.xml",
+              "client/favicon-16x16.png",
+              "client/favicon-32x32.png",
+              "client/favicon.svg",
+              "client/mstile-150x150.png",
+              "client/safari-pinned-tab.svg",
+              "client/site.webmanifest",
               "client/assets"
             ],
             "styles": [
@@ -129,7 +173,7 @@
           "builder": "@angular-devkit/build-angular:server",
           "options": {
             "outputPath": "static/server",
-            "main": "client/main.server.ts",
+            "main": "./ssr/ssr.ts",
             "tsConfig": "tsconfig.server.json"
           },
           "configurations": {
@@ -143,6 +187,17 @@
               ],
               "sourceMap": false,
               "optimization": true
+            },
+            "ssr": {
+              "outputHashing": "none",
+              "fileReplacements": [
+                {
+                  "replace": "client/environments/environment.ts",
+                  "with": "client/environments/environment.prod.ts"
+                }
+              ],
+              "sourceMap": true,
+              "optimization": false
             }
           }
         }

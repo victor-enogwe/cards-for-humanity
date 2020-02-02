@@ -29,3 +29,34 @@ export interface AuthUser {
   password: string
   remember?: boolean
 }
+
+/**
+ * Seo Meta Attribute
+ *
+ * @export
+ * @enum {number}
+ */
+export enum SeoMetaTagAttr {
+  name = 'name',
+  property = 'property'
+}
+
+export interface SeoMetaTag {
+  attr: SeoMetaTagAttr
+  attrValue: string
+  value?: string
+}
+
+
+export interface SeoData {
+  title?: string
+  keywords?: string
+  description?: string
+  image?: string
+  url?: string
+  type?: string
+  author?: string
+  section?: string
+  published?: string
+  modified?: string
+}

@@ -19,11 +19,11 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from django.views.decorators.csrf import csrf_exempt
 from django.conf.urls import url
+from django.views.generic import RedirectView
 from django.urls import path
 from api.schema import GraphqlWsConsumer
-from django.views.generic.base import TemplateView
 from config.settings import DEBUG
-from config.views import GraphQLCustomCoreBackend, AppGraphQLView
+from config.views import GraphQLCustomCoreBackend, AppGraphQLView, AppView
 
 
 asgiurlpatterns = ProtocolTypeRouter({
@@ -39,5 +39,6 @@ graphql_dev_url = url(r'^graphql$', csrf_exempt(graphql_view))
 urlpatterns = [
     url('admin/', admin.site.urls),
     graphql_dev_url if DEBUG else graphql_prod_url,
-    url(r'^.*', TemplateView.as_view(template_name="index.html"), name="index")
+    url(r'^favicon.ico/$', RedirectView.as_view(url='/static/browser/favicon.ico')),
+    url(r'^.*', AppView.as_view(template_name="index.html"), name="index")
 ]
