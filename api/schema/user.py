@@ -1,7 +1,8 @@
 import graphene
 from graphene import relay
+from graphql_jwt.shortcuts import get_token
 from graphene_django.filter import DjangoFilterConnectionField
-from django.contrib.auth import get_user_model
+from api.models import User
 from graphene import Schema, relay, resolve_only_args
 from graphene_django import DjangoConnectionField, DjangoObjectType
 from api.utils import ExtendedConnection
@@ -9,7 +10,7 @@ from api.utils import ExtendedConnection
 
 class UserNode(DjangoObjectType):
     class Meta:
-        model = get_user_model()
+        model = User
         interfaces = (relay.Node, )
         exclude_fields = ('password', )
         filter_fields = '__all__'
@@ -17,26 +18,46 @@ class UserNode(DjangoObjectType):
 
 
 class UserQuery(graphene.ObjectType):
-    all_users = DjangoFilterConnectionField(UserNode)
+    # all_users = DjangoFilterConnectionField(UserNode)
+    pass
+
+
+class CreateUserFailEmailExists(graphene.ObjectType):
+    error_message = graphene.String(required=True)
+
+
+class CreateUserFailOthers(graphene.ObjectType):
+	error_message = graphene.String(required=True)
+
+
+class CreateUserSuccess(graphene.ObjectType):
+    user = graphene.Field(UserNode)
+    token = graphene.String()
+
+class CreateUserPayload(graphene.Union):
+    class Meta:
+        types = (CreateUserFailEmailExists, CreateUserFailOthers, CreateUserSuccess)
 
 
 class CreateUser(graphene.Mutation):
-    user = graphene.Field(UserNode)
+    Output = CreateUserPayload
 
     class Arguments:
-        username = graphene.String(required=True)
-        password = graphene.String(required=True)
         email = graphene.String(required=True)
+        password = graphene.String(required=True)
 
-    def mutate(self, info, username, password, email):
-        user = get_user_model()(
-            username=username,
-            email=email,
-        )
-        user.set_password(password)
-        user.save()
-
-        return CreateUser(user=user)
+    def mutate(self, info, password, email, **kwargs):
+        if User.objects.filter(email=email).exists():
+            return CreateUserFailEmailExists(
+                error_message="User with this email exists"
+            )
+        try:
+            user = User(email=email, username=email)
+            user.set_password(password)
+            user.save()
+            return CreateUserSuccess(user=user, token=get_token(user))
+        except:
+            return CreateUserFailOther(error_message="User not created, something went wrong, please try again!")
 
 
 class UserMutation(graphene.ObjectType):

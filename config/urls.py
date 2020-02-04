@@ -15,19 +15,30 @@ Including another URLconf
 """
 from os import environ
 from django.contrib import admin
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+from django.views.decorators.csrf import csrf_exempt
 from django.conf.urls import url
-from graphene_django_extras.views import AuthenticatedGraphQLView, ExtraGraphQLView
-from channels import include, routing
-from django.views.generic.base import TemplateView
-from config.views import GraphQLCustomCoreBackend, AppGraphQLView, SubscriptionDemultiplexer
+from django.views.generic import RedirectView
+from django.urls import path
+from api.schema import GraphqlWsConsumer
+from config.settings import DEBUG
+from config.views import GraphQLCustomCoreBackend, AppGraphQLView, AppView
 
 
-app_routing = [routing.route_class(SubscriptionDemultiplexer)]
+asgiurlpatterns = ProtocolTypeRouter({
+    'websocket': AuthMiddlewareStack(URLRouter([path('graphql/ws', GraphqlWsConsumer)]))
+})
 
-socketpatterns = [include(app_routing, path=r"^/graphql")]
+graphql_view = AppGraphQLView.as_view(graphiql=environ['DEBUG'], backend=GraphQLCustomCoreBackend())
+
+graphql_prod_url = url(r'^graphql$', graphql_view)
+
+graphql_dev_url = url(r'^graphql$', csrf_exempt(graphql_view))
 
 urlpatterns = [
     url('admin/', admin.site.urls),
-    url(r'^graphql$', AppGraphQLView.as_view(graphiql=environ['DEBUG'], backend=GraphQLCustomCoreBackend())),
-    url(r'^.*', TemplateView.as_view(template_name="index.html"), name="index")
+    graphql_dev_url if DEBUG else graphql_prod_url,
+    url(r'^favicon.ico/$', RedirectView.as_view(url='/static/browser/favicon.ico')),
+    url(r'^.*', AppView.as_view(template_name="index.html"), name="index")
 ]

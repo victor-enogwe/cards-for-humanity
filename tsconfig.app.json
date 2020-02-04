@@ -1,6 +1,9 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
+        "module": "ESNext",
+        "resolveJsonModule": true,
+        "allowJs": false,
         "outDir": "./out-tsc/app",
         "types": [],
     },

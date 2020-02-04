@@ -4,6 +4,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core'
   selector: 'cah-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent { }

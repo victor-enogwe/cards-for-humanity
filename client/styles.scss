@@ -1,8 +1,19 @@
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
 /* You can add global styles to this file, and also import other style files */
 #cah-main {
     height: 100vh;
     min-height: 100vh;
     max-height: 100vh;
+    overflow: hidden;
 }
 
 .row-eq-height {
@@ -32,5 +43,19 @@
 
     .card-header {
         height: calc(16.5rem - 54px)
+    }
+}
+
+.manual {
+    &::after {
+        content: "OR";
+        position: absolute;
+        margin-left: -72px;
+        top: 43%;
+        z-index: 999999;
+        background-color: #ffffff;
+        border: 1px solid #e2e6ea;
+        padding: 10px;
+        border-radius: 50%;
     }
 }

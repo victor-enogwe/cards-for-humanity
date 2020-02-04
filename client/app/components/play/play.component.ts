@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
+import { GameService } from '../../services/game/game.service'
 
 @Component({
   selector: 'cah-play',
@@ -6,10 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./play.component.scss']
 })
 export class PlayComponent implements OnInit {
+  genres: any
 
-  constructor() { }
+  constructor(private gameService: GameService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.genres = await this.gameService.selectGameGenre()
   }
-
 }

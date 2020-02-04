@@ -1,0 +1,48 @@
+{
+  "__schema": {
+    "types": [
+      {
+        "kind": "INTERFACE",
+        "name": "Node",
+        "possibleTypes": [
+          {
+            "name": "GenreNode"
+          },
+          {
+            "name": "BlackCardNode"
+          },
+          {
+            "name": "WhiteCardNode"
+          },
+          {
+            "name": "GameNode"
+          },
+          {
+            "name": "PlayerNode"
+          },
+          {
+            "name": "UserNode"
+          },
+          {
+            "name": "SocialNode"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
+        "name": "CreateUserPayload",
+        "possibleTypes": [
+          {
+            "name": "CreateUserFailEmailExists"
+          },
+          {
+            "name": "CreateUserFailOthers"
+          },
+          {
+            "name": "CreateUserSuccess"
+          }
+        ]
+      }
+    ]
+  }
+}

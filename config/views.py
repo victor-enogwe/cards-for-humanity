@@ -1,14 +1,14 @@
+# import v8eval
+import os
+from django.views import View
+from django.views.generic.base import TemplateView
+from Naked.toolshed.shell import muterun_js
+from django.http import HttpResponse
 from graphql.backend import GraphQLCoreBackend
 from graphene_django.views import GraphQLView
-from graphene_django_subscriptions.consumers import GraphqlAPIDemultiplexer
 from rx.core import ObservableBase
-from api.utils import depromise_subscription
 from api.schema.game import GameSubscriptionType
-
-class SubscriptionDemultiplexer(GraphqlAPIDemultiplexer):
-    consumers = {
-      'games': GameSubscriptionType.get_binding().consumer
-    }
+from config.settings import BASE_DIR, DEBUG
 
 class GraphQLCustomCoreBackend(GraphQLCoreBackend):
     def __init__(self, executor=None):
@@ -36,3 +36,14 @@ class AppGraphQLView(GraphQLView):
                 return execution_result
 
         return target_result
+
+class AppView(TemplateView):
+    # v8 = V8Eval::V8.new
+    
+    def get(self, request, *args, **kwargs):
+        renderer = os.path.join(BASE_DIR, 'static/server/main.js')
+        context = self.get_context_data(**kwargs)
+        response = muterun_js(renderer, request.build_absolute_uri(request.path))
+        if DEBUG:
+            return HttpResponse(response.stdout)
+        return HttpResponse(response.stdout) if '</html>' in response.stdout.decode("utf-8") else self.render_to_response(context)
