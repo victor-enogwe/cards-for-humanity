@@ -73,13 +73,6 @@
                   "maximumError": "10kb"
                 }
               ]
-            },
-            "ssr": {
-              "optimization": true,
-              "outputHashing": "none",
-              "sourceMap": true,
-              "extractLicenses": true,
-              "extractCss": false
             }
           }
         },
@@ -96,7 +89,7 @@
           }
         },
         "serve-ssr": {
-          "builder": "./ssr:ssr-dev-server",
+          "builder": "./ssr/builders:ssr-dev-server",
           "options": {
             "browserTarget": "cards-against-humanity:build",
             "serverTarget": "cards-against-humanity:server",
@@ -104,9 +97,9 @@
             "serverStartCommand": "python manage.py runserver"
           },
           "configurations": {
-            "dev": {
-              "browserTarget": "cards-against-humanity:build:ssr",
-              "serverTarget": "cards-against-humanity:server:ssr"
+            "production": {
+              "browserTarget": "cards-against-humanity:build:production",
+              "serverTarget": "cards-against-humanity:server:production"
             }
           }
         },
@@ -187,17 +180,6 @@
               ],
               "sourceMap": false,
               "optimization": true
-            },
-            "ssr": {
-              "outputHashing": "none",
-              "fileReplacements": [
-                {
-                  "replace": "client/environments/environment.ts",
-                  "with": "client/environments/environment.prod.ts"
-                }
-              ],
-              "sourceMap": true,
-              "optimization": false
             }
           }
         }

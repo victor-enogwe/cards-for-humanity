@@ -3,13 +3,14 @@
     "compilerOptions": {
         "outDir": "./out-tsc/app-server",
         "module": "CommonJS",
+        "allowJs": false,
         "types": [
             "node"
         ]
     },
     "files": [
         "client/main.server.ts",
-        "./ssr/ssr.ts"
+        "ssr/ssr.ts"
     ],
     "angularCompilerOptions": {
         "entryModule": "./client/app/modules/cah-server/cah.server.module#CahServerModule"
