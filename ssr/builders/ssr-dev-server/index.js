@@ -118,9 +118,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 
     function startNodeServer(serverStartCommand) {
         const env = Object.assign(Object.assign({}, process.env));
-        return utils_1.execAsObservable(serverStartCommand, {
-            env
-        })
+        return utils_1.execAsObservable(serverStartCommand, {})
             .pipe(
                 // Emit a signal after the process has been started
                 operators_1.startWith(undefined), operators_1.mapTo(undefined));

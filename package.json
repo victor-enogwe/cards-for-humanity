@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:ssr": "ng run cards-against-humanity:serve-ssr:production",
+    "start:ssr:dev": "ng run cards-against-humanity:serve-ssr:dev",
     "start:tunnel": "ngrok http 8000 -host-header=\"localhost:8000\"",
     "start:server": "npm run activate && python manage.py runserver",
     "start:dev": "concurrently 'npm run start' 'npm run start:server'",

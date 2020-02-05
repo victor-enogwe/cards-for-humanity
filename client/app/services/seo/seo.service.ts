@@ -24,7 +24,10 @@ export class SeoService {
     return this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       map(() => this.activatedRoute),
-      map(route => route.firstChild ? route.firstChild : route),
+      map(route => {
+        while (route.firstChild) { route = route.firstChild }
+        return route
+      }),
       filter(route => route.outlet === 'primary'),
       map(this.setMeta.bind(this)),
       catchError(() => of(null))

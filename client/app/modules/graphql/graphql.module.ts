@@ -43,7 +43,7 @@ export class GraphqlModule {
     cache: isPlatformServer(this.platformId) ? this.cache : this.cache.restore(window['__APOLLO_CLIENT__']),
     connectToDevTools: true,
     queryDeduplication: true,
-    // defaultOptions: { watchQuery: { errorPolicy: 'none' }, mutate: { errorPolicy: 'none' }, query: { errorPolicy: 'none' } }
+    defaultOptions: { watchQuery: { errorPolicy: 'none' }, mutate: { errorPolicy: 'none' }, query: { errorPolicy: 'none' } }
   })
 
   constructor(
@@ -59,13 +59,10 @@ export class GraphqlModule {
     return kind === 'OperationDefinition' && operation !== 'subscription'
   }
 
-  async headers(_, { headers }) {
-    // const token = this.authService.token()
+  async headers() {
+    const token = this.authService.token
     return {
-      headers: {
-        'X-CSRFToken': getCookie('csrftoken'),
-        // Authorization: token ? `JWT ${token}` : null
-      },
+      headers: Object.assign({ 'X-CSRFToken': getCookie('csrftoken') }, token ? { Authorization: token ? `JWT ${token}` : null } : {})
     }
   }
 

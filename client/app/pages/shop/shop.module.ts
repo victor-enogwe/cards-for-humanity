@@ -5,7 +5,8 @@ import { Routes, RouterModule } from '@angular/router'
 // components
 import { ShopComponent } from 'client/app/components/shop/shop.component'
 
-const routes: Routes = [{ path: '', component: ShopComponent }]
+// export routes to enable AOT compile route data
+export const routes: Routes = [{ path: '', component: ShopComponent }]
 
 @NgModule({
   declarations: [ShopComponent],

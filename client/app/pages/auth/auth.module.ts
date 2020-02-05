@@ -11,7 +11,7 @@ import { ResetPasswordComponent } from '../../components/reset-password/reset-pa
 import { AuthContainerComponent } from '../../components/auth-container/auth-container.component'
 
 // utils
-import { login } from '../../utils/seo'
+import { login, register } from '../../utils/seo'
 
 // services
 import { FormService } from '../../services/form/form.service'
@@ -23,7 +23,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'login', pathMatch: 'full' },
       { path: 'login', component: LoginComponent, data: { seo: login } },
-      { path: 'register', component: RegisterComponent },
+      { path: 'register', component: RegisterComponent, data: { seo: register } },
       { path: 'reset-password', component: ResetPasswordComponent }
     ]
   }

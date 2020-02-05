@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common'
 import { Routes, RouterModule } from '@angular/router'
 
 // components
-import { NotFoundComponent } from 'client/app/components/notfound/notfound.component';
+import { NotFoundComponent } from 'client/app/components/notfound/notfound.component'
 
-const routes: Routes = [{ path: '', component: NotFoundComponent }]
+// export routes to enable AOT compile route data
+export const routes: Routes = [{ path: '', component: NotFoundComponent }]
 
 @NgModule({
   declarations: [NotFoundComponent],

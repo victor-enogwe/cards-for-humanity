@@ -5,6 +5,10 @@ import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader'
 
 const { CahServerModule, LAZY_MODULE_MAP } = require('../client/main.server')
 
+const loggers = ['log', 'error', 'info']
+
+loggers.forEach((logger: string) => console[logger] = undefined)
+
 const [url] = process.argv.slice(2)
 
 const documentFilePath = resolve(__dirname, '../browser/index.html')

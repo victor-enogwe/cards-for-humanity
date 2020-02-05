@@ -16,7 +16,8 @@
     },
     "serverUrl": {
       "type": "string",
-      "description": "Server url for browser-sync."
+      "description": "Server url for browser-sync.",
+      "pattern": "^(https?):\\/\\/[^\\s$.?#].[^\\s]*$"
     },
     "serverStartCommand": {
       "type": "string",

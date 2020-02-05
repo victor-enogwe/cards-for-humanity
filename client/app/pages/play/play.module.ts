@@ -7,7 +7,8 @@ import { PlayComponent } from '../../components/play/play.component'
 import { GenreComponent } from '../../components/genre/genre.component'
 import { GenresComponent } from '../../components/genres/genres.component'
 
-const routes: Routes = [{ path: '', component: PlayComponent }]
+// export routes to enable AOT compile route data
+export const routes: Routes = [{ path: '', component: PlayComponent }]
 
 @NgModule({
   declarations: [PlayComponent, GenreComponent, GenresComponent],

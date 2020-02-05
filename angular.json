@@ -73,6 +73,14 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "dev": {
+              "optimization": false,
+              "outputHashing": "none",
+              "sourceMap": true,
+              "extractLicenses": false,
+              "buildOptimizer": false,
+              "extractCss": false
             }
           }
         },
@@ -91,13 +99,13 @@
         "serve-ssr": {
           "builder": "./ssr/builders:ssr-dev-server",
           "options": {
-            "browserTarget": "cards-against-humanity:build",
-            "serverTarget": "cards-against-humanity:server",
-            "serverUrl": "localhost:8000",
+            "browserTarget": "cards-against-humanity:build:dev",
+            "serverTarget": "cards-against-humanity:server:dev",
+            "serverUrl": "http://localhost:8000",
             "serverStartCommand": "python manage.py runserver"
           },
           "configurations": {
-            "production": {
+            "dev": {
               "browserTarget": "cards-against-humanity:build:production",
               "serverTarget": "cards-against-humanity:server:production"
             }
@@ -180,6 +188,11 @@
               ],
               "sourceMap": false,
               "optimization": true
+            },
+            "dev": {
+              "outputHashing": "none",
+              "sourceMap": true,
+              "optimization": false
             }
           }
         }
