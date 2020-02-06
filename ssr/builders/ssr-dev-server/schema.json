@@ -43,7 +43,6 @@
   "required": [
     "browserTarget",
     "serverTarget",
-    "serverUrl",
-    "serverStartCommand"
+    "serverUrl"
   ]
 }

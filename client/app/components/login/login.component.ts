@@ -53,7 +53,6 @@ export class LoginComponent {
       tap(() => this.rememberUser(form.value)),
       tap(() => form.disable()),
       flatMap(() => this.authService.signInManual({ username, password })),
-      tap(console.log),
       tap(response => this.authService.setToken(response.data['tokenAuth']['token'])),
       tap(() => {
         event.target.disabled = false

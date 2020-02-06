@@ -10,7 +10,4 @@ if (environment.production) {
   // ['info', 'error', 'log', 'warn'].forEach(logger => (console[logger] = undefined))
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  platformBrowserDynamic().bootstrapModule(CahModule)
-    .catch(err => console.error(err))
-})
+document.addEventListener('DOMContentLoaded', () => platformBrowserDynamic().bootstrapModule(CahModule).catch(console.error))

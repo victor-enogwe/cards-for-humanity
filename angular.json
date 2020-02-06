@@ -101,8 +101,7 @@
           "options": {
             "browserTarget": "cards-against-humanity:build:dev",
             "serverTarget": "cards-against-humanity:server:dev",
-            "serverUrl": "http://localhost:8000",
-            "serverStartCommand": "python manage.py runserver"
+            "serverUrl": "http://localhost:8000"
           },
           "configurations": {
             "dev": {

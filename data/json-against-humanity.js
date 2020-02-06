@@ -20729,9 +20729,9 @@ const genres = [
     'CAHe6'
 ]
 
-fs.writeFile(path.join(__dirname, `genres/${credit}.json`), makeGenres(genres), () => console.log('genre written'))
+fs.writeFile(path.join(__dirname, `genres/${credit}.json`), makeGenres(genres), () => process.stdin.write('genre written'))
 
 genres.forEach(base => {
-    fs.writeFile(path.join(__dirname, `blackcards/${credit}-${base}.json`), makeCards(base)('Q'), () => console.log(`${base} written`))
-    fs.writeFile(path.join(__dirname, `whitecards/${credit}-${base}.json`), makeCards(base)('A'), () => console.log(`${base} written`))
+    fs.writeFile(path.join(__dirname, `blackcards/${credit}-${base}.json`), makeCards(base)('Q'), () => process.stdin.write(`${base} written`))
+    fs.writeFile(path.join(__dirname, `whitecards/${credit}-${base}.json`), makeCards(base)('A'), () => process.stdin.write(`${base} written`))
 })

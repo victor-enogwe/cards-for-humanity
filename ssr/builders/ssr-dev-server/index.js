@@ -85,7 +85,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
                 if (!s.success) {
                     return rxjs_1.of(s);
                 }
-                return startNodeServer(serverStartCommand).pipe(operators_1.mapTo(s), operators_1.catchError(err => {
+                return (serverStartCommand ? startNodeServer(serverStartCommand) : rxjs_1.of(true)).pipe(operators_1.mapTo(s), operators_1.catchError(err => {
                     context.logger.error(`A server error has occurred.\n${mapErrorToMessage(err)}`);
                     return rxjs_1.NEVER;
                 }));
