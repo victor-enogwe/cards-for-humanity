@@ -25,10 +25,10 @@ export const REFRESH_TOKEN = gql`
 `
 export const CREATE_USER = gql`
   mutation createUser($email: String!, $password: String!) {
-    createUser (email: $email, password: $password) {
-      ...${CREATE_USER_SUCCESS}
-      ...${CREATE_USER_FAIL_EMAIL_EXISTS}
-      ...${CREATE_USER_FAIL_OTHERS}
-    }
+    # createUser (email: $email, password: $password) {
+    #   ...${CREATE_USER_SUCCESS}
+    #   ...${CREATE_USER_FAIL_EMAIL_EXISTS}
+    #   ...${CREATE_USER_FAIL_OTHERS}
+    # }
   }
 `

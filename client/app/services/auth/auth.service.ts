@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core'
 import { AuthService as Service, GoogleLoginProvider, FacebookLoginProvider, AuthServiceConfig, SocialUser } from 'angularx-social-login'
 import { tap } from 'rxjs/internal/operators/tap'
 import { Apollo } from 'apollo-angular'
-import gql from 'graphql-tag'
 import { Router } from '@angular/router'
 import { CookieService } from 'ngx-cookie-service'
-import { environment } from 'client/environments/environment'
 import { of } from 'rxjs'
 import { flatMap, debounceTime, catchError } from 'rxjs/operators'
 import { AuthUser } from '../../@types/global'
+import { environment } from '../../../environments/environment'
+import { SOCIAL_AUTH, CREATE_USER, tokenAuth, REFRESH_TOKEN } from '../../graphql/mutations'
 
 @Injectable({
   providedIn: 'root',
@@ -37,13 +37,7 @@ export class AuthService extends Service {
 
   socialAuth(user: SocialUser) {
     return this.apollo.mutate({
-      mutation: gql`
-        mutation ($input: SocialAuthJWTInput!){
-          socialAuth(input: $input) {
-            token
-          }
-        }
-      `,
+      mutation: SOCIAL_AUTH,
       variables: { input: { accessToken: user.authToken, provider: this.authProviders[user.provider] } }
     })
   }
@@ -52,7 +46,6 @@ export class AuthService extends Service {
     return of(event).pipe(
       tap(e => e.target.disabled = true),
       flatMap(() => event.target.textContent.includes('Facebook') ? this.signInWithFB() : this.signInWithGoogle()),
-      tap(console.log),
       flatMap(user => this.socialAuth(user)),
       tap(user => this.setToken(user.data['socialAuth']['token'])),
       tap(() => event.target.disabled = false),
@@ -67,54 +60,21 @@ export class AuthService extends Service {
 
   signUpManual(user: SocialUser) {
     return this.apollo.mutate({
-      mutation: gql`
-        fragment CreateUserSuccess on CreateUserSuccess {
-          token
-        }
-
-        fragment CreateUserFailEmailExists on CreateUserFailEmailExists {
-          errorMessage
-        }
-
-        fragment CreateUserFailOthers on CreateUserFailOthers {
-          errorMessage
-        }
-
-
-        mutation createUser($email: String!, $password: String!) {
-          createUser (email: $email, password: $password) {
-            ...CreateUserSuccess
-            ...CreateUserFailEmailExists
-            ...CreateUserFailOthers
-          }
-        }
-      `,
+      mutation: CREATE_USER,
       variables: user,
     })
   }
 
   signInManual(user: AuthUser) {
     return this.apollo.mutate({
-      mutation: gql`
-        mutation tokenAuth($user:  ObtainJSONWebTokenInput!) {
-          tokenAuth(input: $user) {
-            token
-          }
-        }
-      `,
+      mutation: tokenAuth,
       variables: { user }
     })
   }
 
   refreshToken(token: string) {
     return this.apollo.mutate({
-      mutation: gql`
-        mutation refreshToken($input: RefreshInput!) {
-          refreshToken(input: $input) {
-            token
-          }
-        }
-      `,
+      mutation: REFRESH_TOKEN,
       variables: { input: { token } }
     })
   }
