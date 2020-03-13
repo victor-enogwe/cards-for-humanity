@@ -7,7 +7,6 @@ import { environment } from './environments/environment'
 
 if (environment.production) {
   enableProdMode()
-  // ['info', 'error', 'log', 'warn'].forEach(logger => (console[logger] = undefined))
 }
 
 document.addEventListener('DOMContentLoaded', () => platformBrowserDynamic().bootstrapModule(CahModule).catch(console.error))

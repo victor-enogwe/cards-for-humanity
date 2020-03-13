@@ -13,9 +13,9 @@ import { of } from 'rxjs'
 export class SeoService {
 
   constructor(
+    @Inject(DOCUMENT) private readonly document: Document,
     private meta: Meta,
     private title: Title,
-    @Inject(DOCUMENT) private readonly document: Document,
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) { }

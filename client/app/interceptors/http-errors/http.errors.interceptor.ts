@@ -9,7 +9,7 @@ import {
 import { Observable, from, throwError } from 'rxjs'
 import { catchError, flatMap } from 'rxjs/operators'
 import { NotificationService } from '../../services/notification/notification.service'
-import { AuthService } from 'client/app/services/auth/auth.service'
+import { AuthService } from '../../services/auth/auth.service'
 
 @Injectable()
 export class HttpErrorsInterceptor implements HttpInterceptor {

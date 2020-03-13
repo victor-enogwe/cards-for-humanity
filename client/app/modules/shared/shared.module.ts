@@ -4,7 +4,7 @@ import { BootstrapModule } from '../bootstrap/bootstrap.module'
 import { MaterialModule } from '../material/material.module'
 
 // components
-import { MainContainerComponent } from 'client/app/components/main-container/main-container.component'
+import { MainContainerComponent } from '../..//components/main-container/main-container.component'
 
 
 

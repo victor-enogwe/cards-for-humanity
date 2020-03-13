@@ -6,7 +6,7 @@ import { AuthService } from '../../services/auth/auth.service'
 import { of } from 'rxjs'
 import { tap, flatMap, debounceTime, catchError } from 'rxjs/operators'
 import { Router } from '@angular/router'
-import { AuthUser } from 'client/app/@types/global'
+import { AuthUser } from '../../@types/global'
 
 @Component({
   selector: 'cah-login',
@@ -15,7 +15,7 @@ import { AuthUser } from 'client/app/@types/global'
 export class LoginComponent {
   rememberCookie = 'cah_val'
   user = this.authService.decodeObject(this.cookieService.get(this.rememberCookie)) as AuthUser
-  loginSocial = this.authService.signUpSocial
+  loginSocial = this.authService.signUpSocial.bind(this.authService)
   fieldHasError = this.formService.fieldHasError
   loginForm = this.formBuilder.group({
     username: [this.user.username || '', [Validators.required, this.validateUser]],
@@ -53,7 +53,6 @@ export class LoginComponent {
       tap(() => this.rememberUser(form.value)),
       tap(() => form.disable()),
       flatMap(() => this.authService.signInManual({ username, password })),
-      tap(response => this.authService.setToken(response.data['tokenAuth']['token'])),
       tap(() => {
         event.target.disabled = false
         return form.enable()

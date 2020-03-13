@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth/auth.service'
   templateUrl: './register.component.html'
 })
 export class RegisterComponent {
-  signUpSocial = this.authService.signUpSocial
+  signUpSocial = this.authService.signUpSocial.bind(this.authService)
   fieldHasError = this.formService.fieldHasError
   errorMessages = {
     password: 'password must be between 8 - 30 characters, at least one(uppercase letter, lowercase letter, number and special character',
@@ -37,7 +37,6 @@ export class RegisterComponent {
       tap(e => e.target.disabled = true),
       tap(() => form.disable()),
       flatMap(() => this.authService.signUpManual(user)),
-      tap(response => this.authService.setToken(response.data['tokenAuth']['token'])),
       tap(() => {
         event.target.disabled = false
         return form.enable()

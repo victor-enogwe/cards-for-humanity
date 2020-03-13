@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core'
-
+import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap'
 
 
 @NgModule({
   declarations: [],
-  imports: [
+  exports: [
+    NgbTypeaheadModule
   ]
 })
 export class BootstrapModule { }

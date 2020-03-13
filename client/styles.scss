@@ -10,9 +10,9 @@ body {
 
 /* You can add global styles to this file, and also import other style files */
 #cah-main {
-    height: 100vh;
-    min-height: 100vh;
-    max-height: 100vh;
+    height: calc(100vh - 88px);
+    min-height: calc(100vh - 88px);
+    max-height: calc(100vh - 88px);
     overflow: hidden;
 }
 

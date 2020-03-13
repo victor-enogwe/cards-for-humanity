@@ -2,10 +2,13 @@
     <div class="col-md-12 p-md-5">
         <h1 class="text-center text-dark font-weight-bold">Select A Genre to Play</h1>
 
-        <mat-list *ngIf="genres">
-            {{genres | json}}
-            here
+        <div class="form-group form-inline">
+            <input class="form-control ml-2" type="text" name="searchTerm" [(ngModel)]="genres" [ngbTypeahead]="search"
+                [editable]='false' />
+            <!-- <span class="ml-3" *ngIf="genres?.loading">Loading...</span> -->
+        </div>
 
-        </mat-list>
+        <pre>{{genres | json}}</pre>
+
     </div>
 </cah-main-container>

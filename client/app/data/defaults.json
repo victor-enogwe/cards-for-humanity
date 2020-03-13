@@ -1,0 +1,6 @@
+{
+  "tokenAuth": {
+    "token": null,
+    "__typename": "ObtainJSONWebTokenPayload!"
+  }
+}

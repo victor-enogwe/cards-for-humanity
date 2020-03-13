@@ -2,7 +2,7 @@
     "compileOnSave": false,
     "compilerOptions": {
         "baseUrl": "./",
-        "outDir": "./static",
+        "outDir": "./ssr/static",
         "sourceMap": true,
         "declaration": false,
         "downlevelIteration": true,

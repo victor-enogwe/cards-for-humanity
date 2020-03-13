@@ -5,15 +5,3 @@ export const CREATE_USER_SUCCESS = gql`
     token
   }
 `
-
-export const CREATE_USER_FAIL_EMAIL_EXISTS = gql`
-  fragment CreateUserFailEmailExists on CreateUserFailEmailExists {
-    errorMessage
-  }
-`
-
-export const CREATE_USER_FAIL_OTHERS = gql`
-  fragment CreateUserFailOthers on CreateUserFailOthers {
-    errorMessage
-  }
-`

@@ -2,7 +2,7 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "module": "ESNext",
-        "outDir": "./out-tsc/spec",
+        "outDir": "./ssr/static/spec",
         "allowJs": false,
         "types": [
             "jasmine",

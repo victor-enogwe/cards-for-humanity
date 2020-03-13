@@ -1,7 +1,7 @@
 {
     "extends": "./tsconfig.app.json",
     "compilerOptions": {
-        "outDir": "./out-tsc/app-server",
+        "outDir": "./ssr/static/server",
         "module": "CommonJS",
         "allowJs": false,
         "types": [
@@ -13,6 +13,6 @@
         "ssr/ssr.ts"
     ],
     "angularCompilerOptions": {
-        "entryModule": "./client/app/modules/cah-server/cah.server.module#CahServerModule"
+        "entryModule": "./../..//modules/cah-server/cah.server.module#CahServerModule"
     }
 }

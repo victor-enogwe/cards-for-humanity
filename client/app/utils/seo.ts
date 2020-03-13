@@ -11,3 +11,9 @@ export const register: SeoData = {
   description: 'register to play the cards against humanity game online',
   keywords: 'online, game, cards against humanity, card game'
 }
+
+export const play: SeoData = {
+  title: 'Play',
+  description: 'Play cards against humanity game online',
+  keywords: 'online, game, cards against humanity, card game'
+}

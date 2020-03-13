@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "static/browser",
+            "outputPath": "ssr/static/browser",
             "index": "client/index.html",
             "main": "client/main.ts",
             "polyfills": "client/polyfills.ts",
@@ -27,7 +27,7 @@
               "client/favicon.ico",
               "client/android-chrome-192x192.png",
               "client/android-chrome-512x512.png",
-              "client/apple-touch-icon.png",
+              "../../le-touch-icon.png",
               "client/browserconfig.xml",
               "client/favicon-16x16.png",
               "client/favicon-32x32.png",
@@ -101,7 +101,8 @@
           "options": {
             "browserTarget": "cards-against-humanity:build:dev",
             "serverTarget": "cards-against-humanity:server:dev",
-            "serverUrl": "http://localhost:8000"
+            "serverUrl": "http://localhost:8000",
+            "serverStartCommand": "python manage.py runserver"
           },
           "configurations": {
             "dev": {
@@ -127,7 +128,7 @@
               "client/favicon.ico",
               "client/android-chrome-192x192.png",
               "client/android-chrome-512x512.png",
-              "client/apple-touch-icon.png",
+              "../../le-touch-icon.png",
               "client/browserconfig.xml",
               "client/favicon-16x16.png",
               "client/favicon-32x32.png",
@@ -172,8 +173,8 @@
         "server": {
           "builder": "@angular-devkit/build-angular:server",
           "options": {
-            "outputPath": "static/server",
-            "main": "./ssr/ssr.ts",
+            "outputPath": "ssr/static/server",
+            "main": "ssr/ssr.ts",
             "tsConfig": "tsconfig.server.json"
           },
           "configurations": {

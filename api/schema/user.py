@@ -22,12 +22,22 @@ class UserQuery(graphene.ObjectType):
     pass
 
 
-class CreateUserFailEmailExists(graphene.ObjectType):
-    error_message = graphene.String(required=True)
+class CreateUserFailEmailExists(Exception):
+    '''
+        A Mutation Exception is an exception that is raised
+        when a user with the same email aready exists during create
+    '''
+    def __init__(self):
+        super().__init__("User with this email exists")
 
 
-class CreateUserFailOthers(graphene.ObjectType):
-	error_message = graphene.String(required=True)
+class CreateUserFailOthers(Exception):
+    '''
+        A Mutation Exception is an exception that is raised
+        when an error occurs during create
+    '''
+    def __init__(self):
+        super().__init__("User not created, something went wrong, please try again!")
 
 
 class CreateUserSuccess(graphene.ObjectType):
@@ -36,7 +46,7 @@ class CreateUserSuccess(graphene.ObjectType):
 
 class CreateUserPayload(graphene.Union):
     class Meta:
-        types = (CreateUserFailEmailExists, CreateUserFailOthers, CreateUserSuccess)
+        types = (CreateUserSuccess,)
 
 
 class CreateUser(graphene.Mutation):
@@ -47,17 +57,17 @@ class CreateUser(graphene.Mutation):
         password = graphene.String(required=True)
 
     def mutate(self, info, password, email, **kwargs):
-        if User.objects.filter(email=email).exists():
-            return CreateUserFailEmailExists(
-                error_message="User with this email exists"
-            )
         try:
+            if User.objects.filter(email=email).exists():
+                raise CreateUserFailEmailExists()
             user = User(email=email, username=email)
             user.set_password(password)
             user.save()
             return CreateUserSuccess(user=user, token=get_token(user))
+        except CreateUserFailEmailExists:
+            return CreateUserFailEmailExists()
         except:
-            return CreateUserFailOther(error_message="User not created, something went wrong, please try again!")
+            return CreateUserFailOthers()
 
 
 class UserMutation(graphene.ObjectType):

@@ -1,7 +1,7 @@
 import gql from 'graphql-tag'
-import { CREATE_USER_SUCCESS, CREATE_USER_FAIL_EMAIL_EXISTS, CREATE_USER_FAIL_OTHERS } from './fragments'
+import { CREATE_USER_SUCCESS } from './fragments'
 
-export const SOCIAL_AUTH = gql`
+export const socialAuth = gql`
   mutation ($input: SocialAuthJWTInput!){
     socialAuth(input: $input) {
       token
@@ -16,19 +16,18 @@ export const tokenAuth = gql`
   }
 `
 
-export const REFRESH_TOKEN = gql`
+export const refreshToken = gql`
   mutation refreshToken($input: RefreshInput!) {
     refreshToken(input: $input) {
       token
     }
   }
 `
-export const CREATE_USER = gql`
+export const createUser = gql`
+  ${CREATE_USER_SUCCESS}
   mutation createUser($email: String!, $password: String!) {
-    # createUser (email: $email, password: $password) {
-    #   ...${CREATE_USER_SUCCESS}
-    #   ...${CREATE_USER_FAIL_EMAIL_EXISTS}
-    #   ...${CREATE_USER_FAIL_OTHERS}
-    # }
+    createUser (email: $email, password: $password) {
+      ...CreateUserSuccess
+    }
   }
 `

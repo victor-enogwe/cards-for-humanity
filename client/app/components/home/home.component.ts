@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core'
+import { AuthService } from '../../services/auth/auth.service'
 
 @Component({
   selector: 'cah-home',
@@ -6,4 +7,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core'
   styleUrls: ['./home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent { }
+export class HomeComponent {
+  constructor(public readonly authService: AuthService) { }
+}

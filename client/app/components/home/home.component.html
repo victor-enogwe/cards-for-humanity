@@ -22,15 +22,20 @@
             </path>
         </svg>
 
-        <button type="button" class="btn btn-dark btn-lg btn-block btn-start text-uppercase mt-5 font-weight-bold" routerLink="play">
-            PLAY
-            <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="10px"
-                y="0px" viewBox="0 0 24 30" xml:space="preserve">
-                <g>
-                    <path fill="#ffffff"
-                        d="M19.95,12.001c0-0.557-0.279-1.07-0.747-1.373L6.571,2.457c-0.511-0.33-1.134-0.354-1.669-0.063   C4.369,2.685,4.05,3.222,4.05,3.83v16.341c0,0.608,0.319,1.145,0.853,1.436c0.249,0.135,0.516,0.202,0.783,0.202   c0.307,0,0.612-0.089,0.885-0.265l12.632-8.17C19.671,13.071,19.95,12.558,19.95,12.001z M18.747,12.666l-12.632,8.17   c-0.248,0.16-0.55,0.171-0.809,0.031c-0.259-0.141-0.414-0.401-0.414-0.696V3.83c0-0.295,0.155-0.556,0.414-0.696   c0.121-0.065,0.251-0.098,0.38-0.098c0.149,0,0.297,0.043,0.429,0.129l12.632,8.171c0.23,0.149,0.362,0.392,0.362,0.666   C19.109,12.275,18.977,12.517,18.747,12.666z" />
-                </g>
-            </svg>
-        </button>
+        <ng-container *ngTemplateOutlet="cta; context: { auth: authService.authState | async }"></ng-container>
+
+        <ng-template #cta let-auth="auth">
+            <button type="button" class="btn btn-dark btn-lg btn-block btn-start text-uppercase mt-5 font-weight-bold"
+                [routerLink]="auth ? 'play' : 'auth'">
+                PLAY
+                <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+                    x="10px" y="0px" viewBox="0 0 24 30" xml:space="preserve">
+                    <g>
+                        <path fill="#ffffff"
+                            d="M19.95,12.001c0-0.557-0.279-1.07-0.747-1.373L6.571,2.457c-0.511-0.33-1.134-0.354-1.669-0.063   C4.369,2.685,4.05,3.222,4.05,3.83v16.341c0,0.608,0.319,1.145,0.853,1.436c0.249,0.135,0.516,0.202,0.783,0.202   c0.307,0,0.612-0.089,0.885-0.265l12.632-8.17C19.671,13.071,19.95,12.558,19.95,12.001z M18.747,12.666l-12.632,8.17   c-0.248,0.16-0.55,0.171-0.809,0.031c-0.259-0.141-0.414-0.401-0.414-0.696V3.83c0-0.295,0.155-0.556,0.414-0.696   c0.121-0.065,0.251-0.098,0.38-0.098c0.149,0,0.297,0.043,0.429,0.129l12.632,8.171c0.23,0.149,0.362,0.392,0.362,0.666   C19.109,12.275,18.977,12.517,18.747,12.666z" />
+                    </g>
+                </svg>
+            </button>
+        </ng-template>
     </div>
 </cah-main-container>

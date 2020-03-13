@@ -107,4 +107,4 @@ venv.bak/
 
 node_modules
 
-static/
+ssr/static/

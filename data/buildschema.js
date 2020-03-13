@@ -32,7 +32,7 @@ fetch(config.parsed.API_URL, {
       type => type.possibleTypes !== null,
     );
     result.data.__schema.types = filteredData;
-    fs.writeFileSync('./client/app/data/introspection.json', JSON.stringify(result.data), err => {
+    fs.writeFileSync('./../..//data/introspection.json', JSON.stringify(result.data), err => {
       if (err) {
         process.stderr.write('Error writing schema fragmentTypes file', err);
       } else {

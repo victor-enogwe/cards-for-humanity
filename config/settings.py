@@ -40,6 +40,16 @@ CORS_ALLOW_CREDENTIALS = True
 
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 
+EMAIL_USE_TLS = True
+
+EMAIL_HOST = env('EMAIL_HOST')
+
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
+EMAIL_PORT = env('EMAIL_PORT')
+
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('GOOGLE_OAUTH_CLIENT_ID', default='')
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('GOOGLE_OAUTH_CLIENT_SECRET', default='')
@@ -122,11 +132,11 @@ SOCIAL_AUTH_PIPELINE = [
 
     # Send a validation email to the user to verify its email address.
     # Disabled by default.
-    # 'social_core.pipeline.mail.mail_validation',
+    'social_core.pipeline.mail.mail_validation',
 
     # Associates the current social details with another user account with
     # a similar email address. Disabled by default.
-    # 'social_core.pipeline.social_auth.associate_by_email',
+    'social_core.pipeline.social_auth.associate_by_email',
 
     # Create a user account if we haven't found one yet.
     'social_core.pipeline.user.create_user',
@@ -159,7 +169,7 @@ GRAPHENE = {
     'JWT_VERIFY_EXPIRATION': True,
 }
 
-STATIC_PATH = os.path.join(BASE_DIR, 'static/browser')
+STATIC_PATH = os.path.join(BASE_DIR, 'ssr/static/browser')
 
 TEMPLATES = [
     {
@@ -247,4 +257,4 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/browser/'
+STATIC_URL = '/ssr/static/browser/'
