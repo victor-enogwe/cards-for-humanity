@@ -1,7 +1,7 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-        "module": "ESNext",
+        "module": "es2020",
         "resolveJsonModule": true,
         "allowJs": false,
         "outDir": "./out-tsc/app",

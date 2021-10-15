@@ -157,6 +157,15 @@
         "trailing-comma": false,
         "no-conflicting-lifecycle": true,
         "no-host-metadata-property": true,
+        "space-before-function-paren": {
+          "options": {
+            "anonymous": "never",
+            "asyncArrow": "always",
+            "constructor": "never",
+            "method": "never",
+            "named": "never"
+          }
+        },
         "no-input-rename": true,
         "no-inputs-metadata-property": true,
         "no-output-native": true,
