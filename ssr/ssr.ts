@@ -1,4 +1,4 @@
-import 'zone.js/dist/zone-node'
+import 'zone.js/node'
 import { resolve } from 'path'
 import { ɵCommonEngine, ɵRenderOptions } from '@nguniversal/common/engine'
 import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader'
