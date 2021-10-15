@@ -152,19 +152,19 @@
     "ora" "5.4.1"
     "rxjs" "6.6.7"
 
-"@angular/animations@^11.0.0 || ^12.0.0-0", "@angular/animations@~12.2.10", "@angular/animations@12.2.10":
+"@angular/animations@^12.0.0 || ^13.0.0-0", "@angular/animations@~12.2.10", "@angular/animations@12.2.10":
   "integrity" "sha512-K1WT3m/StW5a4SE9wKT+D7eteyWK+MW3pAwFPaKH8EU9k6dItlLr3jWZsve5w2u/GLSnrOMGJNU/JmTfskV9LA=="
   "resolved" "https://registry.npmjs.org/@angular/animations/-/animations-12.2.10.tgz"
   "version" "12.2.10"
   dependencies:
     "tslib" "^2.2.0"
 
-"@angular/cdk@~11.2.13", "@angular/cdk@11.2.13":
-  "integrity" "sha512-FkE4iCwoLbQxLDUOjV1I7M/6hmpyb7erAjEdWgch7nGRNxF1hqX5Bqf1lvLFKPNCbx5NRI5K7YVAdIUQUR8vug=="
-  "resolved" "https://registry.npmjs.org/@angular/cdk/-/cdk-11.2.13.tgz"
-  "version" "11.2.13"
+"@angular/cdk@~12.2.10", "@angular/cdk@12.2.10":
+  "integrity" "sha512-jF/tyZXcAS0i11aH8061lMf/ofKs8U52smm/q7k5llTj/NvMZl4s6o3SmdYYE/ByljvCzObz+2j3TzJS/ioDFg=="
+  "resolved" "https://registry.npmjs.org/@angular/cdk/-/cdk-12.2.10.tgz"
+  "version" "12.2.10"
   dependencies:
-    "tslib" "^2.0.0"
+    "tslib" "^2.2.0"
   optionalDependencies:
     "parse5" "^5.0.0"
 
@@ -193,7 +193,7 @@
     "symbol-observable" "4.0.0"
     "uuid" "8.3.2"
 
-"@angular/common@^11.0.0 || ^12.0.0-0", "@angular/common@^12.0.0", "@angular/common@^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0", "@angular/common@~12.2.10", "@angular/common@12.2.10":
+"@angular/common@^12.0.0", "@angular/common@^12.0.0 || ^13.0.0-0", "@angular/common@^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0", "@angular/common@~12.2.10", "@angular/common@12.2.10":
   "integrity" "sha512-7IjD0frrKG/nt3/fo4mKDH0Tx5Nn8f2G8Ks/aq6xnJssy/V841COjua0ZyfPOkPS1r0VEaQJB5ieqMrp2T6MWg=="
   "resolved" "https://registry.npmjs.org/@angular/common/-/common-12.2.10.tgz"
   "version" "12.2.10"
@@ -227,14 +227,14 @@
   dependencies:
     "tslib" "^2.2.0"
 
-"@angular/core@^11.0.0 || ^12.0.0-0", "@angular/core@^12.0.0", "@angular/core@^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0", "@angular/core@^6.1.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0", "@angular/core@>=2.3.1 <13.0.0 || ^12.0.0-next || ^12.1.0-next || ^12.2.0-next", "@angular/core@~12.2.10", "@angular/core@12.2.10":
+"@angular/core@^12.0.0", "@angular/core@^12.0.0 || ^13.0.0-0", "@angular/core@^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0", "@angular/core@^6.1.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0", "@angular/core@>=2.3.1 <13.0.0 || ^12.0.0-next || ^12.1.0-next || ^12.2.0-next", "@angular/core@~12.2.10", "@angular/core@12.2.10":
   "integrity" "sha512-xG1IbmEAV7gWpiY2MSFc87MlmB3yff8/TAlSE8Tj2ZFzb1lFjeFnrZ1y50Hi2AcVyX/KA1mx/RyJ0M7fmQ1ayw=="
   "resolved" "https://registry.npmjs.org/@angular/core/-/core-12.2.10.tgz"
   "version" "12.2.10"
   dependencies:
     "tslib" "^2.2.0"
 
-"@angular/forms@^11.0.0 || ^12.0.0-0", "@angular/forms@^12.0.0", "@angular/forms@~12.2.10":
+"@angular/forms@^12.0.0", "@angular/forms@^12.0.0 || ^13.0.0-0", "@angular/forms@~12.2.10":
   "integrity" "sha512-ntTJOaLeH+7th5W4LEm3/yHsBvaFpfRgn0Uc88Th8p2gvorqCgpJMWogJIx/yESNolSFItY6k/x7kjuMBgm9mA=="
   "resolved" "https://registry.npmjs.org/@angular/forms/-/forms-12.2.10.tgz"
   "version" "12.2.10"
@@ -246,12 +246,12 @@
   "resolved" "https://registry.npmjs.org/@angular/language-service/-/language-service-12.2.10.tgz"
   "version" "12.2.10"
 
-"@angular/material@^11.2.13":
-  "integrity" "sha512-FqFdGSkOtqsmeLyTSousodDGUy2NqbtxCIKv2rwbsIRwHNKB0KpR/UQhA2gMRuGa5hxhMJ0DW0Tf9neMRuLCTg=="
-  "resolved" "https://registry.npmjs.org/@angular/material/-/material-11.2.13.tgz"
-  "version" "11.2.13"
+"@angular/material@^12.2.10":
+  "integrity" "sha512-iC0EA8ogpn/KJ+kr3TEfQJLYPAtrguMr21KAGwtKOOLng1HiEhH6qEqlc0PPYUUQ06i+8nJr/WWfL0ORKXh3fg=="
+  "resolved" "https://registry.npmjs.org/@angular/material/-/material-12.2.10.tgz"
+  "version" "12.2.10"
   dependencies:
-    "tslib" "^2.0.0"
+    "tslib" "^2.2.0"
 
 "@angular/platform-browser-dynamic@^12.2.10", "@angular/platform-browser-dynamic@12.2.10":
   "integrity" "sha512-CLYHCdTCzpxvMwITRBLlUoa44orDdogMaQfKIMEQsWrynf+zGZKYe5chAut9P/A54PVPUtKeQrfEVFjmbdYR2w=="
