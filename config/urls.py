@@ -23,14 +23,14 @@ from django.views.generic import RedirectView
 from django.urls import path
 from api.schema import GraphqlWsConsumer
 from config.settings import DEBUG
-from config.views import GraphQLCustomCoreBackend, AppGraphQLView, AppView
+from config.views import AppGraphQLView, AppView
 
 
 asgiurlpatterns = ProtocolTypeRouter({
     'websocket': AuthMiddlewareStack(URLRouter([path('graphql/ws', GraphqlWsConsumer)]))
 })
 
-graphql_view = AppGraphQLView.as_view(graphiql=environ['DEBUG'], backend=GraphQLCustomCoreBackend())
+graphql_view = AppGraphQLView.as_view(graphiql=environ['DEBUG'])
 
 graphql_prod_url = url(r'^graphql$', graphql_view)
 
