@@ -4,7 +4,7 @@ import { CookieService } from 'ngx-cookie-service'
 import { FormService } from '../../services/form/form.service'
 import { AuthService } from '../../services/auth/auth.service'
 import { of } from 'rxjs'
-import { tap, flatMap, debounceTime, catchError } from 'rxjs/operators'
+import { tap, mergeMap, debounceTime, catchError } from 'rxjs/operators'
 import { Router } from '@angular/router'
 import { AuthUser } from 'client/app/@types/global'
 
@@ -52,7 +52,7 @@ export class LoginComponent {
       tap(e => e.target.disabled = true),
       tap(() => this.rememberUser(form.value)),
       tap(() => form.disable()),
-      flatMap(() => this.authService.signInManual({ username, password })),
+      mergeMap(() => this.authService.signInManual({ username, password })),
       tap(console.log),
       tap(response => this.authService.setToken(response.data['tokenAuth']['token'])),
       tap(() => {

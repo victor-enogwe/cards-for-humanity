@@ -1,31 +1,26 @@
 import { NgModule, PLATFORM_ID, Inject } from '@angular/core'
 import { HttpClientModule, HttpClient } from '@angular/common/http'
 import { isPlatformServer } from '@angular/common'
-import { setContext } from 'apollo-link-context'
-import { Apollo, ApolloModule } from 'apollo-angular'
-import { IntrospectionFragmentMatcher } from 'apollo-cache-inmemory'
-import { ApolloLink, FetchResult } from 'apollo-link'
-import { onError, ErrorResponse } from 'apollo-link-error'
-import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http'
-import { InMemoryCache } from 'apollo-cache-inmemory'
-import { split } from 'apollo-link'
-import { WebSocketLink } from 'apollo-link-ws'
-import { getMainDefinition } from 'apollo-utilities'
+import { setContext } from '@apollo/client/link/context';
+import { InMemoryCache, FetchResult, split, from } from '@apollo/client/core';
+import {WebSocketLink} from '@apollo/client/link/ws';
+import { Apollo } from 'apollo-angular'
+import { onError, ErrorResponse } from '@apollo/client/link/error';
+import { HttpLink } from 'apollo-angular/http'
+import {getMainDefinition} from '@apollo/client/utilities'
 import { throwError, Observable } from 'rxjs'
 import { getCookie } from '../../utils/csrf'
 import { Definintion } from '../../@types/global'
 import { environment } from '../../../environments/environment'
 import { AuthService } from '../../services/auth/auth.service'
 import { NotificationService } from '../../services/notification/notification.service'
-import introspectionQueryResultData from '../../data/introspection.json'
 
 
 @NgModule({
-  exports: [HttpClientModule, ApolloModule, HttpLinkModule]
+  exports: [HttpClientModule],
 })
 export class GraphqlModule {
-  fragmentMatcher = new IntrospectionFragmentMatcher({ introspectionQueryResultData })
-  cache = new InMemoryCache({ addTypename: true, fragmentMatcher: this.fragmentMatcher })
+  cache = new InMemoryCache({ addTypename: true })
   basic = setContext(() => ({ headers: { Accept: 'charset=utf-8' } }))
   auth = setContext(this.headers.bind(this))
   error = onError(this.handleErrors.bind(this))
@@ -37,8 +32,8 @@ export class GraphqlModule {
   link = this.apollo.create({
     link: split(
       this.queryKind,
-      ApolloLink.from([this.error, this.basic, this.auth, this.httpLink]),
-      this.wsLink
+      this.wsLink,
+      from([this.error, this.basic, this.auth, this.httpLink]),
     ),
     cache: isPlatformServer(this.platformId) ? this.cache : this.cache.restore(window['__APOLLO_CLIENT__']),
     connectToDevTools: true,

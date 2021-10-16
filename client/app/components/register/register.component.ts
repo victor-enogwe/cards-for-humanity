@@ -2,7 +2,7 @@ import { Component } from '@angular/core'
 import { Router } from '@angular/router'
 import { FormBuilder, Validators, AbstractControl, FormGroup } from '@angular/forms'
 import { of } from 'rxjs'
-import { tap, flatMap, catchError, debounceTime } from 'rxjs/operators'
+import { tap, mergeMap, catchError, debounceTime } from 'rxjs/operators'
 import { FormService } from '../../services/form/form.service'
 import { AuthService } from '../../services/auth/auth.service'
 
@@ -36,7 +36,7 @@ export class RegisterComponent {
     return of(event).pipe(
       tap(e => e.target.disabled = true),
       tap(() => form.disable()),
-      flatMap(() => this.authService.signUpManual(user)),
+      mergeMap(() => this.authService.signUpManual(user)),
       tap(response => this.authService.setToken(response.data['tokenAuth']['token'])),
       tap(() => {
         event.target.disabled = false

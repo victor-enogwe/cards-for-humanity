@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core'
-import { AuthService as Service, GoogleLoginProvider, FacebookLoginProvider, AuthServiceConfig, SocialUser } from 'angularx-social-login'
+import { Inject, Injectable } from '@angular/core'
+import { SocialAuthService as Service, GoogleLoginProvider, FacebookLoginProvider, SocialAuthServiceConfig, SocialUser } from 'angularx-social-login'
 import { tap } from 'rxjs/internal/operators/tap'
 import { Apollo } from 'apollo-angular'
 import gql from 'graphql-tag'
@@ -7,18 +7,20 @@ import { Router } from '@angular/router'
 import { CookieService } from 'ngx-cookie-service'
 import { environment } from 'client/environments/environment'
 import { of } from 'rxjs'
-import { flatMap, debounceTime, catchError } from 'rxjs/operators'
+import { debounceTime, catchError, mergeMap } from 'rxjs/operators'
 import { AuthUser } from '../../@types/global'
+import { SOCIAL_AUTH_CONFIG } from 'client/app/modules/auth/auth.module'
 
 @Injectable({
   providedIn: 'root',
+  deps: ['SocialAuthServiceConfig']
 })
 export class AuthService extends Service {
   token = this.cookieService.get('token')
   authProviders = { GOOGLE: 'google-oauth2', facebook: 'facebook' }
   user: SocialUser = null
 
-  constructor(config: AuthServiceConfig, private apollo: Apollo, private cookieService: CookieService, private router: Router) {
+  constructor(@Inject(SOCIAL_AUTH_CONFIG) config: SocialAuthServiceConfig | Promise<SocialAuthServiceConfig>, private apollo: Apollo, private cookieService: CookieService, private router: Router) {
     super(config)
     this.authState.pipe(tap(user => (this.user = user))).subscribe()
   }
@@ -51,9 +53,9 @@ export class AuthService extends Service {
   signUpSocial(event: any) {
     return of(event).pipe(
       tap(e => e.target.disabled = true),
-      flatMap(() => event.target.textContent.includes('Facebook') ? this.signInWithFB() : this.signInWithGoogle()),
+      mergeMap(() => event.target.textContent.includes('Facebook') ? this.signInWithFB() : this.signInWithGoogle()),
       tap(console.log),
-      flatMap(user => this.socialAuth(user)),
+      mergeMap(user => this.socialAuth(user)),
       tap(user => this.setToken(user.data['socialAuth']['token'])),
       tap(() => event.target.disabled = false),
       debounceTime(1000),

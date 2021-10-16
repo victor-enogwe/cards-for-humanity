@@ -7,7 +7,7 @@ import {
   HttpErrorResponse
 } from '@angular/common/http'
 import { Observable, from, throwError } from 'rxjs'
-import { catchError, flatMap } from 'rxjs/operators'
+import { catchError, mergeMap } from 'rxjs/operators'
 import { NotificationService } from '../../services/notification/notification.service'
 import { AuthService } from 'client/app/services/auth/auth.service'
 
@@ -24,7 +24,7 @@ export class HttpErrorsInterceptor implements HttpInterceptor {
         message = navigator.onLine ? 'Service down. Please try again later!' : 'Please check your internet connection'
       }
       return from(this.notice.notify(message, 'dismiss', { duration: 3000 }))
-        .pipe(flatMap(() => throwError(error.error.message).toPromise()))
+        .pipe(mergeMap(() => throwError(error.error.message).toPromise()))
     }))
   }
 }
