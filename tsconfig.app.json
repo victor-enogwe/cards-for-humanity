@@ -1,9 +1,6 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-        "module": "es2020",
-        "resolveJsonModule": true,
-        "allowJs": false,
         "outDir": "./out-tsc/app",
         "types": [],
     },
@@ -13,5 +10,21 @@
     ],
     "include": [
         "client/**/*.d.ts"
+    ],
+    "exclude": [
+        "client/test.ts",
+        "client/**/*.spec.ts",
+        "client/**/*-specs.ts",
+        "client/**/*.avoid.ts",
+        "client/**/*.0.ts",
+        "client/**/*.1.ts",
+        "client/**/*.1b.ts",
+        "client/**/*.2.ts",
+        "client/**/*.3.ts",
+        "client/**/*.4.ts",
+        "client/**/*.5.ts",
+        "client/**/*.6.ts",
+        "client/**/*.7.ts",
+        "client/**/testing"
     ]
 }
