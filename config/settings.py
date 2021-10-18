@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-import os, sys, environ
+import os
+import sys
+
+import environ
 
 # source enviromment variables
 root = environ.Path(__file__) - 3  # get root of the project
@@ -19,7 +22,8 @@ env = environ.Env(DEBUG=(bool, False))
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-environ.Env.read_env(env.str('ENV_PATH', '%s/.env' % (BASE_DIR)))  # reading .env file
+environ.Env.read_env(env.str('ENV_PATH', '%s/.env' %
+                     (BASE_DIR)))  # reading .env file
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -34,6 +38,8 @@ ENV_HOSTS = env('ALLOWED_HOSTS').split(',')
 
 ALLOWED_HOSTS = (['localhost', '127.0.0.1'] if DEBUG else []) + ENV_HOSTS
 
+CORS_ORIGIN_ALLOW_ALL = False
+
 CORS_ORIGIN_WHITELIST = ENV_HOSTS
 
 CORS_ALLOW_CREDENTIALS = True
@@ -42,12 +48,13 @@ DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('GOOGLE_OAUTH_CLIENT_ID', default='')
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('GOOGLE_OAUTH_CLIENT_SECRET', default='')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env(
+    'GOOGLE_OAUTH_CLIENT_SECRET', default='')
 
 SOCIAL_AUTH_FACEBOOK_KEY = env('FACEBOOK_APP_ID', default='')
 SOCIAL_AUTH_FACEBOOK_SECRET = env('FACEBOOK_APP_SECRET', default='')
 
-AUTH_USER_MODEL="api.User"
+AUTH_USER_MODEL = "api.User"
 
 # SESSION_COOKIE_SECURE = True
 
@@ -72,6 +79,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'graphene_django',
     'social_django',
+    'rest_framework',
     'api'
 ]
 
@@ -153,7 +161,8 @@ GQL_MIDDLEWARE = [
 GRAPHENE = {
     'SCHEMA': 'api.schema.schema',  # Where your Graphene schema lives
     'SCHEMA_INDENT': 2,
-    'RELAY_CONNECTION_MAX_LIMIT': sys.maxsize,  # we can set the 'max_limit' kwarg on your DjangoConnectionField too
+    # we can set the 'max_limit' kwarg on your DjangoConnectionField too
+    'RELAY_CONNECTION_MAX_LIMIT': sys.maxsize,
     'RELAY_CONNECTION_ENFORCE_FIRST_OR_LAST': True,
     'MIDDLEWARE': (['graphene_django.debug.DjangoDebugMiddleware'] if DEBUG else []) + GQL_MIDDLEWARE,
     'JWT_VERIFY_EXPIRATION': True,
@@ -184,17 +193,19 @@ STATICFILES_DIRS = [STATIC_PATH]
 # In this simple example we use in-process in-memory Channel layer.
 # In a real-life cases you need Redis or something familiar.
 CHANNEL_LAYERS = {
-  "default": {
-    "BACKEND": "channels_redis.core.RedisChannelLayer",
-    "CONFIG": {
-        "hosts": [("localhost", 6379)],
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
     },
-  },
 }
 
 
 WSGI_APPLICATION = 'config.wsgi.application'
 ASGI_APPLICATION = 'config.urls.asgiurlpatterns'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Database
@@ -202,11 +213,18 @@ ASGI_APPLICATION = 'config.urls.asgiurlpatterns'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': env.str('DB_NAME'),
         'HOST': env.str('DB_HOST'),
         'USER': env.str('DB_USER'),
-        'PASSWORD': env.str('DB_PASSWORD')
+        'PASSWORD': env.str('DB_PASSWORD'),
+        'CONN_MAX_AGE': 0,
+        'TIME_ZONE': 'UTC',
+        'CHARSET': 'UTF8',
+        'OPTIONS': {},
+        'TEST': {
+            'NAME': 'cfh-test-db'
+        }
     }
 }
 

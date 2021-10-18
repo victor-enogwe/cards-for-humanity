@@ -8,6 +8,6 @@ export class FormService {
 
   fieldHasError(form: AbstractControl, field: string): boolean {
     const control = form.get(field)
-    return Boolean(control.errors) && (control.touched || control.dirty)
+    return control?.errors !== null && (control?.touched === true || control?.dirty === true)
   }
 }

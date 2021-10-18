@@ -15,6 +15,7 @@ class GameNode(DjangoObjectType):
         interfaces = (relay.Node, )
         connection_class = ExtendedConnection
 
+
 class GameSubscriptionType(Subscription):
     # Subscription payload.
     event = graphene.String()
@@ -48,17 +49,19 @@ class GameSubscriptionType(Subscription):
         result = super().subscription_resolver(root, info, **kwargs)
         return result
 
+
 class GameQuery(graphene.ObjectType):
-    game = graphene.Field(GameNode, _id=graphene.ID())
+    game = graphene.Field(GameNode, id=graphene.ID())
 
     def resolve_game(self, info, **kwargs):
-        _id = kwargs.get('_id')
+        id = kwargs.get('id')
 
-        return  Game.objects.get(pk=_id) if _id else None
+        return Game.objects.get(pk=id) if id else None
 
 
 class GameMutation(graphene.ObjectType):
     pass
+
 
 class GameSubscription(graphene.ObjectType):
     '''Game subscriptions'''

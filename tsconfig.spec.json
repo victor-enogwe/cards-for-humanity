@@ -1,19 +1,19 @@
 {
-    "extends": "./tsconfig.json",
-    "compilerOptions": {
-        "outDir": "./out-tsc/spec",
-        "allowJs": false,
-        "types": [
-            "jasmine",
-            "node"
-        ]
-    },
-    "files": [
-        "client/test.ts",
-        "client/polyfills.ts"
-    ],
-    "include": [
-        "client/**/*.spec.ts",
-        "client/**/*.d.ts"
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/spec",
+    "allowJs": false,
+    "types": [
+      "jasmine",
+      "node"
     ]
+  },
+  "files": [
+    "client/test.ts",
+    "client/polyfills.ts"
+  ],
+  "include": [
+    "client/**/*.spec.ts",
+    "client/**/*.d.ts"
+  ]
 }

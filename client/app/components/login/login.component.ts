@@ -40,7 +40,7 @@ export class LoginComponent {
   rememberUser(user: AuthUser) {
     switch (user.remember) {
       case (true):
-        return this.cookieService.set(this.rememberCookie, this.authService.encodeObject(user), null, this.rememberCookie)
+        return this.cookieService.set(this.rememberCookie, this.authService.encodeObject(user), undefined, this.rememberCookie)
       default:
         return this.cookieService.delete(this.rememberCookie, this.rememberCookie)
     }

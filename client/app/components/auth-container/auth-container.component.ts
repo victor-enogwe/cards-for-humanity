@@ -7,5 +7,5 @@ import { environment } from '../../../environments/environment'
 })
 export class AuthContainerComponent {
   gameTitle = environment.APP_TITLE
-  @Input() title: string
+  @Input() title!: string
 }

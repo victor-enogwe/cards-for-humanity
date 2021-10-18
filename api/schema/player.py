@@ -1,20 +1,22 @@
 import graphene
-from graphene import relay
-from graphene_django.filter import DjangoFilterConnectionField
-from graphene_django import DjangoObjectType
 from channels_graphql_ws import Subscription
+from graphene import relay
+from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
 from rest_framework import serializers
-from api.utils import ExtendedConnection
+
 from api.models import Player
 from api.models.serializers import PlayerSerializer
+from api.utils import ExtendedConnection
 
-    
+
 class PlayerNode(DjangoObjectType):
     class Meta:
         model = Player
         filter_fields = '__all__'
         interfaces = (relay.Node, )
         connection_class = ExtendedConnection
+
 
 class PlayerSubscriptionNode(Subscription):
     class Meta:

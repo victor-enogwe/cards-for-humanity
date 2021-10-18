@@ -5,7 +5,7 @@ from django.views.generic.base import TemplateView
 from Naked.toolshed.shell import muterun_js
 from django.http import HttpResponse
 from graphene_django.views import GraphQLView
-from rx.core import ObservableBase
+from rx.core.observable import observable
 from api.schema.game import GameSubscriptionType
 from config.settings import BASE_DIR, DEBUG
 
@@ -23,7 +23,7 @@ class AppGraphQLView(GraphQLView):
         execution_result = super().execute_graphql_request(
             request, data, query, variables, operation_name, show_graphiql)
         if execution_result:
-            if isinstance(execution_result, ObservableBase):
+            if isinstance(execution_result, observable.Observable):
                 target = execution_result.subscribe(
                     on_next=lambda value: override_target_result(value))
                 target.dispose()

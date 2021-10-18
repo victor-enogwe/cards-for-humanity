@@ -1,28 +1,28 @@
 import { Injectable } from '@angular/core'
-import { CanActivate, ActivatedRouteSnapshot, Router } from '@angular/router'
+import { CanActivate, Router, UrlTree } from '@angular/router'
+import { iif, Observable, of } from 'rxjs'
+import { switchMap } from 'rxjs/operators'
 import { CanActivateType } from '../../@types/global'
 import { AuthService } from '../../services/auth/auth.service'
-import { map, catchError } from 'rxjs/operators'
-import { of } from 'rxjs'
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
+  auth$ = of(this.authService.isLoggedIn())
+
   constructor(private authService: AuthService, private router: Router) { }
 
-  canActivate({ routeConfig: { path } }: ActivatedRouteSnapshot): CanActivateType {
-    return of(this.authService.isLoggedIn()).pipe(
-      map((hasToken) => {
-        switch (path) {
-          case ('auth'):
-            return hasToken ? false : true
-          default:
-            return hasToken ? true : this.router.parseUrl('/auth')
-        }
-      }),
-      catchError(() => of(this.router.parseUrl('/auth'))),
-    )
+  canActivate(): CanActivateType {
+    return this.auth$.pipe(switchMap(auth => iif(() => auth, of(true), of(this.router.parseUrl('/auth')))))
+  }
+
+  canActivateChild(): Observable<boolean | UrlTree> {
+    return this.auth$.pipe(switchMap(auth => iif(() => auth, of(true), of(this.router.parseUrl('/auth')))))
+  }
+
+  canLoad(): Observable<boolean> {
+    return this.auth$
   }
 }

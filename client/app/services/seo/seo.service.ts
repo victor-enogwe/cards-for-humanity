@@ -48,11 +48,11 @@ export class SeoService {
     this.setAuthor(data.author)
   }
 
-  setKeywords(keywords?: string): HTMLMetaElement | void {
+  setKeywords(keywords?: string): HTMLMetaElement | void | null {
     return keywords ? this.meta.updateTag({ name: 'keywords', content: keywords }) : this.meta.removeTag("name='keywords'")
   }
 
-  setSection(section?: string): HTMLMetaElement | void {
+  setSection(section?: string): HTMLMetaElement | void | null {
     return section ? this.meta.updateTag({ name: 'article:section', content: section }) : this.meta.removeTag("name='article:section'")
   }
 
@@ -127,7 +127,7 @@ export class SeoService {
   }
 
   setTwitterSiteCreator(site?: string): void {
-    if (Boolean(site)) {
+    if (site !== undefined) {
       this.meta.updateTag({ name: 'twitter:site', content: site })
       this.meta.updateTag({ name: 'twitter:creator', content: site })
     } else {
@@ -137,7 +137,7 @@ export class SeoService {
   }
 
   setTwitterCard(card?: string): void {
-    if (Boolean(card)) {
+    if (card !== undefined) {
       this.meta.updateTag({ name: 'twitter:card', content: card })
     } else {
       this.meta.removeTag("name='twitter:card'")
@@ -145,7 +145,7 @@ export class SeoService {
   }
 
   setFbAppId(appId?: string): void {
-    if (Boolean(appId)) {
+    if (appId !== undefined) {
       this.meta.updateTag({ property: 'fb:app_id', content: appId })
     } else {
       this.meta.removeTag("property='fb:app_id'")
@@ -153,7 +153,7 @@ export class SeoService {
   }
 
   setMetaTag(metaTag: SeoMetaTag): void {
-    if (Boolean(metaTag.value)) {
+    if (metaTag.value !== undefined) {
       const metaTagObject = {
         [metaTag.attr]: metaTag.attrValue,
         content: metaTag.value,

@@ -1,38 +1,15 @@
 {
-    "$schema": "http://json.schemastore.org/tsconfig",
-    "compileOnSave": false,
-    "compilerOptions": {
-        "baseUrl": "./",
-        "outDir": "./static",
-        "allowJs": true,
-        "allowSyntheticDefaultImports": true,
-        "noUnusedLocals": true,
-        "forceConsistentCasingInFileNames": true,
-        "strict": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "sourceMap": true,
-        "declaration": false,
-        "downlevelIteration": true,
-        "experimentalDecorators": true,
-        "moduleResolution": "node",
-        "importHelpers": true,
-        "target": "es2017",
-        "module": "es2020",
-        "lib": [
-            "es2018",
-            "dom",
-            "esnext.asynciterable"
-        ],
-        "typeRoots": [
-            "node_modules/@types"
-        ]
+  "$schema": "http://json.schemastore.org/tsconfig",
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig,app.json"
     },
-    "angularCompilerOptions": {
-        "fullTemplateTypeCheck": true,
-        "enableI18nLegacyMessageIdFormat": false,
-        "strictInjectionParameters": true,
-        "strictInputAccessModifiers": true,
-        "strictTemplates": true
+    {
+      "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./tsconfig.server.json"
     }
+  ]
 }

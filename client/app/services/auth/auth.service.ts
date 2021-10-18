@@ -1,15 +1,17 @@
 import { Inject, Injectable } from '@angular/core'
-import { SocialAuthService as Service, GoogleLoginProvider, FacebookLoginProvider, SocialAuthServiceConfig, SocialUser } from 'angularx-social-login'
-import { tap } from 'rxjs/internal/operators/tap'
-import { Apollo } from 'apollo-angular'
-import gql from 'graphql-tag'
 import { Router } from '@angular/router'
-import { CookieService } from 'ngx-cookie-service'
-import { environment } from 'client/environments/environment'
-import { of } from 'rxjs'
-import { debounceTime, catchError, mergeMap } from 'rxjs/operators'
-import { AuthUser } from '../../@types/global'
+import { FetchResult } from '@apollo/client/core'
+import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthService as Service, SocialAuthServiceConfig, SocialUser } from 'angularx-social-login'
+import { Apollo } from 'apollo-angular'
 import { SOCIAL_AUTH_CONFIG } from 'client/app/modules/auth/auth.module'
+import { environment } from 'client/environments/environment'
+import { SignUpData } from 'client/typings'
+import gql from 'graphql-tag'
+import { CookieService } from 'ngx-cookie-service'
+import { Observable, of } from 'rxjs'
+import { tap } from 'rxjs/internal/operators/tap'
+import { catchError, debounceTime, mergeMap } from 'rxjs/operators'
+import { AuthUser } from '../../@types/global'
 
 @Injectable({
   providedIn: 'root',
@@ -18,15 +20,11 @@ import { SOCIAL_AUTH_CONFIG } from 'client/app/modules/auth/auth.module'
 export class AuthService extends Service {
   token = this.cookieService.get('token')
   authProviders = { GOOGLE: 'google-oauth2', facebook: 'facebook' }
-  user: SocialUser = null
+  user!: SocialUser
 
   constructor(@Inject(SOCIAL_AUTH_CONFIG) config: SocialAuthServiceConfig | Promise<SocialAuthServiceConfig>, private apollo: Apollo, private cookieService: CookieService, private router: Router) {
     super(config)
     this.authState.pipe(tap(user => (this.user = user))).subscribe()
-  }
-
-  async isAuthenticated() {
-    return this.authState.toPromise().then(auth => Boolean(auth.authToken)).catch(() => false)
   }
 
   signInWithGoogle() {
@@ -37,7 +35,7 @@ export class AuthService extends Service {
     return this.signIn(FacebookLoginProvider.PROVIDER_ID)
   }
 
-  socialAuth(user: SocialUser) {
+  socialAuth(user: SocialUser & { provider: 'GOOGLE' | 'facebook' }): Observable<FetchResult<SocialUser>> {
     return this.apollo.mutate({
       mutation: gql`
         mutation ($input: SocialAuthJWTInput!){
@@ -55,8 +53,8 @@ export class AuthService extends Service {
       tap(e => e.target.disabled = true),
       mergeMap(() => event.target.textContent.includes('Facebook') ? this.signInWithFB() : this.signInWithGoogle()),
       tap(console.log),
-      mergeMap(user => this.socialAuth(user)),
-      tap(user => this.setToken(user.data['socialAuth']['token'])),
+      mergeMap((user: SocialUser & { provider: 'GOOGLE' | 'facebook' }) => this.socialAuth(user)),
+      tap(user => this.setToken(user.data?.authToken ?? '')),
       tap(() => event.target.disabled = false),
       debounceTime(1000),
       tap(() => this.router.navigate(['/play'])),
@@ -68,7 +66,7 @@ export class AuthService extends Service {
   }
 
   signUpManual(user: SocialUser) {
-    return this.apollo.mutate({
+    return this.apollo.mutate<SignUpData>({
       mutation: gql`
         fragment CreateUserSuccess on CreateUserSuccess {
           token
@@ -123,7 +121,8 @@ export class AuthService extends Service {
 
   setToken(token: string) {
     if (token) {
-      this.cookieService.set('token', token, 7, 'token', location ? location.hostname : null, environment.production, 'Strict')
+      this.cookieService
+        .set('token', token, 7, 'token', location !== null ? location.hostname : undefined, environment.production, 'Strict')
     }
   }
 

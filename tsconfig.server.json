@@ -1,17 +1,18 @@
 {
-    "extends": "./tsconfig.app.json",
-    "compilerOptions": {
-        "outDir": "./out-tsc/app-server",
-        "module": "commonjs",
-        "types": [
-            "node"
-        ]
-    },
-    "files": [
-        "client/main.server.ts",
-        "ssr/ssr.ts"
-    ],
-    "angularCompilerOptions": {
-        "entryModule": "./client/app/modules/cah-server/cah.server.module#CahServerModule"
-    }
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app-server",
+    "module": "commonjs",
+    "declaration": true,
+    "types": [
+      "node"
+    ]
+  },
+  "files": [
+    "client/main.server.ts",
+    "ssr/ssr.ts"
+  ],
+  "angularCompilerOptions": {
+    "entryModule": "./client/app/modules/cah-server/cah.server.module#CahServerModule"
+  }
 }

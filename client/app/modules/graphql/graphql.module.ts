@@ -2,13 +2,12 @@ import { NgModule, PLATFORM_ID, Inject } from '@angular/core'
 import { HttpClientModule, HttpClient } from '@angular/common/http'
 import { isPlatformServer } from '@angular/common'
 import { setContext } from '@apollo/client/link/context';
-import { InMemoryCache, FetchResult, split, from } from '@apollo/client/core';
+import { InMemoryCache, FetchResult, split, from, Observable } from '@apollo/client/core';
 import {WebSocketLink} from '@apollo/client/link/ws';
 import { Apollo } from 'apollo-angular'
 import { onError, ErrorResponse } from '@apollo/client/link/error';
 import { HttpLink } from 'apollo-angular/http'
 import {getMainDefinition} from '@apollo/client/utilities'
-import { throwError, Observable } from 'rxjs'
 import { getCookie } from '../../utils/csrf'
 import { Definintion } from '../../@types/global'
 import { environment } from '../../../environments/environment'
@@ -25,7 +24,7 @@ export class GraphqlModule {
   auth = setContext(this.headers.bind(this))
   error = onError(this.handleErrors.bind(this))
   httpLink = new HttpLink(this.httpClient).create({ uri: environment.HTTP_LINK, withCredentials: true })
-  wsLink = isPlatformServer(this.platformId) ? undefined : new WebSocketLink({
+  wsLink = isPlatformServer(this.platformId) ? () => null : new WebSocketLink({
     uri: environment.WS_LINK,
     options: { reconnect: true, connectionParams: { authToken: this.authService.token }, lazy: true }
   })
@@ -35,7 +34,7 @@ export class GraphqlModule {
       this.wsLink,
       from([this.error, this.basic, this.auth, this.httpLink]),
     ),
-    cache: isPlatformServer(this.platformId) ? this.cache : this.cache.restore(window['__APOLLO_CLIENT__']),
+    cache: isPlatformServer(this.platformId) ? this.cache : this.cache.restore(window.__APOLLO_CLIENT__),
     connectToDevTools: true,
     queryDeduplication: true,
     // defaultOptions: { watchQuery: { errorPolicy: 'none' }, mutate: { errorPolicy: 'none' }, query: { errorPolicy: 'none' } }
@@ -49,15 +48,16 @@ export class GraphqlModule {
     @Inject(PLATFORM_ID) private platformId: object,
   ) { }
 
-  queryKind({ query }): boolean {
+  queryKind({ query }: any): boolean {
     const { kind, operation }: Definintion = getMainDefinition(query)
     return kind === 'OperationDefinition' && operation !== 'subscription'
   }
 
-  async headers(_, { headers }) {
+  async headers(_: any, { headers }: any) {
     // const token = this.authService.token()
     return {
       headers: {
+        ...headers,
         'X-CSRFToken': getCookie('csrftoken'),
         // Authorization: token ? `JWT ${token}` : null
       },
@@ -76,6 +76,6 @@ export class GraphqlModule {
       console.log(`[Network error]: ${networkError}`)
     }
 
-    return throwError(Object.assign(networkError, graphQLErrors))
+    // return throwError(Object.assign(networkError, graphQLErrors))
   }
 }

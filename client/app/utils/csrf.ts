@@ -12,6 +12,6 @@ export function getCookie(name: string): string {
       .map(cookie => cookie.trim().substring(name.length + 1))
       .map(decodeURIComponent)[0]
   } catch (error) {
-    return undefined
+    return ''
   }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import gql from 'graphql-tag'
 import { Apollo } from 'apollo-angular'
 import { map } from 'rxjs/internal/operators/map'
+import { Genre } from 'client/typings'
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,7 @@ export class GameService {
 
   selectGameGenre(keyword?: string) {
     const search = keyword ? `description_Icontains: ${keyword}` : ''
-    return this.apollo.query({
+    return this.apollo.query<{ allGenres: Genre[] }>({
       query: gql`
         query {
           allGenres(first: 10, ${search}) {
@@ -42,6 +43,6 @@ export class GameService {
           }
         }
       `,
-    }).pipe(map(response => response.data['allGenres'])).toPromise()
+    }).pipe(map((response) => response.data.allGenres)).toPromise()
   }
 }

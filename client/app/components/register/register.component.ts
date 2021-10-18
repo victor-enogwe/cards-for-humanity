@@ -37,7 +37,7 @@ export class RegisterComponent {
       tap(e => e.target.disabled = true),
       tap(() => form.disable()),
       mergeMap(() => this.authService.signUpManual(user)),
-      tap(response => this.authService.setToken(response.data['tokenAuth']['token'])),
+      tap(({ data }) => this.authService.setToken(data?.tokenAuth.token ?? '')),
       tap(() => {
         event.target.disabled = false
         return form.enable()
@@ -54,7 +54,7 @@ export class RegisterComponent {
 
   async validateRepeatPassword(repeatPasswordControl: AbstractControl): Promise<{ [key: string]: any } | null> {
     const repeatPasswordError = { repeatPassword: true }
-    const password = repeatPasswordControl.root.get('password').value
+    const password = repeatPasswordControl?.root?.get('password')?.value
     const repeatPassword = repeatPasswordControl.value
     return password === repeatPassword ? null : repeatPasswordError
   }

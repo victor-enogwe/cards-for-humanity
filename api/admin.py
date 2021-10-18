@@ -1,23 +1,18 @@
 from django.contrib import admin
-from api.models import BlackCard, WhiteCard, Game, Player
-from api.models.serializers import (
-    GameSerializer,
-    WhiteCardSerializer,
-    BlackCardSerializer,
-    PlayerSerializer,
-    Genre,
-    GenreSerializer
-)
+
+from api.models import BlackCard, Game, Player, WhiteCard
+from api.models.serializers import BlackCardSerializer, GameSerializer, Genre, GenreSerializer, PlayerSerializer, WhiteCardSerializer
+
 
 @admin.register(BlackCard)
 class BlackCardAdmin(admin.ModelAdmin):
-    list_display = ('_id', 'text', 'genre', 'pick')
+    list_display = ('id', 'text', 'genre', 'pick')
     list_editable = ('text', 'genre', 'pick')
 
 
 @admin.register(WhiteCard)
 class WhiteCardAdmin(admin.ModelAdmin):
-    list_display = ('_id', 'text')
+    list_display = ('id', 'text')
     list_editable = ('text', )
 
     class Meta:
@@ -26,14 +21,16 @@ class WhiteCardAdmin(admin.ModelAdmin):
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
-    list_display = ('_id', 'genre', 'round_time', 'rounds', 'num_players', 'status')
+    list_display = ('id', 'genre', 'round_time',
+                    'rounds', 'num_players', 'status')
 
     class Meta:
         serializer_class = GameSerializer
 
+
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
-    list_display = ('_id', 'description', 'credit')
+    list_display = ('id', 'description', 'credit')
 
     class Meta:
         serializer_class = GenreSerializer
@@ -41,4 +38,4 @@ class GenreAdmin(admin.ModelAdmin):
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ('_id', 'game', 'user', 'score')
+    list_display = ('id', 'game', 'user', 'score')

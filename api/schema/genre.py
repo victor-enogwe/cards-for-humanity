@@ -21,7 +21,7 @@ class GenreNode(DjangoObjectType):
 class GenreSubscriptionType(Subscription):
     # Subscription payload.
     event = graphene.String()
-    
+
     class Meta:
         queryset = None
         serializer_class = GenreSerializer

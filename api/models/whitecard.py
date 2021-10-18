@@ -1,4 +1,4 @@
-from djongo import models
+from django.db import models
 from django.core.validators import RegexValidator, MinLengthValidator
 from ..utils import AutoDateTimeField, timezone
 
@@ -9,12 +9,11 @@ text_validators = [MinLengthValidator(5, text_error_message), text_regex]
 
 
 class WhiteCard(models.Model):
-    _id = models.ObjectIdField()
     text = models.CharField(max_length=255, validators=text_validators, help_text=text_error_message)
     genre = models.ForeignKey('api.Genre', on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = AutoDateTimeField(auto_now=True)
-    objects = models.DjongoManager()
+    objects = models.Manager()
 
     class Meta:
         unique_together = ('text', 'genre')
