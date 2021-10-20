@@ -1,20 +1,66 @@
 import { Observable } from 'rxjs'
 import { UrlTree } from '@angular/router'
+import { NormalizedCacheObject } from '@apollo/client/core'
+import { TIncomingRelay as TIncoming } from '@apollo/client/utilities/policies/pagination'
 
-/**
- * Card Type Enum
- *
- * @export
- * @enum {number}
- */
+declare global {
+  interface Window {
+    __APOLLO_CLIENT__: NormalizedCacheObject
+  }
+}
+
+export interface TRelayEdge<TNode> {
+    cursor?: string;
+    node: TNode;
+};
+
+export interface TIncomingRelay<TNode> extends TIncoming<TNode> {
+  edges?: TRelayEdge<TNode>[];
+  totalCount: number
+}
+
+export interface Genre {
+  id: number
+  description: string
+  credit: string
+  selected: boolean
+}
+
+export interface AllGenreGeneric extends Partial<Genre> {
+  offset?: number
+  before?: string
+  after?: string
+  id_Lt?: number
+  id_Gt?: number
+  description_Icontains?: string
+  description_Istartswith?: string
+  credit_Icontains?: string
+  credit_Istartswith?: string
+}
+
+export interface AllGenreFirst extends AllGenreGeneric {
+  first: number
+}
+
+export interface AllGenreLast extends AllGenreGeneric {
+  last: number
+}
+
+export type AllGenre = AllGenreFirst | AllGenreLast
+
+export interface SignUpData {
+  tokenAuth: {
+    token: string
+  }
+}
+
 export enum CardType {
   PICK1 = '1',
   PICK2 = '2',
   ANSWER = '3'
 }
 
-
-export interface Definintion {
+export interface Definition {
   kind: string
   operation?: string
 }

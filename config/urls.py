@@ -27,7 +27,7 @@ from config.views import AppGraphQLView, AppView
 
 
 asgiurlpatterns = ProtocolTypeRouter({
-    'websocket': AuthMiddlewareStack(URLRouter([path('graphql/ws', GraphqlWsConsumer)]))
+    'websocket': AuthMiddlewareStack(URLRouter([path('graphql/ws', GraphqlWsConsumer.as_asgi())]))
 })
 
 graphql_view = AppGraphQLView.as_view(graphiql=environ['DEBUG'])

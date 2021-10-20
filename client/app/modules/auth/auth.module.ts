@@ -1,30 +1,40 @@
-import { NgModule, InjectionToken } from '@angular/core'
-import { SocialLoginModule, SocialAuthServiceConfig, GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login'
-import { environment } from '../../../environments/environment'
-import { CookieService } from 'ngx-cookie-service'
+import { NgModule } from '@angular/core'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { RouterModule, Routes } from '@angular/router'
+import { SocialLoginModule } from 'angularx-social-login'
+import { AuthComponent } from '../../components/pages/auth/auth.component'
+import { LoginComponent } from '../../components/pages/login/login.component'
+import { RegisterComponent } from '../../components/pages/register/register.component'
+import { ResetPasswordComponent } from '../../components/pages/reset-password/reset-password.component'
+import { AuthContainerComponent } from '../../components/shared/auth-container/auth-container.component'
+import { FormService } from '../../services/form/form.service'
+import { login } from '../../utils/seo'
+import { SharedModule } from '../shared/shared.module'
 
-export const SOCIAL_AUTH_CONFIG = new InjectionToken<SocialAuthServiceConfig>('SocialAuthServiceConfig.config');
-
+const routes: Routes = [
+  {
+    path: '',
+    component: AuthComponent,
+    children: [
+      { path: '', redirectTo: 'login', pathMatch: 'full' },
+      { path: 'login', component: LoginComponent, data: { seo: login } },
+      { path: 'register', component: RegisterComponent },
+      { path: 'reset-password', component: ResetPasswordComponent }
+    ]
+  }
+]
 
 @NgModule({
-  exports: [SocialLoginModule],
-  imports: [SocialLoginModule],
+  declarations: [AuthComponent, AuthContainerComponent, LoginComponent, RegisterComponent, ResetPasswordComponent],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModule,
+    RouterModule.forChild(routes),
+    SocialLoginModule
+  ],
   providers: [
-    {
-      provide: SOCIAL_AUTH_CONFIG,
-      useValue: {
-          autoLogin: false,
-          providers: [
-              { id: GoogleLoginProvider.PROVIDER_ID, provider: new GoogleLoginProvider(environment.GOOGLE_OAUTH_CLIENT_ID) },
-              { id: FacebookLoginProvider.PROVIDER_ID, provider: new FacebookLoginProvider(environment.FACEBOOK_APP_ID) }
-
-          ],
-          onError: (err) => {
-            console.error(err);
-          }
-      } as SocialAuthServiceConfig,
-    },
-    CookieService
+    FormService,
   ]
 })
 export class AuthModule { }

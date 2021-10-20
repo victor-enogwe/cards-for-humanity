@@ -11,9 +11,10 @@ from api.models.serializers import GenreSerializer
 class GenreNode(DjangoObjectType):
     class Meta:
         model = Genre
-        filter_fields = '__all__'
         filter_fields = {
-            'description': ['exact', 'icontains', 'istartswith']
+            'id': ['exact', 'lt', 'gt'],
+            'description': ['exact', 'icontains', 'istartswith'],
+            'credit': ['exact', 'icontains', 'istartswith']
         }
         interfaces = (relay.Node, )
         connection_class = ExtendedConnection

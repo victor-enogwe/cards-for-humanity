@@ -2,13 +2,12 @@ import { Inject, Injectable } from '@angular/core'
 import { Router } from '@angular/router'
 import { FetchResult } from '@apollo/client/core'
 import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthService as Service, SocialAuthServiceConfig, SocialUser } from 'angularx-social-login'
-import { Apollo } from 'apollo-angular'
-import { SOCIAL_AUTH_CONFIG } from 'client/app/modules/auth/auth.module'
+import { Apollo, gql } from 'apollo-angular'
+import { SignUpData } from 'client/app/@types/global'
+import { SOCIAL_AUTH_CONFIG } from 'client/app/modules/cah/cah.module'
 import { environment } from 'client/environments/environment'
-import { SignUpData } from 'client/typings'
-import gql from 'graphql-tag'
 import { CookieService } from 'ngx-cookie-service'
-import { Observable, of } from 'rxjs'
+import { lastValueFrom, Observable, of } from 'rxjs'
 import { tap } from 'rxjs/internal/operators/tap'
 import { catchError, debounceTime, mergeMap } from 'rxjs/operators'
 import { AuthUser } from '../../@types/global'
@@ -49,7 +48,7 @@ export class AuthService extends Service {
   }
 
   signUpSocial(event: any) {
-    return of(event).pipe(
+    return lastValueFrom(of(event).pipe(
       tap(e => e.target.disabled = true),
       mergeMap(() => event.target.textContent.includes('Facebook') ? this.signInWithFB() : this.signInWithGoogle()),
       tap(console.log),
@@ -62,7 +61,7 @@ export class AuthService extends Service {
         event.target.disabled = false
         return error
       })
-    ).toPromise()
+    ))
   }
 
   signUpManual(user: SocialUser) {

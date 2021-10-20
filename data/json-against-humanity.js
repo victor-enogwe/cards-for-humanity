@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const credit = 'json-aginst-humanity'
+const credit = 'json-against-humanity'
 
 const cards = [{
         "id": 1,

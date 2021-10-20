@@ -7,21 +7,21 @@ import { NoAuthGuard } from '../../guards/no-auth/no-auth.guard'
 const routes: Routes = [
   {
     path: 'auth',
-    loadChildren: () => import('../../pages/auth/auth.module').then(m => m.AuthModule),
+    loadChildren: () => import('../auth/auth.module').then(m => m.AuthModule),
     canLoad: [NoAuthGuard],
     canActivate: [NoAuthGuard],
     canActivateChild: [NoAuthGuard]
   },
   {
     path: 'play',
-    loadChildren: () => import('../../pages/play/play.module').then(m => m.PlayModule),
+    loadChildren: () => import('../play/play.module').then(m => m.PlayModule),
     // canLoad: [AuthGuard],
     // canActivate: [AuthGuard],
     // canActivateChild: [AuthGuard],
   },
-  { path: 'shop', loadChildren: () => import('../../pages/shop/shop.module').then(m => m.ShopModule) },
-  { path: '', loadChildren: () => import('../../pages/home/home.module').then(m => m.HomeModule) },
-  { path: '404', loadChildren: () => import('../../pages/notfound/notfound.module').then(m => m.NotFoundModule) },
+  { path: 'shop', loadChildren: () => import('../shop/shop.module').then(m => m.ShopModule) },
+  { path: '', loadChildren: () => import('../home/home.module').then(m => m.HomeModule) },
+  { path: '404', loadChildren: () => import('../notfound/notfound.module').then(m => m.NotFoundModule) },
   { path: '', redirectTo: '/auth', pathMatch: 'full' },
   { path: '**', redirectTo: '/404' }  // Wildcard route for a 404 page
 ]

@@ -1,42 +1,47 @@
-import { NgModule, PLATFORM_ID, Inject } from '@angular/core'
-import { HttpClientModule, HttpClient } from '@angular/common/http'
 import { isPlatformServer } from '@angular/common'
-import { setContext } from '@apollo/client/link/context';
-import { InMemoryCache, FetchResult, split, from, Observable } from '@apollo/client/core';
-import {WebSocketLink} from '@apollo/client/link/ws';
+import { HttpClient, HttpClientModule } from '@angular/common/http'
+import { Inject, NgModule, PLATFORM_ID } from '@angular/core'
+import { FetchResult, from, InMemoryCache, Observable, split } from '@apollo/client/core'
+import { setContext } from '@apollo/client/link/context'
+import { ErrorResponse, onError } from '@apollo/client/link/error'
+import { WebSocketLink } from '@apollo/client/link/ws'
+import { getMainDefinition } from '@apollo/client/utilities'
 import { Apollo } from 'apollo-angular'
-import { onError, ErrorResponse } from '@apollo/client/link/error';
 import { HttpLink } from 'apollo-angular/http'
-import {getMainDefinition} from '@apollo/client/utilities'
-import { getCookie } from '../../utils/csrf'
-import { Definintion } from '../../@types/global'
+import { createPersistedQueryLink } from 'apollo-angular/persisted-queries'
+import { typeDefinitions } from 'client/app/graphql'
+import { sha256 } from 'crypto-hash'
 import { environment } from '../../../environments/environment'
+import { Definition } from '../../@types/global'
 import { AuthService } from '../../services/auth/auth.service'
 import { NotificationService } from '../../services/notification/notification.service'
+import { getCookie } from '../../utils/csrf'
+import { APOLLO_CACHE } from '../cah/cah.module'
 
 
 @NgModule({
   exports: [HttpClientModule],
 })
 export class GraphqlModule {
-  cache = new InMemoryCache({ addTypename: true })
   basic = setContext(() => ({ headers: { Accept: 'charset=utf-8' } }))
   auth = setContext(this.headers.bind(this))
   error = onError(this.handleErrors.bind(this))
+  persistedQueryLink = createPersistedQueryLink({ sha256 })
   httpLink = new HttpLink(this.httpClient).create({ uri: environment.HTTP_LINK, withCredentials: true })
   wsLink = isPlatformServer(this.platformId) ? () => null : new WebSocketLink({
     uri: environment.WS_LINK,
     options: { reconnect: true, connectionParams: { authToken: this.authService.token }, lazy: true }
   })
-  link = this.apollo.create({
-    link: split(
+  client = this.apollo.create({
+    link: this.persistedQueryLink.concat(split(
       this.queryKind,
       this.wsLink,
       from([this.error, this.basic, this.auth, this.httpLink]),
-    ),
-    cache: isPlatformServer(this.platformId) ? this.cache : this.cache.restore(window.__APOLLO_CLIENT__),
-    connectToDevTools: true,
+    )),
+    cache: this.cache,
+    connectToDevTools: !environment.production,
     queryDeduplication: true,
+    typeDefs: typeDefinitions,
     // defaultOptions: { watchQuery: { errorPolicy: 'none' }, mutate: { errorPolicy: 'none' }, query: { errorPolicy: 'none' } }
   })
 
@@ -45,11 +50,12 @@ export class GraphqlModule {
     private httpClient: HttpClient,
     private authService: AuthService,
     private notificationService: NotificationService,
+    @Inject(APOLLO_CACHE) private cache: InMemoryCache,
     @Inject(PLATFORM_ID) private platformId: object,
-  ) { }
+  ) {}
 
   queryKind({ query }: any): boolean {
-    const { kind, operation }: Definintion = getMainDefinition(query)
+    const { kind, operation }: Definition = getMainDefinition(query)
     return kind === 'OperationDefinition' && operation !== 'subscription'
   }
 

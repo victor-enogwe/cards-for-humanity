@@ -56,15 +56,15 @@ SOCIAL_AUTH_FACEBOOK_SECRET = env('FACEBOOK_APP_SECRET', default='')
 
 AUTH_USER_MODEL = "api.User"
 
-# SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
-# CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
-# CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
 
-# SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
 
-# CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SAMESITE = 'None'
 
 # Application definition
 
@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
     'graphene_django',
     'social_django',
     'rest_framework',
@@ -217,13 +218,14 @@ DATABASES = {
         'NAME': env.str('DB_NAME'),
         'HOST': env.str('DB_HOST'),
         'USER': env.str('DB_USER'),
+        'PORT': env.str('DB_PORT'),
         'PASSWORD': env.str('DB_PASSWORD'),
         'CONN_MAX_AGE': 0,
         'TIME_ZONE': 'UTC',
         'CHARSET': 'UTF8',
         'OPTIONS': {},
         'TEST': {
-            'NAME': 'cfh-test-db'
+            'NAME': 'cah-test-db'
         }
     }
 }
