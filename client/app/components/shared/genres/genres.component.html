@@ -1,0 +1,19 @@
+<div class="d-flex flex-column justify-content-center">
+  <h1 class="text-center text-dark font-weight-bold">Select Genres to Play</h1>
+
+
+  <mat-form-field *ngIf="genres$ | async as genres" appearance="fill">
+    <mat-label>Select Game genre</mat-label>
+    <mat-select placeholder="Select Game genre" multiple focused [compareWith]="genreSelected"
+      [value]="selectedGenres(genres.data.allGenres?.edges)">
+      <cdk-virtual-scroll-viewport [itemSize]="genres.data.allGenres.totalCount" class="select-genre" autosize #selectGenreCdk appendOnly>
+        <mat-option #genreOption *cdkVirtualFor="let genre of genres.data.allGenres?.edges" [value]="genre.node"
+          (click)="selectGenre(genreOption.selected, genre.node)">
+          {{genre.node.description}}
+        </mat-option>
+      </cdk-virtual-scroll-viewport>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary">Start Game</button>
+</div>

@@ -1,22 +1,24 @@
-import { NgModule } from '@angular/core'
+import { ScrollingModule } from '@angular/cdk/scrolling'
 import { CommonModule } from '@angular/common'
-import { ScrollingModule } from '@angular/cdk/scrolling';
-import { BootstrapModule } from '../bootstrap/bootstrap.module'
+import { NgModule } from '@angular/core'
+import { MainContainerComponent } from 'client/app/components/shared/main-container/main-container.component'
 import { MaterialModule } from '../material/material.module'
 
-// components
-import { MainContainerComponent } from 'client/app/components/shared/main-container/main-container.component'
 
 
 
 @NgModule({
   declarations: [MainContainerComponent],
-  exports: [CommonModule, MainContainerComponent, BootstrapModule, MaterialModule, ScrollingModule],
+  exports: [
+    CommonModule,
+    MainContainerComponent,
+    MaterialModule,
+    ScrollingModule
+  ],
   imports: [
     CommonModule,
-    BootstrapModule,
     MaterialModule,
-    ScrollingModule,
+    ScrollingModule
   ]
 })
 export class SharedModule { }

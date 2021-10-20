@@ -38,7 +38,6 @@
               "client/assets"
             ],
             "styles": [
-              "node_modules/bootstrap/scss/bootstrap.scss",
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "client/styles.scss"
             ],
@@ -93,10 +92,10 @@
           "options": {},
           "configurations": {
             "production": {
-              "browserTarget": "cards-against-humanity:build:production",
+              "browserTarget": "cards-against-humanity:build:production"
             },
             "development": {
-              "browserTarget": "cards-against-humanity:build:development",
+              "browserTarget": "cards-against-humanity:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -144,7 +143,6 @@
               "client/assets"
             ],
             "styles": [
-              "node_modules/bootstrap/scss/bootstrap.scss",
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "client/styles.scss"
             ],
