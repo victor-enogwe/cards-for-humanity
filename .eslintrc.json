@@ -1,23 +1,42 @@
 {
   "root": true,
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
   "ignorePatterns": [
     "projects/**/*"
   ],
   "overrides": [
     {
+      "env": {
+        "browser": true,
+        "es6": true
+      },
       "files": [
+        "plugins/*.(js|ts)",
         "*.ts"
       ],
       "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module",
         "project": [
           "tsconfig.json",
           "e2e/tsconfig.json"
         ],
         "createDefaultProgram": true
       },
+      "plugins": [
+        "prettier"
+      ],
       "extends": [
         "plugin:@angular-eslint/recommended",
-        "plugin:@angular-eslint/template/process-inline-templates"
+        "plugin:@angular-eslint/template/process-inline-templates",
+        "plugin:prettier/recommended"
       ],
       "rules": {
         "@angular-eslint/directive-selector": [

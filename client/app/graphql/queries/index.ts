@@ -1,2 +1,2 @@
-export * from '../fragments'
-export * from './genres'
+export * from '../fragments';
+export * from './genres';

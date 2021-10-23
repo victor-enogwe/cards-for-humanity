@@ -1,4 +1,4 @@
-import { gql } from 'client/app/utils/gql'
+import { gql } from 'client/app/utils/gql';
 
 export const GENRE_NODE_FRAGMENT = gql`
   fragment GenreNode on GenreNode {
@@ -7,4 +7,4 @@ export const GENRE_NODE_FRAGMENT = gql`
     credit
     selected @client
   }
-`
+`;

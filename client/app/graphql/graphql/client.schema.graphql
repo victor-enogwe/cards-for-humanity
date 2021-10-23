@@ -1,0 +1,11 @@
+extend type Query {
+  newGame: GameNode
+}
+
+extend type Mutation {
+  createGameLocal (input: CreateGameInput): GameNode
+}
+
+extend type GenreNode {
+  selected: Boolean
+}

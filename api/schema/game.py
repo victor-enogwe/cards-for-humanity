@@ -20,7 +20,6 @@ class GameNode(DjangoObjectType):
 
 
 class GameSubscriptionNode(Subscription):
-    # Subscription payload.
     event = graphene.String()
 
     class Meta:
@@ -55,11 +54,6 @@ class GameSubscriptionNode(Subscription):
 
 class GameQuery(graphene.ObjectType):
     game = graphene.Field(GameNode, id=graphene.ID())
-
-    # def resolve_game(self, info, **kwargs):
-    #     id = kwargs.get('id')
-
-    #     return Game.objects.get(pk=id) if id else None
 
 
 class CreateGameMutation(DjangoCreateMutation):

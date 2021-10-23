@@ -1,6 +1,6 @@
-import { gql } from 'client/app/utils/gql'
-import { GENRE_NODE_FRAGMENT } from './genre'
-import { PAGE_INFO_FRAGMENT } from './page-info'
+import { gql } from 'client/app/utils/gql';
+import { GENRE_NODE_FRAGMENT } from './genre';
+import { PAGE_INFO_FRAGMENT } from './page-info';
 
 export const GAME_NODE_FRAGMENT = gql`
   ${PAGE_INFO_FRAGMENT}
@@ -32,4 +32,4 @@ export const GAME_NODE_FRAGMENT = gql`
       }
     }
   }
-`
+`;

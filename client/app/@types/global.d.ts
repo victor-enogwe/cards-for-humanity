@@ -1,97 +1,96 @@
-import { UrlTree } from '@angular/router'
-import { NormalizedCacheObject } from '@apollo/client/core'
-import { TIncomingRelay as TIncoming } from '@apollo/client/utilities/policies/pagination'
-import { Observable } from 'rxjs'
+import { UrlTree } from '@angular/router';
+import { NormalizedCacheObject } from '@apollo/client/core';
+import { TIncomingRelay as TIncoming } from '@apollo/client/utilities/policies/pagination';
+import { Observable } from 'rxjs';
 
 declare global {
   interface Window {
-    __APOLLO_CLIENT__: NormalizedCacheObject
+    __APOLLO_CLIENT__: NormalizedCacheObject;
   }
 }
 
 export interface TRelayEdge<TNode> {
-    cursor?: string;
-    node: TNode;
+  cursor?: string;
+  node: TNode;
 }
 
 export interface TIncomingRelay<TNode> extends TIncoming<TNode> {
   edges?: TRelayEdge<TNode>[];
-  totalCount: number
+  totalCount: number;
 }
 
 export interface Genre {
-  id: number
-  description: string
-  credit: string
-  selected: boolean
+  id: number;
+  description: string;
+  credit: string;
+  selected: boolean;
 }
 
 export interface AllGenreGeneric extends Partial<Genre> {
-  offset?: number
-  before?: string
-  after?: string
-  id_Lt?: number
-  id_Gt?: number
-  description_Icontains?: string
-  description_Istartswith?: string
-  credit_Icontains?: string
-  credit_Istartswith?: string
+  offset?: number;
+  before?: string;
+  after?: string;
+  id_Lt?: number;
+  id_Gt?: number;
+  description_Icontains?: string;
+  description_Istartswith?: string;
+  credit_Icontains?: string;
+  credit_Istartswith?: string;
 }
 
 export interface AllGenreFirst extends AllGenreGeneric {
-  first: number
+  first: number;
 }
 
 export interface AllGenreLast extends AllGenreGeneric {
-  last: number
+  last: number;
 }
 
-export type AllGenre = AllGenreFirst | AllGenreLast
+export type AllGenre = AllGenreFirst | AllGenreLast;
 
 export enum GAME_STATUS {
   GAP = 'Awaiting Players',
   GAC = 'Awaiting Czar',
   GS = 'Game Started',
-  GE = 'Game Ended'
+  GE = 'Game Ended',
 }
 
 export interface Game {
-  id: number
-  rounds: number
-  roundTime: number
-  numPlayers: number
-  numSpectators: number
-  status: GAME_STATUS
-  genres: number[]
-  playerSet?: number[]
+  id: number;
+  rounds: number;
+  roundTime: number;
+  numPlayers: number;
+  numSpectators: number;
+  status: GAME_STATUS;
+  genres: number[];
+  playerSet?: number[];
 }
 
 export interface SignUpData {
   tokenAuth: {
-    token: string
-  }
+    token: string;
+  };
 }
 
 export enum CardType {
   PICK1 = '1',
   PICK2 = '2',
-  ANSWER = '3'
+  ANSWER = '3',
 }
 
 export interface Definition {
-  kind: string
-  operation?: string
+  kind: string;
+  operation?: string;
 }
 
+export type CanActivateType = Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree;
 
-export type CanActivateType = Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree
-
-export type CanLoadType = Observable<boolean> | Promise<boolean> | boolean
+export type CanLoadType = Observable<boolean> | Promise<boolean> | boolean;
 
 export interface AuthUser {
-  username: string
-  password: string
-  remember?: boolean
+  username: string;
+  password: string;
+  remember?: boolean;
 }
 
 /**
@@ -102,25 +101,24 @@ export interface AuthUser {
  */
 export enum SeoMetaTagAttr {
   name = 'name',
-  property = 'property'
+  property = 'property',
 }
 
 export interface SeoMetaTag {
-  attr: SeoMetaTagAttr
-  attrValue: string
-  value?: string
+  attr: SeoMetaTagAttr;
+  attrValue: string;
+  value?: string;
 }
 
-
 export interface SeoData {
-  title?: string
-  keywords?: string
-  description?: string
-  image?: string
-  url?: string
-  type?: string
-  author?: string
-  section?: string
-  published?: string
-  modified?: string
+  title?: string;
+  keywords?: string;
+  description?: string;
+  image?: string;
+  url?: string;
+  type?: string;
+  author?: string;
+  section?: string;
+  published?: string;
+  modified?: string;
 }

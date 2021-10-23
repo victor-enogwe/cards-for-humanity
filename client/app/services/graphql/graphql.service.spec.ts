@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CacheService } from './cache.service';
+import { GraphqlService } from './graphql.service';
 
-describe('CacheService', () => {
-  let service: CacheService;
+describe('GraphqlService', () => {
+  let service: GraphqlService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(CacheService);
+    service = TestBed.inject(GraphqlService);
   });
 
   it('should be created', () => {

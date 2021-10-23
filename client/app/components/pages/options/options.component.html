@@ -1,39 +1,50 @@
 <cah-main-container>
   <mat-stepper linear labelPosition="bottom" [orientation]="(breakpointObserver$ | async)!">
-    <mat-step *ngIf="genres$ | async as genres" [stepControl]="genreOptionsForm" state="genres">
-      <ng-template matStepperIcon="genres">
-        <mat-icon>category</mat-icon>
-      </ng-template>
-      <ng-template matStepLabel>Select Genres to Play</ng-template>
-      <form [formGroup]="genreOptionsForm" class="mt-4">
-        <mat-form-field class="w-100">
-          <mat-label>game genres</mat-label>
-          <mat-select formControlName="genres" placeholder="Select Game genre" multiple focused>
-            <cdk-virtual-scroll-viewport [itemSize]="genres.data.genres.totalCount" class="select-genre" autosize #selectGenreCdk
-              appendOnly>
-              <mat-option #genreOption *cdkVirtualFor="let genre of genres.data.genres?.edges" [value]="genre.node"
-                (click)="toggleGenre(genreOption.selected, genre.node)">
-                {{genre.node.description}}
-              </mat-option>
-            </cdk-virtual-scroll-viewport>
-          </mat-select>
-        </mat-form-field>
-      </form>
+    <ng-container *ngIf="genres$ | async as genres">
+      <mat-step [stepControl]="genreOptionsForm" state="genres">
+        <ng-template matStepperIcon="genres">
+          <mat-icon>category</mat-icon>
+        </ng-template>
+        <ng-template matStepLabel>Select Genres to Play</ng-template>
+        <form [formGroup]="genreOptionsForm" class="mt-4">
+          <mat-form-field class="w-100">
+            <mat-label>game genres</mat-label>
+            <mat-select formControlName="genres" placeholder="Select Game genre" multiple focused>
+              <cdk-virtual-scroll-viewport
+                [itemSize]="genres?.data?.genres?.totalCount"
+                class="select-genre"
+                autosize
+                #selectGenreCdk
+                appendOnly
+              >
+                <mat-option
+                  #genreOption
+                  *cdkVirtualFor="let genre of genres?.data?.genres?.edges"
+                  [value]="genre.node"
+                  (click)="toggleGenre(genreOption.selected, genre.node)"
+                >
+                  {{ genre.node.description }}
+                </mat-option>
+              </cdk-virtual-scroll-viewport>
+            </mat-select>
+          </mat-form-field>
+        </form>
 
-      <div class="btn-toolbar" role="toolbar" aria-label="game options navigation buttons">
-        <div class="btn-group btn-group-lg flex-fill" role="group" aria-label="reset button">
-          <button mat-icon-button matTooltip="reset" matTooltipPosition="right" (click)="resetGenres(genres.data.genres?.edges)">
-            <mat-icon aria-hidden="false" aria-label="reset steps">settings_backup_restore</mat-icon>
-          </button>
-        </div>
+        <div class="btn-toolbar" role="toolbar" aria-label="game options navigation buttons">
+          <div class="btn-group btn-group-lg flex-fill" role="group" aria-label="reset button">
+            <button mat-icon-button matTooltip="reset" matTooltipPosition="right" (click)="resetGenres(genres?.data?.genres?.edges)">
+              <mat-icon aria-hidden="false" aria-label="reset steps">settings_backup_restore</mat-icon>
+            </button>
+          </div>
 
-        <div class="btn-group btn-group-lg" role="group" aria-label="next button">
-          <button mat-icon-button flexFill matStepperNext [disabled]="!genreOptionsForm.valid && !genreOptionsForm.dirty">
-            <mat-icon aria-hidden="false" aria-label="next step" matTooltip="Next" matTooltipPosition="left">arrow_forward</mat-icon>
-          </button>
+          <div class="btn-group btn-group-lg" role="group" aria-label="next button">
+            <button mat-icon-button flexFill matStepperNext [disabled]="!genreOptionsForm.valid && !genreOptionsForm.dirty">
+              <mat-icon aria-hidden="false" aria-label="next step" matTooltip="Next" matTooltipPosition="left">arrow_forward</mat-icon>
+            </button>
+          </div>
         </div>
-      </div>
-    </mat-step>
+      </mat-step>
+    </ng-container>
     <mat-step [stepControl]="gameOptionsForm" state="options">
       <ng-template matStepperIcon="options">
         <mat-icon>tune</mat-icon>
@@ -43,19 +54,37 @@
       <form [formGroup]="gameOptionsForm" class="mt-4">
         <mat-form-field class="game-options-stepper w-100">
           <mat-label>number of game rounds</mat-label>
-          <input matInput type="number" min="5" max="10" step="1" formControlName="rounds" class="d-none invisible">
-          <mat-slider [min]="5" [max]="10" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
-            [value]="gameOptionsForm.controls.rounds.value" (change)="gameOptionsForm.controls.rounds.setValue($event.value)"
-            aria-labelledby="no of game rounds">
+          <input matInput type="number" min="5" max="10" step="1" formControlName="rounds" class="d-none invisible" />
+          <mat-slider
+            [min]="5"
+            [max]="10"
+            [step]="1"
+            [tickInterval]="1"
+            thumbLabel
+            showTicks
+            class="w-100"
+            [value]="gameOptionsForm.controls.rounds.value"
+            (change)="gameOptionsForm.controls.rounds.setValue($event.value)"
+            aria-labelledby="no of game rounds"
+          >
           </mat-slider>
         </mat-form-field>
 
         <mat-form-field class="game-options-stepper w-100">
           <mat-label>time per round(seconds)</mat-label>
-          <input matInput type="number" min="10" max="60" step="5" formControlName="roundTime" class="d-none invisible">
-          <mat-slider [min]="10" [max]="60" [step]="5" [tickInterval]="5" thumbLabel showTicks class="w-100"
-            [value]="gameOptionsForm.controls.roundTime.value" (change)="gameOptionsForm.controls.roundTime.setValue($event.value)"
-            aria-labelledby="seconds per round">
+          <input matInput type="number" min="10" max="60" step="5" formControlName="roundTime" class="d-none invisible" />
+          <mat-slider
+            [min]="10"
+            [max]="60"
+            [step]="5"
+            [tickInterval]="5"
+            thumbLabel
+            showTicks
+            class="w-100"
+            [value]="gameOptionsForm.controls.roundTime.value"
+            (change)="gameOptionsForm.controls.roundTime.setValue($event.value)"
+            aria-labelledby="seconds per round"
+          >
           </mat-slider>
         </mat-form-field>
 
@@ -64,19 +93,38 @@
             number of players
             <span *ngIf="gameOptionsForm.controls.numPlayers.value === 1" class="badge bg-info">COMPETE AGAINST THE AI</span>
           </mat-label>
-          <input matInput type="number" min="1" max="10" step="1" formControlName="numPlayers" class="d-none invisible">
-          <mat-slider [min]="1" [max]="10" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
-            [value]="gameOptionsForm.controls.numPlayers.value" (change)="gameOptionsForm.controls.numPlayers.setValue($event.value)"
-            aria-labelledby="no of players">
+          <input matInput type="number" min="1" max="10" step="1" formControlName="numPlayers" class="d-none invisible" />
+          <mat-slider
+            [min]="1"
+            [max]="10"
+            [step]="1"
+            [tickInterval]="1"
+            thumbLabel
+            showTicks
+            class="w-100"
+            [value]="gameOptionsForm.controls.numPlayers.value"
+            (change)="gameOptionsForm.controls.numPlayers.setValue($event.value)"
+            aria-labelledby="no of players"
+          >
           </mat-slider>
         </mat-form-field>
 
         <mat-form-field class="game-options-stepper w-100">
           <mat-label>number of spectators</mat-label>
-          <input matInput type="number" min="1" max="10" step="1" formControlName="numSpectators" class="d-none invisible">
-          <mat-slider #spectators [min]="1" [max]="10" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
-            [value]="gameOptionsForm.controls.numSpectators.value" (change)="gameOptionsForm.controls.numSpectators.setValue($event.value)"
-            aria-labelledby="no of spectators">
+          <input matInput type="number" min="1" max="10" step="1" formControlName="numSpectators" class="d-none invisible" />
+          <mat-slider
+            #spectators
+            [min]="1"
+            [max]="10"
+            [step]="1"
+            [tickInterval]="1"
+            thumbLabel
+            showTicks
+            class="w-100"
+            [value]="gameOptionsForm.controls.numSpectators.value"
+            (change)="gameOptionsForm.controls.numSpectators.setValue($event.value)"
+            aria-labelledby="no of spectators"
+          >
           </mat-slider>
         </mat-form-field>
       </form>

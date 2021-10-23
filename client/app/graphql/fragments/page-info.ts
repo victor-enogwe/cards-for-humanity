@@ -1,4 +1,4 @@
-import { gql } from 'client/app/utils/gql'
+import { gql } from 'client/app/utils/gql';
 
 export const PAGE_INFO_FRAGMENT = gql`
   fragment PageInfo on PageInfo {
@@ -7,4 +7,4 @@ export const PAGE_INFO_FRAGMENT = gql`
     startCursor
     endCursor
   }
-`
+`;

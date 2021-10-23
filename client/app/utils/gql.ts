@@ -1,5 +1,5 @@
-import { gql as graphql } from 'apollo-angular'
+import { gql as graphql } from 'apollo-angular';
 
-graphql.enableExperimentalFragmentVariables()
+graphql.enableExperimentalFragmentVariables();
 
-export const gql = graphql
+export const gql = graphql;

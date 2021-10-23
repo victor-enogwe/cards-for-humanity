@@ -1,22 +1,48 @@
 overwrite: true
 schema:
   - "http://localhost:8000/graphql"
-  - client/app/graphql/schema.graphql
-documents: "client/app/graphql/**/*.(ts|graphql)"
+  - "client/app/graphql/graphql/client.schema.graphql"
 watch: true
 watchConfig:
   usePolling: true
   interval: 1000
+hooks:
+  afterAllFileWrite:
+    - yarn lint:fix
+    - yarn format
+    - touch a.txt
 generates:
+  client/app/graphql/schema.graphql:
+    plugins:
+      - schema-ast
+    config:
+      commentDescriptions: true
+      includeDirectives: true
+
   client/app/@types/graphql.d.ts:
     plugins:
       - "typescript"
       - "typescript-operations"
-      - "typescript-apollo-angular"
-      - "fragment-matcher"
-  client/app/@types/global.d.ts:
+      - "typescript-apollo-client-helpers"
+    config:
+      declarationKind: interface
+      dedupeFragments: true
+      immutableTypes: true
+      preResolveTypes: true
+      experimentalFragmentVariables: true
+      namingConvention:
+        enumValues: keep
+
+  client/app/graphql/possible-types.ts:
     plugins:
-      - typescript-graphql-files-modules
+      - "fragment-matcher"
+    config:
+      useExplicitTyping: true
+
+  client/app/graphql/type-definitions.ts:
+    plugins:
+      - "plugins/typedefs"
+
   client/app/graphql/graphql.schema.json:
     plugins:
       - "introspection"

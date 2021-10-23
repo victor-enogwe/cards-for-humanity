@@ -14,12 +14,12 @@ from .user import UserMutation, UserNode, UserQuery
 from .whitecard import WhiteCardQuery
 
 
-class RootQuery(UserQuery, BlackCardQuery, WhiteCardQuery, GameQuery, PlayerQuery, GenreQuery, graphene.ObjectType):
+class Query(UserQuery, BlackCardQuery, WhiteCardQuery, GameQuery, PlayerQuery, GenreQuery, graphene.ObjectType):
     '''Root Query for the cards against humanity api.'''
     pass
 
 
-class RootMutation(UserMutation, GameMutation, graphene.ObjectType):
+class Mutation(UserMutation, GameMutation, graphene.ObjectType):
     '''Root Mutation for the cards against humanity api.'''
     social_auth = SocialAuthJWT.Field()
     token_auth = ObtainJSONWebToken.Field()
@@ -29,13 +29,13 @@ class RootMutation(UserMutation, GameMutation, graphene.ObjectType):
     revoke_token = Revoke.Field()
 
 
-class RootSubscription(GameSubscription, GenreSubscription, graphene.ObjectType):
+class Subscription(GameSubscription, GenreSubscription, graphene.ObjectType):
     '''Root Subscription for the cards against humanity api.'''
     pass
 
 
-schema = Schema(query=RootQuery, mutation=RootMutation,
-                subscription=RootSubscription)
+schema = Schema(query=Query, mutation=Mutation,
+                subscription=Subscription)
 
 
 class GraphqlWsConsumer(GraphqlWsConsumer):

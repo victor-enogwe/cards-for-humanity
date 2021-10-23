@@ -1,10 +1,10 @@
-import { enableProdMode } from '@angular/core'
+import { enableProdMode } from '@angular/core';
 
-import { environment } from './environments/environment'
+import { environment } from './environments/environment';
 
 if (environment.production) {
-  enableProdMode()
+  enableProdMode();
 }
 
-export { CahServerModule } from './app/modules/cah-server/cah.server.module'
-export { renderModule, renderModuleFactory } from '@angular/platform-server'
+export { CahServerModule } from './app/modules/cah-server/cah.server.module';
+export { renderModule, renderModuleFactory } from '@angular/platform-server';

@@ -1,15 +1,14 @@
-import { Pipe, PipeTransform } from '@angular/core'
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'sentencecase'
+  name: 'sentencecase',
 })
 export class SentenceCasePipe implements PipeTransform {
-
   transform(sentence: string): string {
     try {
-      return `${sentence[0].toUpperCase()}${sentence.slice(1).toLowerCase()}`
+      return `${sentence[0].toUpperCase()}${sentence.slice(1).toLowerCase()}`;
     } catch (error) {
-      return sentence
+      return sentence;
     }
   }
 }

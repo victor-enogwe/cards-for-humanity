@@ -4,8 +4,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'cah-shop',
   templateUrl: './shop.component.html',
   styleUrls: ['./shop.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ShopComponent {
-
-}
+export class ShopComponent {}
