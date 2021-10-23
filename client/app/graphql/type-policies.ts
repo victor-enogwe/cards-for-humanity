@@ -8,4 +8,11 @@ export const typePolicies: TypePolicies = {
       }
     }
   },
+  // RootMutation: {
+  //   fields: {
+  //     createGameLocal: {
+  //       read
+  //     }
+  //   },
+  // }
 }

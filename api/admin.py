@@ -21,8 +21,11 @@ class WhiteCardAdmin(admin.ModelAdmin):
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
-    list_display = ('id', 'genre', 'round_time',
+    list_display = ('id', 'genres_display', 'round_time',
                     'rounds', 'num_players', 'status')
+
+    def genres_display(self):
+        return "\n".join([genre.genres for genre in self.genres.all()])
 
     class Meta:
         serializer_class = GameSerializer

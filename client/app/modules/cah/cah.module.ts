@@ -36,7 +36,7 @@ const cacheFactory = (cacheService: CacheService) => () => cacheService.init()
     BrowserAnimationsModule,
     MatSnackBarModule,
     GraphqlModule,
-    CahRoutingModule,
+    CahRoutingModule
   ],
   providers: [
     { provide: APP_INITIALIZER, useFactory: cacheFactory, multi: true, deps: [CacheService] },

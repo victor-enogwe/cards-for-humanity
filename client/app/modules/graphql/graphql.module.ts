@@ -42,6 +42,7 @@ export class GraphqlModule {
     connectToDevTools: !environment.production,
     queryDeduplication: true,
     typeDefs: typeDefinitions,
+    assumeImmutableResults: true
     // defaultOptions: { watchQuery: { errorPolicy: 'none' }, mutate: { errorPolicy: 'none' }, query: { errorPolicy: 'none' } }
   })
 
@@ -52,7 +53,7 @@ export class GraphqlModule {
     private notificationService: NotificationService,
     @Inject(APOLLO_CACHE) private cache: InMemoryCache,
     @Inject(PLATFORM_ID) private platformId: object,
-  ) {}
+  ) { }
 
   queryKind({ query }: any): boolean {
     const { kind, operation }: Definition = getMainDefinition(query)

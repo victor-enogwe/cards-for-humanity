@@ -1,12 +1,13 @@
 # import v8eval
 import os
+
+from django.http import HttpResponse
 from django.views import View
 from django.views.generic.base import TemplateView
-from Naked.toolshed.shell import muterun_js
-from django.http import HttpResponse
 from graphene_django.views import GraphQLView
+from Naked.toolshed.shell import muterun_js
 from rx.core.observable import observable
-from api.schema.game import GameSubscriptionType
+
 from config.settings import BASE_DIR, DEBUG
 
 

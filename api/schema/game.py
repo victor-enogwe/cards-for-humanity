@@ -1,11 +1,14 @@
 import graphene
+from channels_graphql_ws import Subscription
 from graphene import relay
 from graphene_django import DjangoObjectType
-from channels_graphql_ws import Subscription
-from rest_framework import serializers
-from api.utils import ExtendedConnection
+from graphene_django_cud.mutations.create import DjangoCreateMutation
+from graphene_django_cud.mutations.update import DjangoUpdateMutation
+
 from api.models import Game
+from api.models.game import GameStatus
 from api.models.serializers import GameSerializer
+from api.utils import ExtendedConnection
 
 
 class GameNode(DjangoObjectType):
@@ -16,7 +19,7 @@ class GameNode(DjangoObjectType):
         connection_class = ExtendedConnection
 
 
-class GameSubscriptionType(Subscription):
+class GameSubscriptionNode(Subscription):
     # Subscription payload.
     event = graphene.String()
 
@@ -42,7 +45,7 @@ class GameSubscriptionType(Subscription):
         # client. For example, this allows to avoid notifications for
         # the actions made by this particular client.
 
-        return GameSubscriptionType(event='Something has happened!')
+        return GameSubscriptionNode(event='Something has happened!')
 
     @classmethod
     def subscription_resolver(cls, root, info, **kwargs):
@@ -53,16 +56,30 @@ class GameSubscriptionType(Subscription):
 class GameQuery(graphene.ObjectType):
     game = graphene.Field(GameNode, id=graphene.ID())
 
-    def resolve_game(self, info, **kwargs):
-        id = kwargs.get('id')
+    # def resolve_game(self, info, **kwargs):
+    #     id = kwargs.get('id')
 
-        return Game.objects.get(pk=id) if id else None
+    #     return Game.objects.get(pk=id) if id else None
+
+
+class CreateGameMutation(DjangoCreateMutation):
+    class Meta:
+        model = Game
+        exclude_fields = ('status', 'created_at')
+
+
+class EditGameMutation(DjangoUpdateMutation):
+    class Meta:
+        model = Game
+        only_fields = ('status')
+        required_fields = ('status')
 
 
 class GameMutation(graphene.ObjectType):
-    pass
+    create_game = CreateGameMutation.Field()
+    update_game = EditGameMutation.Field()
 
 
 class GameSubscription(graphene.ObjectType):
     '''Game subscriptions'''
-    game_subscription = GameSubscriptionType.Field()
+    game_subscription = GameSubscriptionNode.Field()

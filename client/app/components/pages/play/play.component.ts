@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core'
 
 @Component({
   selector: 'cah-play',
@@ -6,4 +6,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core'
   styleUrls: ['./play.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlayComponent {}
+export class PlayComponent {
+   @HostBinding('class') class = 'd-flex flex-column flex-grow-1 flex-fill w-100'
+}

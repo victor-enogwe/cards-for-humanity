@@ -19,7 +19,7 @@ class WhiteCardNode(DjangoObjectType):
 
 
 class WhiteCardQuery(graphene.ObjectType):
-    all_white_cards = DjangoFilterConnectionField(WhiteCardNode)
+    white_cards = DjangoFilterConnectionField(WhiteCardNode)
 
 
 class WhiteCardMutation(graphene.ObjectType):

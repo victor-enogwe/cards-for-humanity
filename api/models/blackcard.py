@@ -13,7 +13,7 @@ class BlackCard(models.Model):
     genre = models.ForeignKey('api.Genre', on_delete=models.CASCADE)
     pick = models.CharField(max_length=5, choices=pick, default='1')
     created_at = models.DateTimeField(default=timezone.now, editable=False)
-    updated_at = AutoDateTimeField(auto_now=True)
+    updated_at = AutoDateTimeField(auto_now=True, editable=False)
     objects = models.Manager()
 
     class Meta:

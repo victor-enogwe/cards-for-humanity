@@ -25,7 +25,8 @@
       "esnext.asynciterable"
     ],
     "typeRoots": [
-      "node_modules/@types"
+      "node_modules/@types",
+      "client/app/@types"
     ]
   },
   "angularCompilerOptions": {

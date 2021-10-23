@@ -48,7 +48,7 @@ class GenreSubscriptionType(Subscription):
         return GenreSubscriptionType(event='Something has happened!')
 
 class GenreQuery(graphene.ObjectType):
-    all_genres = DjangoFilterConnectionField(GenreNode, description='all cards genre')
+    genres = DjangoFilterConnectionField(GenreNode, description='all cards genre')
 
 
 class GenreMutation(graphene.ObjectType):

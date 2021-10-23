@@ -15,7 +15,7 @@ class BlackCardNode(DjangoObjectType):
 
 
 class BlackCardQuery(graphene.ObjectType):
-    all_black_cards = DjangoFilterConnectionField(BlackCardNode)
+    black_cards = DjangoFilterConnectionField(BlackCardNode)
 
 
 class BlackCardMutation(graphene.ObjectType):

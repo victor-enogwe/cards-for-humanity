@@ -1,13 +1,12 @@
-import { gql } from 'apollo-angular'
-import { GENRE_FIELDS_FRAGMENT } from './genre'
-import { PAGE_INFO_FIELDS_FRAGMENT } from './page-info'
+import { gql } from 'client/app/utils/gql'
+import { GENRE_NODE_FRAGMENT, PAGE_INFO_FRAGMENT } from '../fragments'
 
-export const ALL_GENRES = gql`
-  ${PAGE_INFO_FIELDS_FRAGMENT}
+export const GENRES_QUERY = gql`
+  ${PAGE_INFO_FRAGMENT}
 
-  ${GENRE_FIELDS_FRAGMENT}
+  ${GENRE_NODE_FRAGMENT}
 
-  query AllGenres(
+  query Genres(
     $id: Float,
     $id_Lt: Float,
     $id_Gt: Float,
@@ -17,13 +16,13 @@ export const ALL_GENRES = gql`
     $credit: String,
     $credit_Icontains: String,
     $credit_Istartswith: String,
+    $offset: Int,
     $before: String,
     $after: String,
-    $offset: Int,
     $first: Int,
     $last: Int,
   ) {
-    allGenres(
+    genres(
       id: $id,
       id_Lt: $id_Lt,
       id_Gt: $id_Gt,
@@ -40,13 +39,15 @@ export const ALL_GENRES = gql`
       last: $last,
     ) {
       totalCount
+      edgeCount
       pageInfo {
-        ...PageInfoFields
+        ...PageInfo
       }
       edges {
         node {
-          ...GenreFields
+          ...GenreNode
         }
+        cursor
       }
     }
   }

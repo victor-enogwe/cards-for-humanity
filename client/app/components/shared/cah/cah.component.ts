@@ -5,4 +5,4 @@ import { ChangeDetectionStrategy, Component } from '@angular/core'
   templateUrl: './cah.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CahComponent { }
+export class CahComponent {}

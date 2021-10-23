@@ -1,4 +1,4 @@
-import { gql } from 'apollo-angular'
+import { gql } from 'client/app/utils/gql'
 
 export const GAME_SUBSCRIPTION = gql`
   subscription {

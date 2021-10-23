@@ -1,10 +1,10 @@
 import graphene
-from graphene import relay
-from graphql_jwt.shortcuts import get_token
-from graphene_django.filter import DjangoFilterConnectionField
-from api.models import User
 from graphene import Schema, relay, resolve_only_args
 from graphene_django import DjangoConnectionField, DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
+from graphql_jwt.shortcuts import get_token
+
+from api.models import User
 from api.utils import ExtendedConnection
 
 
@@ -12,13 +12,12 @@ class UserNode(DjangoObjectType):
     class Meta:
         model = User
         interfaces = (relay.Node, )
-        exclude_fields = ('password', )
+        exclude_fields = ('password', 'playerSet')
         filter_fields = '__all__'
         connection_class = ExtendedConnection
 
 
 class UserQuery(graphene.ObjectType):
-    # all_users = DjangoFilterConnectionField(UserNode)
     pass
 
 
@@ -27,22 +26,24 @@ class CreateUserFailEmailExists(graphene.ObjectType):
 
 
 class CreateUserFailOthers(graphene.ObjectType):
-	error_message = graphene.String(required=True)
+    error_message = graphene.String(required=True)
 
 
 class CreateUserSuccess(graphene.ObjectType):
     user = graphene.Field(UserNode)
     token = graphene.String()
 
+
 class CreateUserPayload(graphene.Union):
     class Meta:
-        types = (CreateUserFailEmailExists, CreateUserFailOthers, CreateUserSuccess)
+        types = (CreateUserFailEmailExists,
+                 CreateUserFailOthers, CreateUserSuccess)
 
 
 class CreateUser(graphene.Mutation):
     Output = CreateUserPayload
 
-    class Arguments:
+    class Input:
         email = graphene.String(required=True)
         password = graphene.String(required=True)
 
@@ -57,7 +58,7 @@ class CreateUser(graphene.Mutation):
             user.save()
             return CreateUserSuccess(user=user, token=get_token(user))
         except:
-            return CreateUserFailOther(error_message="User not created, something went wrong, please try again!")
+            return CreateUserFailOthers(error_message="User not created, something went wrong, please try again!")
 
 
 class UserMutation(graphene.ObjectType):

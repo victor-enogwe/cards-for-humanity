@@ -1,7 +1,7 @@
-import { Observable } from 'rxjs'
 import { UrlTree } from '@angular/router'
 import { NormalizedCacheObject } from '@apollo/client/core'
 import { TIncomingRelay as TIncoming } from '@apollo/client/utilities/policies/pagination'
+import { Observable } from 'rxjs'
 
 declare global {
   interface Window {
@@ -12,7 +12,7 @@ declare global {
 export interface TRelayEdge<TNode> {
     cursor?: string;
     node: TNode;
-};
+}
 
 export interface TIncomingRelay<TNode> extends TIncoming<TNode> {
   edges?: TRelayEdge<TNode>[];
@@ -47,6 +47,24 @@ export interface AllGenreLast extends AllGenreGeneric {
 }
 
 export type AllGenre = AllGenreFirst | AllGenreLast
+
+export enum GAME_STATUS {
+  GAP = 'Awaiting Players',
+  GAC = 'Awaiting Czar',
+  GS = 'Game Started',
+  GE = 'Game Ended'
+}
+
+export interface Game {
+  id: number
+  rounds: number
+  roundTime: number
+  numPlayers: number
+  numSpectators: number
+  status: GAME_STATUS
+  genres: number[]
+  playerSet?: number[]
+}
 
 export interface SignUpData {
   tokenAuth: {

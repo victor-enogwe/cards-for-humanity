@@ -167,6 +167,8 @@ GRAPHENE = {
     'RELAY_CONNECTION_ENFORCE_FIRST_OR_LAST': True,
     'MIDDLEWARE': (['graphene_django.debug.DjangoDebugMiddleware'] if DEBUG else []) + GQL_MIDDLEWARE,
     'JWT_VERIFY_EXPIRATION': True,
+    "DJANGO_CHOICE_FIELD_ENUM_V3_NAMING": True,
+    'GRAPHIQL_HEADER_EDITOR_ENABLED': True,
 }
 
 STATIC_PATH = os.path.join(BASE_DIR, 'static/browser')

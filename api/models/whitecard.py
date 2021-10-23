@@ -12,7 +12,7 @@ class WhiteCard(models.Model):
     text = models.CharField(max_length=255, validators=text_validators, help_text=text_error_message)
     genre = models.ForeignKey('api.Genre', on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
-    updated_at = AutoDateTimeField(auto_now=True)
+    updated_at = AutoDateTimeField(auto_now=True, editable=False)
     objects = models.Manager()
 
     class Meta:

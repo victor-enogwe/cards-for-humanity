@@ -9,7 +9,7 @@ class Player(models.Model):
     score = models.PositiveSmallIntegerField(default=0)
     czar = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
-    updated_at = AutoDateTimeField(auto_now=True)
+    updated_at = AutoDateTimeField(auto_now=True, editable=False)
     objects = models.Manager()
 
     class Meta:

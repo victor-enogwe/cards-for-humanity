@@ -1,0 +1,22 @@
+overwrite: true
+schema:
+  - "http://localhost:8000/graphql"
+  - client/app/graphql/schema.graphql
+documents: "client/app/graphql/**/*.(ts|graphql)"
+watch: true
+watchConfig:
+  usePolling: true
+  interval: 1000
+generates:
+  client/app/@types/graphql.d.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-apollo-angular"
+      - "fragment-matcher"
+  client/app/@types/global.d.ts:
+    plugins:
+      - typescript-graphql-files-modules
+  client/app/graphql/graphql.schema.json:
+    plugins:
+      - "introspection"

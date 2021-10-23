@@ -41,11 +41,11 @@ class PlayerSubscriptionNode(Subscription):
         # client. For example, this allows to avoid notifications for
         # the actions made by this particular client.
 
-        return PlayerSubscriptionType(event='Something has happened!')
+        return PlayerSubscriptionNode(event='Something has happened!')
 
 
 class PlayerQuery(graphene.ObjectType):
-    # all_players = DjangoFilterConnectionField(PlayerNode)
+    # players = DjangoFilterConnectionField(PlayerNode)
     pass
 
 

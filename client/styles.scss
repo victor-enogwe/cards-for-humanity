@@ -1,60 +1,24 @@
+@import '~bootstrap/scss/bootstrap';
+@import '~material-design-icons/iconfont/material-icons.css';
+
 html,
 body {
   height: 100%;
 }
+
 body {
-    margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
 }
 
-/* You can add global styles to this file, and also import other style files */
-#cah-main {
-    height: 100vh;
-    min-height: 100vh;
-    max-height: 100vh;
-    overflow: hidden;
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
 }
 
-.row-eq-height {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-}
-
-.btn-start {
-    height: 5rem;
-}
-
-.cah-text {
-    font-size: 4rem;
-}
-
-.cah-card {
-    width: 15rem;
-    max-width: 15rem;
-    min-width: 15rem;
-    height: 16.5rem;
-    min-height: 16.5rem;
-    max-height: 16.5rem;
-    overflow: hidden;
-    overflow-y: scroll;
-
-    .card-header {
-        height: calc(16.5rem - 54px)
-    }
-}
-
-.manual {
-    &::after {
-        content: "OR";
-        position: absolute;
-        margin-left: -72px;
-        top: 43%;
-        z-index: 999999;
-        background-color: #ffffff;
-        border: 1px solid #e2e6ea;
-        padding: 10px;
-        border-radius: 50%;
-    }
+.flex-center {
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 }
