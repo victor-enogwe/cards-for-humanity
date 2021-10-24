@@ -1,27 +1,22 @@
+import { FieldPolicy, FieldReadFunction } from '@apollo/client/core';
 import { TypedTypePolicies } from '../@types/graphql';
 
+const defaultResolvers: FieldPolicy<any, any, any> | FieldReadFunction<any, any> | undefined = {
+  read: (value) => value,
+  merge: (_, incoming) => incoming,
+};
+
 export const typePolicies: TypedTypePolicies = {
-  QueryFieldPolicy: {
+  Query: {
+    queryType: true,
     fields: {
-      newGame: {
-        read: (value) => value,
-        merge: (...args) => console.log(args),
-      },
-    },
-  },
-  MutationFieldPolicy: {
-    mutationType: true,
-    fields: {
-      createGameLocal(...args) {
-        console.log(args);
-      },
+      newGame: defaultResolvers,
     },
   },
   GenreNode: {
     fields: {
       selected: {
-        read: (value = false) => value,
-        merge: (_, incoming) => incoming,
+        merge: defaultResolvers.merge,
       },
     },
   },

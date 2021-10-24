@@ -17,11 +17,11 @@ export class GenreService {
     });
   }
 
-  updateGenre(variables: Partial<Genre> & { id: number }) {
+  updateGenre(genre: Partial<Genre> & { id: number }) {
     return this.apollo.client.cache.writeFragment({
-      id: `GenreNode:${variables.id}`,
+      id: `GenreNode:${genre.id}`,
       fragment: GENRE_NODE_FRAGMENT,
-      data: variables,
+      data: genre,
     });
   }
 }

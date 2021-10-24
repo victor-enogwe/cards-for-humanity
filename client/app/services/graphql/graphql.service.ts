@@ -19,7 +19,7 @@ import { Storage } from '@ionic/storage-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { createPersistedQueryLink } from 'apollo-angular/persisted-queries';
 import { IonicStorageWrapper, persistCache } from 'apollo3-cache-persist';
-import { resolvers, typeDefs, typePolicies } from 'client/app/graphql';
+import { IntrospectionLink, resolvers, typeDefs, typePolicies } from 'client/app/graphql';
 import possibleTypes from 'client/app/graphql/possible-types';
 import { sha256 } from 'crypto-hash';
 import { environment } from '../../../environments/environment';
@@ -39,6 +39,7 @@ export class GraphqlService {
     typePolicies,
     possibleTypes: possibleTypes.possibleTypes,
   });
+  introspectionLink = new IntrospectionLink();
   basic = setContext(() => ({ headers: { Accept: 'charset=utf-8' } }));
   auth = setContext(this.headers.bind(this));
   error = onError(this.handleErrors.bind(this));
@@ -52,6 +53,7 @@ export class GraphqlService {
       });
   config: ApolloClientOptions<NormalizedCacheObject> = {
     link: ApolloLink.from([
+      this.introspectionLink,
       this.persistedQueryLink,
       split(this.queryKind, this.wsLink, from([this.error, this.basic, this.auth, this.httpLink])),
     ]),

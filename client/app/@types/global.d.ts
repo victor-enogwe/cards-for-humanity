@@ -1,13 +1,27 @@
 import { UrlTree } from '@angular/router';
-import { NormalizedCacheObject } from '@apollo/client/core';
+import { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
+import { QueryInfo } from '@apollo/client/core/QueryInfo';
 import { TIncomingRelay as TIncoming } from '@apollo/client/utilities/policies/pagination';
 import { Observable } from 'rxjs';
 
 declare global {
   interface Window {
-    __APOLLO_CLIENT__: NormalizedCacheObject;
+    __APOLLO_CLIENT__: ApolloCahClient<NormalizedCacheObject>;
+    __APOLLO_DEVTOOLS_GLOBAL_HOOK__: Hook;
   }
 }
+
+interface ApolloCahClient<TCache> extends Omit<ApolloClient<TCache>, 'devToolsHookCb'> {
+  devToolsHookCb: Function;
+}
+
+type Hook = {
+  ApolloClient: ApolloClient<NormalizedCacheObject> | undefined;
+  version: string;
+  getQueries: () => QueryInfo[];
+  getMutations: () => QueryInfo[];
+  getCache: () => void;
+};
 
 export interface TRelayEdge<TNode> {
   cursor?: string;

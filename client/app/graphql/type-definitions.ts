@@ -38,7 +38,7 @@ export const typeDefs = gql`
       last: Int
       offset: Int
     ): GenreNodeConnection
-    newGame: GameNode
+    newGame(id: ID!): NewGameNode
     whiteCards(
       after: String
       before: String
@@ -341,9 +341,19 @@ export const typeDefs = gql`
     A_2
   }
 
+  type NewGameNode {
+    genres: [ID]!
+    id: ID!
+    numPlayers: Int!
+    numSpectators: Int!
+    rounds: Int!
+    roundTime: Int!
+    status: String!
+  }
+
   type Mutation {
     createGame(input: CreateGameInput!): CreateGameMutation
-    createGameLocal(input: CreateGameInput): GameNode
+    createNewGame(input: CreateGameInput): CreateNewGameMutation
     createUser(email: String!, password: String!): CreateUserPayload
     refreshToken(input: RefreshInput!): RefreshPayload
     revokeToken(input: RevokeInput!): RevokePayload
@@ -370,6 +380,10 @@ export const typeDefs = gql`
 
   type CreateGameMutation {
     game: GameNode
+  }
+
+  type CreateNewGameMutation {
+    newGame: NewGameNode
   }
 
   union CreateUserPayload = CreateUserFailEmailExists | CreateUserFailOthers | CreateUserSuccess

@@ -4,14 +4,54 @@ schema {
   subscription: Subscription
 }
 
-"""Root Query for the cards against humanity api."""
+"""
+Root Query for the cards against humanity api.
+"""
 type Query {
-  blackCards(after: String, before: String, createdAt: DateTime, first: Int, genre: ID, last: Int, offset: Int, pick: String, text: String, updatedAt: DateTime): BlackCardNodeConnection
+  blackCards(
+    after: String
+    before: String
+    createdAt: DateTime
+    first: Int
+    genre: ID
+    last: Int
+    offset: Int
+    pick: String
+    text: String
+    updatedAt: DateTime
+  ): BlackCardNodeConnection
   game(id: ID): GameNode
-  """all cards genre"""
-  genres(after: String, before: String, credit: String, credit_Icontains: String, credit_Istartswith: String, description: String, description_Icontains: String, description_Istartswith: String, first: Int, id: Float, id_Gt: Float, id_Lt: Float, last: Int, offset: Int): GenreNodeConnection
-  newGame: GameNode
-  whiteCards(after: String, before: String, first: Int, genre: ID, last: Int, offset: Int, text: String, text_Icontains: String, text_Istartswith: String): WhiteCardNodeConnection
+  """
+  all cards genre
+  """
+  genres(
+    after: String
+    before: String
+    credit: String
+    credit_Icontains: String
+    credit_Istartswith: String
+    description: String
+    description_Icontains: String
+    description_Istartswith: String
+    first: Int
+    id: Float
+    id_Gt: Float
+    id_Lt: Float
+    last: Int
+    offset: Int
+  ): GenreNodeConnection
+  newGame(id: ID!): NewGameNode
+  whiteCards(
+    after: String
+    before: String
+    first: Int
+    genre: ID
+    last: Int
+    offset: Int
+    text: String
+    text_Icontains: String
+    text_Istartswith: String
+  ): WhiteCardNodeConnection
 }
 
 """
@@ -23,81 +63,187 @@ scalar DateTime
 
 type BlackCardNodeConnection {
   edgeCount: Int
-  """Contains the nodes in this connection."""
+  """
+  Contains the nodes in this connection.
+  """
   edges: [BlackCardNodeEdge]!
-  """Pagination data for this connection."""
+  """
+  Pagination data for this connection.
+  """
   pageInfo: PageInfo!
   totalCount: Int
 }
 
-"""A Relay edge containing a `BlackCardNode` and its cursor."""
+"""
+A Relay edge containing a `BlackCardNode` and its cursor.
+"""
 type BlackCardNodeEdge {
-  """A cursor for use in pagination"""
+  """
+  A cursor for use in pagination
+  """
   cursor: String!
-  """The item at the end of the edge"""
+  """
+  The item at the end of the edge
+  """
   node: BlackCardNode
 }
 
 type BlackCardNode implements Node {
   createdAt: DateTime!
   genre: GenreNode!
-  """The ID of the object."""
+  """
+  The ID of the object.
+  """
   id: ID!
   pick: ApiBlackCardPickChoices!
-  """text allows 5-255 characters(alphabets and -,_,?,',",space)"""
+  """
+  text allows 5-255 characters(alphabets and -,_,?,',",space)
+  """
   text: String!
   updatedAt: DateTime!
 }
 
-"""An object with an ID"""
+"""
+An object with an ID
+"""
 interface Node {
-  """The ID of the object."""
+  """
+  The ID of the object.
+  """
   id: ID!
 }
 
 type GenreNode implements Node {
-  blackcardSet(after: String, before: String, createdAt: DateTime, first: Int, genre: ID, last: Int, offset: Int, pick: String, text: String, updatedAt: DateTime): BlackCardNodeConnection!
-  """credit creator(url)"""
+  blackcardSet(
+    after: String
+    before: String
+    createdAt: DateTime
+    first: Int
+    genre: ID
+    last: Int
+    offset: Int
+    pick: String
+    text: String
+    updatedAt: DateTime
+  ): BlackCardNodeConnection!
+  """
+  credit creator(url)
+  """
   credit: String
-  """description allows 2-255 characters(alphabets and -,_,.,',",space)"""
+  """
+  description allows 2-255 characters(alphabets and -,_,.,',",space)
+  """
   description: String!
-  gameSet(after: String, before: String, createdAt: DateTime, first: Int, genres: [ID], last: Int, numPlayers: Int, numSpectators: Int, offset: Int, rounds: Int, roundTime: Int, status: String, updatedAt: DateTime): GameNodeConnection!
-  """The ID of the object."""
+  gameSet(
+    after: String
+    before: String
+    createdAt: DateTime
+    first: Int
+    genres: [ID]
+    last: Int
+    numPlayers: Int
+    numSpectators: Int
+    offset: Int
+    rounds: Int
+    roundTime: Int
+    status: String
+    updatedAt: DateTime
+  ): GameNodeConnection!
+  """
+  The ID of the object.
+  """
   id: ID!
   selected: Boolean
-  whitecardSet(after: String, before: String, first: Int, genre: ID, last: Int, offset: Int, text: String, text_Icontains: String, text_Istartswith: String): WhiteCardNodeConnection!
+  whitecardSet(
+    after: String
+    before: String
+    first: Int
+    genre: ID
+    last: Int
+    offset: Int
+    text: String
+    text_Icontains: String
+    text_Istartswith: String
+  ): WhiteCardNodeConnection!
 }
 
 type GameNodeConnection {
   edgeCount: Int
-  """Contains the nodes in this connection."""
+  """
+  Contains the nodes in this connection.
+  """
   edges: [GameNodeEdge]!
-  """Pagination data for this connection."""
+  """
+  Pagination data for this connection.
+  """
   pageInfo: PageInfo!
   totalCount: Int
 }
 
-"""A Relay edge containing a `GameNode` and its cursor."""
+"""
+A Relay edge containing a `GameNode` and its cursor.
+"""
 type GameNodeEdge {
-  """A cursor for use in pagination"""
+  """
+  A cursor for use in pagination
+  """
   cursor: String!
-  """The item at the end of the edge"""
+  """
+  The item at the end of the edge
+  """
   node: GameNode
 }
 
 type GameNode implements Node {
   createdAt: DateTime!
-  genres(after: String, before: String, credit: String, credit_Icontains: String, credit_Istartswith: String, description: String, description_Icontains: String, description_Istartswith: String, first: Int, id: Float, id_Gt: Float, id_Lt: Float, last: Int, offset: Int): GenreNodeConnection!
-  """The ID of the object."""
+  genres(
+    after: String
+    before: String
+    credit: String
+    credit_Icontains: String
+    credit_Istartswith: String
+    description: String
+    description_Icontains: String
+    description_Istartswith: String
+    first: Int
+    id: Float
+    id_Gt: Float
+    id_Lt: Float
+    last: Int
+    offset: Int
+  ): GenreNodeConnection!
+  """
+  The ID of the object.
+  """
   id: ID!
-  """no of players"""
+  """
+  no of players
+  """
   numPlayers: Int!
-  """no of spectators"""
+  """
+  no of spectators
+  """
   numSpectators: Int!
-  playerSet(after: String, before: String, createdAt: DateTime, czar: Boolean, first: Int, game: ID, last: Int, offset: Int, score: Int, updatedAt: DateTime, user: ID): PlayerNodeConnection!
-  """no of game rounds"""
+  playerSet(
+    after: String
+    before: String
+    createdAt: DateTime
+    czar: Boolean
+    first: Int
+    game: ID
+    last: Int
+    offset: Int
+    score: Int
+    updatedAt: DateTime
+    user: ID
+  ): PlayerNodeConnection!
+  """
+  no of game rounds
+  """
   rounds: Int!
-  """seconds"""
+  """
+  seconds
+  """
   roundTime: Int!
   status: String!
   updatedAt: DateTime!
@@ -105,47 +251,77 @@ type GameNode implements Node {
 
 type GenreNodeConnection {
   edgeCount: Int
-  """Contains the nodes in this connection."""
+  """
+  Contains the nodes in this connection.
+  """
   edges: [GenreNodeEdge]!
-  """Pagination data for this connection."""
+  """
+  Pagination data for this connection.
+  """
   pageInfo: PageInfo!
   totalCount: Int
 }
 
-"""A Relay edge containing a `GenreNode` and its cursor."""
+"""
+A Relay edge containing a `GenreNode` and its cursor.
+"""
 type GenreNodeEdge {
-  """A cursor for use in pagination"""
+  """
+  A cursor for use in pagination
+  """
   cursor: String!
-  """The item at the end of the edge"""
+  """
+  The item at the end of the edge
+  """
   node: GenreNode
 }
 
-"""The Relay compliant `PageInfo` type, containing data necessary to paginate this connection."""
+"""
+The Relay compliant `PageInfo` type, containing data necessary to paginate this connection.
+"""
 type PageInfo {
-  """When paginating forwards, the cursor to continue."""
+  """
+  When paginating forwards, the cursor to continue.
+  """
   endCursor: String
-  """When paginating forwards, are there more items?"""
+  """
+  When paginating forwards, are there more items?
+  """
   hasNextPage: Boolean!
-  """When paginating backwards, are there more items?"""
+  """
+  When paginating backwards, are there more items?
+  """
   hasPreviousPage: Boolean!
-  """When paginating backwards, the cursor to continue."""
+  """
+  When paginating backwards, the cursor to continue.
+  """
   startCursor: String
 }
 
 type PlayerNodeConnection {
   edgeCount: Int
-  """Contains the nodes in this connection."""
+  """
+  Contains the nodes in this connection.
+  """
   edges: [PlayerNodeEdge]!
-  """Pagination data for this connection."""
+  """
+  Pagination data for this connection.
+  """
   pageInfo: PageInfo!
   totalCount: Int
 }
 
-"""A Relay edge containing a `PlayerNode` and its cursor."""
+"""
+A Relay edge containing a `PlayerNode` and its cursor.
+"""
 type PlayerNodeEdge {
-  """A cursor for use in pagination"""
+  """
+  A cursor for use in pagination
+  """
   cursor: String!
-  """The item at the end of the edge"""
+  """
+  The item at the end of the edge
+  """
   node: PlayerNode
 }
 
@@ -153,7 +329,9 @@ type PlayerNode implements Node {
   createdAt: DateTime!
   czar: Boolean!
   game: GameNode!
-  """The ID of the object."""
+  """
+  The ID of the object.
+  """
   id: ID!
   score: Int!
   updatedAt: DateTime!
@@ -164,41 +342,85 @@ type UserNode implements Node {
   dateJoined: DateTime!
   email: String!
   firstName: String!
-  """The ID of the object."""
+  """
+  The ID of the object.
+  """
   id: ID!
-  """Designates whether this user should be treated as active. Unselect this instead of deleting accounts."""
+  """
+  Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+  """
   isActive: Boolean!
-  """Designates whether the user can log into this admin site."""
+  """
+  Designates whether the user can log into this admin site.
+  """
   isStaff: Boolean!
-  """Designates that this user has all permissions without explicitly assigning them."""
+  """
+  Designates that this user has all permissions without explicitly assigning them.
+  """
   isSuperuser: Boolean!
   lastLogin: DateTime
   lastName: String!
-  playerSet(after: String, before: String, createdAt: DateTime, czar: Boolean, first: Int, game: ID, last: Int, offset: Int, score: Int, updatedAt: DateTime, user: ID): PlayerNodeConnection!
-  socialAuth(after: String, before: String, first: Int, last: Int, offset: Int, provider: String, provider_In: [String], uid: String, uid_In: [String]): SocialNodeConnection!
-  """Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."""
+  playerSet(
+    after: String
+    before: String
+    createdAt: DateTime
+    czar: Boolean
+    first: Int
+    game: ID
+    last: Int
+    offset: Int
+    score: Int
+    updatedAt: DateTime
+    user: ID
+  ): PlayerNodeConnection!
+  socialAuth(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    offset: Int
+    provider: String
+    provider_In: [String]
+    uid: String
+    uid_In: [String]
+  ): SocialNodeConnection!
+  """
+  Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+  """
   username: String!
 }
 
 type SocialNodeConnection {
-  """Contains the nodes in this connection."""
+  """
+  Contains the nodes in this connection.
+  """
   edges: [SocialNodeEdge]!
-  """Pagination data for this connection."""
+  """
+  Pagination data for this connection.
+  """
   pageInfo: PageInfo!
 }
 
-"""A Relay edge containing a `SocialNode` and its cursor."""
+"""
+A Relay edge containing a `SocialNode` and its cursor.
+"""
 type SocialNodeEdge {
-  """A cursor for use in pagination"""
+  """
+  A cursor for use in pagination
+  """
   cursor: String!
-  """The item at the end of the edge"""
+  """
+  The item at the end of the edge
+  """
   node: SocialNode
 }
 
 type SocialNode implements Node {
   created: DateTime!
   extraData: SocialCamelJSON
-  """The ID of the object."""
+  """
+  The ID of the object.
+  """
   id: ID!
   modified: DateTime!
   provider: String!
@@ -210,49 +432,85 @@ scalar SocialCamelJSON
 
 type WhiteCardNodeConnection {
   edgeCount: Int
-  """Contains the nodes in this connection."""
+  """
+  Contains the nodes in this connection.
+  """
   edges: [WhiteCardNodeEdge]!
-  """Pagination data for this connection."""
+  """
+  Pagination data for this connection.
+  """
   pageInfo: PageInfo!
   totalCount: Int
 }
 
-"""A Relay edge containing a `WhiteCardNode` and its cursor."""
+"""
+A Relay edge containing a `WhiteCardNode` and its cursor.
+"""
 type WhiteCardNodeEdge {
-  """A cursor for use in pagination"""
+  """
+  A cursor for use in pagination
+  """
   cursor: String!
-  """The item at the end of the edge"""
+  """
+  The item at the end of the edge
+  """
   node: WhiteCardNode
 }
 
 type WhiteCardNode implements Node {
   createdAt: DateTime!
   genre: GenreNode!
-  """The ID of the object."""
+  """
+  The ID of the object.
+  """
   id: ID!
-  """text allows 2-255 characters(alphabets and -,_,.,',",space)"""
+  """
+  text allows 2-255 characters(alphabets and -,_,.,',",space)
+  """
   text: String!
   updatedAt: DateTime!
 }
 
-"""An enumeration."""
+"""
+An enumeration.
+"""
 enum ApiBlackCardPickChoices {
-  """pick1"""
+  """
+  pick1
+  """
   A_1
-  """pick2"""
+  """
+  pick2
+  """
   A_2
 }
 
-"""Root Mutation for the cards against humanity api."""
+type NewGameNode {
+  genres: [ID]!
+  id: ID!
+  numPlayers: Int!
+  numSpectators: Int!
+  rounds: Int!
+  roundTime: Int!
+  status: String!
+}
+
+"""
+Root Mutation for the cards against humanity api.
+"""
 type Mutation {
   createGame(input: CreateGameInput!): CreateGameMutation
-  createGameLocal(input: CreateGameInput): GameNode
+  createNewGame(input: CreateGameInput): CreateNewGameMutation
   createUser(email: String!, password: String!): CreateUserPayload
   refreshToken(input: RefreshInput!): RefreshPayload
   revokeToken(input: RevokeInput!): RevokePayload
-  """Social Auth for JSON Web Token (JWT)"""
+  """
+  Social Auth for JSON Web Token (JWT)
+  """
   socialAuth(input: SocialAuthJWTInput!): SocialAuthJWTPayload
-  """Obtain JSON Web Token mutation"""
+  """
+  Obtain JSON Web Token mutation
+  """
   tokenAuth(input: ObtainJSONWebTokenInput!): ObtainJSONWebTokenPayload
   updateGame(id: ID!, input: UpdateGameInput!): EditGameMutation
   verifyToken(input: VerifyInput!): VerifyPayload
@@ -260,19 +518,31 @@ type Mutation {
 
 input CreateGameInput {
   genres: [ID]!
-  """no of players"""
+  """
+  no of players
+  """
   numPlayers: Int!
-  """no of spectators"""
+  """
+  no of spectators
+  """
   numSpectators: Int!
   playerSet: [ID]
-  """no of game rounds"""
+  """
+  no of game rounds
+  """
   rounds: Int
-  """seconds"""
+  """
+  seconds
+  """
   roundTime: Int
 }
 
 type CreateGameMutation {
   game: GameNode
+}
+
+type CreateNewGameMutation {
+  newGame: NewGameNode
 }
 
 union CreateUserPayload = CreateUserFailEmailExists | CreateUserFailOthers | CreateUserSuccess
@@ -325,7 +595,9 @@ input SocialAuthJWTInput {
   provider: String!
 }
 
-"""Social Auth for JSON Web Token (JWT)"""
+"""
+Social Auth for JSON Web Token (JWT)
+"""
 type SocialAuthJWTPayload {
   clientMutationId: String
   social: SocialNode
@@ -338,7 +610,9 @@ input ObtainJSONWebTokenInput {
   username: String!
 }
 
-"""Obtain JSON Web Token mutation"""
+"""
+Obtain JSON Web Token mutation
+"""
 type ObtainJSONWebTokenPayload {
   clientMutationId: String
   payload: GenericScalar!
@@ -364,7 +638,9 @@ type VerifyPayload {
   payload: GenericScalar!
 }
 
-"""Root Subscription for the cards against humanity api."""
+"""
+Root Subscription for the cards against humanity api.
+"""
 type Subscription {
   gameSubscription: GameSubscriptionNode
   genreSubscription: GenreSubscriptionType

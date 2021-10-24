@@ -9,10 +9,8 @@ watchConfig:
 hooks:
   afterAllFileWrite:
     - yarn lint:fix
-    - yarn format
-    - touch a.txt
 generates:
-  client/app/graphql/schema.graphql:
+  client/app/graphql/graphql/schema.graphql:
     plugins:
       - schema-ast
     config:
@@ -24,12 +22,15 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-apollo-client-helpers"
+      - "typescript-resolvers"
     config:
       declarationKind: interface
       dedupeFragments: true
       immutableTypes: true
       preResolveTypes: true
       experimentalFragmentVariables: true
+      useIndexSignature: true
+      noSchemaStitching: false
       namingConvention:
         enumValues: keep
 

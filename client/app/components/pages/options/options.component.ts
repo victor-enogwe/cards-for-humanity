@@ -4,8 +4,10 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling/virtual-scroll-
 import { AfterViewInit, ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Genre, TRelayEdge } from 'client/app/@types/global';
+import { NewGameNode } from 'client/app/@types/graphql';
 import { GameService } from 'client/app/services/game/game.service';
-import { first, map, skip, Subscription } from 'rxjs';
+import omit from 'lodash.omit';
+import { first, map, skip, Subscription, switchMap, zip } from 'rxjs';
 import { filter } from 'rxjs/internal/operators/filter';
 import { tap } from 'rxjs/internal/operators/tap';
 import { GenreService } from '../../../services/genre/genre.service';
@@ -20,9 +22,10 @@ export class OptionsComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostBinding('class') class = 'd-flex flex-column flex-grow-1 flex-fill w-100';
   @ViewChild('selectGenreCdk') selectGenreVirtualScroll!: CdkVirtualScrollViewport;
   genreOptionsForm = this.formBuilder.group({
-    genres: new FormControl('', [Validators.required, Validators.maxLength(5)]),
+    genres: new FormControl([], [Validators.required, Validators.maxLength(5)]),
   });
   gameOptionsForm = this.formBuilder.group({
+    genres: new FormControl([], [Validators.required, Validators.maxLength(5)]),
     rounds: new FormControl(5, [Validators.required, Validators.min(5), Validators.max(50)]),
     roundTime: new FormControl(10, [Validators.required, Validators.min(10), Validators.max(60)]),
     numPlayers: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
@@ -30,14 +33,14 @@ export class OptionsComponent implements OnInit, AfterViewInit, OnDestroy {
   });
   pageSize = 10;
   private genreQuery$ = this.genreService.fetchGenres({ first: this.pageSize });
+  private gameOptionsQuery$ = this.gameService.fetchGameOptions({ id: 1 });
   genres$ = this.genreQuery$.valueChanges;
   breakpointObserver$ = this.breakpointObserver
     .observe('(min-width: 560px)')
     .pipe(map(({ matches }) => (matches ? 'horizontal' : 'vertical')));
-  createNewGameOptions$ = this.gameOptionsForm.valueChanges.pipe(tap((data) => this.gameService.createGameCache(data)));
+  createNewGameOptions$ = this.gameOptionsForm.valueChanges.pipe(switchMap((data) => this.gameService.createNewGame(data)));
   selectGenreVirtualScroll$ = this.scrollDispatcher.scrolled().pipe(
     skip(1),
-    // tap(() => console.log(this.selectGenreVirtualScroll.getDataLength(), this.selectGenreVirtualScroll.measureScrollOffset('bottom'))),
     filter(() => this.selectGenreVirtualScroll.measureScrollOffset('bottom') === 0),
     filter(() => this.genreQuery$.getCurrentResult().data.genres.pageInfo?.hasNextPage === true),
     tap(() => this.loadMoreGenres()),
@@ -45,6 +48,24 @@ export class OptionsComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedGenres: TRelayEdge<Genre>[] = [];
   selectGenreVirtualScrollSubscription!: Subscription;
   newGameOptionsSubscription!: Subscription;
+  newGameDefaultOptions: Omit<NewGameNode, 'id' | 'status'> = { numPlayers: 1, roundTime: 10, rounds: 5, genres: [], numSpectators: 1 };
+  newGameDefaultOptions$ = zip(
+    this.genreQuery$.valueChanges.pipe(
+      first(({ data: { genres } }) => genres?.edges !== undefined),
+      map(
+        ({
+          data: {
+            genres: { edges },
+          },
+        }) => edges?.filter(({ node: { selected } }) => selected) ?? [],
+      ),
+      map((genres) => genres.map(({ node }) => node)),
+    ),
+    this.gameOptionsQuery$.valueChanges.pipe(
+      first(),
+      map(({ data: { newGame } }) => newGame),
+    ),
+  );
 
   constructor(
     private formBuilder: FormBuilder,
@@ -55,18 +76,14 @@ export class OptionsComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.genreQuery$.valueChanges
+    this.newGameDefaultOptions$
       .pipe(
-        first(({ data: { genres } }) => genres?.edges !== undefined),
-        map(
-          ({
-            data: {
-              genres: { edges },
-            },
-          }) => edges?.filter(({ node: { selected } }) => selected) ?? [],
+        tap(([genres]) => this.genreOptionsForm.controls.genres.setValue(genres)),
+        tap(([genres, options]) =>
+          this.gameOptionsForm.setValue(
+            omit({ ...this.newGameDefaultOptions, ...options, genres: genres.map(({ id }) => id) }, ['__typename']),
+          ),
         ),
-        map((genres) => genres.map(({ node }) => node)),
-        tap((genres) => this.genreOptionsForm.controls.genres.setValue(genres)),
       )
       .subscribe();
   }
@@ -82,7 +99,6 @@ export class OptionsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   loadMoreGenres() {
-    console.log(this.genreQuery$.getCurrentResult().data.genres.edges);
     return this.genreQuery$.fetchMore({
       variables: { after: this.genreQuery$.getCurrentResult().data.genres.pageInfo?.endCursor },
       updateQuery: (prev, { fetchMoreResult }) => {

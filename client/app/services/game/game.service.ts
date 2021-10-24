@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { Game } from 'client/app/@types/global';
-import { CREATE_GAME_LOCAL_MUTATION, CREATE_GAME_MUTATION } from 'client/app/graphql';
+import { TIncomingRelay } from 'client/app/@types/global';
+import { CreateGameInput, NewGameNode } from 'client/app/@types/graphql';
+import { CREATE_GAME_LOCAL_MUTATION, CREATE_GAME_MUTATION, NEW_GAME_QUERY } from 'client/app/graphql';
 
 @Injectable({
   providedIn: 'root',
@@ -9,21 +10,38 @@ import { CREATE_GAME_LOCAL_MUTATION, CREATE_GAME_MUTATION } from 'client/app/gra
 export class GameService {
   constructor(private apollo: Apollo) {}
 
-  createGameCache(game: Omit<Game, 'status'>) {
-    return this.apollo.client.writeQuery({
-      query: CREATE_GAME_LOCAL_MUTATION,
-      variables: game,
-      data: game,
+  fetchGameOptions(variables: { id: number }) {
+    return this.apollo.watchQuery<{ newGame: TIncomingRelay<NewGameNode> }>({
+      query: NEW_GAME_QUERY,
+      variables,
+      fetchPolicy: 'cache-and-network',
     });
   }
 
-  createGame(game: Omit<Game, 'status'>) {
+  createNewGame(game: CreateGameInput) {
     return this.apollo.mutate({
-      mutation: CREATE_GAME_MUTATION,
-      variables: game,
+      mutation: CREATE_GAME_LOCAL_MUTATION,
+      variables: { input: game },
       optimisticResponse: {
         __typename: 'Mutation',
-        ...game,
+        createNewGame: {
+          __typename: 'CreateNewGameMutation',
+          ...game,
+        },
+      },
+    });
+  }
+
+  createGame(game: CreateGameInput) {
+    return this.apollo.mutate({
+      mutation: CREATE_GAME_MUTATION,
+      variables: { input: game },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        createGame: {
+          __typename: 'CreateGameMutation',
+          game: { ...game },
+        },
       },
     });
   }

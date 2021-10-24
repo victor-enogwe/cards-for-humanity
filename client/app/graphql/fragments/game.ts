@@ -33,3 +33,14 @@ export const GAME_NODE_FRAGMENT = gql`
     }
   }
 `;
+
+export const NEW_GAME_NODE_FRAGMENT = gql`
+  fragment NewGameNode on NewGameNode {
+    roundTime @client
+    rounds @client
+    numPlayers @client
+    numSpectators @client
+    status @client
+    genres @client
+  }
+`;

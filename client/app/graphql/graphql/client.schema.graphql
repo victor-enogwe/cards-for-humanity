@@ -1,9 +1,23 @@
+type NewGameNode {
+  id: ID!
+  roundTime: Int!
+  rounds: Int!
+  numPlayers: Int!
+  numSpectators: Int!
+  status: String!
+  genres: [ID]!
+}
+
+type CreateNewGameMutation {
+  newGame: NewGameNode
+}
+
 extend type Query {
-  newGame: GameNode
+  newGame(id: ID!): NewGameNode
 }
 
 extend type Mutation {
-  createGameLocal (input: CreateGameInput): GameNode
+  createNewGame(input: CreateGameInput): CreateNewGameMutation
 }
 
 extend type GenreNode {
