@@ -12,7 +12,7 @@ class UserNode(DjangoObjectType):
     class Meta:
         model = User
         interfaces = (relay.Node, )
-        exclude_fields = ('password', 'playerSet')
+        exclude_fields = ('password',)
         filter_fields = '__all__'
         connection_class = ExtendedConnection
 

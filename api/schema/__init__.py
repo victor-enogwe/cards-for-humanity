@@ -6,7 +6,7 @@ from graphql_social_auth.relay import SocialAuthJWT
 
 from api.models import User
 
-from .blackcard import BlackCardMutation, BlackCardQuery, graphene
+from .blackcard import BlackCardQuery, graphene
 from .game import GameMutation, GameQuery, GameSubscription
 from .genre import GenreQuery, GenreSubscription
 from .player import PlayerQuery
@@ -42,7 +42,7 @@ class GraphqlWsConsumer(GraphqlWsConsumer):
     """Channels WebSocket consumer which provides GraphQL API."""
     schema = schema
     send_keepalive_every = 60
-    # subscription_confirmation_message = { 'data': 'connected to websocket' }
+    subscription_confirmation_message = { 'data': 'connected to websocket' }
     middleware = []
 
     async def on_connect(self, payload):

@@ -20,6 +20,7 @@ class GameNode(DjangoObjectType):
 
 
 class GameSubscriptionNode(Subscription):
+    notification_queue_limit = 64
     event = graphene.String()
 
     class Meta:
