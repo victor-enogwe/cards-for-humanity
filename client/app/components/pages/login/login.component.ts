@@ -15,6 +15,7 @@ import { FormService } from '../../../services/form/form.service';
 })
 export class LoginComponent {
   rememberCookie = 'cah_val';
+  showPassword = false;
   user = this.authService.decodeObject(this.cookieService.get(this.rememberCookie)) as AuthUser;
   loginSocial = this.authService.signUpSocial;
   fieldHasError = this.formService.fieldHasError;

@@ -1,9 +1,9 @@
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
-import { Observable, from, throwError } from 'rxjs';
+import { AuthService } from 'client/app/services/auth/auth.service';
+import { from, lastValueFrom, Observable, throwError } from 'rxjs';
 import { catchError, mergeMap } from 'rxjs/operators';
 import { NotificationService } from '../../services/notification/notification.service';
-import { AuthService } from 'client/app/services/auth/auth.service';
 
 @Injectable()
 export class HttpErrorsInterceptor implements HttpInterceptor {
@@ -20,7 +20,7 @@ export class HttpErrorsInterceptor implements HttpInterceptor {
           message = navigator.onLine ? 'Service down. Please try again later!' : 'Please check your internet connection';
         }
         return from(this.notice.notify(message, 'dismiss', { duration: 3000 })).pipe(
-          mergeMap(() => throwError(error.error.message).toPromise()),
+          mergeMap(() => lastValueFrom(throwError(() => error.error))),
         );
       }),
     );

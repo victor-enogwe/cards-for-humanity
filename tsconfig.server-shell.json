@@ -1,0 +1,17 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "outDir": "./static/server",
+    "declaration": true,
+    "types": [
+      "node"
+    ]
+  },
+  "files": [
+    "client/main.server.ts"
+  ],
+  "angularCompilerOptions": {
+    "entryModule": "./client/app/modules/cah-server/cah.server.module#CahServerModule"
+  }
+}

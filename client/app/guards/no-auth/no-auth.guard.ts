@@ -21,6 +21,7 @@ export class NoAuthGuard implements CanActivate, CanActivateChild, CanLoad {
 
   canLoad(): Observable<boolean> {
     return this.auth$.pipe(
+      tap(() => console.log(this.authService.cookieService.getAll(), document.cookie)),
       tap((auth) => (auth ? this.router.navigateByUrl('/play') : {})),
       map((auth) => !auth),
     );

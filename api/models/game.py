@@ -18,9 +18,9 @@ class Game(models.Model):
     rounds = models.SmallIntegerField(
         default=5, validators=min_max_validator(5, 50), help_text='no of game rounds', editable=False)
     num_players = models.PositiveSmallIntegerField(
-        validators=min_max_validator(1, 10), help_text='no of players')
+        default=0, validators=min_max_validator(0, 9), help_text='no of players', editable=False)
     num_spectators = models.PositiveSmallIntegerField(
-        validators=min_max_validator(1, 10), help_text='no of spectators', editable=False)
+        default=0, validators=min_max_validator(0, 10), help_text='no of spectators', editable=False)
     status = models.CharField(
         max_length=3, choices=TextChoices.choices, default='GAP')
     created_at = models.DateTimeField(default=timezone.now, editable=False)

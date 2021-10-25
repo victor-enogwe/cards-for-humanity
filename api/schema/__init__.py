@@ -1,7 +1,7 @@
 from channels_graphql_ws import GraphqlWsConsumer
 from graphene import Schema
 from graphql_jwt.decorators import login_required
-from graphql_jwt.relay import ObtainJSONWebToken, Refresh, Revoke, Verify
+from graphql_jwt.relay import DeleteJSONWebTokenCookie, DeleteRefreshTokenCookie, ObtainJSONWebToken, Refresh, Revoke, Verify
 from graphql_social_auth.relay import SocialAuthJWT
 
 from api.models import User
@@ -25,6 +25,8 @@ class Mutation(UserMutation, GameMutation, graphene.ObjectType):
     token_auth = ObtainJSONWebToken.Field()
     verify_token = Verify.Field()
     refresh_token = Refresh.Field()
+    delete_token_cookie = DeleteJSONWebTokenCookie.Field()
+    delete_refresh_token_cookie = DeleteRefreshTokenCookie.Field()
     # Long running refresh tokens
     revoke_token = Revoke.Field()
 
@@ -42,7 +44,7 @@ class GraphqlWsConsumer(GraphqlWsConsumer):
     """Channels WebSocket consumer which provides GraphQL API."""
     schema = schema
     send_keepalive_every = 60
-    subscription_confirmation_message = { 'data': 'connected to websocket' }
+    subscription_confirmation_message = {'data': 'connected to websocket'}
     middleware = []
 
     async def on_connect(self, payload):
@@ -53,6 +55,7 @@ class GraphqlWsConsumer(GraphqlWsConsumer):
 
         # print(decoded)
         # You can `raise` from here to reject the connection.
+        print(self.channel_name)
         print("New client connected!")
 
     async def on_disconnect(self, payload):

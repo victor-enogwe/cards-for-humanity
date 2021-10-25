@@ -12,10 +12,11 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import sys
+from datetime import timedelta
 
 import environ
 
-# source enviromment variables
+# source environment variables
 root = environ.Path(__file__) - 3  # get root of the project
 env = environ.Env(DEBUG=(bool, False))
 
@@ -42,6 +43,8 @@ CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = ENV_HOSTS
 
+CSRF_TRUSTED_ORIGINS = ENV_HOSTS
+
 CORS_ALLOW_CREDENTIALS = True
 
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
@@ -66,6 +69,22 @@ SESSION_COOKIE_SAMESITE = 'None'
 
 CSRF_COOKIE_SAMESITE = 'None'
 
+CSP_DEFAULT_SRC = ("'self'")
+
+CSP_IMG_SRC = ("'self'", "'data:'", "'blob:'", "'*'")
+
+CSP_STYLE_SRC = ("'self'", "'fonts.googleapis.com'")
+
+CSP_STYLE_SRC_ELEM = CSP_STYLE_SRC
+
+CSP_SCRIPT_SRC = ("'self'")
+
+CSP_SCRIPT_SRC_ELEM = CSP_SCRIPT_SRC
+
+CSP_FONT_SRC = ("'self'", "'fonts.googleapis.com'")
+
+CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src', 'img-src']
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -78,7 +97,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_filters',
+    'django_cron',
     'graphene_django',
+    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
     'social_django',
     'rest_framework',
     'api'
@@ -90,6 +111,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'csp.middleware.CSPMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -103,6 +125,13 @@ AUTHENTICATION_BACKENDS = [
     'social_core.backends.facebook.FacebookOAuth2',
     'api.auth.backends.EmailOrUsernameModelBackend'
 ]
+
+CRON_CLASSES = [
+    'api.crons.CleanupCron'
+]
+
+DJANGO_CRON_DELETE_LOGS_OLDER_THAN = 7
+FAILED_RUNS_CRONJOB_EMAIL_PREFIX = "[Failed Cron Jobs]: "
 
 SOCIAL_AUTH_PIPELINE = [
     # Get the information we can about the user and return it in a simple
@@ -169,6 +198,13 @@ GRAPHENE = {
     'JWT_VERIFY_EXPIRATION': True,
     "DJANGO_CHOICE_FIELD_ENUM_V3_NAMING": True,
     'GRAPHIQL_HEADER_EDITOR_ENABLED': True,
+}
+
+GRAPHQL_JWT = {
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=5),
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
 }
 
 STATIC_PATH = os.path.join(BASE_DIR, 'static/browser')
@@ -259,9 +295,9 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = False
+USE_I18N = True
 
-USE_L10N = False
+USE_L10N = True
 
 USE_TZ = True
 

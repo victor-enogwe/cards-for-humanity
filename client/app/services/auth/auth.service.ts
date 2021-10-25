@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { FetchResult } from '@apollo/client/core';
@@ -24,14 +25,14 @@ import { AuthUser } from '../../@types/global';
   deps: ['SocialAuthServiceConfig'],
 })
 export class AuthService extends Service {
-  token = this.cookieService.get('token');
   authProviders = { GOOGLE: 'google-oauth2', facebook: 'facebook' };
   user!: SocialUser;
 
   constructor(
+    @Inject(DOCUMENT) private document: Document,
     @Inject(SOCIAL_AUTH_CONFIG) config: SocialAuthServiceConfig | Promise<SocialAuthServiceConfig>,
     private apollo: Apollo,
-    private cookieService: CookieService,
+    public cookieService: CookieService,
     private router: Router,
   ) {
     super(config);
@@ -132,6 +133,7 @@ export class AuthService extends Service {
   }
 
   setToken(token: string) {
+    console.log(this.document);
     if (token) {
       this.cookieService.set(
         'token',
@@ -146,6 +148,7 @@ export class AuthService extends Service {
   }
 
   isLoggedIn() {
+    console.log(this.document);
     return this.cookieService.check('token');
   }
 

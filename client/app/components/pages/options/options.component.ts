@@ -28,8 +28,8 @@ export class OptionsComponent implements OnInit, AfterViewInit, OnDestroy {
     genres: new FormControl([], [Validators.required, Validators.maxLength(5)]),
     rounds: new FormControl(5, [Validators.required, Validators.min(5), Validators.max(50)]),
     roundTime: new FormControl(10, [Validators.required, Validators.min(10), Validators.max(60)]),
-    numPlayers: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
-    numSpectators: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(10)]),
+    numPlayers: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(9)]),
+    numSpectators: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(10)]),
   });
   pageSize = 10;
   private genreQuery$ = this.genreService.fetchGenres({ first: this.pageSize });

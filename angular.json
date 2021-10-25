@@ -35,11 +35,11 @@
               "client/mstile-150x150.png",
               "client/safari-pinned-tab.svg",
               "client/site.webmanifest",
-              "client/assets"
+              "client/assets",
+              "client/manifest.webmanifest"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "client/styles.scss"
+              "client/styles/styles.scss"
             ],
             "scripts": [],
             "vendorChunk": true,
@@ -50,7 +50,9 @@
             "namedChunks": true,
             "allowedCommonJsDependencies": [
               "subscriptions-transport-ws"
-            ]
+            ],
+            "serviceWorker": true,
+            "ngswConfigPath": "ngsw-config.json"
           },
           "configurations": {
             "production": {
@@ -105,7 +107,8 @@
           "options": {
             "browserTarget": "cards-against-humanity:build",
             "serverTarget": "cards-against-humanity:server",
-            "serverUrl": "localhost:8000",
+            "host": "localhost",
+            "port": 8000,
             "serverStartCommand": "python manage.py runserver"
           },
           "configurations": {
@@ -113,6 +116,19 @@
               "browserTarget": "cards-against-humanity:build:production",
               "serverTarget": "cards-against-humanity:server:production"
             }
+          }
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "browserTarget": "cards-against-humanity:build:production",
+            "serverTarget": "cards-against-humanity:server:production",
+            "routes": [
+              "/"
+            ]
+          },
+          "configurations": {
+            "production": {}
           }
         },
         "extract-i18n": {
@@ -140,11 +156,11 @@
               "client/mstile-150x150.png",
               "client/safari-pinned-tab.svg",
               "client/site.webmanifest",
-              "client/assets"
+              "client/assets",
+              "client/manifest.webmanifest"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "client/styles.scss"
+              "client/styles/styles.scss"
             ],
             "scripts": []
           }
@@ -201,6 +217,41 @@
             }
           },
           "defaultConfiguration": "production"
+        },
+        "app-shell": {
+          "builder": "@angular-devkit/build-angular:app-shell",
+          "options": {
+            "browserTarget": "cards-against-humanity:build",
+            "serverTarget": "cards-against-humanity:serverShell",
+            "route": "shell"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "cards-against-humanity:build:production",
+              "serverTarget": "cards-against-humanity:serverShell:production"
+            }
+          }
+        },
+        "serverShell": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "static/server",
+            "main": "client/main.server.ts",
+            "tsConfig": "tsconfig.server-shell.json"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "client/environments/environment.ts",
+                  "with": "client/environments/environment.prod.ts"
+                }
+              ],
+              "sourceMap": false,
+              "optimization": true
+            }
+          }
         }
       }
     }

@@ -64,10 +64,10 @@
           <mat-form-field class="game-options-stepper w-100">
             <mat-label>
               number of players
-              <span *ngIf="gameOptionsForm.controls.numPlayers.value === 1" class="badge bg-info">COMPETE AGAINST THE AI</span>
+              <span *ngIf="gameOptionsForm.controls.numPlayers.value === 0" class="badge bg-info">COMPETE AGAINST THE AI</span>
             </mat-label>
-            <input matInput type="number" min="1" max="10" step="1" formControlName="numPlayers" class="d-none invisible" />
-            <mat-slider [min]="1" [max]="10" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
+            <input matInput type="number" min="0" max="9" step="1" formControlName="numPlayers" class="d-none invisible" />
+            <mat-slider [min]="0" [max]="9" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
               [value]="gameOptionsForm.controls.numPlayers.value" (change)="gameOptionsForm.controls.numPlayers.setValue($event.value)"
               aria-labelledby="no of players">
             </mat-slider>
@@ -75,8 +75,8 @@
 
           <mat-form-field class="game-options-stepper w-100">
             <mat-label>number of spectators</mat-label>
-            <input matInput type="number" min="1" max="10" step="1" formControlName="numSpectators" class="d-none invisible" />
-            <mat-slider #spectators [min]="1" [max]="10" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
+            <input matInput type="number" min="0" max="10" step="1" formControlName="numSpectators" class="d-none invisible" />
+            <mat-slider #spectators [min]="0" [max]="10" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
               [value]="gameOptionsForm.controls.numSpectators.value"
               (change)="gameOptionsForm.controls.numSpectators.setValue($event.value)" aria-labelledby="no of spectators">
             </mat-slider>

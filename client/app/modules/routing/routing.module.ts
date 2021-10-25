@@ -14,9 +14,9 @@ const routes: Routes = [
   {
     path: 'play',
     loadChildren: () => import('../play/play.module').then((m) => m.PlayModule),
-    // canLoad: [AuthGuard],
-    // canActivate: [AuthGuard],
-    // canActivateChild: [AuthGuard],
+    canLoad: [AuthGuard],
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
   },
   { path: 'shop', loadChildren: () => import('../shop/shop.module').then((m) => m.ShopModule) },
   { path: '', loadChildren: () => import('../home/home.module').then((m) => m.HomeModule) },
@@ -26,7 +26,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy', initialNavigation: 'enabled' })],
   exports: [RouterModule],
   providers: [NoAuthGuard, AuthGuard],
 })

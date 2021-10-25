@@ -3,6 +3,7 @@ import { APP_INITIALIZER, InjectionToken, NgModule } from '@angular/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { Drivers } from '@ionic/storage';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } from 'angularx-social-login';
@@ -10,11 +11,17 @@ import { APOLLO_OPTIONS } from 'apollo-angular';
 import { CahComponent } from 'client/app/components/shared/cah/cah.component';
 import { INTROSPECTION_QUERY } from 'client/app/graphql';
 import { CahRoutingModule } from 'client/app/modules/routing/routing.module';
+import { AuthService } from 'client/app/services/auth/auth.service';
+import { CahDialogService } from 'client/app/services/cah-dialog/cah-dialog.service';
+import { DynamicOverlayService } from 'client/app/services/dynamic-overlay/dynamic-overlay.service';
 import { GraphqlService } from 'client/app/services/graphql/graphql.service';
+import { LoadingOverlayService } from 'client/app/services/loading-overlay/loading-overlay.service';
+import { MainContentRefService } from 'client/app/services/main-content-ref/main-content-ref.service';
 import { SeoService } from 'client/app/services/seo/seo.service';
 import { environment } from 'client/environments/environment';
 import { CookieService } from 'ngx-cookie-service';
 import { delay, first, lastValueFrom, of, tap } from 'rxjs';
+import { SharedModule } from '../shared/shared.module';
 
 export const SOCIAL_AUTH_CONFIG = new InjectionToken<SocialAuthServiceConfig>('SocialAuthServiceConfig.config');
 
@@ -38,6 +45,7 @@ const graphqlFactory = () => async () => {
       name: '__cah',
       storeName: 'cah',
       description: 'cah store',
+      dbKey: '__CAH',
       driverOrder: [Drivers.IndexedDB, Drivers.LocalStorage],
     }),
     BrowserModule.withServerTransition({ appId: 'cards-against-humanity' }),
@@ -45,11 +53,23 @@ const graphqlFactory = () => async () => {
     BrowserAnimationsModule,
     MatSnackBarModule,
     CahRoutingModule,
+    SharedModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the app is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
   providers: [
     SeoService,
     GraphqlService,
     CookieService,
+    AuthService,
+    MainContentRefService,
+    DynamicOverlayService,
+    LoadingOverlayService,
+    CahDialogService,
     {
       provide: APOLLO_OPTIONS,
       useFactory: (graphqlService: GraphqlService) => graphqlService.config,
