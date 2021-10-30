@@ -2,6 +2,7 @@
   "$schema": "http://json.schemastore.org/tsconfig",
   "compileOnSave": false,
   "compilerOptions": {
+    "alwaysStrict": true,
     "baseUrl": "./",
     "outDir": "./static",
     "allowJs": true,

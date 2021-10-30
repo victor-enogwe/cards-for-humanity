@@ -6,4 +6,4 @@ if (environment.production) {
 }
 
 export { renderModule, renderModuleFactory } from '@angular/platform-server';
-export { CahServerModule } from './app/modules/cah-server/cah.server.module';
+export { CahServerModule as AppServerModule } from './app/modules/cah-server/cah.server.module';

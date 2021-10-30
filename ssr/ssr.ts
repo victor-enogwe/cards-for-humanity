@@ -2,30 +2,34 @@
  * Load `$localize` onto the global scope - used if i18n tags appear in Angular templates.
  */
 import '@angular/localize/init';
-import { ɵCommonEngine, ɵRenderOptions } from '@nguniversal/common/engine';
+import { CommonEngine, RenderOptions } from '@nguniversal/common/engine';
 import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
 import { resolve } from 'path';
 import 'zone.js/node';
 
-const { CahServerModule, LAZY_MODULE_MAP } = require('../client/main.server');
+export * from '../client/main.server';
+
+const { AppServerModule, LAZY_MODULE_MAP } = require('../client/main.server');
 
 const [url] = process.argv.slice(2);
 
 const documentFilePath = resolve(__dirname, '../browser/index.html');
 
-const options: ɵRenderOptions = {
-  bootstrap: CahServerModule,
+const options: RenderOptions = {
+  bootstrap: AppServerModule,
   url,
+  inlineCriticalCss: true,
   documentFilePath,
+  publicPath: 'static/browser/',
   providers: [provideModuleMap(LAZY_MODULE_MAP)],
 };
 
-async function renderHtml(renderOptions: ɵRenderOptions): Promise<boolean> {
-  const engine = new ɵCommonEngine(CahServerModule);
+async function renderHtml(renderOptions: RenderOptions): Promise<boolean> {
+  const engine = new CommonEngine(AppServerModule);
   return engine
     .render(renderOptions)
     .then((html) => process.stdout.write(html))
     .catch((error) => process.stderr.write(error));
 }
 
-renderHtml(options).catch((error) => process.stderr.write(error));
+renderHtml(options);

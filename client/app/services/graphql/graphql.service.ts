@@ -17,7 +17,6 @@ import { of } from 'zen-observable';
 import { environment } from '../../../environments/environment';
 import { Definition } from '../../@types/global';
 import { NotificationService } from '../../services/notification/notification.service';
-import { getCookie } from '../../utils/csrf';
 
 @Injectable({
   providedIn: 'root',
@@ -76,7 +75,7 @@ export class GraphqlService {
     private readonly storage: Storage,
     private httpClient: HttpClient,
     private notificationService: NotificationService,
-    @Inject(PLATFORM_ID) private platformId: object,
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
   async initCache() {
@@ -92,7 +91,6 @@ export class GraphqlService {
 
   queryKind({ query }: any): boolean {
     const { kind, operation }: Definition = getMainDefinition(query);
-    console.log(kind, operation);
     switch (kind) {
       case 'OperationDefinition':
         switch (operation) {
@@ -106,11 +104,10 @@ export class GraphqlService {
     }
   }
 
-  async headers(_: any, { headers }: any) {
+  headers(_: any, { headers }: any): { headers: { [key: string]: string } } {
     return {
       headers: {
         ...headers,
-        'X-CSRFToken': getCookie('csrftoken'),
         // Authorization: token ? `JWT ${token}` : null
       },
     };
@@ -124,7 +121,6 @@ export class GraphqlService {
 
     if (networkError) {
       this.notificationService.notify(`[Network error]: ${networkError}`, 'dismiss');
-      console.log(`[Network error]: ${networkError}`);
     }
 
     return of();

@@ -32,12 +32,15 @@ environ.Env.read_env(env.str('ENV_PATH', '%s/.env' %
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 
+ENV = env('ENV')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
 ENV_HOSTS = env('ALLOWED_HOSTS').split(',')
 
-ALLOWED_HOSTS = (['localhost', '127.0.0.1'] if DEBUG else []) + ENV_HOSTS
+ALLOWED_HOSTS = (['localhost', '127.0.0.1'] if DEBUG or ENV !=
+                 'production' else []) + ENV_HOSTS
 
 CORS_ORIGIN_ALLOW_ALL = False
 
@@ -55,9 +58,16 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env(
     'GOOGLE_OAUTH_CLIENT_SECRET', default='')
 
 SOCIAL_AUTH_FACEBOOK_KEY = env('FACEBOOK_APP_ID', default='')
+
 SOCIAL_AUTH_FACEBOOK_SECRET = env('FACEBOOK_APP_SECRET', default='')
 
 AUTH_USER_MODEL = "api.User"
+
+SECURE_BROWSER_XSS_FILTER = True
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+SECURE_SSL_REDIRECT = ENV == 'production'
 
 SESSION_COOKIE_SECURE = True
 
@@ -65,15 +75,15 @@ CSRF_COOKIE_SECURE = True
 
 CSRF_COOKIE_HTTPONLY = True
 
-SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'Strict'
 
-CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SAMESITE = 'Strict'
 
 CSP_DEFAULT_SRC = ("'self'")
 
-CSP_IMG_SRC = ("'self'", "'data:'", "'blob:'", "'*'")
+CSP_IMG_SRC = ("'self'",)
 
-CSP_STYLE_SRC = ("'self'", "'fonts.googleapis.com'")
+CSP_STYLE_SRC = ("'self'", "fonts.googleapis.com")
 
 CSP_STYLE_SRC_ELEM = CSP_STYLE_SRC
 
@@ -81,7 +91,7 @@ CSP_SCRIPT_SRC = ("'self'")
 
 CSP_SCRIPT_SRC_ELEM = CSP_SCRIPT_SRC
 
-CSP_FONT_SRC = ("'self'", "'fonts.googleapis.com'")
+CSP_FONT_SRC = ("'self'", "fonts.googleapis.com", "fonts.gstatic.com")
 
 CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src', 'img-src']
 
@@ -131,6 +141,7 @@ CRON_CLASSES = [
 ]
 
 DJANGO_CRON_DELETE_LOGS_OLDER_THAN = 7
+
 FAILED_RUNS_CRONJOB_EMAIL_PREFIX = "[Failed Cron Jobs]: "
 
 SOCIAL_AUTH_PIPELINE = [
@@ -207,27 +218,40 @@ GRAPHQL_JWT = {
     "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
 }
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+
 STATIC_PATH = os.path.join(BASE_DIR, 'static/browser')
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.0/howto/static-files/
+STATIC_URL = '/static/browser/'
+
+MEDIA_URL = '/uploads/'
+
+STATICFILES_DIRS = [STATIC_PATH]
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'BACKEND': 'config.templates.backends.AngularTemplateEngine',
         'DIRS': [STATIC_PATH],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'csp.context_processors.nonce',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
             ],
+            'libraries': {
+                'csp': 'csp.templatetags.csp'
+
+            }
         },
     },
 ]
-
-STATICFILES_DIRS = [STATIC_PATH]
 
 # In this simple example we use in-process in-memory Channel layer.
 # In a real-life cases you need Redis or something familiar.
@@ -300,9 +324,3 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-
-STATIC_URL = '/static/browser/'

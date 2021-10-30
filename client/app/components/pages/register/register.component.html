@@ -1,87 +1,137 @@
 <cah-auth-container title="Register">
-  <div class="col-md-12 col-lg-6 p-md-5">
-    <button
-      #facebook
-      class="btn btn-lg btn-block btn-primary"
-      [hidden]="google.disabled"
-      [ngClass]="{
+  <div class="col-md-12 col-lg-6 mb-5 p-md-5">
+    <div class="d-flex flex-column">
+      <h6 class="card-title text-center text-muted mb-3">Social Signup</h6>
+      <button mat-raised-button #facebook class="btn btn-lg btn-block btn-primary" [hidden]="google.disabled" [ngClass]="{
         'progress-bar': facebook.disabled,
         'progress-bar-striped': facebook.disabled,
         'progress-bar-animated': facebook.disabled
-      }"
-      (click)="signUpSocial($event)"
-    >
-      Sign up with Facebook
-    </button>
-    <button
-      #google
-      class="btn btn-lg btn-block btn-danger mt-3"
-      [hidden]="facebook.disabled"
-      [ngClass]="{ 'progress-bar': google.disabled, 'progress-bar-striped': google.disabled, 'progress-bar-animated': google.disabled }"
-      (click)="signUpSocial($event)"
-    >
-      Sign up with Google
-    </button>
-  </div>
-  <div class="col-md-12 col-lg-6 p-md-5 border-left manual">
-    <h6 class="card-title text-center text-muted">Sign up Manually</h6>
-    <form [formGroup]="registerForm">
-      <div class="form-group">
-        <label for="email" hidden>Email</label>
-        <input
-          type="text"
-          [ngClass]="{ 'border-danger': fieldHasError(registerForm, 'email') }"
-          formControlName="email"
-          class="form-control"
-          id="email"
-          aria-describedby="emailHelp"
-          placeholder="Email"
-        />
-        <small id="emailHelp" class="form-text text-muted">Enter your email. We won't share it.</small>
-      </div>
-      <div class="form-group">
-        <label for="password" hidden>Password</label>
-        <input
-          type="password"
-          [ngClass]="{ 'border-danger': fieldHasError(registerForm, 'password') }"
-          formControlName="password"
-          class="form-control"
-          id="password"
-          placeholder="Password"
-          aria-describedby="passwordHelp"
-        />
-        <small id="emailHelp" class="form-text text-muted">Enter your account password.</small>
-      </div>
-      <div class="form-group">
-        <label for="repeat-password" hidden>Repeat Password</label>
-        <input
-          type="password"
-          [ngClass]="{ 'border-danger': fieldHasError(registerForm, 'repeatPassword') }"
-          formControlName="repeatPassword"
-          class="form-control"
-          id="repeat-password"
-          placeholder="Repeat Password"
-          aria-describedby="repeatHelp"
-        />
-        <small id="repeatHelp" class="form-text text-muted">Repeat your account password.</small>
-      </div>
-      <button
-        #register
-        type="button"
-        class="btn btn-lg btn-block btn-dark"
-        (click)="signUpManual($event, registerForm)"
-        [disabled]="!registerForm.valid || facebook.disabled || google.disabled"
-        [ngClass]="{
-          'progress-bar': registerForm.valid && register.disabled,
-          'progress-bar-striped': registerForm.valid && register.disabled,
-          'progress-bar-animated': registerForm.valid && register.disabled
-        }"
-      >
-        Register
+      }" cahDebounceClick (debounceClick)="signUpSocial($event)">
+        Sign up With Facebook
       </button>
+      <button mat-raised-button #google class="btn btn-lg btn-block btn-danger mt-3" [hidden]="facebook.disabled"
+        [ngClass]="{ 'progress-bar': google.disabled, 'progress-bar-striped': google.disabled, 'progress-bar-animated': google.disabled }"
+        cahDebounceClick (debounceClick)="signUpSocial($event)">
+        Sign up With Google
+      </button>
+    </div>
+  </div>
+  <div class="col-md-12 col-lg-6 p-md-5 border-or">
+    <h6 class="card-title text-center text-muted mb-3">Sign up Manually</h6>
+    <form [formGroup]="registerForm">
+      <mat-form-field class="form-group d-block pb-3">
+        <mat-label>email</mat-label>
+        <input matInput type="email" formControlName="email" id="email" />
+        <mat-icon matSuffix>alternate_email</mat-icon>
+        <mat-hint class="form-text text-muted">Enter your email.</mat-hint>
+      </mat-form-field>
+
+      <div class="row">
+        <mat-form-field class="col col-md-6 form-group pb-3 mb-5">
+          <mat-label>password</mat-label>
+          <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" id="password" />
+          <mat-hint class="form-text d-flex flex-column">
+            <span [ngClass]="{
+              'text-muted': registerForm.controls.password.value.length < 8,
+              'text-success': registerForm.controls.password.value.length >= 8
+            }">
+              must have a min of 8 characters.
+              <mat-icon *ngIf="registerForm.controls.password.value.length >=8">
+                check_circle
+              </mat-icon>
+            </span>
+
+            <span [ngClass]="{
+              'text-muted': registerForm.controls.password.value.length > 30,
+              'text-success': registerForm.controls.password.value.length > 0 && registerForm.controls.password.value.length <= 30
+            }">
+              must not exceed 30 characters.
+              <mat-icon *ngIf="registerForm.controls.password.value.length > 0  && registerForm.controls.password.value.length <= 30">
+                check_circle
+              </mat-icon>
+            </span>
+
+            <span [ngClass]="{
+              'text-muted': registerForm.controls.password.getError('lowercase')?.valid === false,
+              'text-success': registerForm.controls.password.value.length > 0 && !registerForm.controls.password.getError('lowercase')
+            }">
+              must have a lowercase character
+              <mat-icon *ngIf="registerForm.controls.password.value.length > 0 && !registerForm.controls.password.getError('lowercase')">
+                check_circle
+              </mat-icon>
+            </span>
+
+            <span [ngClass]="{
+              'text-muted': registerForm.controls.password.getError('uppercase')?.valid === false,
+              'text-success': registerForm.controls.password.value.length > 0 && !registerForm.controls.password.getError('uppercase')
+            }">
+              must have an uppercase character
+              <mat-icon *ngIf="registerForm.controls.password.value.length > 0 && !registerForm.controls.password.getError('uppercase')">
+                check_circle
+              </mat-icon>
+            </span>
+            <span [ngClass]="{
+              'text-muted': registerForm.controls.password.getError('numeric')?.valid === false,
+              'text-success': registerForm.controls.password.value.length > 0 && !registerForm.controls.password.getError('numeric')
+            }">
+              must have a numeric character
+              <mat-icon *ngIf="registerForm.controls.password.value.length > 0 && !registerForm.controls.password.getError('numeric')">
+                check_circle
+              </mat-icon>
+            </span>
+            <span [ngClass]="{
+              'text-muted': registerForm.controls.password.getError('special')?.valid === false,
+              'text-success': registerForm.controls.password.value.length > 0 && !registerForm.controls.password.getError('special')
+            }">
+              must have a special character
+              <mat-icon *ngIf="registerForm.controls.password.value.length > 0 && !registerForm.controls.password.getError('special')">
+                check_circle
+              </mat-icon>
+            </span>
+          </mat-hint>
+          <button mat-icon-button matSuffix cahDebounceClick (debounceClick)="showPassword=!showPassword"
+            [attr.aria-label]="'Hide password'" [attr.aria-pressed]="showPassword">
+            <mat-icon>{{showPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field class="col col-md-6 form-group pb-3">
+          <mat-label>repeat password</mat-label>
+          <input matInput [type]="showRepeatPassword ? 'text' : 'password'" formControlName="repeatPassword" id="repeatPassword" />
+          <mat-hint class="form-text" [ngClass]="{
+            'text-muted': registerForm.controls.repeatPassword.value.length > 0 && (registerForm.controls.repeatPassword.value !== registerForm.controls.password.value),
+            'text-success': registerForm.controls.repeatPassword.value.length > 0 && (registerForm.controls.repeatPassword.value ===
+            registerForm.controls.password.value)
+          }">
+            repeat your account password.
+            <mat-icon
+              *ngIf="registerForm.controls.repeatPassword.value.length > 0 && (registerForm.controls.repeatPassword.value === registerForm.controls.password.value)">
+              check_circle
+            </mat-icon>
+          </mat-hint>
+          <button mat-icon-button matSuffix cahDebounceClick (debounceClick)="showRepeatPassword=!showRepeatPassword"
+            [attr.aria-label]="'Hide password'" [attr.aria-pressed]="showRepeatPassword">
+            <mat-icon>{{showRepeatPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+
+
+      <div class="d-flex flex-row justify-content-between align-items-center">
+        <button mat-raised-button #register type="button" class="col btn btn-lg btn-block btn-dark" cahDebounceClick
+          (debounceClick)="signUpManual($event, registerForm)" [disabled]="!registerForm.valid || facebook.disabled || google.disabled"
+          [ngClass]="{
+            'progress-bar': registerForm.valid && register.disabled,
+            'progress-bar-striped': registerForm.valid && register.disabled,
+            'progress-bar-animated': registerForm.valid && register.disabled
+          }">
+          Register
+          <mat-icon>shortcut</mat-icon>
+        </button>
+      </div>
 
       <div class="d-flex flex-row justify-content-between mt-3">
-        <button type="button" class="btn btn-sm btn-link text-dark" routerLink="/auth/login">Back to Login</button>
+        <button mat-stroked-button type="button" class="btn btn-sm btn-link text-dark" routerLink="/auth/login">Back to Login</button>
       </div>
     </form>
   </div>

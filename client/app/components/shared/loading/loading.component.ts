@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MatProgressSpinnerOptions } from 'client/app/@types/global';
+import { MatProgressSpinnerOptions } from 'client/app/utils/mat-progress-spinner';
 
 @Component({
   selector: 'cah-loading',

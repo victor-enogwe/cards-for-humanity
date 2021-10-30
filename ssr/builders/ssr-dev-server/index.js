@@ -129,6 +129,7 @@ function execute(options, context) {
 }
 exports.execute = execute;
 function startNodeServer(serverOutput, port, logger, inspectMode = false) {
+    return rxjs_1.of()
     const outputPath = serverOutput.outputPath;
     const path = (0, path_1.join)(outputPath, 'main.js');
     const env = { ...process.env, PORT: '' + port };
@@ -149,6 +150,7 @@ function startNodeServer(serverOutput, port, logger, inspectMode = false) {
     (0, operators_1.startWith)(undefined));
 }
 function startServer(serverStartCommand) {
+    return rxjs_1.of()
     const env = Object.assign(Object.assign({}, process.env));
     return (0, utils_1.spawnAsObservable)(serverStartCommand, [], { env })
         .pipe((0, operators_1.startWith)(undefined), (0, operators_1.mapTo)(undefined));

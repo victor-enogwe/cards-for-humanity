@@ -1,5 +1,5 @@
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
@@ -448,6 +448,8 @@ export interface Mutation {
   readonly createGame?: Maybe<CreateGameMutation>;
   readonly createNewGame?: Maybe<CreateNewGameMutation>;
   readonly createUser?: Maybe<CreateUserPayload>;
+  readonly deleteRefreshTokenCookie?: Maybe<DeleteRefreshTokenCookiePayload>;
+  readonly deleteTokenCookie?: Maybe<DeleteJsonWebTokenCookiePayload>;
   readonly refreshToken?: Maybe<RefreshPayload>;
   readonly revokeToken?: Maybe<RevokePayload>;
   /** Social Auth for JSON Web Token (JWT) */
@@ -472,6 +474,16 @@ export interface MutationCreateNewGameArgs {
 export interface MutationCreateUserArgs {
   email: Scalars['String'];
   password: Scalars['String'];
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationDeleteRefreshTokenCookieArgs {
+  input: DeleteRefreshTokenCookieInput;
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationDeleteTokenCookieArgs {
+  input: DeleteJsonWebTokenCookieInput;
 }
 
 /** Root Mutation for the cards against humanity api. */
@@ -508,9 +520,9 @@ export interface MutationVerifyTokenArgs {
 export interface CreateGameInput {
   readonly genres: ReadonlyArray<Maybe<Scalars['ID']>>;
   /** no of players */
-  readonly numPlayers: Scalars['Int'];
+  readonly numPlayers?: Maybe<Scalars['Int']>;
   /** no of spectators */
-  readonly numSpectators: Scalars['Int'];
+  readonly numSpectators?: Maybe<Scalars['Int']>;
   readonly playerSet?: Maybe<ReadonlyArray<Maybe<Scalars['ID']>>>;
   /** no of game rounds */
   readonly rounds?: Maybe<Scalars['Int']>;
@@ -546,9 +558,29 @@ export interface CreateUserSuccess {
   readonly user?: Maybe<UserNode>;
 }
 
+export interface DeleteRefreshTokenCookieInput {
+  readonly clientMutationId?: Maybe<Scalars['String']>;
+}
+
+export interface DeleteRefreshTokenCookiePayload {
+  readonly __typename?: 'DeleteRefreshTokenCookiePayload';
+  readonly clientMutationId?: Maybe<Scalars['String']>;
+  readonly deleted: Scalars['Boolean'];
+}
+
+export interface DeleteJsonWebTokenCookieInput {
+  readonly clientMutationId?: Maybe<Scalars['String']>;
+}
+
+export interface DeleteJsonWebTokenCookiePayload {
+  readonly __typename?: 'DeleteJSONWebTokenCookiePayload';
+  readonly clientMutationId?: Maybe<Scalars['String']>;
+  readonly deleted: Scalars['Boolean'];
+}
+
 export interface RefreshInput {
   readonly clientMutationId?: Maybe<Scalars['String']>;
-  readonly token?: Maybe<Scalars['String']>;
+  readonly refreshToken?: Maybe<Scalars['String']>;
 }
 
 export interface RefreshPayload {
@@ -556,6 +588,7 @@ export interface RefreshPayload {
   readonly clientMutationId?: Maybe<Scalars['String']>;
   readonly payload: Scalars['GenericScalar'];
   readonly refreshExpiresIn: Scalars['Int'];
+  readonly refreshToken: Scalars['String'];
   readonly token: Scalars['String'];
 }
 
@@ -596,6 +629,7 @@ export interface ObtainJsonWebTokenPayload {
   readonly clientMutationId?: Maybe<Scalars['String']>;
   readonly payload: Scalars['GenericScalar'];
   readonly refreshExpiresIn: Scalars['Int'];
+  readonly refreshToken: Scalars['String'];
   readonly token: Scalars['String'];
 }
 
@@ -870,6 +904,8 @@ export type MutationKeySpecifier = (
   | 'createGame'
   | 'createNewGame'
   | 'createUser'
+  | 'deleteRefreshTokenCookie'
+  | 'deleteTokenCookie'
   | 'refreshToken'
   | 'revokeToken'
   | 'socialAuth'
@@ -882,6 +918,8 @@ export type MutationFieldPolicy = {
   createGame?: FieldPolicy<any> | FieldReadFunction<any>;
   createNewGame?: FieldPolicy<any> | FieldReadFunction<any>;
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteRefreshTokenCookie?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteTokenCookie?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeToken?: FieldPolicy<any> | FieldReadFunction<any>;
   socialAuth?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -910,11 +948,29 @@ export type CreateUserSuccessFieldPolicy = {
   token?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type RefreshPayloadKeySpecifier = ('clientMutationId' | 'payload' | 'refreshExpiresIn' | 'token' | RefreshPayloadKeySpecifier)[];
+export type DeleteRefreshTokenCookiePayloadKeySpecifier = ('clientMutationId' | 'deleted' | DeleteRefreshTokenCookiePayloadKeySpecifier)[];
+export type DeleteRefreshTokenCookiePayloadFieldPolicy = {
+  clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleted?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type DeleteJSONWebTokenCookiePayloadKeySpecifier = ('clientMutationId' | 'deleted' | DeleteJSONWebTokenCookiePayloadKeySpecifier)[];
+export type DeleteJSONWebTokenCookiePayloadFieldPolicy = {
+  clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleted?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RefreshPayloadKeySpecifier = (
+  | 'clientMutationId'
+  | 'payload'
+  | 'refreshExpiresIn'
+  | 'refreshToken'
+  | 'token'
+  | RefreshPayloadKeySpecifier
+)[];
 export type RefreshPayloadFieldPolicy = {
   clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
   payload?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshExpiresIn?: FieldPolicy<any> | FieldReadFunction<any>;
+  refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
   token?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RevokePayloadKeySpecifier = ('clientMutationId' | 'revoked' | RevokePayloadKeySpecifier)[];
@@ -932,6 +988,7 @@ export type ObtainJSONWebTokenPayloadKeySpecifier = (
   | 'clientMutationId'
   | 'payload'
   | 'refreshExpiresIn'
+  | 'refreshToken'
   | 'token'
   | ObtainJSONWebTokenPayloadKeySpecifier
 )[];
@@ -939,6 +996,7 @@ export type ObtainJSONWebTokenPayloadFieldPolicy = {
   clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
   payload?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshExpiresIn?: FieldPolicy<any> | FieldReadFunction<any>;
+  refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
   token?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type EditGameMutationKeySpecifier = ('game' | EditGameMutationKeySpecifier)[];
@@ -1079,6 +1137,14 @@ export type StrictTypedTypePolicies = {
   CreateUserSuccess?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateUserSuccessKeySpecifier | (() => undefined | CreateUserSuccessKeySpecifier);
     fields?: CreateUserSuccessFieldPolicy;
+  };
+  DeleteRefreshTokenCookiePayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | DeleteRefreshTokenCookiePayloadKeySpecifier | (() => undefined | DeleteRefreshTokenCookiePayloadKeySpecifier);
+    fields?: DeleteRefreshTokenCookiePayloadFieldPolicy;
+  };
+  DeleteJSONWebTokenCookiePayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | DeleteJSONWebTokenCookiePayloadKeySpecifier | (() => undefined | DeleteJSONWebTokenCookiePayloadKeySpecifier);
+    fields?: DeleteJSONWebTokenCookiePayloadFieldPolicy;
   };
   RefreshPayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RefreshPayloadKeySpecifier | (() => undefined | RefreshPayloadKeySpecifier);
@@ -1252,6 +1318,10 @@ export type ResolversTypes = ResolversObject<{
   CreateUserFailEmailExists: ResolverTypeWrapper<CreateUserFailEmailExists>;
   CreateUserFailOthers: ResolverTypeWrapper<CreateUserFailOthers>;
   CreateUserSuccess: ResolverTypeWrapper<CreateUserSuccess>;
+  DeleteRefreshTokenCookieInput: DeleteRefreshTokenCookieInput;
+  DeleteRefreshTokenCookiePayload: ResolverTypeWrapper<DeleteRefreshTokenCookiePayload>;
+  DeleteJSONWebTokenCookieInput: DeleteJsonWebTokenCookieInput;
+  DeleteJSONWebTokenCookiePayload: ResolverTypeWrapper<DeleteJsonWebTokenCookiePayload>;
   RefreshInput: RefreshInput;
   RefreshPayload: ResolverTypeWrapper<RefreshPayload>;
   GenericScalar: ResolverTypeWrapper<Scalars['GenericScalar']>;
@@ -1320,6 +1390,10 @@ export type ResolversParentTypes = ResolversObject<{
   CreateUserFailEmailExists: CreateUserFailEmailExists;
   CreateUserFailOthers: CreateUserFailOthers;
   CreateUserSuccess: CreateUserSuccess;
+  DeleteRefreshTokenCookieInput: DeleteRefreshTokenCookieInput;
+  DeleteRefreshTokenCookiePayload: DeleteRefreshTokenCookiePayload;
+  DeleteJSONWebTokenCookieInput: DeleteJsonWebTokenCookieInput;
+  DeleteJSONWebTokenCookiePayload: DeleteJsonWebTokenCookiePayload;
   RefreshInput: RefreshInput;
   RefreshPayload: RefreshPayload;
   GenericScalar: Scalars['GenericScalar'];
@@ -1657,6 +1731,18 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationCreateUserArgs, 'email' | 'password'>
   >;
+  deleteRefreshTokenCookie?: Resolver<
+    Maybe<ResolversTypes['DeleteRefreshTokenCookiePayload']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteRefreshTokenCookieArgs, 'input'>
+  >;
+  deleteTokenCookie?: Resolver<
+    Maybe<ResolversTypes['DeleteJSONWebTokenCookiePayload']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteTokenCookieArgs, 'input'>
+  >;
   refreshToken?: Resolver<
     Maybe<ResolversTypes['RefreshPayload']>,
     ParentType,
@@ -1733,6 +1819,24 @@ export type CreateUserSuccessResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type DeleteRefreshTokenCookiePayloadResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['DeleteRefreshTokenCookiePayload'] = ResolversParentTypes['DeleteRefreshTokenCookiePayload'],
+> = ResolversObject<{
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type DeleteJsonWebTokenCookiePayloadResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['DeleteJSONWebTokenCookiePayload'] = ResolversParentTypes['DeleteJSONWebTokenCookiePayload'],
+> = ResolversObject<{
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type RefreshPayloadResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['RefreshPayload'] = ResolversParentTypes['RefreshPayload'],
@@ -1740,6 +1844,7 @@ export type RefreshPayloadResolvers<
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   payload?: Resolver<ResolversTypes['GenericScalar'], ParentType, ContextType>;
   refreshExpiresIn?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -1774,6 +1879,7 @@ export type ObtainJsonWebTokenPayloadResolvers<
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   payload?: Resolver<ResolversTypes['GenericScalar'], ParentType, ContextType>;
   refreshExpiresIn?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -1852,6 +1958,8 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   CreateUserFailEmailExists?: CreateUserFailEmailExistsResolvers<ContextType>;
   CreateUserFailOthers?: CreateUserFailOthersResolvers<ContextType>;
   CreateUserSuccess?: CreateUserSuccessResolvers<ContextType>;
+  DeleteRefreshTokenCookiePayload?: DeleteRefreshTokenCookiePayloadResolvers<ContextType>;
+  DeleteJSONWebTokenCookiePayload?: DeleteJsonWebTokenCookiePayloadResolvers<ContextType>;
   RefreshPayload?: RefreshPayloadResolvers<ContextType>;
   GenericScalar?: GraphQLScalarType;
   RevokePayload?: RevokePayloadResolvers<ContextType>;

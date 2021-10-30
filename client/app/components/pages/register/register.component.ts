@@ -13,16 +13,23 @@ import { FormService } from '../../../services/form/form.service';
 })
 export class RegisterComponent {
   signUpSocial = this.authService.signUpSocial;
-  fieldHasError = this.formService.fieldHasError;
-  errorMessages = {
-    password: 'password must be between 8 - 30 characters, at least one(uppercase letter, lowercase letter, number and special character',
-    repeatPassword: 'repeat password field must match the password field',
-  };
-  passwordRegex = /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
+  showPassword = false;
+  showRepeatPassword = false;
   registerForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.pattern(this.passwordRegex)]],
-    repeatPassword: ['', Validators.required, this.validateRepeatPassword],
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.maxLength(30),
+        this.formService.patternValidator({ field: 'lowercase', pattern: /[a-z]/ }),
+        this.formService.patternValidator({ field: 'uppercase', pattern: /[A-Z]/ }),
+        this.formService.patternValidator({ field: 'numeric', pattern: /[0-9]/ }),
+        this.formService.patternValidator({ field: 'special', pattern: /[!@#$%^&*()\-_=+{};:,<.>]/ }),
+      ],
+    ],
+    repeatPassword: ['', Validators.required, this.formService.validateRepeatPassword],
   });
 
   constructor(

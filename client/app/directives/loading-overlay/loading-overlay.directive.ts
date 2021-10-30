@@ -1,7 +1,7 @@
 import { OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { ComponentRef, Directive, ElementRef, Injector, Input, OnDestroy, OnInit } from '@angular/core';
-import { MatProgressSpinnerOptions } from 'client/app/@types/global';
+import { MatProgressSpinnerOptions } from 'client/app/utils/mat-progress-spinner';
 import assign from 'lodash.assign';
 import pick from 'lodash.pick';
 import { Observable, Subscription } from 'rxjs';
@@ -31,7 +31,7 @@ export class LoadingOverlayDirective implements OnInit, OnDestroy {
   }
 
   toggleOverlay(show: boolean): ComponentRef<LoadingComponent> {
-    const injector = this.getInjector({ ...this.loaderOptions, loaderClass: 'gamio-loading' }, this.parentInjector);
+    const injector = this.getInjector({ ...this.loaderOptions, loaderClass: 'cah-loading' }, this.parentInjector);
     return show ? this.overlayRef.attach(new ComponentPortal(LoadingComponent, null, injector)) : this.overlayRef.detach();
   }
 

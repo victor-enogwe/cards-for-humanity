@@ -1,5 +1,12 @@
 @use '~@angular/material' as mat;
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import "~bootstrap/scss/functions";
+// 2. Include any default variable overrides here
 @import 'variables';
+// 3. Include remainder of required Bootstrap stylesheets
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/utilities";
 
 @include mat.core();
 
@@ -11,13 +18,28 @@ $bootstrap-theme: mat.define-light-theme((
  color: (
    primary: $bootstrap-primary,
    accent: $bootstrap-secondary,
-   warn: $bootstrap-warn,
+  //  warn: $bootstrap-warn,
  )
 ));
 
 @include mat.all-component-themes($bootstrap-theme);
 
-@import '~bootstrap/scss/bootstrap';
+// 4. Include any optional Bootstrap components as you like
+@import "~bootstrap/scss/root";
+@import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/type";
+@import "~bootstrap/scss/containers";
+@import "~bootstrap/scss/grid";
+// other bootstrap modules
+@import "~bootstrap/scss/card";
+@import "~bootstrap/scss/buttons";
+@import "~bootstrap/scss/button-group";
+// Helpers
+@import "~bootstrap/scss/helpers";
+// Utilities
+@import "~bootstrap/scss/utilities/api";
+
+@import "animations";
 
 html,
 body {
@@ -28,15 +50,46 @@ body {
   margin: 0;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  width: 100%;
+
+.rotate {
+  animation: rotation 500ms;
 }
 
-.flex-center {
+.form-text > span{
+  font-size: 0.849em;
+}
+
+.mat-form-field-hint-wrapper {
+  flex-direction: column;
+}
+
+.mat-button-wrapper {
+  display: flex;
   justify-content: center;
   align-items: center;
-  align-content: center;
+}
+
+.cah-card {
+  max-width: 937.64px;
+  border: 0;
+  overflow: hidden;
+  overflow-y: scroll;
+
+  @include media-breakpoint-up(md) {
+    min-width: 480px
+  }
+}
+
+.border-or {
+  &::after {
+    content: "OR";
+    position: absolute;
+    margin-left: -72px;
+    top: 43%;
+    z-index: 999999;
+    background-color: #ffffff;
+    border: 1px solid #e2e6ea;
+    padding: 10px;
+    border-radius: 50%;
+  }
 }

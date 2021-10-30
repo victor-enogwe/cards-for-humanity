@@ -23,7 +23,8 @@
 
         <div class="btn-toolbar" role="toolbar" aria-label="game options navigation buttons">
           <div class="btn-group btn-group-lg flex-fill" role="group" aria-label="reset button">
-            <button mat-icon-button matTooltip="reset" matTooltipPosition="right" (click)="resetGenres(genres?.data?.genres?.edges)">
+            <button mat-icon-button matTooltip="reset" matTooltipPosition="right" cahDebounceClick
+              (debounceClick)="resetGenres(genres?.data?.genres?.edges)">
               <mat-icon aria-hidden="false" aria-label="reset steps">settings_backup_restore</mat-icon>
             </button>
           </div>
@@ -85,7 +86,7 @@
 
         <div class="btn-toolbar" role="toolbar" aria-label="game options navigation buttons">
           <div class="btn-group btn-group-lg flex-fill" role="group" aria-label="reset button">
-            <button mat-icon-button matTooltip="reset" matTooltipPosition="right" (click)="resetGameOptions()">
+            <button mat-icon-button matTooltip="reset" matTooltipPosition="right" cahDebounceClick (debounceClick)="resetGameOptions()">
               <mat-icon aria-hidden="false" aria-label="reset steps">settings_backup_restore</mat-icon>
             </button>
           </div>

@@ -355,6 +355,8 @@ export const typeDefs = gql`
     createGame(input: CreateGameInput!): CreateGameMutation
     createNewGame(input: CreateGameInput): CreateNewGameMutation
     createUser(email: String!, password: String!): CreateUserPayload
+    deleteRefreshTokenCookie(input: DeleteRefreshTokenCookieInput!): DeleteRefreshTokenCookiePayload
+    deleteTokenCookie(input: DeleteJSONWebTokenCookieInput!): DeleteJSONWebTokenCookiePayload
     refreshToken(input: RefreshInput!): RefreshPayload
     revokeToken(input: RevokeInput!): RevokePayload
 
@@ -368,9 +370,9 @@ export const typeDefs = gql`
   input CreateGameInput {
     genres: [ID]!
 
-    numPlayers: Int!
+    numPlayers: Int
 
-    numSpectators: Int!
+    numSpectators: Int
     playerSet: [ID]
 
     rounds: Int
@@ -401,15 +403,34 @@ export const typeDefs = gql`
     user: UserNode
   }
 
+  input DeleteRefreshTokenCookieInput {
+    clientMutationId: String
+  }
+
+  type DeleteRefreshTokenCookiePayload {
+    clientMutationId: String
+    deleted: Boolean!
+  }
+
+  input DeleteJSONWebTokenCookieInput {
+    clientMutationId: String
+  }
+
+  type DeleteJSONWebTokenCookiePayload {
+    clientMutationId: String
+    deleted: Boolean!
+  }
+
   input RefreshInput {
     clientMutationId: String
-    token: String
+    refreshToken: String
   }
 
   type RefreshPayload {
     clientMutationId: String
     payload: GenericScalar!
     refreshExpiresIn: Int!
+    refreshToken: String!
     token: String!
   }
 
@@ -447,6 +468,7 @@ export const typeDefs = gql`
     clientMutationId: String
     payload: GenericScalar!
     refreshExpiresIn: Int!
+    refreshToken: String!
     token: String!
   }
 

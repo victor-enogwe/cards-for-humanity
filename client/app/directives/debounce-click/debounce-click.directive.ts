@@ -6,12 +6,10 @@ import { map, throttleTime } from 'rxjs/operators';
   selector: '[cahDebounceClick]',
 })
 export class DebounceClickDirective implements OnInit, OnDestroy {
-  @Input() debounceInterval = 2000;
+  @Input() debounceInterval = 500;
   @Output() debounceClick = new EventEmitter();
   private clicks = new Subject<MouseEvent>();
   private subscription!: Subscription;
-
-  constructor() {}
 
   @HostListener('click', ['$event'])
   clickEvent(event: MouseEvent): void {

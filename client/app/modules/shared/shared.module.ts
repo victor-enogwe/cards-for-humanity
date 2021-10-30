@@ -2,6 +2,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ConfirmationDialogComponent } from 'client/app/components/shared/confirmation-dialog/confirmation-dialog.component';
+import { LoadingComponent } from 'client/app/components/shared/loading/loading.component';
 import { MainContainerComponent } from 'client/app/components/shared/main-container/main-container.component';
 import { ConfirmDialogDirective } from 'client/app/directives/confirm-dialog/confirm-dialog.directive';
 import { DebounceClickDirective } from 'client/app/directives/debounce-click/debounce-click.directive';
@@ -14,6 +16,8 @@ import { MaterialModule } from '../material/material.module';
 @NgModule({
   declarations: [
     MainContainerComponent,
+    LoadingComponent,
+    ConfirmationDialogComponent,
     SafeUrlPipe,
     ConfirmDialogDirective,
     DebounceClickDirective,
@@ -29,6 +33,8 @@ import { MaterialModule } from '../material/material.module';
     MaterialModule,
     ScrollingModule,
     MainContainerComponent,
+    LoadingComponent,
+    ConfirmationDialogComponent,
     SafeUrlPipe,
     ConfirmDialogDirective,
     DebounceClickDirective,

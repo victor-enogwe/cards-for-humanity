@@ -1,4 +1,3 @@
-import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { FetchResult } from '@apollo/client/core';
@@ -11,7 +10,7 @@ import {
 } from 'angularx-social-login';
 import { Apollo } from 'apollo-angular';
 import { SignUpData } from 'client/app/@types/global';
-import { SOCIAL_AUTH_CONFIG } from 'client/app/modules/cah/cah.module';
+import { APP_HOST, SOCIAL_AUTH_CONFIG } from 'client/app/modules/cah/cah.module';
 import { gql } from 'client/app/utils/gql';
 import { environment } from 'client/environments/environment';
 import { CookieService } from 'ngx-cookie-service';
@@ -29,7 +28,7 @@ export class AuthService extends Service {
   user!: SocialUser;
 
   constructor(
-    @Inject(DOCUMENT) private document: Document,
+    @Inject(APP_HOST) private host: string,
     @Inject(SOCIAL_AUTH_CONFIG) config: SocialAuthServiceConfig | Promise<SocialAuthServiceConfig>,
     private apollo: Apollo,
     public cookieService: CookieService,
@@ -133,22 +132,12 @@ export class AuthService extends Service {
   }
 
   setToken(token: string) {
-    console.log(this.document);
     if (token) {
-      this.cookieService.set(
-        'token',
-        token,
-        7,
-        'token',
-        location !== null ? location.hostname : undefined,
-        environment.production,
-        'Strict',
-      );
+      this.cookieService.set('token', token, 7, 'token', this.host, environment.production, 'Strict');
     }
   }
 
   isLoggedIn() {
-    console.log(this.document);
     return this.cookieService.check('token');
   }
 

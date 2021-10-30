@@ -1,4 +1,3 @@
-import { MatProgressSpinnerDefaultOptions, ProgressSpinnerMode } from '@angular/material/progress-spinner';
 import { UrlTree } from '@angular/router';
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
 import { QueryInfo } from '@apollo/client/core/QueryInfo';
@@ -14,17 +13,6 @@ declare global {
 
 export interface AnyObject<V = any> {
   [property: string]: V;
-}
-
-export class MatProgressSpinnerOptions implements MatProgressSpinnerDefaultOptions {
-  color?: string;
-  mode?: ProgressSpinnerMode;
-  diameter?: number;
-  strokeWidth?: number;
-  loaderClass?: string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  _forceAnimations?: boolean;
-  value?: number;
 }
 
 interface ApolloCahClient<TCache> extends Omit<ApolloClient<TCache>, 'devToolsHookCb'> {

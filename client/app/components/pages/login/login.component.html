@@ -2,38 +2,38 @@
   <div class="col-md-12 col-lg-6 mb-5 p-md-5">
     <div class="row px-3 p-md-0">
       <h6 class="card-title text-center text-muted mb-3">Social Login</h6>
-      <button mat-raised-button #facebook class="btn btn-lg btn-block btn-primary" (click)="loginSocial($event)" [hidden]="google.disabled"
-        [ngClass]="{
-          'progress-bar': facebook.disabled,
-          'progress-bar-striped': facebook.disabled,
-          'progress-bar-animated': facebook.disabled
-        }">
+      <button mat-raised-button #facebook class="btn btn-lg btn-block btn-primary" cahDebounceClick (debounceClick)="loginSocial($event)"
+        [hidden]="google.disabled" [ngClass]="{
+        'progress-bar': facebook.disabled,
+        'progress-bar-striped': facebook.disabled,
+        'progress-bar-animated': facebook.disabled
+      }">
         Login with Facebook
       </button>
-      <button mat-raised-button #google class="btn btn-lg btn-block btn-danger mt-3" (click)="loginSocial($event)"
+      <button mat-raised-button #google class="btn btn-lg btn-block btn-danger mt-3" cahDebounceClick (debounceClick)="loginSocial($event)"
         [hidden]="facebook.disabled"
         [ngClass]="{ 'progress-bar': google.disabled, 'progress-bar-striped': google.disabled, 'progress-bar-animated': google.disabled }">
         Login with Google
       </button>
-
     </div>
   </div>
 
-  <div class="col-md-12 col-lg-6 p-md-5 border-left manual">
+  <div class="col-md-12 col-lg-6 p-md-5 border-or">
     <h6 class="card-title text-center text-muted mb-3">Sign in Manually</h6>
     <form [formGroup]="loginForm">
       <mat-form-field class="form-group d-block pb-3">
         <mat-label>username or email</mat-label>
-        <input matInput type="text" formControlName="username" id="username" />
-        <mat-icon matSuffix>{{loginForm.controls.username.value.includes('@') ? 'email' : 'account_circle'}}</mat-icon>
-        <mat-hint class="form-text text-muted">Enter your email or username. We won't share it</mat-hint>
+        <input matInput [type]="loginForm.controls.username.value.includes('@') ? 'email' : 'text'" formControlName="username"
+          id="username" />
+        <mat-icon matSuffix>{{loginForm.controls.username.value.includes('@') ? 'alternate_email' : 'account_circle'}}</mat-icon>
+        <mat-hint class="form-text text-muted">Enter your email or username.</mat-hint>
       </mat-form-field>
 
       <mat-form-field class="form-group d-block pb-3">
         <mat-label>password</mat-label>
         <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" id="password" />
         <mat-hint class="form-text text-muted">enter your account password.</mat-hint>
-        <button mat-icon-button matSuffix (click)="showPassword=!showPassword" [attr.aria-label]="'Hide password'"
+        <button mat-icon-button matSuffix cahDebounceClick (debounceClick)="showPassword=!showPassword" [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="showPassword">
           <mat-icon>{{showPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
@@ -42,8 +42,8 @@
       <div class="d-flex flex-row justify-content-between align-items-center">
         <mat-checkbox matInput formControlName="remember" class="text-muted">Remember me</mat-checkbox>
 
-        <button mat-raised-button #login type="" class="btn btn-lg btn-dark" (click)="loginManual($event, loginForm)"
-          [disabled]="!loginForm.valid || facebook.disabled || google.disabled" [ngClass]="{
+        <button mat-raised-button #login type="button" class="btn btn-lg btn-dark" cahDebounceClick
+          (debounceClick)="loginManual($event, loginForm)" [disabled]="!loginForm.valid || facebook.disabled || google.disabled" [ngClass]="{
             'progress-bar': loginForm.valid && login.disabled,
             'progress-bar-striped': loginForm.valid && login.disabled,
             'progress-bar-animated': loginForm.valid && login.disabled
@@ -54,8 +54,8 @@
       </div>
 
       <div class="d-flex flex-row justify-content-between mt-3">
-        <button type="button" class="btn btn-sm btn-link text-dark" routerLink="/auth/register">Register now</button>
-        <button type="button" class="btn btn-sm btn-link text-dark" routerLink="/auth/reset-password">Forgot password ?</button>
+        <button mat-stroked-button type="button" class="btn btn-sm btn-link text-dark" routerLink="/auth/register">Register now</button>
+        <button mat-stroked-button type="button" class="btn btn-sm btn-link text-dark" routerLink="/auth/forgot-password">Forgot password ?</button>
       </div>
     </form>
   </div>

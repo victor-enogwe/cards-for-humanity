@@ -24,17 +24,6 @@
             "polyfills": "client/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              "client/favicon.ico",
-              "client/android-chrome-192x192.png",
-              "client/android-chrome-512x512.png",
-              "client/apple-touch-icon.png",
-              "client/browserconfig.xml",
-              "client/favicon-16x16.png",
-              "client/favicon-32x32.png",
-              "client/favicon.svg",
-              "client/mstile-150x150.png",
-              "client/safari-pinned-tab.svg",
-              "client/site.webmanifest",
               "client/assets",
               "client/manifest.webmanifest"
             ],
@@ -56,13 +45,18 @@
           },
           "configurations": {
             "production": {
+              "index": {
+                "input": "client/index.server.html",
+                "output": "index.html"
+              },
               "fileReplacements": [
                 {
                   "replace": "client/environments/environment.ts",
                   "with": "client/environments/environment.prod.ts"
                 }
               ],
-              "deployUrl": "/",
+              "baseHref": "/",
+              "deployUrl": "static/browser/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -84,6 +78,7 @@
               ]
             },
             "development": {
+              "baseHref": "/",
               "deployUrl": "/"
             }
           },
@@ -123,6 +118,7 @@
           "options": {
             "browserTarget": "cards-against-humanity:build:production",
             "serverTarget": "cards-against-humanity:server:production",
+            "guessRoutes": false,
             "routes": [
               "/"
             ]
@@ -145,17 +141,6 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "assets": [
-              "client/favicon.ico",
-              "client/android-chrome-192x192.png",
-              "client/android-chrome-512x512.png",
-              "client/apple-touch-icon.png",
-              "client/browserconfig.xml",
-              "client/favicon-16x16.png",
-              "client/favicon-32x32.png",
-              "client/favicon.svg",
-              "client/mstile-150x150.png",
-              "client/safari-pinned-tab.svg",
-              "client/site.webmanifest",
               "client/assets",
               "client/manifest.webmanifest"
             ],

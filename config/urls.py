@@ -14,17 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from os import environ
-from django.contrib import admin
-from channels.routing import ProtocolTypeRouter, URLRouter
+
 from channels.auth import AuthMiddlewareStack
-from django.views.decorators.csrf import csrf_exempt
+from channels.routing import ProtocolTypeRouter, URLRouter
 from django.conf.urls import url
-from django.views.generic import RedirectView
+from django.contrib import admin
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import RedirectView
+
 from api.schema import GraphqlWsConsumer
 from config.settings import DEBUG
-from config.views import AppGraphQLView, AppView
-
+from config.views import AngularView, AppGraphQLView
 
 asgiurlpatterns = ProtocolTypeRouter({
     'websocket': AuthMiddlewareStack(URLRouter([path('graphql/ws', GraphqlWsConsumer.as_asgi())]))
@@ -39,6 +40,7 @@ graphql_dev_url = url(r'^graphql$', csrf_exempt(graphql_view))
 urlpatterns = [
     url('admin/', admin.site.urls),
     graphql_dev_url if DEBUG else graphql_prod_url,
-    url(r'^favicon.ico/$', RedirectView.as_view(url='/static/browser/favicon.ico')),
-    url(r'^.*', AppView.as_view(template_name="index.html"), name="index")
+    url(r'^favicon.ico/$',
+        RedirectView.as_view(url='/static/browser/assets/img/favicon.ico')),
+    url(r'^.*', AngularView.as_view())
 ]

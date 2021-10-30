@@ -1,15 +1,7 @@
-# import v8eval
-import os
-
-from django.http import HttpResponse
-from django.views import View
 from django.views.generic.base import TemplateView
 from graphene_django.views import GraphQLView
-from Naked.toolshed.shell import muterun_js
 from rx.core.observable import observable
-
-from config.settings import BASE_DIR, DEBUG
-
+from django.conf.urls import url
 
 class AppGraphQLView(GraphQLView):
     def execute_graphql_request(
@@ -34,14 +26,12 @@ class AppGraphQLView(GraphQLView):
         return target_result
 
 
-class AppView(TemplateView):
-    # v8 = V8Eval::V8.new
+class AngularView(TemplateView):
+    template_name = "angular"
 
-    def get(self, request, *args, **kwargs):
-        renderer = os.path.join(BASE_DIR, 'static/server/main.js')
-        context = self.get_context_data(**kwargs)
-        response = muterun_js(
-            renderer, request.build_absolute_uri(request.path))
-        if DEBUG:
-            return HttpResponse(response.stdout)
-        return HttpResponse(response.stdout) if '</html>' in response.stdout.decode("utf-8") else self.render_to_response(context)
+    @staticmethod
+    def create_view(uri: str):
+        return url(uri, AngularView.as_view())
+
+    def get_template_names(self):
+        return [self.template_name]
