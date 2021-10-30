@@ -1,6 +1,6 @@
 import { APP_BASE_HREF, DOCUMENT, isPlatformServer } from '@angular/common';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { APP_INITIALIZER, ErrorHandler, InjectionToken, NgModule, PLATFORM_ID } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { APP_INITIALIZER, InjectionToken, NgModule, PLATFORM_ID } from '@angular/core';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule, ɵDomSharedStylesHost } from '@angular/platform-browser';
@@ -11,9 +11,6 @@ import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } f
 import { APOLLO_OPTIONS } from 'apollo-angular';
 import { CahComponent } from 'client/app/components/shared/cah/cah.component';
 import { INTROSPECTION_QUERY } from 'client/app/graphql';
-import { GlobalErrorInterceptor } from 'client/app/interceptors/global-error/global-error';
-import { HttpErrorInterceptor } from 'client/app/interceptors/http-error/http.error.interceptor';
-import { HttpHeadersInterceptor } from 'client/app/interceptors/http-header/http-header';
 import { CahRoutingModule } from 'client/app/modules/routing/routing.module';
 import { SharedModule } from 'client/app/modules/shared/shared.module';
 import { AuthService } from 'client/app/services/auth/auth.service';
@@ -115,9 +112,9 @@ const graphqlFactory = () => async () => {
     { provide: APP_INITIALIZER, useFactory: seoFactory, multi: true, deps: [SeoService] },
     { provide: APP_INITIALIZER, useFactory: graphqlFactory, multi: true },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
-    { provide: HTTP_INTERCEPTORS, useClass: HttpHeadersInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
-    { provide: ErrorHandler, useClass: GlobalErrorInterceptor },
+    // { provide: HTTP_INTERCEPTORS, useClass: HttpHeadersInterceptor, multi: true },
+    // { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+    // { provide: ErrorHandler, useClass: GlobalErrorInterceptor },
   ],
   bootstrap: [CahComponent],
 })

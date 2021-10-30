@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { ApolloClientOptions, ApolloLink, FetchResult, InMemoryCache, NormalizedCacheObject, Observable, split } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
-import { ErrorResponse, onError } from '@apollo/client/link/error';
+import { ErrorLink, ErrorResponse } from '@apollo/client/link/error';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { Storage } from '@ionic/storage';
@@ -13,10 +13,8 @@ import { IonicStorageWrapper, persistCache } from 'apollo3-cache-persist';
 import { IntrospectionLink, resolvers, typeDefs, typePolicies } from 'client/app/graphql';
 import possibleTypes from 'client/app/graphql/possible-types';
 import { sha256 } from 'crypto-hash';
-import { of } from 'zen-observable';
 import { environment } from '../../../environments/environment';
 import { Definition } from '../../@types/global';
-import { NotificationService } from '../../services/notification/notification.service';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +32,7 @@ export class GraphqlService {
   introspectionLink = new IntrospectionLink();
   basic = setContext(() => ({ headers: { Accept: 'charset=utf-8' } }));
   auth = setContext(this.headers.bind(this));
-  error = onError(this.handleErrors.bind(this));
+  error = new ErrorLink(this.handleErrors.bind(this));
   persistedQueryLink = createPersistedQueryLink({ sha256 });
   httpLink = new HttpLink(this.httpClient).create({ uri: environment.HTTP_LINK, withCredentials: true });
   wsLink = this.ssr
@@ -44,9 +42,9 @@ export class GraphqlService {
     link: ApolloLink.from([
       this.introspectionLink,
       this.persistedQueryLink,
-      this.error,
       this.basic,
       this.auth,
+      this.error,
       split(this.queryKind, this.wsLink, this.httpLink),
     ]),
     cache: this.cache,
@@ -71,12 +69,7 @@ export class GraphqlService {
     },
   };
 
-  constructor(
-    private readonly storage: Storage,
-    private httpClient: HttpClient,
-    private notificationService: NotificationService,
-    @Inject(PLATFORM_ID) private platformId: Object,
-  ) {}
+  constructor(private readonly storage: Storage, private httpClient: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   async initCache() {
     return this.storage.create().then((store) =>
@@ -113,16 +106,10 @@ export class GraphqlService {
     };
   }
 
-  handleErrors(args: ErrorResponse): Observable<FetchResult> | void {
-    const { graphQLErrors, networkError } = args;
-    if (graphQLErrors) {
-      graphQLErrors.map(({ message }) => this.notificationService.notify(`[Server error]: ${message}`, 'dismiss'));
-    }
-
-    if (networkError) {
-      this.notificationService.notify(`[Network error]: ${networkError}`, 'dismiss');
-    }
-
-    return of();
+  handleErrors({ graphQLErrors, networkError, forward, operation }: ErrorResponse): Observable<FetchResult> | void {
+    return new Observable((observer) => {
+      const messages = graphQLErrors ? graphQLErrors.map(({ message }) => message).join('. \n') : networkError?.message;
+      return observer.error(new Error(messages))
+    });
   }
 }

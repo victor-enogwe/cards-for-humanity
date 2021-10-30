@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { lastValueFrom, of } from 'rxjs';
+import { of } from 'rxjs';
 import { catchError, debounceTime, mergeMap, tap } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth/auth.service';
 import { FormService } from '../../../services/form/form.service';
@@ -41,12 +41,12 @@ export class RegisterComponent {
 
   signUpManual(event: any, form: FormGroup) {
     const user = form.value;
-    return lastValueFrom(
-      of(event).pipe(
+    return of(event)
+      .pipe(
         tap((e) => (e.target.disabled = true)),
         tap(() => form.disable()),
         mergeMap(() => this.authService.signUpManual(user)),
-        tap(({ data }) => this.authService.setToken(data?.tokenAuth.token ?? '')),
+        tap(({ data }) => this.authService.setCookie({ name: 'token', value: data?.tokenAuth.token ?? '', expiry: 7 })),
         tap(() => {
           event.target.disabled = false;
           return form.enable();
@@ -58,8 +58,8 @@ export class RegisterComponent {
           form.enable();
           return error;
         }),
-      ),
-    );
+      )
+      .toPromise();
   }
 
   async validateRepeatPassword(repeatPasswordControl: AbstractControl): Promise<{ [key: string]: any } | null> {

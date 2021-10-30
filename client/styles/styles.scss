@@ -81,10 +81,14 @@ body {
 }
 
 .border-or {
+  @include media-breakpoint-up(md) {
+    border: 1px solid
+  }
+
   &::after {
     content: "OR";
     position: absolute;
-    margin-left: -72px;
+    margin-left: -69px;
     top: 43%;
     z-index: 999999;
     background-color: #ffffff;

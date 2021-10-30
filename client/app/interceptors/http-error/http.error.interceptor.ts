@@ -2,13 +2,12 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { Injectable } from '@angular/core';
 import { AuthService } from 'client/app/services/auth/auth.service';
 import get from 'lodash.get';
-import { from, lastValueFrom, Observable, throwError } from 'rxjs';
-import { catchError, mergeMap } from 'rxjs/operators';
-import { NotificationService } from '../../services/notification/notification.service';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
-  constructor(private notice: NotificationService, private authService: AuthService) {}
+  constructor(private authService: AuthService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
@@ -21,9 +20,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         if (error.status === 0) {
           message = navigator.onLine ? 'Service down. Please try again later!' : 'Please check your internet connection';
         }
-        return from(this.notice.notify(message, 'dismiss', { duration: 3000 })).pipe(
-          mergeMap(() => lastValueFrom(throwError(() => new Error(message)))),
-        );
+        return throwError(() => new Error(message));
       }),
     );
   }

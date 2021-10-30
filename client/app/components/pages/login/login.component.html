@@ -39,10 +39,10 @@
         </button>
       </mat-form-field>
 
-      <div class="d-flex flex-row justify-content-between align-items-center">
-        <mat-checkbox matInput formControlName="remember" class="text-muted">Remember me</mat-checkbox>
+      <div class="d-grid gap-2 d-flex justify-content-around align-items-center mb-3">
+        <mat-checkbox matInput formControlName="remember" class="flex-grow-1 text-muted">Remember me</mat-checkbox>
 
-        <button mat-raised-button #login type="button" class="btn btn-lg btn-dark" cahDebounceClick
+        <button mat-raised-button #login type="button" class="btn btn-lg btn-dark flex-grow-1" cahDebounceClick
           (debounceClick)="loginManual($event, loginForm)" [disabled]="!loginForm.valid || facebook.disabled || google.disabled" [ngClass]="{
             'progress-bar': loginForm.valid && login.disabled,
             'progress-bar-striped': loginForm.valid && login.disabled,
@@ -53,9 +53,9 @@
         </button>
       </div>
 
-      <div class="d-flex flex-row justify-content-between mt-3">
-        <button mat-stroked-button type="button" class="btn btn-sm btn-link text-dark" routerLink="/auth/register">Register now</button>
-        <button mat-stroked-button type="button" class="btn btn-sm btn-link text-dark" routerLink="/auth/forgot-password">Forgot password ?</button>
+      <div class="d-grid gap-2 d-flex justify-content-around">
+        <button mat-stroked-button type="button" class="btn btn-sm btn-link text-dark flex-grow-1" routerLink="/auth/register">Register now</button>
+        <button mat-stroked-button type="button" class="btn btn-sm btn-link text-dark flex-grow-1" routerLink="/auth/forgot-password">Forgot password ?</button>
       </div>
     </form>
   </div>

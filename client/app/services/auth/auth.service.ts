@@ -14,7 +14,7 @@ import { APP_HOST, SOCIAL_AUTH_CONFIG } from 'client/app/modules/cah/cah.module'
 import { gql } from 'client/app/utils/gql';
 import { environment } from 'client/environments/environment';
 import { CookieService } from 'ngx-cookie-service';
-import { lastValueFrom, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/internal/operators/tap';
 import { catchError, debounceTime, mergeMap } from 'rxjs/operators';
 import { AuthUser } from '../../@types/global';
@@ -60,13 +60,13 @@ export class AuthService extends Service {
   }
 
   signUpSocial(event: any) {
-    return lastValueFrom(
-      of(event).pipe(
+    return of(event)
+      .pipe(
         tap((e) => (e.target.disabled = true)),
         mergeMap(() => (event.target.textContent.includes('Facebook') ? this.signInWithFB() : this.signInWithGoogle())),
         tap(console.log),
         mergeMap((user: SocialUser & { provider: 'GOOGLE' | 'facebook' }) => this.socialAuth(user)),
-        tap((user) => this.setToken(user.data?.authToken ?? '')),
+        tap((user) => this.setCookie({ name: 'token', value: user.data?.authToken ?? '', expiry: 7 })),
         tap(() => (event.target.disabled = false)),
         debounceTime(1000),
         tap(() => this.router.navigate(['/play'])),
@@ -74,8 +74,8 @@ export class AuthService extends Service {
           event.target.disabled = false;
           return error;
         }),
-      ),
-    );
+      )
+      .toPromise();
   }
 
   signUpManual(user: SocialUser) {
@@ -131,9 +131,9 @@ export class AuthService extends Service {
     });
   }
 
-  setToken(token: string) {
-    if (token) {
-      this.cookieService.set('token', token, 7, 'token', this.host, environment.production, 'Strict');
+  setCookie({ name, value, expiry }: { name: string; value: string; expiry?: number | Date }) {
+    if (name) {
+      this.cookieService.set(name, value, expiry, name, this.host, environment.production, 'Strict');
     }
   }
 

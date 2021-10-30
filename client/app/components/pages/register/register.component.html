@@ -1,6 +1,6 @@
 <cah-auth-container title="Register">
   <div class="col-md-12 col-lg-6 mb-5 p-md-5">
-    <div class="d-flex flex-column">
+    <div class="row px-3 p-md-0">
       <h6 class="card-title text-center text-muted mb-3">Social Signup</h6>
       <button mat-raised-button #facebook class="btn btn-lg btn-block btn-primary" [hidden]="google.disabled" [ngClass]="{
         'progress-bar': facebook.disabled,
@@ -116,8 +116,8 @@
         </mat-form-field>
       </div>
 
-
-      <div class="d-flex flex-row justify-content-between align-items-center">
+      <div class="d-grid gap-2 d-flex justify-content-around">
+        <button mat-stroked-button type="button" class="btn btn-sm btn-link text-dark" routerLink="/auth/login">Back to Login</button>
         <button mat-raised-button #register type="button" class="col btn btn-lg btn-block btn-dark" cahDebounceClick
           (debounceClick)="signUpManual($event, registerForm)" [disabled]="!registerForm.valid || facebook.disabled || google.disabled"
           [ngClass]="{
@@ -128,10 +128,6 @@
           Register
           <mat-icon>shortcut</mat-icon>
         </button>
-      </div>
-
-      <div class="d-flex flex-row justify-content-between mt-3">
-        <button mat-stroked-button type="button" class="btn btn-sm btn-link text-dark" routerLink="/auth/login">Back to Login</button>
       </div>
     </form>
   </div>

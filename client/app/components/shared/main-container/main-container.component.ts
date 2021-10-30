@@ -6,7 +6,6 @@ import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainContainerComponent {
-  @Input()
-  @HostBinding('class')
-  class = 'd-flex flex-column flex-grow-1 flex-fill w-100 justify-content-center align-items-center';
+  @Input() mainClass = 'd-flex flex-column flex-grow-1 flex-fill w-100 justify-content-center align-items-center';
+  @HostBinding('class') class = 'd-flex flex-grow-1 flex-fill justify-content-center  align-items-center';
 }

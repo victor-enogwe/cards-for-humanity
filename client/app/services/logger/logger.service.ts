@@ -10,9 +10,8 @@ export class LoggerService {
   logError(error: Error): void {
     // Use external logging service
     if (!environment.production) {
-      console.log(`LoggingService: ${error?.message}`);
       if (error.stack) {
-        console.log(error.name, error.stack);
+        // console.log(error.name, error.stack);
       }
     }
   }

@@ -14,7 +14,7 @@ import { FormService } from '../../../services/form/form.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
-  rememberCookie = 'cah_val';
+  rememberCookie = 'cah_credentials';
   showPassword = false;
   user = this.authService.decodeObject(this.cookieService.get(this.rememberCookie)) as AuthUser;
   loginSocial = this.authService.signUpSocial;
@@ -42,7 +42,7 @@ export class LoginComponent {
   rememberUser(user: AuthUser) {
     switch (user.remember) {
       case true:
-        return this.cookieService.set(this.rememberCookie, this.authService.encodeObject(user), undefined, this.rememberCookie);
+        return this.authService.setCookie({ name: this.rememberCookie, value: this.authService.encodeObject(user) });
       default:
         return this.cookieService.delete(this.rememberCookie, this.rememberCookie);
     }
@@ -53,14 +53,10 @@ export class LoginComponent {
     return lastValueFrom(
       of(event).pipe(
         tap((e) => (e.target.disabled = true)),
-        tap(() => this.rememberUser(form.value)),
         tap(() => form.disable()),
         mergeMap(() => this.authService.signInManual({ username, password })),
-        // tap((response: any) => this.authService.setToken(response.data['tokenAuth']['token'])),
-        tap(() => {
-          event.target.disabled = false;
-          return form.enable();
-        }),
+        tap((response: any) => this.authService.setCookie({ name: 'token', value: response.data['tokenAuth']['token'], expiry: 7 })),
+        tap(() => this.rememberUser(form.value)),
         debounceTime(1000),
         tap(() => this.router.navigate(['/play'])),
         catchError((error) => {
