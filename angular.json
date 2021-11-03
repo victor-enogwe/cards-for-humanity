@@ -52,7 +52,7 @@
                 }
               ],
               "baseHref": "/",
-              "deployUrl": "/static/",
+              "deployUrl": "/static/browser",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,

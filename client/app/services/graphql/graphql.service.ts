@@ -39,7 +39,7 @@ export class GraphqlService {
   wsLink = this.ssr
     ? new ApolloLink()
     : new WebSocketLink({ uri: environment.WS_LINK, options: { reconnect: true, connectionParams: { authToken: '' }, lazy: true } });
-  link = from([this.introspectionLink, this.persistedQueryLink, this.httpLink]);
+  link = from([this.introspectionLink, this.persistedQueryLink, this.headersLink, this.httpLink]);
   config: ApolloClientOptions<NormalizedCacheObject> = {
     link: this.link,
     cache: this.cache,
