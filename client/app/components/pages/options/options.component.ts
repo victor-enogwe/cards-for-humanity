@@ -3,13 +3,13 @@ import { ScrollDispatcher } from '@angular/cdk/scrolling';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling/virtual-scroll-viewport';
 import { AfterViewInit, ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { Genre, TRelayEdge } from 'client/app/@types/global';
-import { NewGameNode } from 'client/app/@types/graphql';
-import { GameService } from 'client/app/services/game/game.service';
 import omit from 'lodash.omit';
 import { first, map, skip, Subscription, switchMap, zip } from 'rxjs';
 import { filter } from 'rxjs/internal/operators/filter';
 import { tap } from 'rxjs/internal/operators/tap';
+import { Genre, TRelayEdge } from '../../../@types/global';
+import { NewGameNode } from '../../../@types/graphql';
+import { GameService } from '../../../services/game/game.service';
 import { GenreService } from '../../../services/genre/genre.service';
 
 @Component({

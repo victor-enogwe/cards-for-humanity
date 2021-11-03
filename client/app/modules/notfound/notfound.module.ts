@@ -1,9 +1,8 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Routes, RouterModule } from '@angular/router';
-
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 // components
-import { NotFoundComponent } from 'client/app/components/pages/notfound/notfound.component';
+import { NotFoundComponent } from '../../components/pages/notfound/notfound.component';
 
 const routes: Routes = [{ path: '', component: NotFoundComponent }];
 

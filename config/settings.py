@@ -18,7 +18,7 @@ import environ
 
 # source environment variables
 root = environ.Path(__file__) - 3  # get root of the project
-env = environ.Env(DEBUG=(bool, False))
+env = environ.Env(DEBUG=(bool, True))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -39,16 +39,8 @@ DEBUG = env('DEBUG')
 
 ENV_HOSTS = env('ALLOWED_HOSTS').split(',')
 
-ALLOWED_HOSTS = (['localhost', '127.0.0.1'] if DEBUG or ENV !=
-                 'production' else []) + ENV_HOSTS
-
-CORS_ORIGIN_ALLOW_ALL = False
-
-CORS_ORIGIN_WHITELIST = ENV_HOSTS
-
-CSRF_TRUSTED_ORIGINS = ENV_HOSTS
-
-CORS_ALLOW_CREDENTIALS = True
+ALLOWED_HOSTS = (['localhost', '127.0.0.1', 'lvh.me']
+                 if DEBUG else []) + ENV_HOSTS
 
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 
@@ -63,21 +55,39 @@ SOCIAL_AUTH_FACEBOOK_SECRET = env('FACEBOOK_APP_SECRET', default='')
 
 AUTH_USER_MODEL = "api.User"
 
-SECURE_BROWSER_XSS_FILTER = True
+SECURE = True
 
-SECURE_CONTENT_TYPE_NOSNIFF = True
+CORS_ORIGIN_ALLOW_ALL = False
 
-SECURE_SSL_REDIRECT = ENV == 'production'
+CORS_ORIGIN_WHITELIST = ENV_HOSTS
 
-SESSION_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = ENV_HOSTS
 
-CSRF_COOKIE_SECURE = True
+CORS_ALLOW_CREDENTIALS = True
 
-CSRF_COOKIE_HTTPONLY = True
+# SECURE_SSL_REDIRECT = env('ENV') == 'production'
 
-SESSION_COOKIE_SAMESITE = 'Strict'
+# SECURE_BROWSER_XSS_FILTER = SECURE
 
-CSRF_COOKIE_SAMESITE = 'Strict'
+# SECURE_CONTENT_TYPE_NOSNIFF = SECURE
+
+# CSRF_COOKIE_SECURE = SECURE
+
+CSRF_USE_SESSIONS = False
+
+CSRF_COOKIE_HTTPONLY = False
+
+# SESSION_COOKIE_HTTPONLY = SECURE
+
+# SESSION_COOKIE_SECURE = SECURE
+
+# SESSION_COOKIE_SAMESITE = 'Strict' if SECURE else 'Lax'
+
+# CSRF_COOKIE_SAMESITE = 'Strict' if SECURE else 'Lax'
+
+SESSION_COOKIE_AGE = 604800
+
+SESSION_COOKIE_NAME = 'cah_session'
 
 CSP_DEFAULT_SRC = ("'self'")
 
@@ -101,6 +111,7 @@ INSTALLED_APPS = [
     'channels',
     'corsheaders',
     'django.contrib.admin',
+    'django.contrib.admindocs',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -125,7 +136,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware'
+    'social_django.middleware.SocialAuthExceptionMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 # Authentication backends
@@ -212,44 +226,60 @@ GRAPHENE = {
 }
 
 GRAPHQL_JWT = {
-    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_AUDIENCE": "cah",
+    "JWT_COOKIE_NAME": "CAH",
+    "JWT_COOKIE_SECURE": not DEBUG,
+    "JWT_COOKIE_SAMESITE": "Lax" if DEBUG else "Strict",
+    "JWT_CSRF_ROTATION": True,
+    "JWT_HIDE_TOKEN_FIELDS": True,
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    "JWT_APP_DOMAIN": os.getenv("HOST", None),
+    "JWT_VERIFY": True,
     "JWT_EXPIRATION_DELTA": timedelta(minutes=5),
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_ALLOW_REFRESH": True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    "JWT_REUSE_REFRESH_TOKENS": True,
     "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
 }
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
 
-STATIC_PATH = os.path.join(BASE_DIR, 'static/browser')
+ANGULAR_STATIC_PATH = os.path.join(BASE_DIR, 'static/browser/')
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
+DJANGO_TEMPLATE_PATH = os.path.join(BASE_DIR, 'config/template/static/')
+
+STATICFILES_DIRS = [ANGULAR_STATIC_PATH]
+
 STATIC_URL = '/static/browser/'
 
-MEDIA_URL = '/uploads/'
-
-STATICFILES_DIRS = [STATIC_PATH]
+TEMPLATE_OPTIONS = {
+    'context_processors': [
+        'django.template.context_processors.debug',
+        'django.template.context_processors.request',
+        'csp.context_processors.nonce',
+        'django.contrib.auth.context_processors.auth',
+        'django.contrib.messages.context_processors.messages',
+        'social_django.context_processors.backends',
+        'social_django.context_processors.login_redirect',
+    ],
+    'libraries': {
+        'csp': 'csp.templatetags.csp'
+    }
+}
 
 TEMPLATES = [
     {
-        'BACKEND': 'config.templates.backends.AngularTemplateEngine',
-        'DIRS': [STATIC_PATH],
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'csp.context_processors.nonce',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
-            ],
-            'libraries': {
-                'csp': 'csp.templatetags.csp'
-
-            }
-        },
+        'DIRS': [DJANGO_TEMPLATE_PATH],
+        'OPTIONS': TEMPLATE_OPTIONS,
+    },
+    {
+        'BACKEND': 'config.template.backends.AngularTemplateEngine',
+        'NAME': 'angular',
+        'APP_DIRS': False,
+        'OPTIONS': TEMPLATE_OPTIONS,
     },
 ]
 
@@ -266,10 +296,12 @@ CHANNEL_LAYERS = {
 
 
 WSGI_APPLICATION = 'config.wsgi.application'
+
 ASGI_APPLICATION = 'config.urls.asgiurlpatterns'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -291,6 +323,33 @@ DATABASES = {
         }
     }
 }
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": env('REDIS_HOST'),
+#         "OPTIONS": {
+#             'DB': env('REDIS_DB'),
+#             'PASSWORD': env('REDIS_PASSWORD'),
+#             'SOCKET_TIMEOUT': 5,
+#             'SOCKET_CONNECT_TIMEOUT': 5,
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             'CONNECTION_POOL_CLASS': 'redis.BlockingConnectionPool',
+#             'PARSER_CLASS': 'redis.connection.HiredisParser',
+#             'SERIALIZER_CLASS': 'redis_cache.serializers.JSONSerializer',
+#             'COMPRESSOR_CLASS': 'redis_cache.compressors.ZLibCompressor',
+#             'CONNECTION_POOL_CLASS_KWARGS': {
+#                 'max_connections': 50,
+#                 'timeout': 20
+#             },
+#             'COMPRESSOR_CLASS_KWARGS': {
+#                 'level': 5
+#             },
+#             'SERIALIZER_CLASS_KWARGS': {}
+#         },
+#         "KEY_PREFIX": "example"
+#     }
+# }
 
 
 # Password validation

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ConfirmDialogData } from 'client/app/@types/global';
+import { ConfirmDialogData } from '../../../@types/global';
 
 @Component({
   selector: 'cah-confirmation-dialog',

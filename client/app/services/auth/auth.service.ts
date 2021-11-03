@@ -9,15 +9,14 @@ import {
   SocialUser,
 } from 'angularx-social-login';
 import { Apollo } from 'apollo-angular';
-import { SignUpData } from 'client/app/@types/global';
-import { APP_HOST, SOCIAL_AUTH_CONFIG } from 'client/app/modules/cah/cah.module';
-import { gql } from 'client/app/utils/gql';
-import { environment } from 'client/environments/environment';
+import { environment } from '../../../environments/environment';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/internal/operators/tap';
 import { catchError, debounceTime, mergeMap } from 'rxjs/operators';
-import { AuthUser } from '../../@types/global';
+import { AuthUser, SignUpData } from '../../@types/global';
+import { APP_HOST, SOCIAL_AUTH_CONFIG } from '../../modules/cah/cah.module';
+import { gql } from '../../utils/gql';
 
 @Injectable({
   providedIn: 'root',
@@ -110,7 +109,8 @@ export class AuthService extends Service {
       mutation: gql`
         mutation tokenAuth($user: ObtainJSONWebTokenInput!) {
           tokenAuth(input: $user) {
-            token
+            payload
+            refreshExpiresIn
           }
         }
       `,

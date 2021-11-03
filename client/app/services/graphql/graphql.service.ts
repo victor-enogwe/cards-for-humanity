@@ -1,20 +1,22 @@
 import { isPlatformServer } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { ApolloClientOptions, ApolloLink, FetchResult, InMemoryCache, NormalizedCacheObject, Observable, split } from '@apollo/client/core';
+import { ApolloClientOptions, ApolloLink, FetchResult, from, InMemoryCache, NormalizedCacheObject, Observable } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
-import { ErrorLink, ErrorResponse } from '@apollo/client/link/error';
+import { ErrorResponse, onError } from '@apollo/client/link/error';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { Storage } from '@ionic/storage';
 import { HttpLink } from 'apollo-angular/http';
 import { createPersistedQueryLink } from 'apollo-angular/persisted-queries';
 import { IonicStorageWrapper, persistCache } from 'apollo3-cache-persist';
-import { IntrospectionLink, resolvers, typeDefs, typePolicies } from 'client/app/graphql';
-import possibleTypes from 'client/app/graphql/possible-types';
+// import { onError } from '../../utils/error.link';
 import { sha256 } from 'crypto-hash';
+import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../../../environments/environment';
 import { Definition } from '../../@types/global';
+import { IntrospectionLink, resolvers, typeDefs, typePolicies } from '../../graphql';
+import possibleTypes from '../../graphql/possible-types';
 
 @Injectable({
   providedIn: 'root',
@@ -30,23 +32,16 @@ export class GraphqlService {
   });
   ssr = isPlatformServer(this.platformId);
   introspectionLink = new IntrospectionLink();
-  basic = setContext(() => ({ headers: { Accept: 'charset=utf-8' } }));
-  auth = setContext(this.headers.bind(this));
-  error = new ErrorLink(this.handleErrors.bind(this));
+  headersLink = setContext(this.headers.bind(this));
+  errorLink = onError(this.handleErrors.bind(this));
   persistedQueryLink = createPersistedQueryLink({ sha256 });
   httpLink = new HttpLink(this.httpClient).create({ uri: environment.HTTP_LINK, withCredentials: true });
   wsLink = this.ssr
     ? new ApolloLink()
     : new WebSocketLink({ uri: environment.WS_LINK, options: { reconnect: true, connectionParams: { authToken: '' }, lazy: true } });
+  link = from([this.introspectionLink, this.persistedQueryLink, this.httpLink]);
   config: ApolloClientOptions<NormalizedCacheObject> = {
-    link: ApolloLink.from([
-      this.introspectionLink,
-      this.persistedQueryLink,
-      this.basic,
-      this.auth,
-      this.error,
-      split(this.queryKind, this.wsLink, this.httpLink),
-    ]),
+    link: this.link,
     cache: this.cache,
     connectToDevTools: !environment.production,
     queryDeduplication: true,
@@ -57,19 +52,25 @@ export class GraphqlService {
       watchQuery: {
         fetchPolicy: 'cache-first',
         returnPartialData: true,
-        errorPolicy: 'all',
+        errorPolicy: 'none',
       },
       mutate: {
-        errorPolicy: 'all',
+        fetchPolicy: 'network-only',
+        errorPolicy: 'none',
       },
       query: {
         fetchPolicy: 'cache-first',
-        errorPolicy: 'all',
+        errorPolicy: 'none',
       },
     },
   };
 
-  constructor(private readonly storage: Storage, private httpClient: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    private readonly storage: Storage,
+    private httpClient: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private cookieService: CookieService,
+  ) {}
 
   async initCache() {
     return this.storage.create().then((store) =>
@@ -100,16 +101,17 @@ export class GraphqlService {
   headers(_: any, { headers }: any): { headers: { [key: string]: string } } {
     return {
       headers: {
+        Accept: 'charset=utf-8',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': this.cookieService.get('csrftoken'),
         ...headers,
         // Authorization: token ? `JWT ${token}` : null
       },
     };
   }
 
-  handleErrors({ graphQLErrors, networkError, forward, operation }: ErrorResponse): Observable<FetchResult> | void {
-    return new Observable((observer) => {
-      const messages = graphQLErrors ? graphQLErrors.map(({ message }) => message).join('. \n') : networkError?.message;
-      return observer.error(new Error(messages))
-    });
+  handleErrors({ graphQLErrors, networkError }: ErrorResponse): Observable<FetchResult> | void {
+    const messages = graphQLErrors ? graphQLErrors.map(({ message }) => message).join('. \n') : networkError?.message;
+    throw new Error(messages);
   }
 }

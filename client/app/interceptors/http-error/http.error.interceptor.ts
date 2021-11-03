@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AuthService } from 'client/app/services/auth/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 import get from 'lodash.get';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';

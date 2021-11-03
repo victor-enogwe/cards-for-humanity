@@ -1,4 +1,4 @@
-import { gql } from 'client/app/utils/gql';
+import { gql } from '../../utils/gql';
 import { GAME_NODE_FRAGMENT } from './game';
 import { USER_NODE_FRAGMENT } from './user';
 

@@ -1,13 +1,13 @@
 import { OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { ComponentRef, Directive, ElementRef, Injector, Input, OnDestroy, OnInit } from '@angular/core';
-import { MatProgressSpinnerOptions } from 'client/app/utils/mat-progress-spinner';
 import assign from 'lodash.assign';
 import pick from 'lodash.pick';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LoadingComponent } from '../../components/shared/loading/loading.component';
 import { LoadingOverlayService } from '../../services/loading-overlay/loading-overlay.service';
+import { MatProgressSpinnerOptions } from '../../utils/mat-progress-spinner';
 
 @Directive({
   selector: '[cahOverlayLoading]',

@@ -1,4 +1,4 @@
-import { gql } from 'client/app/utils/gql';
+import { gql } from '../../utils/gql';
 
 export const INTROSPECTION_QUERY = gql`
   query IntrospectionQuery {

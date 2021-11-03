@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { TIncomingRelay } from 'client/app/@types/global';
-import { CreateGameInput, NewGameNode } from 'client/app/@types/graphql';
-import { CREATE_GAME_LOCAL_MUTATION, CREATE_GAME_MUTATION, NEW_GAME_QUERY } from 'client/app/graphql';
+import { TIncomingRelay } from '../../@types/global';
+import { CreateGameInput, NewGameNode } from '../../@types/graphql';
+import { CREATE_GAME_LOCAL_MUTATION, CREATE_GAME_MUTATION, NEW_GAME_QUERY } from '../../graphql';
 
 @Injectable({
   providedIn: 'root',

@@ -43,7 +43,7 @@
         <mat-checkbox matInput formControlName="remember" class="flex-grow-1 text-muted">Remember me</mat-checkbox>
 
         <button mat-raised-button #login type="button" class="btn btn-lg btn-dark flex-grow-1" cahDebounceClick
-          (debounceClick)="loginManual($event, loginForm)" [disabled]="!loginForm.valid || facebook.disabled || google.disabled" [ngClass]="{
+          (debounceClick)="loginManual(loginForm)" [disabled]="!loginForm.valid || facebook.disabled || google.disabled" [ngClass]="{
             'progress-bar': loginForm.valid && login.disabled,
             'progress-bar-striped': loginForm.valid && login.disabled,
             'progress-bar-animated': loginForm.valid && login.disabled
@@ -54,8 +54,10 @@
       </div>
 
       <div class="d-grid gap-2 d-flex justify-content-around">
-        <button mat-stroked-button type="button" class="btn btn-sm btn-link text-dark flex-grow-1" routerLink="/auth/register">Register now</button>
-        <button mat-stroked-button type="button" class="btn btn-sm btn-link text-dark flex-grow-1" routerLink="/auth/forgot-password">Forgot password ?</button>
+        <button mat-stroked-button type="button" class="btn btn-sm btn-link text-dark flex-grow-1" routerLink="/auth/register">Register
+          now</button>
+        <button mat-stroked-button type="button" class="btn btn-sm btn-link text-dark flex-grow-1" routerLink="/auth/forgot-password">Forgot
+          password ?</button>
       </div>
     </form>
   </div>

@@ -1,7 +1,7 @@
 import { DOCUMENT, ɵgetDOM as getDOM } from '@angular/common';
 import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { ɵSharedStylesHost } from '@angular/platform-browser';
-import { CSP_NONCE_META } from 'client/app/modules/cah/cah.module';
+import { CSP_NONCE_META } from '../../modules/cah/cah.module';
 
 @Injectable({
   providedIn: 'root',

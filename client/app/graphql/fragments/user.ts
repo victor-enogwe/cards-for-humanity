@@ -1,4 +1,4 @@
-import { gql } from 'client/app/utils/gql';
+import { gql } from '../../utils/gql';
 
 export const USER_NODE_FRAGMENT = gql`
   fragment UserNode on UserNode {

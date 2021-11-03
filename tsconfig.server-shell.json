@@ -2,7 +2,7 @@
 {
   "extends": "./tsconfig.app.json",
   "compilerOptions": {
-    "outDir": "./static/server",
+    "outDir": "./static",
     "declaration": true,
     "types": [
       "node"

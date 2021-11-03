@@ -7,8 +7,6 @@ import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
 import { resolve } from 'path';
 import 'zone.js/node';
 
-export * from '../client/main.server';
-
 const { AppServerModule, LAZY_MODULE_MAP } = require('../client/main.server');
 
 const [url] = process.argv.slice(2);
@@ -20,7 +18,7 @@ const options: RenderOptions = {
   url,
   inlineCriticalCss: true,
   documentFilePath,
-  publicPath: 'static/browser/',
+  // publicPath: 'static/browser/',
   providers: [provideModuleMap(LAZY_MODULE_MAP)],
 };
 

@@ -1,6 +1,6 @@
 import { APP_BASE_HREF, DOCUMENT, isPlatformServer } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { APP_INITIALIZER, InjectionToken, NgModule, PLATFORM_ID } from '@angular/core';
+import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { APP_INITIALIZER, ErrorHandler, InjectionToken, NgModule, PLATFORM_ID } from '@angular/core';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule, ɵDomSharedStylesHost } from '@angular/platform-browser';
@@ -9,24 +9,25 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { Drivers, Storage, StorageConfig } from '@ionic/storage';
 import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } from 'angularx-social-login';
 import { APOLLO_OPTIONS } from 'apollo-angular';
-import { CahComponent } from 'client/app/components/shared/cah/cah.component';
-import { INTROSPECTION_QUERY } from 'client/app/graphql';
-import { CahRoutingModule } from 'client/app/modules/routing/routing.module';
-import { SharedModule } from 'client/app/modules/shared/shared.module';
-import { AuthService } from 'client/app/services/auth/auth.service';
-import { CahDialogService } from 'client/app/services/cah-dialog/cah-dialog.service';
-import { DynamicOverlayService } from 'client/app/services/dynamic-overlay/dynamic-overlay.service';
-import { ErrorHandlerService } from 'client/app/services/error-handler/error-handler.service';
-import { GraphqlService } from 'client/app/services/graphql/graphql.service';
-import { LoadingOverlayService } from 'client/app/services/loading-overlay/loading-overlay.service';
-import { LoggerService } from 'client/app/services/logger/logger.service';
-import { MainContentRefService } from 'client/app/services/main-content-ref/main-content-ref.service';
-import { NonceService } from 'client/app/services/nonce/nonce.service';
-import { SeoService } from 'client/app/services/seo/seo.service';
-import { NoopStorage } from 'client/app/utils/noop-storage';
-import { environment } from 'client/environments/environment';
 import { CookieService } from 'ngx-cookie-service';
 import { delay, first, lastValueFrom, of, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { CahComponent } from '../../components/shared/cah/cah.component';
+import { INTROSPECTION_QUERY } from '../../graphql';
+import { GlobalErrorInterceptor } from '../../interceptors/global-error/global-error';
+import { HttpErrorInterceptor } from '../../interceptors/http-error/http.error.interceptor';
+import { CahRoutingModule } from '../../modules/routing/routing.module';
+import { SharedModule } from '../../modules/shared/shared.module';
+import { AuthService } from '../../services/auth/auth.service';
+import { CahDialogService } from '../../services/cah-dialog/cah-dialog.service';
+import { DynamicOverlayService } from '../../services/dynamic-overlay/dynamic-overlay.service';
+import { GraphqlService } from '../../services/graphql/graphql.service';
+import { LoadingOverlayService } from '../../services/loading-overlay/loading-overlay.service';
+import { LoggerService } from '../../services/logger/logger.service';
+import { MainContentRefService } from '../../services/main-content-ref/main-content-ref.service';
+import { NonceService } from '../../services/nonce/nonce.service';
+import { SeoService } from '../../services/seo/seo.service';
+import { NoopStorage } from '../../utils/noop-storage';
 
 export const APP_HOST = new InjectionToken<string>('host');
 export const SOCIAL_AUTH_CONFIG = new InjectionToken<SocialAuthServiceConfig>('SocialAuthServiceConfig.config');
@@ -39,7 +40,7 @@ const cacheFactory = (graphqlService: GraphqlService) => () => graphqlService.in
 const storageFactory = (config: StorageConfig, pId: Object) => (isPlatformServer(pId) ? new NoopStorage() : new Storage(config));
 const graphqlFactory = () => async () => {
   if (environment.production) return;
-  lastValueFrom(
+  return lastValueFrom(
     of(INTROSPECTION_QUERY).pipe(
       delay(3000),
       first(),
@@ -53,6 +54,10 @@ const graphqlFactory = () => async () => {
   imports: [
     BrowserModule.withServerTransition({ appId: 'cards-against-humanity' }),
     HttpClientModule,
+    HttpClientXsrfModule.withOptions({
+      cookieName: 'csrftoken',
+      headerName: 'X-CSRFTOKEN',
+    }),
     BrowserAnimationsModule,
     MatSnackBarModule,
     CahRoutingModule,
@@ -74,7 +79,6 @@ const graphqlFactory = () => async () => {
     LoadingOverlayService,
     CahDialogService,
     LoggerService,
-    ErrorHandlerService,
     {
       provide: STORAGE_CONFIG_TOKEN,
       useValue: {
@@ -112,9 +116,8 @@ const graphqlFactory = () => async () => {
     { provide: APP_INITIALIZER, useFactory: seoFactory, multi: true, deps: [SeoService] },
     { provide: APP_INITIALIZER, useFactory: graphqlFactory, multi: true },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
-    // { provide: HTTP_INTERCEPTORS, useClass: HttpHeadersInterceptor, multi: true },
-    // { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
-    // { provide: ErrorHandler, useClass: GlobalErrorInterceptor },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+    { provide: ErrorHandler, useClass: GlobalErrorInterceptor },
   ],
   bootstrap: [CahComponent],
 })

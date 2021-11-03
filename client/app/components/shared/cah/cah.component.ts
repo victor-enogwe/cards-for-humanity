@@ -2,10 +2,10 @@ import { isPlatformServer } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject, PLATFORM_ID } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { Event as RouterEvents, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
-import { loadingAnimations, navigationAnimations } from 'client/app/animations';
-import { APP_HOST } from 'client/app/modules/cah/cah.module';
-import { SafeUrlPipe } from 'client/app/pipes/safe-url/safe-url.pipe';
 import { filter, map } from 'rxjs';
+import { loadingAnimations, navigationAnimations } from '../../../animations';
+import { APP_HOST } from '../../../modules/cah/cah.module';
+import { SafeUrlPipe } from '../../../pipes/safe-url/safe-url.pipe';
 
 @Component({
   selector: 'cah-root',

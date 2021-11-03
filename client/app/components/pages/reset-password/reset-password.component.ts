@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FormService } from 'client/app/services/form/form.service';
+import { FormService } from '../../../services/form/form.service';
 
 @Component({
   selector: 'cah-reset-password',

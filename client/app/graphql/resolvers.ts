@@ -1,5 +1,5 @@
 import { InMemoryCache } from '@apollo/client/core';
-import { GenreNode, Resolvers } from 'client/app/@types/graphql';
+import { GenreNode, Resolvers } from '../@types/graphql';
 import { GENRE_NODE_FRAGMENT } from './fragments';
 import { NEW_GAME_QUERY } from './queries';
 

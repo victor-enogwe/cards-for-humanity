@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { AllGenre, Genre, TIncomingRelay } from 'client/app/@types/global';
-import { GENRES_QUERY, GENRE_NODE_FRAGMENT } from 'client/app/graphql';
+import { AllGenre, Genre, TIncomingRelay } from '../../@types/global';
+import { GENRES_QUERY, GENRE_NODE_FRAGMENT } from '../../graphql';
 
 @Injectable({
   providedIn: 'root',

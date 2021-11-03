@@ -1,9 +1,8 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Routes, RouterModule } from '@angular/router';
-
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 // components
-import { ShopComponent } from 'client/app/components/pages/shop/shop.component';
+import { ShopComponent } from '../../components/pages/shop/shop.component';
 
 const routes: Routes = [{ path: '', component: ShopComponent }];
 

@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthUser } from 'client/app/@types/global';
+import { AuthUser } from '../../../@types/global';
 import { CookieService } from 'ngx-cookie-service';
 import { lastValueFrom, of } from 'rxjs';
-import { catchError, debounceTime, mergeMap, tap } from 'rxjs/operators';
+import { debounceTime, finalize, mergeMap, tap } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth/auth.service';
 import { FormService } from '../../../services/form/form.service';
 
@@ -14,7 +14,7 @@ import { FormService } from '../../../services/form/form.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
-  rememberCookie = 'cah_credentials';
+  rememberCookie = 'CAH';
   showPassword = false;
   user = this.authService.decodeObject(this.cookieService.get(this.rememberCookie)) as AuthUser;
   loginSocial = this.authService.signUpSocial;
@@ -48,22 +48,17 @@ export class LoginComponent {
     }
   }
 
-  loginManual(event: any, form: FormGroup) {
-    const { username, password }: AuthUser = form.value;
+  async loginManual(form: FormGroup) {
     return lastValueFrom(
-      of(event).pipe(
-        tap((e) => (e.target.disabled = true)),
+      of(form).pipe(
         tap(() => form.disable()),
-        mergeMap(() => this.authService.signInManual({ username, password })),
+        mergeMap(({ value: { username, password } }) => this.authService.signInManual({ username, password })),
+        tap(console.log),
         tap((response: any) => this.authService.setCookie({ name: 'token', value: response.data['tokenAuth']['token'], expiry: 7 })),
         tap(() => this.rememberUser(form.value)),
         debounceTime(1000),
         tap(() => this.router.navigate(['/play'])),
-        catchError((error) => {
-          event.target.disabled = false;
-          form.enable();
-          return error;
-        }),
+        finalize(() => form.enable()),
       ),
     );
   }

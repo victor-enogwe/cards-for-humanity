@@ -1,4 +1,4 @@
-import { gql } from 'client/app/utils/gql';
+import { gql } from '../../utils/gql';
 import { NEW_GAME_NODE_FRAGMENT } from '../fragments';
 
 export const NEW_GAME_QUERY = gql`

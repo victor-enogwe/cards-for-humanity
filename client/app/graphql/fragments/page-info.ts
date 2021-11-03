@@ -1,4 +1,4 @@
-import { gql } from 'client/app/utils/gql';
+import { gql } from '../../utils/gql';
 
 export const PAGE_INFO_FRAGMENT = gql`
   fragment PageInfo on PageInfo {

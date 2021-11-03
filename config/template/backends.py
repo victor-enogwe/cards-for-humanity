@@ -4,7 +4,7 @@ from re import IGNORECASE, sub
 from django.http.request import HttpRequest
 from django.template import Template, TemplateDoesNotExist
 from django.template.backends.django import DjangoTemplates, reraise
-from django.http import HttpResponse
+from django.template.backends.utils import csrf_input_lazy, csrf_token_lazy
 from django.template.context import make_context
 from django.utils.encoding import force_text
 from django.views.generic.base import TemplateView
@@ -38,17 +38,18 @@ class AngularTemplate:
         return replace
 
     def html_render(self, request=None, context=None):
-        renderer = os.path.join(BASE_DIR, 'static/server/main.js')
+        renderer = os.path.join(BASE_DIR, 'static/main.js')
         js_render = muterun_js(
             renderer, request.build_absolute_uri(request.path))
         html = '{0}'.format(
             js_render.stdout.decode(encoding='UTF-8'))
         html = sub(r"(<script)|(<style)",
                    self.format(request), html, 0, IGNORECASE)
+        print(html)
         self.template.source = """
         {load}
         {html}
-        """.format(html=html, load="{% load i18n csp %}")
+        """.format(html=html, load="{% load cache i18n csp %}")
 
         self.template.nodelist = self.template.compile_nodelist()
 
@@ -61,6 +62,13 @@ class AngularTemplate:
         return content_types + [extension]
 
     def render(self, context=None, request=None):
+        if context is None:
+            context = {}
+        if request is not None:
+            context['request'] = request
+            context['csrf_input'] = csrf_input_lazy(request)
+            context['csrf_token'] = csrf_token_lazy(request)
+        print(context)
         context = make_context(
             context, request, autoescape=self.backend.engine.autoescape)
 

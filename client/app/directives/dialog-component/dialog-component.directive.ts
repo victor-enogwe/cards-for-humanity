@@ -1,10 +1,10 @@
 import { ComponentType } from '@angular/cdk/portal';
 import { Directive, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { MatDialogConfig } from '@angular/material/dialog';
-import { CahDialogService } from 'client/app/services/cah-dialog/cah-dialog.service';
-import { MainContentRefService } from 'client/app/services/main-content-ref/main-content-ref.service';
 import get from 'lodash.get';
 import { first, tap } from 'rxjs/operators';
+import { CahDialogService } from '../../services/cah-dialog/cah-dialog.service';
+import { MainContentRefService } from '../../services/main-content-ref/main-content-ref.service';
 
 @Directive({
   selector: '[cahDialogComponent]',

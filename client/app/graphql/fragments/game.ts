@@ -1,4 +1,4 @@
-import { gql } from 'client/app/utils/gql';
+import { gql } from '../../utils/gql';
 import { GENRE_NODE_FRAGMENT } from './genre';
 import { PAGE_INFO_FRAGMENT } from './page-info';
 

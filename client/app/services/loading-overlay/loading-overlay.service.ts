@@ -9,7 +9,7 @@ import {
 } from '@angular/cdk/overlay';
 import { DOCUMENT, Location } from '@angular/common';
 import { ComponentFactoryResolver, Inject, Injectable, Injector, NgZone, Renderer2, RendererFactory2 } from '@angular/core';
-import { DynamicOverlayService } from 'client/app/services/dynamic-overlay/dynamic-overlay.service';
+import { DynamicOverlayService } from '../../services/dynamic-overlay/dynamic-overlay.service';
 
 @Injectable({
   providedIn: 'root',

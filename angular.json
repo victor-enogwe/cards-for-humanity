@@ -45,10 +45,6 @@
           },
           "configurations": {
             "production": {
-              "index": {
-                "input": "client/index.server.html",
-                "output": "index.html"
-              },
               "fileReplacements": [
                 {
                   "replace": "client/environments/environment.ts",
@@ -56,7 +52,7 @@
                 }
               ],
               "baseHref": "/",
-              "deployUrl": "static/browser/",
+              "deployUrl": "/static/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -196,6 +192,7 @@
               "optimization": true
             },
             "development": {
+              "outputHashing": "none",
               "optimization": false,
               "sourceMap": true,
               "extractLicenses": false
@@ -207,17 +204,17 @@
           "builder": "@angular-devkit/build-angular:app-shell",
           "options": {
             "browserTarget": "cards-against-humanity:build",
-            "serverTarget": "cards-against-humanity:serverShell",
+            "serverTarget": "cards-against-humanity:server-shell",
             "route": "shell"
           },
           "configurations": {
             "production": {
               "browserTarget": "cards-against-humanity:build:production",
-              "serverTarget": "cards-against-humanity:serverShell:production"
+              "serverTarget": "cards-against-humanity:server-shell:production"
             }
           }
         },
-        "serverShell": {
+        "server-shell": {
           "builder": "@angular-devkit/build-angular:server",
           "options": {
             "outputPath": "static/server",
