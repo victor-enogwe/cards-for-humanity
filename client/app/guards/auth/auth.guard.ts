@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, CanActivateChild, CanLoad, Router, UrlTree } from '@angular/router';
 import { iif, Observable, of } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { CanActivateType } from '../../@types/global';
 import { AuthService } from '../../services/auth/auth.service';
 
@@ -9,19 +9,20 @@ import { AuthService } from '../../services/auth/auth.service';
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
-  auth$ = of(this.authService.isLoggedIn());
-
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(): CanActivateType {
-    return this.auth$.pipe(switchMap((auth) => iif(() => auth, of(true), of(this.router.parseUrl('/auth')))));
+    return this.authService.auth$.pipe(switchMap((auth) => iif(() => Boolean(auth), of(true), of(this.router.parseUrl('/auth')))));
   }
 
   canActivateChild(): Observable<boolean | UrlTree> {
-    return this.auth$.pipe(switchMap((auth) => iif(() => auth, of(true), of(this.router.parseUrl('/auth')))));
+    return this.authService.auth$.pipe(switchMap((auth) => iif(() => Boolean(auth), of(true), of(this.router.parseUrl('/auth')))));
   }
 
   canLoad(): Observable<boolean> {
-    return this.auth$.pipe(tap((can) => (can ? undefined : this.router.navigateByUrl('/auth'))));
+    return this.authService.auth$.pipe(
+      map((auth) => Boolean(auth)),
+      tap((can) => (can ? undefined : this.router.navigateByUrl('/auth'))),
+    );
   }
 }

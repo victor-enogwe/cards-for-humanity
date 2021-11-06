@@ -15,6 +15,7 @@ import sys
 from datetime import timedelta
 
 import environ
+from corsheaders.defaults import default_headers
 
 # source environment variables
 root = environ.Path(__file__) - 3  # get root of the project
@@ -63,6 +64,13 @@ CORS_ORIGIN_WHITELIST = ENV_HOSTS
 
 CSRF_TRUSTED_ORIGINS = ENV_HOSTS
 
+CORS_ALLOW_METHODS = ["GET", "OPTIONS", "POST"]
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "apollographql-client-name",
+    "apollographql-client-version"
+]
+
 CORS_ALLOW_CREDENTIALS = True
 
 SECURE_SSL_REDIRECT = env('ENV') == 'production'
@@ -107,8 +115,6 @@ CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src', 'img-src']
 
 # Application definition
 INSTALLED_APPS = [
-    'channels',
-    'corsheaders',
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.auth',
@@ -119,16 +125,18 @@ INSTALLED_APPS = [
     'django_filters',
     'django_cron',
     'graphene_django',
-    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
+    'channels',
+    'corsheaders',
     'social_django',
     'rest_framework',
-    'api'
+    "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
+    'api',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'csp.middleware.CSPMiddleware',
@@ -137,7 +145,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
@@ -222,23 +229,25 @@ GRAPHENE = {
     'JWT_VERIFY_EXPIRATION': True,
     "DJANGO_CHOICE_FIELD_ENUM_V3_NAMING": True,
     'GRAPHIQL_HEADER_EDITOR_ENABLED': True,
+    'SUBSCRIPTION_PATH': 'graphql/ws'
 }
 
 GRAPHQL_JWT = {
     "JWT_AUDIENCE": "cah",
     "JWT_COOKIE_NAME": "CAH",
-    "JWT_COOKIE_SECURE": not DEBUG,
-    "JWT_COOKIE_SAMESITE": "Lax" if DEBUG else "Strict",
+    "JWT_REFRESH_TOKEN_COOKIE_NAME": "CAH_TM",
+    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+    "JWT_COOKIE_SECURE": True,
+    "JWT_COOKIE_SAMESITE": "Strict",
     "JWT_CSRF_ROTATION": True,
-    "JWT_HIDE_TOKEN_FIELDS": True,
+    "JWT_HIDE_TOKEN_FIELDS": False,
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
-    "JWT_APP_DOMAIN": os.getenv("HOST", None),
+    "JWT_REUSE_REFRESH_TOKENS": False,
     "JWT_VERIFY": True,
-    "JWT_EXPIRATION_DELTA": timedelta(minutes=5),
     "JWT_VERIFY_EXPIRATION": True,
     "JWT_ALLOW_REFRESH": True,
-    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
-    "JWT_REUSE_REFRESH_TOKENS": True,
+    'JWT_SECRET_KEY': SECRET_KEY,
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=5),
     "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
 }
 
@@ -252,33 +261,25 @@ STATICFILES_DIRS = [ANGULAR_STATIC_PATH]
 
 STATIC_URL = '/static/browser/'
 
-TEMPLATE_OPTIONS = {
-    'context_processors': [
-        'django.template.context_processors.debug',
-        'django.template.context_processors.request',
-        'csp.context_processors.nonce',
-        'django.contrib.auth.context_processors.auth',
-        'django.contrib.messages.context_processors.messages',
-        'social_django.context_processors.backends',
-        'social_django.context_processors.login_redirect',
-    ],
-    'libraries': {
-        'csp': 'csp.templatetags.csp'
-    }
-}
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
         'DIRS': [DJANGO_TEMPLATE_PATH],
-        'OPTIONS': TEMPLATE_OPTIONS,
-    },
-    {
-        'BACKEND': 'config.template.backends.AngularTemplateEngine',
-        'NAME': 'angular',
-        'APP_DIRS': False,
-        'OPTIONS': TEMPLATE_OPTIONS,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'csp.context_processors.nonce',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
+            ],
+            'libraries': {
+                'csp': 'csp.templatetags.csp'
+            }
+        },
     },
 ]
 

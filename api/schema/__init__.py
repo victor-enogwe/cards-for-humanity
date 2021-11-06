@@ -1,7 +1,7 @@
 from channels_graphql_ws import GraphqlWsConsumer
 from graphene import Schema
 from graphql_jwt.decorators import login_required
-from graphql_jwt.relay import DeleteJSONWebTokenCookie, DeleteRefreshTokenCookie, ObtainJSONWebToken, Refresh, Revoke, Verify
+from graphql_jwt.relay import DeleteRefreshTokenCookie, ObtainJSONWebToken, Refresh, Verify
 from graphql_social_auth.relay import SocialAuthJWT
 
 from api.models import User
@@ -25,10 +25,7 @@ class Mutation(UserMutation, GameMutation, graphene.ObjectType):
     token_auth = ObtainJSONWebToken.Field()
     verify_token = Verify.Field()
     refresh_token = Refresh.Field()
-    delete_token_cookie = DeleteJSONWebTokenCookie.Field()
     delete_refresh_token_cookie = DeleteRefreshTokenCookie.Field()
-    # Long running refresh tokens
-    revoke_token = Revoke.Field()
 
 
 class Subscription(GameSubscription, GenreSubscription, graphene.ObjectType):

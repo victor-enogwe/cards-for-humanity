@@ -40,7 +40,13 @@ type Query {
     last: Int
     offset: Int
   ): GenreNodeConnection
+  """
+  @client
+   user authenticated flag
+  """
+  isLoggedIn: Boolean
   newGame(id: ID!): NewGameNode
+  profile: UserNode
   whiteCards(
     after: String
     before: String
@@ -500,12 +506,13 @@ Root Mutation for the cards against humanity api.
 """
 type Mutation {
   createGame(input: CreateGameInput!): CreateGameMutation
-  createNewGame(input: CreateGameInput): CreateNewGameMutation
+  createNewGame(input: CreateGameInput!): CreateNewGameMutation
   createUser(email: String!, password: String!): CreateUserPayload
   deleteRefreshTokenCookie(input: DeleteRefreshTokenCookieInput!): DeleteRefreshTokenCookiePayload
   deleteTokenCookie(input: DeleteJSONWebTokenCookieInput!): DeleteJSONWebTokenCookiePayload
   refreshToken(input: RefreshInput!): RefreshPayload
   revokeToken(input: RevokeInput!): RevokePayload
+  saveProfile(input: SaveProfileInput!): SaveProfileMutation
   """
   Social Auth for JSON Web Token (JWT)
   """
@@ -608,6 +615,15 @@ input RevokeInput {
 type RevokePayload {
   clientMutationId: String
   revoked: Int!
+}
+
+input SaveProfileInput {
+  id: ID!
+  username: String!
+}
+
+type SaveProfileMutation {
+  profile: UserNode
 }
 
 input SocialAuthJWTInput {

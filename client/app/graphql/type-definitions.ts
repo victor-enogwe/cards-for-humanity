@@ -38,7 +38,10 @@ export const typeDefs = gql`
       last: Int
       offset: Int
     ): GenreNodeConnection
+
+    isLoggedIn: Boolean
     newGame(id: ID!): NewGameNode
+    profile: UserNode
     whiteCards(
       after: String
       before: String
@@ -353,12 +356,13 @@ export const typeDefs = gql`
 
   type Mutation {
     createGame(input: CreateGameInput!): CreateGameMutation
-    createNewGame(input: CreateGameInput): CreateNewGameMutation
+    createNewGame(input: CreateGameInput!): CreateNewGameMutation
     createUser(email: String!, password: String!): CreateUserPayload
     deleteRefreshTokenCookie(input: DeleteRefreshTokenCookieInput!): DeleteRefreshTokenCookiePayload
     deleteTokenCookie(input: DeleteJSONWebTokenCookieInput!): DeleteJSONWebTokenCookiePayload
     refreshToken(input: RefreshInput!): RefreshPayload
     revokeToken(input: RevokeInput!): RevokePayload
+    saveProfile(input: SaveProfileInput!): SaveProfileMutation
 
     socialAuth(input: SocialAuthJWTInput!): SocialAuthJWTPayload
 
@@ -444,6 +448,15 @@ export const typeDefs = gql`
   type RevokePayload {
     clientMutationId: String
     revoked: Int!
+  }
+
+  input SaveProfileInput {
+    id: ID!
+    username: String!
+  }
+
+  type SaveProfileMutation {
+    profile: UserNode
   }
 
   input SocialAuthJWTInput {

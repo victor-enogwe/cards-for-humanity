@@ -15,6 +15,11 @@ export interface AnyObject<V = any> {
   [property: string]: V;
 }
 
+export interface BroadCast extends AnyObject {
+  event: 'login' | 'logout';
+  message: string;
+}
+
 interface ApolloCahClient<TCache> extends Omit<ApolloClient<TCache>, 'devToolsHookCb'> {
   devToolsHookCb: Function;
 }

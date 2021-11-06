@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthUser } from '../../../@types/global';
 import { CookieService } from 'ngx-cookie-service';
 import { lastValueFrom, of } from 'rxjs';
 import { debounceTime, finalize, mergeMap, tap } from 'rxjs/operators';
+import { AuthUser } from '../../../@types/global';
+import { ObtainJsonWebTokenPayload } from '../../../@types/graphql';
 import { AuthService } from '../../../services/auth/auth.service';
 import { FormService } from '../../../services/form/form.service';
 
@@ -14,7 +15,7 @@ import { FormService } from '../../../services/form/form.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
-  rememberCookie = 'CAH';
+  rememberCookie = 'CAH_RM';
   showPassword = false;
   user = this.authService.decodeObject(this.cookieService.get(this.rememberCookie)) as AuthUser;
   loginSocial = this.authService.signUpSocial;
@@ -39,12 +40,18 @@ export class LoginComponent {
     return isEmail ? Validators.email(usernameControl) : Validators.required(usernameControl);
   }
 
-  rememberUser(user: AuthUser) {
-    switch (user.remember) {
+  rememberUser(credentials: AuthUser, { payload, token }: ObtainJsonWebTokenPayload) {
+    this.authService.auth$.next(token);
+    this.authService.profile$.next(payload);
+    switch (credentials.remember) {
       case true:
-        return this.authService.setCookie({ name: this.rememberCookie, value: this.authService.encodeObject(user) });
+        return this.authService.setCookie({
+          name: this.rememberCookie,
+          value: this.authService.encodeObject(credentials),
+          path: '/auth/login',
+        });
       default:
-        return this.cookieService.delete(this.rememberCookie, this.rememberCookie);
+        return this.authService.clearCookies('/auth/login');
     }
   }
 
@@ -53,9 +60,8 @@ export class LoginComponent {
       of(form).pipe(
         tap(() => form.disable()),
         mergeMap(({ value: { username, password } }) => this.authService.signInManual({ username, password })),
-        tap(console.log),
-        tap((response: any) => this.authService.setCookie({ name: 'token', value: response.data['tokenAuth']['token'], expiry: 7 })),
-        tap(() => this.rememberUser(form.value)),
+        tap(() => this.authService),
+        tap(({ data }) => this.rememberUser(form.value, data?.tokenAuth!)),
         debounceTime(1000),
         tap(() => this.router.navigate(['/play'])),
         finalize(() => form.enable()),

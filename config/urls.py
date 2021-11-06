@@ -20,35 +20,41 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView
-from graphql_jwt.decorators import jwt_cookie
 
 from api.schema import GraphqlWsConsumer
-from config.views import AngularView, AppGraphQLView
+from api.utils import jwt_cookie
+from config.settings import DEBUG
+from config.views import AngularView, GraphiQLView
 
-angular_urls = [
-    'auth',
-    'auth/login',
-    'auth/register',
-    'auth/forgot-password',
-    'auth/reset-password',
-    'play/options',
-    'play',
-    'shop',
+angular_paths = [
+    'auth/?',
+    'auth/login/?',
+    'auth/register/?',
+    'auth/forgot-password/?',
+    'auth/reset-password/?',
+    'play/options/?',
+    'play/?',
+    'shop/?',
     '',
-    '404',
+    '404/?',
 ]
+
+angular_urls = [url(r'{0}$'.format(uri), AngularView.as_view())
+                for uri in angular_paths]
 
 asgiurlpatterns = ProtocolTypeRouter({
     'websocket': AuthMiddlewareStack(URLRouter([path('graphql/ws', GraphqlWsConsumer.as_asgi())]))
 })
 
-graphql_view = AppGraphQLView.as_view(graphiql=environ['DEBUG'])
+graphql_view = GraphiQLView.as_view(graphiql=environ['DEBUG'])
 
 urlpatterns = [
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     url('admin/', admin.site.urls),
-    url('graphql', jwt_cookie(graphql_view)),
+    url('graphql', jwt_cookie(csrf_exempt(graphql_view)) if DEBUG else graphql_view),
     url('favicon.ico',
         RedirectView.as_view(url='static/browser/assets/img/favicon.ico')),
-] + [url(r'{0}'.format(uri), AngularView.as_view()) for uri in angular_urls]
+    path('', include(angular_urls))
+]

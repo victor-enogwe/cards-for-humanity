@@ -7,23 +7,20 @@ import { AuthService } from '../../services/auth/auth.service';
   providedIn: 'root',
 })
 export class NoAuthGuard implements CanActivate, CanActivateChild, CanLoad {
-  auth$ = of(this.authService.isLoggedIn());
-
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(): Observable<boolean | UrlTree> {
-    return this.auth$.pipe(switchMap((auth) => iif(() => !auth, of(true), of(this.router.parseUrl('/play')))));
+    return this.authService.auth$.pipe(switchMap((auth) => iif(() => !Boolean(auth), of(true), of(this.router.parseUrl('/play')))));
   }
 
   canActivateChild(): Observable<boolean | UrlTree> {
-    return this.auth$.pipe(switchMap((auth) => iif(() => !auth, of(true), of(this.router.parseUrl('/play')))));
+    return this.authService.auth$.pipe(switchMap((auth) => iif(() => !Boolean(auth), of(true), of(this.router.parseUrl('/play')))));
   }
 
   canLoad(): Observable<boolean> {
-    return this.auth$.pipe(
-      tap(() => console.log(this.authService.cookieService.check('token'), document.cookie)),
-      tap((auth) => (auth ? this.router.navigateByUrl('/play') : {})),
-      map((auth) => !auth),
+    return this.authService.auth$.pipe(
+      map((auth) => !Boolean(auth)),
+      tap((auth) => (auth ? undefined : this.router.navigateByUrl('/play'))),
     );
   }
 }

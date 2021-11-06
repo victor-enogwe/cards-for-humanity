@@ -1,5 +1,5 @@
-import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
@@ -34,7 +34,13 @@ export interface Query {
   readonly game?: Maybe<GameNode>;
   /** all cards genre */
   readonly genres?: Maybe<GenreNodeConnection>;
+  /**
+   * @client
+   *  user authenticated flag
+   */
+  readonly isLoggedIn?: Maybe<Scalars['Boolean']>;
   readonly newGame?: Maybe<NewGameNode>;
+  readonly profile?: Maybe<UserNode>;
   readonly whiteCards?: Maybe<WhiteCardNodeConnection>;
 }
 
@@ -452,6 +458,7 @@ export interface Mutation {
   readonly deleteTokenCookie?: Maybe<DeleteJsonWebTokenCookiePayload>;
   readonly refreshToken?: Maybe<RefreshPayload>;
   readonly revokeToken?: Maybe<RevokePayload>;
+  readonly saveProfile?: Maybe<SaveProfileMutation>;
   /** Social Auth for JSON Web Token (JWT) */
   readonly socialAuth?: Maybe<SocialAuthJwtPayload>;
   /** Obtain JSON Web Token mutation */
@@ -467,7 +474,7 @@ export interface MutationCreateGameArgs {
 
 /** Root Mutation for the cards against humanity api. */
 export interface MutationCreateNewGameArgs {
-  input?: Maybe<CreateGameInput>;
+  input: CreateGameInput;
 }
 
 /** Root Mutation for the cards against humanity api. */
@@ -494,6 +501,11 @@ export interface MutationRefreshTokenArgs {
 /** Root Mutation for the cards against humanity api. */
 export interface MutationRevokeTokenArgs {
   input: RevokeInput;
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationSaveProfileArgs {
+  input: SaveProfileInput;
 }
 
 /** Root Mutation for the cards against humanity api. */
@@ -603,6 +615,16 @@ export interface RevokePayload {
   readonly revoked: Scalars['Int'];
 }
 
+export interface SaveProfileInput {
+  readonly id: Scalars['ID'];
+  readonly username: Scalars['String'];
+}
+
+export interface SaveProfileMutation {
+  readonly __typename?: 'SaveProfileMutation';
+  readonly profile?: Maybe<UserNode>;
+}
+
 export interface SocialAuthJwtInput {
   readonly accessToken: Scalars['String'];
   readonly clientMutationId?: Maybe<Scalars['String']>;
@@ -670,12 +692,23 @@ export interface GenreSubscriptionType {
   readonly event?: Maybe<Scalars['String']>;
 }
 
-export type QueryKeySpecifier = ('blackCards' | 'game' | 'genres' | 'newGame' | 'whiteCards' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = (
+  | 'blackCards'
+  | 'game'
+  | 'genres'
+  | 'isLoggedIn'
+  | 'newGame'
+  | 'profile'
+  | 'whiteCards'
+  | QueryKeySpecifier
+)[];
 export type QueryFieldPolicy = {
   blackCards?: FieldPolicy<any> | FieldReadFunction<any>;
   game?: FieldPolicy<any> | FieldReadFunction<any>;
   genres?: FieldPolicy<any> | FieldReadFunction<any>;
+  isLoggedIn?: FieldPolicy<any> | FieldReadFunction<any>;
   newGame?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteCards?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type BlackCardNodeConnectionKeySpecifier = (
@@ -908,6 +941,7 @@ export type MutationKeySpecifier = (
   | 'deleteTokenCookie'
   | 'refreshToken'
   | 'revokeToken'
+  | 'saveProfile'
   | 'socialAuth'
   | 'tokenAuth'
   | 'updateGame'
@@ -922,6 +956,7 @@ export type MutationFieldPolicy = {
   deleteTokenCookie?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeToken?: FieldPolicy<any> | FieldReadFunction<any>;
+  saveProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   socialAuth?: FieldPolicy<any> | FieldReadFunction<any>;
   tokenAuth?: FieldPolicy<any> | FieldReadFunction<any>;
   updateGame?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -977,6 +1012,10 @@ export type RevokePayloadKeySpecifier = ('clientMutationId' | 'revoked' | Revoke
 export type RevokePayloadFieldPolicy = {
   clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
   revoked?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SaveProfileMutationKeySpecifier = ('profile' | SaveProfileMutationKeySpecifier)[];
+export type SaveProfileMutationFieldPolicy = {
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SocialAuthJWTPayloadKeySpecifier = ('clientMutationId' | 'social' | 'token' | SocialAuthJWTPayloadKeySpecifier)[];
 export type SocialAuthJWTPayloadFieldPolicy = {
@@ -1154,6 +1193,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | RevokePayloadKeySpecifier | (() => undefined | RevokePayloadKeySpecifier);
     fields?: RevokePayloadFieldPolicy;
   };
+  SaveProfileMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SaveProfileMutationKeySpecifier | (() => undefined | SaveProfileMutationKeySpecifier);
+    fields?: SaveProfileMutationFieldPolicy;
+  };
   SocialAuthJWTPayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SocialAuthJWTPayloadKeySpecifier | (() => undefined | SocialAuthJWTPayloadKeySpecifier);
     fields?: SocialAuthJWTPayloadFieldPolicy;
@@ -1327,6 +1370,8 @@ export type ResolversTypes = ResolversObject<{
   GenericScalar: ResolverTypeWrapper<Scalars['GenericScalar']>;
   RevokeInput: RevokeInput;
   RevokePayload: ResolverTypeWrapper<RevokePayload>;
+  SaveProfileInput: SaveProfileInput;
+  SaveProfileMutation: ResolverTypeWrapper<SaveProfileMutation>;
   SocialAuthJWTInput: SocialAuthJwtInput;
   SocialAuthJWTPayload: ResolverTypeWrapper<SocialAuthJwtPayload>;
   ObtainJSONWebTokenInput: ObtainJsonWebTokenInput;
@@ -1399,6 +1444,8 @@ export type ResolversParentTypes = ResolversObject<{
   GenericScalar: Scalars['GenericScalar'];
   RevokeInput: RevokeInput;
   RevokePayload: RevokePayload;
+  SaveProfileInput: SaveProfileInput;
+  SaveProfileMutation: SaveProfileMutation;
   SocialAuthJWTInput: SocialAuthJwtInput;
   SocialAuthJWTPayload: SocialAuthJwtPayload;
   ObtainJSONWebTokenInput: ObtainJsonWebTokenInput;
@@ -1424,7 +1471,9 @@ export type QueryResolvers<
   >;
   game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType, RequireFields<QueryGameArgs, never>>;
   genres?: Resolver<Maybe<ResolversTypes['GenreNodeConnection']>, ParentType, ContextType, RequireFields<QueryGenresArgs, never>>;
+  isLoggedIn?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   newGame?: Resolver<Maybe<ResolversTypes['NewGameNode']>, ParentType, ContextType, RequireFields<QueryNewGameArgs, 'id'>>;
+  profile?: Resolver<Maybe<ResolversTypes['UserNode']>, ParentType, ContextType>;
   whiteCards?: Resolver<
     Maybe<ResolversTypes['WhiteCardNodeConnection']>,
     ParentType,
@@ -1723,7 +1772,7 @@ export type MutationResolvers<
     Maybe<ResolversTypes['CreateNewGameMutation']>,
     ParentType,
     ContextType,
-    RequireFields<MutationCreateNewGameArgs, never>
+    RequireFields<MutationCreateNewGameArgs, 'input'>
   >;
   createUser?: Resolver<
     Maybe<ResolversTypes['CreateUserPayload']>,
@@ -1750,6 +1799,12 @@ export type MutationResolvers<
     RequireFields<MutationRefreshTokenArgs, 'input'>
   >;
   revokeToken?: Resolver<Maybe<ResolversTypes['RevokePayload']>, ParentType, ContextType, RequireFields<MutationRevokeTokenArgs, 'input'>>;
+  saveProfile?: Resolver<
+    Maybe<ResolversTypes['SaveProfileMutation']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationSaveProfileArgs, 'input'>
+  >;
   socialAuth?: Resolver<
     Maybe<ResolversTypes['SocialAuthJWTPayload']>,
     ParentType,
@@ -1862,6 +1917,14 @@ export type RevokePayloadResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type SaveProfileMutationResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['SaveProfileMutation'] = ResolversParentTypes['SaveProfileMutation'],
+> = ResolversObject<{
+  profile?: Resolver<Maybe<ResolversTypes['UserNode']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type SocialAuthJwtPayloadResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['SocialAuthJWTPayload'] = ResolversParentTypes['SocialAuthJWTPayload'],
@@ -1963,6 +2026,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   RefreshPayload?: RefreshPayloadResolvers<ContextType>;
   GenericScalar?: GraphQLScalarType;
   RevokePayload?: RevokePayloadResolvers<ContextType>;
+  SaveProfileMutation?: SaveProfileMutationResolvers<ContextType>;
   SocialAuthJWTPayload?: SocialAuthJwtPayloadResolvers<ContextType>;
   ObtainJSONWebTokenPayload?: ObtainJsonWebTokenPayloadResolvers<ContextType>;
   EditGameMutation?: EditGameMutationResolvers<ContextType>;

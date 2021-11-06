@@ -5,7 +5,7 @@
         <ng-template matStepperIcon="genres">
           <mat-icon>category</mat-icon>
         </ng-template>
-        <ng-template matStepLabel>Select Genres to Play</ng-template>
+        <ng-template matStepLabel>Select Genre Decks to Play</ng-template>
         <form [formGroup]="genreOptionsForm" class="mt-4">
           <mat-form-field class="w-100">
             <mat-label>game genres</mat-label>
@@ -96,7 +96,8 @@
               <mat-icon aria-hidden="false" aria-label="previous step" matTooltip="Back" matTooltipPosition="right">arrow_back</mat-icon>
             </button>
 
-            <button mat-mini-fab flexFill [disabled]="!gameOptionsForm.valid && !gameOptionsForm.dirty" color="primary">
+            <button mat-mini-fab flexFill [disabled]="!gameOptionsForm.valid && !gameOptionsForm.dirty" color="primary" cahDebounceClick
+              (debounceClick)="createNewGame()">
               <mat-icon aria-hidden="false" aria-label="start game" matTooltip="Start New Game" matTooltipPosition="left">
                 play_arrow
               </mat-icon>

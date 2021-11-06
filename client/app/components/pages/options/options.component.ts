@@ -135,5 +135,9 @@ export class OptionsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  createGame() {}
+  createNewGame() {
+    const game: NewGameNode = { ...this.gameOptionsForm.value, ...this.genreOptionsForm.value };
+    console.log(game);
+    return this.gameService.createNewGame(game);
+  }
 }

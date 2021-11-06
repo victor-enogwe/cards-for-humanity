@@ -14,7 +14,7 @@ export class GameService {
     return this.apollo.watchQuery<{ newGame: TIncomingRelay<NewGameNode> }>({
       query: NEW_GAME_QUERY,
       variables,
-      fetchPolicy: 'cache-and-network',
+      fetchPolicy: 'cache-only',
     });
   }
 

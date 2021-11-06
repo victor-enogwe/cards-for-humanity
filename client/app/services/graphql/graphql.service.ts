@@ -1,22 +1,29 @@
 import { isPlatformServer } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { ApolloClientOptions, ApolloLink, FetchResult, from, InMemoryCache, NormalizedCacheObject, Observable } from '@apollo/client/core';
+import {
+  ApolloClientOptions,
+  ApolloLink,
+  FetchResult,
+  from,
+  InMemoryCache,
+  NormalizedCacheObject,
+  Observable,
+  split,
+} from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
 import { ErrorResponse, onError } from '@apollo/client/link/error';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { Storage } from '@ionic/storage';
-import { HttpLink } from 'apollo-angular/http';
 import { createPersistedQueryLink } from 'apollo-angular/persisted-queries';
 import { IonicStorageWrapper, persistCache } from 'apollo3-cache-persist';
-// import { onError } from '../../utils/error.link';
 import { sha256 } from 'crypto-hash';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../../../environments/environment';
 import { Definition } from '../../@types/global';
 import { IntrospectionLink, resolvers, typeDefs, typePolicies } from '../../graphql';
 import possibleTypes from '../../graphql/possible-types';
+import { HttpLinkService } from '../http-link/http-link.service';
 
 @Injectable({
   providedIn: 'root',
@@ -35,11 +42,15 @@ export class GraphqlService {
   headersLink = setContext(this.headers.bind(this));
   errorLink = onError(this.handleErrors.bind(this));
   persistedQueryLink = createPersistedQueryLink({ sha256 });
-  httpLink = new HttpLink(this.httpClient).create({ uri: environment.HTTP_LINK, withCredentials: true });
   wsLink = this.ssr
     ? new ApolloLink()
     : new WebSocketLink({ uri: environment.WS_LINK, options: { reconnect: true, connectionParams: { authToken: '' }, lazy: true } });
-  link = from([this.introspectionLink, this.persistedQueryLink, this.headersLink, this.httpLink]);
+  link = from([
+    this.introspectionLink,
+    this.persistedQueryLink,
+    this.headersLink,
+    split(this.queryKind.bind(this), this.httpLink, this.wsLink),
+  ]);
   config: ApolloClientOptions<NormalizedCacheObject> = {
     link: this.link,
     cache: this.cache,
@@ -47,6 +58,10 @@ export class GraphqlService {
     queryDeduplication: true,
     typeDefs,
     assumeImmutableResults: true,
+    name: 'cah',
+    version: '0.1',
+    ssrMode: this.ssr,
+    uri: environment.HTTP_LINK,
     resolvers,
     defaultOptions: {
       watchQuery: {
@@ -55,7 +70,6 @@ export class GraphqlService {
         errorPolicy: 'none',
       },
       mutate: {
-        fetchPolicy: 'network-only',
         errorPolicy: 'none',
       },
       query: {
@@ -67,7 +81,7 @@ export class GraphqlService {
 
   constructor(
     private readonly storage: Storage,
-    private httpClient: HttpClient,
+    private httpLink: HttpLinkService,
     @Inject(PLATFORM_ID) private platformId: Object,
     private cookieService: CookieService,
   ) {}
@@ -105,7 +119,6 @@ export class GraphqlService {
         'Content-Type': 'application/json',
         'X-CSRFToken': this.cookieService.get('csrftoken'),
         ...headers,
-        // Authorization: token ? `JWT ${token}` : null
       },
     };
   }

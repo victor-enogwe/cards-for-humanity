@@ -48,6 +48,7 @@ body {
 
 body {
   margin: 0;
+  background: linear-gradient(180deg, #fff 69%, #000 31%);
 }
 
 
@@ -82,7 +83,7 @@ body {
 
 .border-or {
   @include media-breakpoint-up(md) {
-    border: 1px solid
+    border-left: 1px solid
   }
 
   &::after {

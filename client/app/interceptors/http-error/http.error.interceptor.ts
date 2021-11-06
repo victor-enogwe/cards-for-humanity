@@ -1,9 +1,9 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AuthService } from '../../services/auth/auth.service';
 import get from 'lodash.get';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
@@ -18,7 +18,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         const defaultMessage = 'Something went wrong!';
         let message = get(error, 'message', get(error, 'error.message', get(error, 'error.error.message', defaultMessage)));
         if (error.status === 0) {
-          message = navigator.onLine ? 'Service down. Please try again later!' : 'Please check your internet connection';
+          message = navigator.onLine ? 'Service down. Please try again!' : 'Please check your internet connection';
         }
         return throwError(() => new Error(message));
       }),

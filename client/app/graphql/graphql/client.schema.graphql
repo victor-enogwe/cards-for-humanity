@@ -1,3 +1,8 @@
+input SaveProfileInput {
+  id: ID!
+  username: String!
+}
+
 type NewGameNode {
   id: ID!
   roundTime: Int!
@@ -12,12 +17,23 @@ type CreateNewGameMutation {
   newGame: NewGameNode
 }
 
+type SaveProfileMutation {
+  profile: UserNode
+}
+
 extend type Query {
   newGame(id: ID!): NewGameNode
+  """
+  @client
+   user authenticated flag
+  """
+  isLoggedIn: Boolean
+  profile: UserNode
 }
 
 extend type Mutation {
-  createNewGame(input: CreateGameInput): CreateNewGameMutation
+  createNewGame(input: CreateGameInput!): CreateNewGameMutation
+  saveProfile(input: SaveProfileInput!): SaveProfileMutation
 }
 
 extend type GenreNode {

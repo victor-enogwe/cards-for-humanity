@@ -11,6 +11,8 @@ export const typePolicies: TypedTypePolicies = {
     queryType: true,
     fields: {
       newGame: defaultResolvers,
+      isLoggedIn: defaultResolvers,
+      profile: defaultResolvers,
     },
   },
   GenreNode: {

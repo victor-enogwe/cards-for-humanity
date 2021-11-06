@@ -9,13 +9,15 @@ import {
   SocialUser,
 } from 'angularx-social-login';
 import { Apollo } from 'apollo-angular';
-import { environment } from '../../../environments/environment';
 import { CookieService } from 'ngx-cookie-service';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { tap } from 'rxjs/internal/operators/tap';
 import { catchError, debounceTime, mergeMap } from 'rxjs/operators';
-import { AuthUser, SignUpData } from '../../@types/global';
-import { APP_HOST, SOCIAL_AUTH_CONFIG } from '../../modules/cah/cah.module';
+import { environment } from '../../../environments/environment';
+import { SignUpData } from '../../@types/global';
+import { Mutation, ObtainJsonWebTokenInput, RefreshInput, SaveProfileInput, UserNode } from '../../@types/graphql';
+import { IS_LOGGED_IN_QUERY, LOGIN_MANUAL_MUTATION, PROFILE_QUERY, REFRESH_TOKEN, SAVE_PROFILE_MUTATION } from '../../graphql';
+import { SOCIAL_AUTH_CONFIG } from '../../modules/cah/cah.module';
 import { gql } from '../../utils/gql';
 
 @Injectable({
@@ -23,11 +25,12 @@ import { gql } from '../../utils/gql';
   deps: ['SocialAuthServiceConfig'],
 })
 export class AuthService extends Service {
+  auth$ = new BehaviorSubject<string | null>(null);
+  profile$ = new BehaviorSubject<Partial<UserNode> | null>(null);
   authProviders = { GOOGLE: 'google-oauth2', facebook: 'facebook' };
   user!: SocialUser;
 
   constructor(
-    @Inject(APP_HOST) private host: string,
     @Inject(SOCIAL_AUTH_CONFIG) config: SocialAuthServiceConfig | Promise<SocialAuthServiceConfig>,
     private apollo: Apollo,
     public cookieService: CookieService,
@@ -104,45 +107,31 @@ export class AuthService extends Service {
     });
   }
 
-  signInManual(user: AuthUser) {
-    return this.apollo.mutate({
-      mutation: gql`
-        mutation tokenAuth($user: ObtainJSONWebTokenInput!) {
-          tokenAuth(input: $user) {
-            payload
-            refreshExpiresIn
-          }
-        }
-      `,
-      variables: { user },
-    });
+  signInManual(input: ObtainJsonWebTokenInput) {
+    return this.apollo.mutate<Pick<Mutation, 'tokenAuth'>>({ mutation: LOGIN_MANUAL_MUTATION, variables: { input } });
   }
 
-  refreshToken(token: string) {
-    return this.apollo.mutate({
-      mutation: gql`
-        mutation refreshToken($input: RefreshInput!) {
-          refreshToken(input: $input) {
-            token
-          }
-        }
-      `,
-      variables: { input: { token } },
-    });
+  refreshToken(input: RefreshInput) {
+    console.log(input);
+    return this.apollo.mutate({ mutation: REFRESH_TOKEN, variables: { input } });
   }
 
-  setCookie({ name, value, expiry }: { name: string; value: string; expiry?: number | Date }) {
-    if (name) {
-      this.cookieService.set(name, value, expiry, name, this.host, environment.production, 'Strict');
-    }
+  saveProfile(input: SaveProfileInput) {
+    return this.apollo.mutate<Pick<Mutation, 'saveProfile'>>({ mutation: SAVE_PROFILE_MUTATION, variables: { input } });
   }
 
-  isLoggedIn() {
-    return this.cookieService.check('token');
+  setCookie({ name, value, expiry, path = '/' }: { name: string; value: string; expiry?: number | Date; path?: string }) {
+    return this.cookieService.set(name, value, expiry, path, undefined, environment.production, 'Strict');
+  }
+
+  clearCookies(path = '/') {
+    return this.cookieService.deleteAll(path);
   }
 
   logOut() {
-    this.cookieService.delete('token', 'token');
+    this.clearCookies('/');
+    this.apollo.client.writeQuery({ query: IS_LOGGED_IN_QUERY, data: false });
+    this.apollo.client.writeQuery({ query: PROFILE_QUERY, data: null });
     this.signOut(true);
   }
 
@@ -156,5 +145,9 @@ export class AuthService extends Service {
     } catch (error) {
       return {};
     }
+  }
+
+  refreshFactory() {
+    return this.refreshToken({}).pipe(catchError(() => of(null)));
   }
 }
