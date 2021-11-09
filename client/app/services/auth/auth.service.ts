@@ -12,13 +12,21 @@ import { Apollo } from 'apollo-angular';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { tap } from 'rxjs/internal/operators/tap';
-import { catchError, debounceTime, mergeMap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
-import { SignUpData } from '../../@types/global';
-import { Mutation, ObtainJsonWebTokenInput, RefreshInput, SaveProfileInput, UserNode } from '../../@types/graphql';
+import { catchError, first, map, mergeMap } from 'rxjs/operators';
+import { BroadCast, SignUpData } from '../../@types/global';
+import {
+  Mutation,
+  ObtainJsonWebTokenInput,
+  ObtainJsonWebTokenPayload,
+  RefreshInput,
+  RefreshPayload,
+  SaveProfileInput,
+  UserNode,
+} from '../../@types/graphql';
 import { IS_LOGGED_IN_QUERY, LOGIN_MANUAL_MUTATION, PROFILE_QUERY, REFRESH_TOKEN, SAVE_PROFILE_MUTATION } from '../../graphql';
 import { SOCIAL_AUTH_CONFIG } from '../../modules/cah/cah.module';
 import { gql } from '../../utils/gql';
+import { BroadcastService } from '../broadcast/broadcast.service';
 
 @Injectable({
   providedIn: 'root',
@@ -27,11 +35,16 @@ import { gql } from '../../utils/gql';
 export class AuthService extends Service {
   auth$ = new BehaviorSubject<string | null>(null);
   profile$ = new BehaviorSubject<Partial<UserNode> | null>(null);
+  username$ = this.profile$.pipe(
+    first(),
+    map((data) => data?.username!),
+  );
   authProviders = { GOOGLE: 'google-oauth2', facebook: 'facebook' };
   user!: SocialUser;
 
   constructor(
     @Inject(SOCIAL_AUTH_CONFIG) config: SocialAuthServiceConfig | Promise<SocialAuthServiceConfig>,
+    private broadcastService: BroadcastService,
     private apollo: Apollo,
     public cookieService: CookieService,
     private router: Router,
@@ -70,7 +83,6 @@ export class AuthService extends Service {
         mergeMap((user: SocialUser & { provider: 'GOOGLE' | 'facebook' }) => this.socialAuth(user)),
         tap((user) => this.setCookie({ name: 'token', value: user.data?.authToken ?? '', expiry: 7 })),
         tap(() => (event.target.disabled = false)),
-        debounceTime(1000),
         tap(() => this.router.navigate(['/play'])),
         catchError((error) => {
           event.target.disabled = false;
@@ -108,12 +120,19 @@ export class AuthService extends Service {
   }
 
   signInManual(input: ObtainJsonWebTokenInput) {
-    return this.apollo.mutate<Pick<Mutation, 'tokenAuth'>>({ mutation: LOGIN_MANUAL_MUTATION, variables: { input } });
+    return this.apollo.mutate<Pick<Mutation, 'tokenAuth'>>({
+      mutation: LOGIN_MANUAL_MUTATION,
+      variables: { input },
+      fetchPolicy: 'network-only',
+    });
   }
 
   refreshToken(input: RefreshInput) {
-    console.log(input);
-    return this.apollo.mutate({ mutation: REFRESH_TOKEN, variables: { input } });
+    return this.apollo.mutate<Pick<Mutation, 'refreshToken'>>({
+      mutation: REFRESH_TOKEN,
+      variables: { input },
+      fetchPolicy: 'network-only',
+    });
   }
 
   saveProfile(input: SaveProfileInput) {
@@ -121,7 +140,7 @@ export class AuthService extends Service {
   }
 
   setCookie({ name, value, expiry, path = '/' }: { name: string; value: string; expiry?: number | Date; path?: string }) {
-    return this.cookieService.set(name, value, expiry, path, undefined, environment.production, 'Strict');
+    return this.cookieService.set(name, value, expiry, path, undefined, false, 'Strict');
   }
 
   clearCookies(path = '/') {
@@ -147,7 +166,25 @@ export class AuthService extends Service {
     }
   }
 
-  refreshFactory() {
-    return this.refreshToken({}).pipe(catchError(() => of(null)));
+  persistAuth({ payload, token }: ObtainJsonWebTokenPayload | RefreshPayload) {
+    this.auth$.next(token);
+    this.profile$.next(payload);
+  }
+
+  refreshTokenFactory() {
+    return this.refreshToken({}).pipe(
+      tap(({ data }) => this.persistAuth(data?.refreshToken!)),
+      tap(({ data }) => this.broadcastService.channel.postMessage({ event: 'login', data })),
+      catchError(() => of(null)),
+    );
+  }
+
+  broadcastListener({ event, data }: BroadCast) {
+    switch (event) {
+      case 'login':
+        return this.persistAuth(data?.refreshToken!);
+      default:
+        return;
+    }
   }
 }

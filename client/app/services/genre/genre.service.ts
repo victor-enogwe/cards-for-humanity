@@ -13,7 +13,7 @@ export class GenreService {
     return this.apollo.watchQuery<{ genres: TIncomingRelay<Genre> }>({
       query: GENRES_QUERY,
       variables,
-      fetchPolicy: 'cache-and-network',
+      fetchPolicy: 'cache-first',
     });
   }
 

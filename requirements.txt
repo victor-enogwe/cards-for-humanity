@@ -31,6 +31,8 @@ django-environ==0.7.0
 django-filter==21.1
 django-graphql-jwt==0.3.4
 django-graphql-social-auth==0.1.4
+django-pgconnection==1.0.2
+django-pgtrigger==2.4.0
 django-redis==5.0.0
 django-redis-cache==3.0.0
 djangorestframework==3.12.4

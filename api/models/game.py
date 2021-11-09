@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.enums import TextChoices
 
-from ..utils import AutoDateTimeField, MinValueValidator, min_max_validator, timezone
+from ..utils import AutoDateTimeField, min_max_validator, timezone
 
 
 class GameStatus(models.TextChoices):
@@ -22,7 +22,11 @@ class Game(models.Model):
     num_spectators = models.PositiveSmallIntegerField(
         default=0, validators=min_max_validator(0, 10), help_text='no of spectators', editable=False)
     status = models.CharField(
-        max_length=3, choices=TextChoices.choices, default='GAP')
+        max_length=20, choices=GameStatus.choices, default='GAP')
+    winner = models.ForeignKey(
+        'api.User', on_delete=models.CASCADE, related_name="winners")
+    creator = models.ForeignKey(
+        'api.User', on_delete=models.CASCADE, editable=False)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = AutoDateTimeField(auto_now=True, editable=False)
     objects = models.Manager()

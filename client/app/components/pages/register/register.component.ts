@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
-import { catchError, debounceTime, mergeMap, tap } from 'rxjs/operators';
+import { catchError, mergeMap, tap } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth/auth.service';
 import { FormService } from '../../../services/form/form.service';
 
@@ -51,7 +51,6 @@ export class RegisterComponent {
           event.target.disabled = false;
           return form.enable();
         }),
-        debounceTime(1000),
         tap(() => this.router.navigate(['/play'])),
         catchError((error) => {
           event.target.disabled = false;

@@ -41,7 +41,10 @@ export interface Query {
   readonly isLoggedIn?: Maybe<Scalars['Boolean']>;
   readonly newGame?: Maybe<NewGameNode>;
   readonly profile?: Maybe<UserNode>;
+  /** find users */
+  readonly users?: Maybe<UserNodeConnection>;
   readonly whiteCards?: Maybe<WhiteCardNodeConnection>;
+  readonly whoami?: Maybe<UserNode>;
 }
 
 /** Root Query for the cards against humanity api. */
@@ -84,6 +87,27 @@ export interface QueryGenresArgs {
 /** Root Query for the cards against humanity api. */
 export interface QueryNewGameArgs {
   id: Scalars['ID'];
+}
+
+/** Root Query for the cards against humanity api. */
+export interface QueryUsersArgs {
+  after?: Maybe<Scalars['String']>;
+  before?: Maybe<Scalars['String']>;
+  dateJoined?: Maybe<Scalars['DateTime']>;
+  email?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  firstName?: Maybe<Scalars['String']>;
+  groups?: Maybe<ReadonlyArray<Maybe<Scalars['ID']>>>;
+  isActive?: Maybe<Scalars['Boolean']>;
+  isStaff?: Maybe<Scalars['Boolean']>;
+  isSuperuser?: Maybe<Scalars['Boolean']>;
+  last?: Maybe<Scalars['Int']>;
+  lastLogin?: Maybe<Scalars['DateTime']>;
+  lastName?: Maybe<Scalars['String']>;
+  offset?: Maybe<Scalars['Int']>;
+  password?: Maybe<Scalars['String']>;
+  username?: Maybe<Scalars['String']>;
+  userPermissions?: Maybe<ReadonlyArray<Maybe<Scalars['ID']>>>;
 }
 
 /** Root Query for the cards against humanity api. */
@@ -225,7 +249,7 @@ export interface GameNode extends Node {
   readonly rounds: Scalars['Int'];
   /** seconds */
   readonly roundTime: Scalars['Int'];
-  readonly status: Scalars['String'];
+  readonly status: ApiGameStatusChoices;
   readonly updatedAt: Scalars['DateTime'];
 }
 
@@ -339,6 +363,7 @@ export interface UserNode extends Node {
   readonly lastLogin?: Maybe<Scalars['DateTime']>;
   readonly lastName: Scalars['String'];
   readonly playerSet: PlayerNodeConnection;
+  readonly profile?: Maybe<ProfileNode>;
   readonly socialAuth: SocialNodeConnection;
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   readonly username: Scalars['String'];
@@ -370,6 +395,22 @@ export interface UserNodeSocialAuthArgs {
   uid_In?: Maybe<ReadonlyArray<Maybe<Scalars['String']>>>;
 }
 
+export interface ProfileNode extends Node {
+  readonly __typename?: 'ProfileNode';
+  /** The ID of the object. */
+  readonly id: Scalars['ID'];
+  readonly role: ApiProfileRoleChoices;
+  readonly user: UserNode;
+}
+
+/** An enumeration. */
+export enum ApiProfileRoleChoices {
+  /** Manager */
+  MANAGER = 'MANAGER',
+  /** User */
+  USER = 'USER',
+}
+
 export interface SocialNodeConnection {
   readonly __typename?: 'SocialNodeConnection';
   /** Contains the nodes in this connection. */
@@ -397,6 +438,18 @@ export interface SocialNode extends Node {
   readonly provider: Scalars['String'];
   readonly uid: Scalars['String'];
   readonly user: UserNode;
+}
+
+/** An enumeration. */
+export enum ApiGameStatusChoices {
+  /** Gac */
+  AWAITING_CZAR = 'AWAITING_CZAR',
+  /** Gap */
+  AWAITING_PLAYERS = 'AWAITING_PLAYERS',
+  /** Ge */
+  GAME_ENDED = 'GAME_ENDED',
+  /** Gs */
+  GAME_STARTED = 'GAME_STARTED',
 }
 
 export interface WhiteCardNodeConnection {
@@ -448,6 +501,25 @@ export interface NewGameNode {
   readonly status: Scalars['String'];
 }
 
+export interface UserNodeConnection {
+  readonly __typename?: 'UserNodeConnection';
+  readonly edgeCount?: Maybe<Scalars['Int']>;
+  /** Contains the nodes in this connection. */
+  readonly edges: ReadonlyArray<Maybe<UserNodeEdge>>;
+  /** Pagination data for this connection. */
+  readonly pageInfo: PageInfo;
+  readonly totalCount?: Maybe<Scalars['Int']>;
+}
+
+/** A Relay edge containing a `UserNode` and its cursor. */
+export interface UserNodeEdge {
+  readonly __typename?: 'UserNodeEdge';
+  /** A cursor for use in pagination */
+  readonly cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  readonly node?: Maybe<UserNode>;
+}
+
 /** Root Mutation for the cards against humanity api. */
 export interface Mutation {
   readonly __typename?: 'Mutation';
@@ -455,13 +527,10 @@ export interface Mutation {
   readonly createNewGame?: Maybe<CreateNewGameMutation>;
   readonly createUser?: Maybe<CreateUserPayload>;
   readonly deleteRefreshTokenCookie?: Maybe<DeleteRefreshTokenCookiePayload>;
-  readonly deleteTokenCookie?: Maybe<DeleteJsonWebTokenCookiePayload>;
   readonly refreshToken?: Maybe<RefreshPayload>;
-  readonly revokeToken?: Maybe<RevokePayload>;
   readonly saveProfile?: Maybe<SaveProfileMutation>;
   /** Social Auth for JSON Web Token (JWT) */
   readonly socialAuth?: Maybe<SocialAuthJwtPayload>;
-  /** Obtain JSON Web Token mutation */
   readonly tokenAuth?: Maybe<ObtainJsonWebTokenPayload>;
   readonly updateGame?: Maybe<EditGameMutation>;
   readonly verifyToken?: Maybe<VerifyPayload>;
@@ -489,18 +558,8 @@ export interface MutationDeleteRefreshTokenCookieArgs {
 }
 
 /** Root Mutation for the cards against humanity api. */
-export interface MutationDeleteTokenCookieArgs {
-  input: DeleteJsonWebTokenCookieInput;
-}
-
-/** Root Mutation for the cards against humanity api. */
 export interface MutationRefreshTokenArgs {
   input: RefreshInput;
-}
-
-/** Root Mutation for the cards against humanity api. */
-export interface MutationRevokeTokenArgs {
-  input: RevokeInput;
 }
 
 /** Root Mutation for the cards against humanity api. */
@@ -566,6 +625,8 @@ export interface CreateUserFailOthers {
 
 export interface CreateUserSuccess {
   readonly __typename?: 'CreateUserSuccess';
+  readonly profile?: Maybe<ProfileNode>;
+  readonly refreshToken?: Maybe<Scalars['String']>;
   readonly token?: Maybe<Scalars['String']>;
   readonly user?: Maybe<UserNode>;
 }
@@ -576,16 +637,6 @@ export interface DeleteRefreshTokenCookieInput {
 
 export interface DeleteRefreshTokenCookiePayload {
   readonly __typename?: 'DeleteRefreshTokenCookiePayload';
-  readonly clientMutationId?: Maybe<Scalars['String']>;
-  readonly deleted: Scalars['Boolean'];
-}
-
-export interface DeleteJsonWebTokenCookieInput {
-  readonly clientMutationId?: Maybe<Scalars['String']>;
-}
-
-export interface DeleteJsonWebTokenCookiePayload {
-  readonly __typename?: 'DeleteJSONWebTokenCookiePayload';
   readonly clientMutationId?: Maybe<Scalars['String']>;
   readonly deleted: Scalars['Boolean'];
 }
@@ -602,17 +653,6 @@ export interface RefreshPayload {
   readonly refreshExpiresIn: Scalars['Int'];
   readonly refreshToken: Scalars['String'];
   readonly token: Scalars['String'];
-}
-
-export interface RevokeInput {
-  readonly clientMutationId?: Maybe<Scalars['String']>;
-  readonly refreshToken?: Maybe<Scalars['String']>;
-}
-
-export interface RevokePayload {
-  readonly __typename?: 'RevokePayload';
-  readonly clientMutationId?: Maybe<Scalars['String']>;
-  readonly revoked: Scalars['Int'];
 }
 
 export interface SaveProfileInput {
@@ -645,7 +685,6 @@ export interface ObtainJsonWebTokenInput {
   readonly username: Scalars['String'];
 }
 
-/** Obtain JSON Web Token mutation */
 export interface ObtainJsonWebTokenPayload {
   readonly __typename?: 'ObtainJSONWebTokenPayload';
   readonly clientMutationId?: Maybe<Scalars['String']>;
@@ -656,7 +695,7 @@ export interface ObtainJsonWebTokenPayload {
 }
 
 export interface UpdateGameInput {
-  readonly status: Scalars['String'];
+  readonly status: ApiGameStatusChoices;
 }
 
 export interface EditGameMutation {
@@ -699,7 +738,9 @@ export type QueryKeySpecifier = (
   | 'isLoggedIn'
   | 'newGame'
   | 'profile'
+  | 'users'
   | 'whiteCards'
+  | 'whoami'
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
@@ -709,7 +750,9 @@ export type QueryFieldPolicy = {
   isLoggedIn?: FieldPolicy<any> | FieldReadFunction<any>;
   newGame?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  users?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteCards?: FieldPolicy<any> | FieldReadFunction<any>;
+  whoami?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type BlackCardNodeConnectionKeySpecifier = (
   | 'edgeCount'
@@ -850,6 +893,7 @@ export type UserNodeKeySpecifier = (
   | 'lastLogin'
   | 'lastName'
   | 'playerSet'
+  | 'profile'
   | 'socialAuth'
   | 'username'
   | UserNodeKeySpecifier
@@ -865,8 +909,15 @@ export type UserNodeFieldPolicy = {
   lastLogin?: FieldPolicy<any> | FieldReadFunction<any>;
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   playerSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
   socialAuth?: FieldPolicy<any> | FieldReadFunction<any>;
   username?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ProfileNodeKeySpecifier = ('id' | 'role' | 'user' | ProfileNodeKeySpecifier)[];
+export type ProfileNodeFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  role?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SocialNodeConnectionKeySpecifier = ('edges' | 'pageInfo' | SocialNodeConnectionKeySpecifier)[];
 export type SocialNodeConnectionFieldPolicy = {
@@ -933,14 +984,24 @@ export type NewGameNodeFieldPolicy = {
   roundTime?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UserNodeConnectionKeySpecifier = ('edgeCount' | 'edges' | 'pageInfo' | 'totalCount' | UserNodeConnectionKeySpecifier)[];
+export type UserNodeConnectionFieldPolicy = {
+  edgeCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserNodeEdgeKeySpecifier = ('cursor' | 'node' | UserNodeEdgeKeySpecifier)[];
+export type UserNodeEdgeFieldPolicy = {
+  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type MutationKeySpecifier = (
   | 'createGame'
   | 'createNewGame'
   | 'createUser'
   | 'deleteRefreshTokenCookie'
-  | 'deleteTokenCookie'
   | 'refreshToken'
-  | 'revokeToken'
   | 'saveProfile'
   | 'socialAuth'
   | 'tokenAuth'
@@ -953,9 +1014,7 @@ export type MutationFieldPolicy = {
   createNewGame?: FieldPolicy<any> | FieldReadFunction<any>;
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteRefreshTokenCookie?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteTokenCookie?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
-  revokeToken?: FieldPolicy<any> | FieldReadFunction<any>;
   saveProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   socialAuth?: FieldPolicy<any> | FieldReadFunction<any>;
   tokenAuth?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -978,18 +1037,15 @@ export type CreateUserFailOthersKeySpecifier = ('errorMessage' | CreateUserFailO
 export type CreateUserFailOthersFieldPolicy = {
   errorMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CreateUserSuccessKeySpecifier = ('token' | 'user' | CreateUserSuccessKeySpecifier)[];
+export type CreateUserSuccessKeySpecifier = ('profile' | 'refreshToken' | 'token' | 'user' | CreateUserSuccessKeySpecifier)[];
 export type CreateUserSuccessFieldPolicy = {
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
   token?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type DeleteRefreshTokenCookiePayloadKeySpecifier = ('clientMutationId' | 'deleted' | DeleteRefreshTokenCookiePayloadKeySpecifier)[];
 export type DeleteRefreshTokenCookiePayloadFieldPolicy = {
-  clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleted?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type DeleteJSONWebTokenCookiePayloadKeySpecifier = ('clientMutationId' | 'deleted' | DeleteJSONWebTokenCookiePayloadKeySpecifier)[];
-export type DeleteJSONWebTokenCookiePayloadFieldPolicy = {
   clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
   deleted?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1007,11 +1063,6 @@ export type RefreshPayloadFieldPolicy = {
   refreshExpiresIn?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
   token?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type RevokePayloadKeySpecifier = ('clientMutationId' | 'revoked' | RevokePayloadKeySpecifier)[];
-export type RevokePayloadFieldPolicy = {
-  clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
-  revoked?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SaveProfileMutationKeySpecifier = ('profile' | SaveProfileMutationKeySpecifier)[];
 export type SaveProfileMutationFieldPolicy = {
@@ -1125,6 +1176,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | UserNodeKeySpecifier | (() => undefined | UserNodeKeySpecifier);
     fields?: UserNodeFieldPolicy;
   };
+  ProfileNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ProfileNodeKeySpecifier | (() => undefined | ProfileNodeKeySpecifier);
+    fields?: ProfileNodeFieldPolicy;
+  };
   SocialNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SocialNodeConnectionKeySpecifier | (() => undefined | SocialNodeConnectionKeySpecifier);
     fields?: SocialNodeConnectionFieldPolicy;
@@ -1152,6 +1207,14 @@ export type StrictTypedTypePolicies = {
   NewGameNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | NewGameNodeKeySpecifier | (() => undefined | NewGameNodeKeySpecifier);
     fields?: NewGameNodeFieldPolicy;
+  };
+  UserNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserNodeConnectionKeySpecifier | (() => undefined | UserNodeConnectionKeySpecifier);
+    fields?: UserNodeConnectionFieldPolicy;
+  };
+  UserNodeEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserNodeEdgeKeySpecifier | (() => undefined | UserNodeEdgeKeySpecifier);
+    fields?: UserNodeEdgeFieldPolicy;
   };
   Mutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier);
@@ -1181,17 +1244,9 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | DeleteRefreshTokenCookiePayloadKeySpecifier | (() => undefined | DeleteRefreshTokenCookiePayloadKeySpecifier);
     fields?: DeleteRefreshTokenCookiePayloadFieldPolicy;
   };
-  DeleteJSONWebTokenCookiePayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | DeleteJSONWebTokenCookiePayloadKeySpecifier | (() => undefined | DeleteJSONWebTokenCookiePayloadKeySpecifier);
-    fields?: DeleteJSONWebTokenCookiePayloadFieldPolicy;
-  };
   RefreshPayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RefreshPayloadKeySpecifier | (() => undefined | RefreshPayloadKeySpecifier);
     fields?: RefreshPayloadFieldPolicy;
-  };
-  RevokePayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | RevokePayloadKeySpecifier | (() => undefined | RevokePayloadKeySpecifier);
-    fields?: RevokePayloadFieldPolicy;
   };
   SaveProfileMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SaveProfileMutationKeySpecifier | (() => undefined | SaveProfileMutationKeySpecifier);
@@ -1326,6 +1381,7 @@ export type ResolversTypes = ResolversObject<{
     | ResolversTypes['GameNode']
     | ResolversTypes['PlayerNode']
     | ResolversTypes['UserNode']
+    | ResolversTypes['ProfileNode']
     | ResolversTypes['SocialNode']
     | ResolversTypes['WhiteCardNode'];
   GenreNode: ResolverTypeWrapper<GenreNode>;
@@ -1341,15 +1397,20 @@ export type ResolversTypes = ResolversObject<{
   PlayerNodeEdge: ResolverTypeWrapper<PlayerNodeEdge>;
   PlayerNode: ResolverTypeWrapper<PlayerNode>;
   UserNode: ResolverTypeWrapper<UserNode>;
+  ProfileNode: ResolverTypeWrapper<ProfileNode>;
+  ApiProfileRoleChoices: ApiProfileRoleChoices;
   SocialNodeConnection: ResolverTypeWrapper<SocialNodeConnection>;
   SocialNodeEdge: ResolverTypeWrapper<SocialNodeEdge>;
   SocialNode: ResolverTypeWrapper<SocialNode>;
   SocialCamelJSON: ResolverTypeWrapper<Scalars['SocialCamelJSON']>;
+  ApiGameStatusChoices: ApiGameStatusChoices;
   WhiteCardNodeConnection: ResolverTypeWrapper<WhiteCardNodeConnection>;
   WhiteCardNodeEdge: ResolverTypeWrapper<WhiteCardNodeEdge>;
   WhiteCardNode: ResolverTypeWrapper<WhiteCardNode>;
   ApiBlackCardPickChoices: ApiBlackCardPickChoices;
   NewGameNode: ResolverTypeWrapper<NewGameNode>;
+  UserNodeConnection: ResolverTypeWrapper<UserNodeConnection>;
+  UserNodeEdge: ResolverTypeWrapper<UserNodeEdge>;
   Mutation: ResolverTypeWrapper<{}>;
   CreateGameInput: CreateGameInput;
   CreateGameMutation: ResolverTypeWrapper<CreateGameMutation>;
@@ -1363,13 +1424,9 @@ export type ResolversTypes = ResolversObject<{
   CreateUserSuccess: ResolverTypeWrapper<CreateUserSuccess>;
   DeleteRefreshTokenCookieInput: DeleteRefreshTokenCookieInput;
   DeleteRefreshTokenCookiePayload: ResolverTypeWrapper<DeleteRefreshTokenCookiePayload>;
-  DeleteJSONWebTokenCookieInput: DeleteJsonWebTokenCookieInput;
-  DeleteJSONWebTokenCookiePayload: ResolverTypeWrapper<DeleteJsonWebTokenCookiePayload>;
   RefreshInput: RefreshInput;
   RefreshPayload: ResolverTypeWrapper<RefreshPayload>;
   GenericScalar: ResolverTypeWrapper<Scalars['GenericScalar']>;
-  RevokeInput: RevokeInput;
-  RevokePayload: ResolverTypeWrapper<RevokePayload>;
   SaveProfileInput: SaveProfileInput;
   SaveProfileMutation: ResolverTypeWrapper<SaveProfileMutation>;
   SocialAuthJWTInput: SocialAuthJwtInput;
@@ -1401,6 +1458,7 @@ export type ResolversParentTypes = ResolversObject<{
     | ResolversParentTypes['GameNode']
     | ResolversParentTypes['PlayerNode']
     | ResolversParentTypes['UserNode']
+    | ResolversParentTypes['ProfileNode']
     | ResolversParentTypes['SocialNode']
     | ResolversParentTypes['WhiteCardNode'];
   GenreNode: GenreNode;
@@ -1416,6 +1474,7 @@ export type ResolversParentTypes = ResolversObject<{
   PlayerNodeEdge: PlayerNodeEdge;
   PlayerNode: PlayerNode;
   UserNode: UserNode;
+  ProfileNode: ProfileNode;
   SocialNodeConnection: SocialNodeConnection;
   SocialNodeEdge: SocialNodeEdge;
   SocialNode: SocialNode;
@@ -1424,6 +1483,8 @@ export type ResolversParentTypes = ResolversObject<{
   WhiteCardNodeEdge: WhiteCardNodeEdge;
   WhiteCardNode: WhiteCardNode;
   NewGameNode: NewGameNode;
+  UserNodeConnection: UserNodeConnection;
+  UserNodeEdge: UserNodeEdge;
   Mutation: {};
   CreateGameInput: CreateGameInput;
   CreateGameMutation: CreateGameMutation;
@@ -1437,13 +1498,9 @@ export type ResolversParentTypes = ResolversObject<{
   CreateUserSuccess: CreateUserSuccess;
   DeleteRefreshTokenCookieInput: DeleteRefreshTokenCookieInput;
   DeleteRefreshTokenCookiePayload: DeleteRefreshTokenCookiePayload;
-  DeleteJSONWebTokenCookieInput: DeleteJsonWebTokenCookieInput;
-  DeleteJSONWebTokenCookiePayload: DeleteJsonWebTokenCookiePayload;
   RefreshInput: RefreshInput;
   RefreshPayload: RefreshPayload;
   GenericScalar: Scalars['GenericScalar'];
-  RevokeInput: RevokeInput;
-  RevokePayload: RevokePayload;
   SaveProfileInput: SaveProfileInput;
   SaveProfileMutation: SaveProfileMutation;
   SocialAuthJWTInput: SocialAuthJwtInput;
@@ -1474,12 +1531,14 @@ export type QueryResolvers<
   isLoggedIn?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   newGame?: Resolver<Maybe<ResolversTypes['NewGameNode']>, ParentType, ContextType, RequireFields<QueryNewGameArgs, 'id'>>;
   profile?: Resolver<Maybe<ResolversTypes['UserNode']>, ParentType, ContextType>;
+  users?: Resolver<Maybe<ResolversTypes['UserNodeConnection']>, ParentType, ContextType, RequireFields<QueryUsersArgs, never>>;
   whiteCards?: Resolver<
     Maybe<ResolversTypes['WhiteCardNodeConnection']>,
     ParentType,
     ContextType,
     RequireFields<QueryWhiteCardsArgs, never>
   >;
+  whoami?: Resolver<Maybe<ResolversTypes['UserNode']>, ParentType, ContextType>;
 }>;
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
@@ -1524,7 +1583,7 @@ export type NodeResolvers<
   ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node'],
 > = ResolversObject<{
   __resolveType: TypeResolveFn<
-    'BlackCardNode' | 'GenreNode' | 'GameNode' | 'PlayerNode' | 'UserNode' | 'SocialNode' | 'WhiteCardNode',
+    'BlackCardNode' | 'GenreNode' | 'GameNode' | 'PlayerNode' | 'UserNode' | 'ProfileNode' | 'SocialNode' | 'WhiteCardNode',
     ParentType,
     ContextType
   >;
@@ -1587,7 +1646,7 @@ export type GameNodeResolvers<
   playerSet?: Resolver<ResolversTypes['PlayerNodeConnection'], ParentType, ContextType, RequireFields<GameNodePlayerSetArgs, never>>;
   rounds?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   roundTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  status?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['ApiGameStatusChoices'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -1671,8 +1730,19 @@ export type UserNodeResolvers<
   lastLogin?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   playerSet?: Resolver<ResolversTypes['PlayerNodeConnection'], ParentType, ContextType, RequireFields<UserNodePlayerSetArgs, never>>;
+  profile?: Resolver<Maybe<ResolversTypes['ProfileNode']>, ParentType, ContextType>;
   socialAuth?: Resolver<ResolversTypes['SocialNodeConnection'], ParentType, ContextType, RequireFields<UserNodeSocialAuthArgs, never>>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ProfileNodeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['ProfileNode'] = ResolversParentTypes['ProfileNode'],
+> = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  role?: Resolver<ResolversTypes['ApiProfileRoleChoices'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['UserNode'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -1758,6 +1828,26 @@ export type NewGameNodeResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type UserNodeConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['UserNodeConnection'] = ResolversParentTypes['UserNodeConnection'],
+> = ResolversObject<{
+  edgeCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  edges?: Resolver<ReadonlyArray<Maybe<ResolversTypes['UserNodeEdge']>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type UserNodeEdgeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['UserNodeEdge'] = ResolversParentTypes['UserNodeEdge'],
+> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['UserNode']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type MutationResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation'],
@@ -1786,19 +1876,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationDeleteRefreshTokenCookieArgs, 'input'>
   >;
-  deleteTokenCookie?: Resolver<
-    Maybe<ResolversTypes['DeleteJSONWebTokenCookiePayload']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationDeleteTokenCookieArgs, 'input'>
-  >;
   refreshToken?: Resolver<
     Maybe<ResolversTypes['RefreshPayload']>,
     ParentType,
     ContextType,
     RequireFields<MutationRefreshTokenArgs, 'input'>
   >;
-  revokeToken?: Resolver<Maybe<ResolversTypes['RevokePayload']>, ParentType, ContextType, RequireFields<MutationRevokeTokenArgs, 'input'>>;
   saveProfile?: Resolver<
     Maybe<ResolversTypes['SaveProfileMutation']>,
     ParentType,
@@ -1869,6 +1952,8 @@ export type CreateUserSuccessResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['CreateUserSuccess'] = ResolversParentTypes['CreateUserSuccess'],
 > = ResolversObject<{
+  profile?: Resolver<Maybe<ResolversTypes['ProfileNode']>, ParentType, ContextType>;
+  refreshToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['UserNode']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1877,15 +1962,6 @@ export type CreateUserSuccessResolvers<
 export type DeleteRefreshTokenCookiePayloadResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['DeleteRefreshTokenCookiePayload'] = ResolversParentTypes['DeleteRefreshTokenCookiePayload'],
-> = ResolversObject<{
-  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type DeleteJsonWebTokenCookiePayloadResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['DeleteJSONWebTokenCookiePayload'] = ResolversParentTypes['DeleteJSONWebTokenCookiePayload'],
 > = ResolversObject<{
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -1907,15 +1983,6 @@ export type RefreshPayloadResolvers<
 export interface GenericScalarScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['GenericScalar'], any> {
   name: 'GenericScalar';
 }
-
-export type RevokePayloadResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['RevokePayload'] = ResolversParentTypes['RevokePayload'],
-> = ResolversObject<{
-  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  revoked?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
 
 export type SaveProfileMutationResolvers<
   ContextType = any,
@@ -2006,6 +2073,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   PlayerNodeEdge?: PlayerNodeEdgeResolvers<ContextType>;
   PlayerNode?: PlayerNodeResolvers<ContextType>;
   UserNode?: UserNodeResolvers<ContextType>;
+  ProfileNode?: ProfileNodeResolvers<ContextType>;
   SocialNodeConnection?: SocialNodeConnectionResolvers<ContextType>;
   SocialNodeEdge?: SocialNodeEdgeResolvers<ContextType>;
   SocialNode?: SocialNodeResolvers<ContextType>;
@@ -2014,6 +2082,8 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   WhiteCardNodeEdge?: WhiteCardNodeEdgeResolvers<ContextType>;
   WhiteCardNode?: WhiteCardNodeResolvers<ContextType>;
   NewGameNode?: NewGameNodeResolvers<ContextType>;
+  UserNodeConnection?: UserNodeConnectionResolvers<ContextType>;
+  UserNodeEdge?: UserNodeEdgeResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   CreateGameMutation?: CreateGameMutationResolvers<ContextType>;
   CreateNewGameMutation?: CreateNewGameMutationResolvers<ContextType>;
@@ -2022,10 +2092,8 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   CreateUserFailOthers?: CreateUserFailOthersResolvers<ContextType>;
   CreateUserSuccess?: CreateUserSuccessResolvers<ContextType>;
   DeleteRefreshTokenCookiePayload?: DeleteRefreshTokenCookiePayloadResolvers<ContextType>;
-  DeleteJSONWebTokenCookiePayload?: DeleteJsonWebTokenCookiePayloadResolvers<ContextType>;
   RefreshPayload?: RefreshPayloadResolvers<ContextType>;
   GenericScalar?: GraphQLScalarType;
-  RevokePayload?: RevokePayloadResolvers<ContextType>;
   SaveProfileMutation?: SaveProfileMutationResolvers<ContextType>;
   SocialAuthJWTPayload?: SocialAuthJwtPayloadResolvers<ContextType>;
   ObtainJSONWebTokenPayload?: ObtainJsonWebTokenPayloadResolvers<ContextType>;

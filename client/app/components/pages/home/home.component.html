@@ -1,28 +1,30 @@
-<cah-main-container mainClass="d-flex flex-sm-column row flex-md-row w-100 flex-fill flex-grow-1 justify-content-center align-items-center">
-  <div class="col-sm col-md-6 d-flex flex-column flex-grow-1 justify-content-between">
-    <h1 class="display-1 fw-bolder">Cards <br />Against <br />Humanity.</h1>
-    <p class="lead text-muted fw-normal fst-italic">A party game <br />for horrible people.</p>
-    <p class="text-muted fw-light">
-      This is an online party game as despicable and awkward as you and your friends, with numerous twists and terrible turns to churn your
-      innards. Make sure you don't enjoy this.
-    </p>
-    <p class="text-muted fw-light mb-0">
-      The game is simple. Each round, one player asks a question from a black card, and everyone else answers with their funniest white
-      card.
-    </p>
-  </div>
-  <div class="col-sm col-md-6 d-flex flex-column flex-grow-1 align-items-center justify-content-around">
-    <div class="d-none d-md-flex flex-fill flex-grow-1 w-100 flex-row justify-content-center justify-content-md-end">
-      <mat-icon svgIcon="cah_card" [style.transform]="'scale(50)'"></mat-icon>
+<div class="d-flex flex-column h-100 justify-content-center align-items-center">
+  <div class="row">
+    <div class="col-sm col-md-6 d-flex flex-column flex-grow-1 justify-content-between">
+      <h1 class="display-1 fw-bolder">Cards <br />Against <br />Humanity.</h1>
+      <p class="lead text-muted fw-normal fst-italic">A party game <br />for horrible people.</p>
+      <p class="text-muted fw-light">
+        This is an online party game as despicable and awkward as you and your friends, with numerous twists and terrible turns to churn your
+        innards. Make sure you don't enjoy this.
+      </p>
+      <p class="text-muted fw-light mb-0">
+        The game is simple. Each round, one player asks a question from a black card, and everyone else answers with their funniest white
+        card.
+      </p>
     </div>
-    <div class="d-md-flex flex-fill flex-grow-1 w-100 flex-row row justify-content-center justify-content-md-end row-cols-3">
+    <div class="col-sm col-md-6 d-flex flex-column flex-grow-1 align-items-center justify-content-around">
+      <div class="d-none d-md-flex flex-fill flex-grow-1 w-100 flex-row justify-content-center justify-content-md-end">
+        <mat-icon svgIcon="cah_card" [style.transform]="'scale(50)'"></mat-icon>
+      </div>
+      <div class="d-md-flex w-100 flex-row row justify-content-center justify-content-md-end row-cols-3">
 
-      <button mat-raised-button type="button" class="btn btn-lg btn-block btn-dark text-uppercase mt-5 font-weight-bold mx-0 mx-3"
-        routerLink="auth">
-        PLAY
-        <mat-icon>gamepad</mat-icon>
-      </button>
+        <button mat-raised-button type="button" class="btn btn-lg btn-block btn-dark text-uppercase mt-5 font-weight-bold mx-0 mx-3"
+          routerLink="auth">
+          PLAY
+          <mat-icon>gamepad</mat-icon>
+        </button>
+      </div>
+
     </div>
-
   </div>
-</cah-main-container>
+</div>

@@ -47,6 +47,28 @@ type Query {
   isLoggedIn: Boolean
   newGame(id: ID!): NewGameNode
   profile: UserNode
+  """
+  find users
+  """
+  users(
+    after: String
+    before: String
+    dateJoined: DateTime
+    email: String
+    first: Int
+    firstName: String
+    groups: [ID]
+    isActive: Boolean
+    isStaff: Boolean
+    isSuperuser: Boolean
+    last: Int
+    lastLogin: DateTime
+    lastName: String
+    offset: Int
+    password: String
+    username: String
+    userPermissions: [ID]
+  ): UserNodeConnection
   whiteCards(
     after: String
     before: String
@@ -58,6 +80,7 @@ type Query {
     text_Icontains: String
     text_Istartswith: String
   ): WhiteCardNodeConnection
+  whoami: UserNode
 }
 
 """
@@ -251,7 +274,7 @@ type GameNode implements Node {
   seconds
   """
   roundTime: Int!
-  status: String!
+  status: ApiGameStatusChoices!
   updatedAt: DateTime!
 }
 
@@ -379,6 +402,7 @@ type UserNode implements Node {
     updatedAt: DateTime
     user: ID
   ): PlayerNodeConnection!
+  profile: ProfileNode
   socialAuth(
     after: String
     before: String
@@ -394,6 +418,29 @@ type UserNode implements Node {
   Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
   """
   username: String!
+}
+
+type ProfileNode implements Node {
+  """
+  The ID of the object.
+  """
+  id: ID!
+  role: ApiProfileRoleChoices!
+  user: UserNode!
+}
+
+"""
+An enumeration.
+"""
+enum ApiProfileRoleChoices {
+  """
+  Manager
+  """
+  MANAGER
+  """
+  User
+  """
+  USER
 }
 
 type SocialNodeConnection {
@@ -435,6 +482,28 @@ type SocialNode implements Node {
 }
 
 scalar SocialCamelJSON
+
+"""
+An enumeration.
+"""
+enum ApiGameStatusChoices {
+  """
+  Gac
+  """
+  AWAITING_CZAR
+  """
+  Gap
+  """
+  AWAITING_PLAYERS
+  """
+  Ge
+  """
+  GAME_ENDED
+  """
+  Gs
+  """
+  GAME_STARTED
+}
 
 type WhiteCardNodeConnection {
   edgeCount: Int
@@ -501,6 +570,33 @@ type NewGameNode {
   status: String!
 }
 
+type UserNodeConnection {
+  edgeCount: Int
+  """
+  Contains the nodes in this connection.
+  """
+  edges: [UserNodeEdge]!
+  """
+  Pagination data for this connection.
+  """
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+"""
+A Relay edge containing a `UserNode` and its cursor.
+"""
+type UserNodeEdge {
+  """
+  A cursor for use in pagination
+  """
+  cursor: String!
+  """
+  The item at the end of the edge
+  """
+  node: UserNode
+}
+
 """
 Root Mutation for the cards against humanity api.
 """
@@ -509,17 +605,12 @@ type Mutation {
   createNewGame(input: CreateGameInput!): CreateNewGameMutation
   createUser(email: String!, password: String!): CreateUserPayload
   deleteRefreshTokenCookie(input: DeleteRefreshTokenCookieInput!): DeleteRefreshTokenCookiePayload
-  deleteTokenCookie(input: DeleteJSONWebTokenCookieInput!): DeleteJSONWebTokenCookiePayload
   refreshToken(input: RefreshInput!): RefreshPayload
-  revokeToken(input: RevokeInput!): RevokePayload
   saveProfile(input: SaveProfileInput!): SaveProfileMutation
   """
   Social Auth for JSON Web Token (JWT)
   """
   socialAuth(input: SocialAuthJWTInput!): SocialAuthJWTPayload
-  """
-  Obtain JSON Web Token mutation
-  """
   tokenAuth(input: ObtainJSONWebTokenInput!): ObtainJSONWebTokenPayload
   updateGame(id: ID!, input: UpdateGameInput!): EditGameMutation
   verifyToken(input: VerifyInput!): VerifyPayload
@@ -565,6 +656,8 @@ type CreateUserFailOthers {
 }
 
 type CreateUserSuccess {
+  profile: ProfileNode
+  refreshToken: String
   token: String
   user: UserNode
 }
@@ -574,15 +667,6 @@ input DeleteRefreshTokenCookieInput {
 }
 
 type DeleteRefreshTokenCookiePayload {
-  clientMutationId: String
-  deleted: Boolean!
-}
-
-input DeleteJSONWebTokenCookieInput {
-  clientMutationId: String
-}
-
-type DeleteJSONWebTokenCookiePayload {
   clientMutationId: String
   deleted: Boolean!
 }
@@ -606,16 +690,6 @@ GraphQL scalar value that could be:
 String, Boolean, Int, Float, List or Object.
 """
 scalar GenericScalar
-
-input RevokeInput {
-  clientMutationId: String
-  refreshToken: String
-}
-
-type RevokePayload {
-  clientMutationId: String
-  revoked: Int!
-}
 
 input SaveProfileInput {
   id: ID!
@@ -647,9 +721,6 @@ input ObtainJSONWebTokenInput {
   username: String!
 }
 
-"""
-Obtain JSON Web Token mutation
-"""
 type ObtainJSONWebTokenPayload {
   clientMutationId: String
   payload: GenericScalar!
@@ -659,7 +730,7 @@ type ObtainJSONWebTokenPayload {
 }
 
 input UpdateGameInput {
-  status: String!
+  status: ApiGameStatusChoices!
 }
 
 type EditGameMutation {

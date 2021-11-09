@@ -31,4 +31,17 @@ export class FormService {
       return result === null ? null : errors;
     };
   }
+
+  validateUser(usernameControl: AbstractControl): { [key: string]: any } | null {
+    const username: string = usernameControl.value;
+    const isEmail = username.includes('@');
+    return isEmail ? Validators.email(usernameControl) : Validators.pattern(/[A-Za-z]+/)(usernameControl);
+  }
+
+  duplicateValidator(control: AbstractControl): { [key: string]: any } | null {
+    const { value } = control;
+    if (!Array.isArray(value)) return null;
+    const unique = new Set(value);
+    return Array.from(unique).length === value.length ? null : { duplicate: { valid: false } };
+  }
 }

@@ -1,5 +1,5 @@
 import { ComponentType } from '@angular/cdk/portal';
-import { Directive, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { MatDialogConfig } from '@angular/material/dialog';
 import get from 'lodash.get';
 import { first, tap } from 'rxjs/operators';
@@ -23,7 +23,8 @@ export class DialogComponentDirective {
     event.preventDefault();
     event.stopPropagation();
     const mainContentRefService: MainContentRefService = get(this.component, 'mainContentRefService', this.mainContentRefService);
-    mainContentRefService.mainContentRef(get(this.component, 'viewContainerRef', mainContentRefService.ref));
+    const elementRef: ElementRef = get(this.component, 'viewContainerRef', mainContentRefService.ref);
+    mainContentRefService.mainContentRef(elementRef);
     this.dialog.setContainerElement(mainContentRefService?.ref.nativeElement);
     const dialogRef = this.dialog.open(this.component, { width: '100%', height: '100%', ...this.config });
     dialogRef

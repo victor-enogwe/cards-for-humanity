@@ -20,7 +20,7 @@
     <h6 class="card-title text-center text-muted mb-3">Sign up Manually</h6>
     <form [formGroup]="registerForm">
       <mat-form-field class="form-group d-block pb-3">
-        <mat-label>email</mat-label>
+        <mat-label for="email">email</mat-label>
         <input matInput type="email" formControlName="email" id="email" />
         <mat-icon matSuffix>alternate_email</mat-icon>
         <mat-hint class="form-text text-muted">Enter your email.</mat-hint>
@@ -28,7 +28,7 @@
 
       <div class="row">
         <mat-form-field class="col col-md-6 form-group pb-3 mb-5">
-          <mat-label>password</mat-label>
+          <mat-label for="password">password</mat-label>
           <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" id="password" />
           <mat-hint class="form-text d-flex flex-column">
             <span [ngClass]="{
@@ -96,7 +96,7 @@
         </mat-form-field>
 
         <mat-form-field class="col col-md-6 form-group pb-3">
-          <mat-label>repeat password</mat-label>
+          <mat-label for="repeatPassword">repeat password</mat-label>
           <input matInput [type]="showRepeatPassword ? 'text' : 'password'" formControlName="repeatPassword" id="repeatPassword" />
           <mat-hint class="form-text" [ngClass]="{
             'text-muted': registerForm.controls.repeatPassword.value.length > 0 && (registerForm.controls.repeatPassword.value !== registerForm.controls.password.value),

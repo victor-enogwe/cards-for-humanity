@@ -1,16 +1,15 @@
 from channels_graphql_ws import GraphqlWsConsumer
 from graphene import Schema
 from graphql_jwt.decorators import login_required
-from graphql_jwt.relay import DeleteRefreshTokenCookie, ObtainJSONWebToken, Refresh, Verify
+from graphql_jwt.relay import DeleteRefreshTokenCookie, Refresh, Verify
 from graphql_social_auth.relay import SocialAuthJWT
 
-from api.models import User
-
+from .auth import ObtainJSONWebToken
 from .blackcard import BlackCardQuery, graphene
 from .game import GameMutation, GameQuery, GameSubscription
 from .genre import GenreQuery, GenreSubscription
 from .player import PlayerQuery
-from .user import UserMutation, UserNode, UserQuery
+from .user import UserMutation, UserQuery
 from .whitecard import WhiteCardQuery
 
 

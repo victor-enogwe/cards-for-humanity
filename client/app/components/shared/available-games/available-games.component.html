@@ -1,0 +1,47 @@
+<div class="row h-100 overflow-hidden overflow-y-scroll g-3">
+  <mat-accordion class="col" *ngFor="let game of games; let index=index">
+    <mat-expansion-panel [expanded]="index === expanded" (opened)="expanded = index">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Genre
+        </mat-panel-title>
+        <mat-panel-description class="justify-content-between align-items-center">
+          <span>Creator</span>
+          <span>Creator</span>
+          <mat-icon>signal_wifi_statusbar_4_bar</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+
+    </mat-expansion-panel>
+
+    <mat-expansion-panel [expanded]="index === expanded" (opened)="expanded = index">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Genre
+        </mat-panel-title>
+        <mat-panel-description class="justify-content-between align-items-center">
+          <span>Creator</span>
+          <span>Creator</span>
+          <mat-icon>signal_wifi_statusbar_4_bar</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="index === expanded" (opened)="expanded = index">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Genre
+        </mat-panel-title>
+        <mat-panel-description class="justify-content-between align-items-center">
+          <span>Creator</span>
+          <span>Creator</span>
+          <mat-icon>signal_wifi_statusbar_4_bar</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

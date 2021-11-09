@@ -1,16 +1,17 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from api.models import BlackCard, Game, Player, WhiteCard
+from api.models import BlackCard, Game, Player, Profile, User, WhiteCard
 from api.models.serializers import BlackCardSerializer, GameSerializer, Genre, GenreSerializer, PlayerSerializer, WhiteCardSerializer
-from api.models.user import Profile
 
 
 @admin.register(BlackCard)
 class BlackCardAdmin(admin.ModelAdmin):
     list_display = ('id', 'text', 'genre', 'pick')
     list_editable = ('text', 'genre', 'pick')
+
+    class Meta:
+        serializer_class = BlackCardSerializer
 
 
 @admin.register(WhiteCard)
@@ -46,16 +47,17 @@ class GenreAdmin(admin.ModelAdmin):
 class PlayerAdmin(admin.ModelAdmin):
     list_display = ('id', 'game', 'user', 'score')
 
-
-# class AdminProfileInline(admin.StackedInline):
-#     model = Profile
-#     can_delete = False
-#     verbose_name_plural = 'profiles'
+    class Meta:
+        serializer_class = PlayerSerializer
 
 
-# class ProfileUserAdmin(UserAdmin):
-#     inlines = (AdminProfileInline,)
+class AdminProfileInline(admin.StackedInline):
+    model = Profile
+    can_delete = False
+    verbose_name_plural = 'profiles'
 
 
-# # admin.site.unregister(User)
-# admin.site.register(ProfileUserAdmin)
+@admin.register(User)
+class UserAdmin(BaseUserAdmin):
+    inlines = (AdminProfileInline,)
+    pass

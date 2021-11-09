@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.validators import RegexValidator, MinLengthValidator
-from ..utils import AutoDateTimeField, min_max_validator, MinValueValidator, timezone
 
 text_error_message = "description allows 2-255 characters(alphabets and -,_,.,',\",space)"
 text_regex = RegexValidator(r'^[A-Za-z]([\w+|-|\s|\'|\"|\.|!]?)+', text_error_message)

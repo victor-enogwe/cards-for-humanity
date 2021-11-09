@@ -1,7 +1,8 @@
 import { APP_BASE_HREF, DOCUMENT, isPlatformServer } from '@angular/common';
 import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { APP_ID, APP_INITIALIZER, ErrorHandler, InjectionToken, NgModule, PLATFORM_ID } from '@angular/core';
+import { APP_BOOTSTRAP_LISTENER, APP_ID, APP_INITIALIZER, ErrorHandler, InjectionToken, NgModule, PLATFORM_ID } from '@angular/core';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
+import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule, ɵDomSharedStylesHost } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,10 +12,7 @@ import { Drivers, Storage, StorageConfig } from '@ionic/storage';
 import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } from 'angularx-social-login';
 import { APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
-import { BroadcastChannel } from 'broadcast-channel';
-import { BroadCast } from 'client/app/@types/global';
 import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CahComponent } from '../../components/shared/cah/cah.component';
 import { GlobalErrorInterceptor } from '../../interceptors/global-error/global-error';
@@ -31,21 +29,24 @@ import { LoadingOverlayService } from '../../services/loading-overlay/loading-ov
 import { LoggerService } from '../../services/logger/logger.service';
 import { MainContentRefService } from '../../services/main-content-ref/main-content-ref.service';
 import { NonceService } from '../../services/nonce/nonce.service';
+import { NotificationService } from '../../services/notification/notification.service';
 import { SeoService } from '../../services/seo/seo.service';
 import { NoopStorage } from '../../utils/noop-storage';
 
 export const APP_HOST = new InjectionToken<string>('host');
+export const STATIC_URL = new InjectionToken<string>('static_path');
 export const SOCIAL_AUTH_CONFIG = new InjectionToken<SocialAuthServiceConfig>('SocialAuthServiceConfig.config');
 export const STORAGE_CONFIG_TOKEN = new InjectionToken<StorageConfig>('Storage.config');
 export const CSP_NONCE_META = new InjectionToken<string>('cspMetaSelector');
-export const BROADCAST_CHANNEL_OBSERVER = new InjectionToken<BehaviorSubject<BroadcastChannel<BroadCast>>>('cah-broadcast-observer');
 
 const hostFactory = (document: Document) => document.location.origin;
+const staticURLFactory = (host: string, platformId: Object) => `${host}/${isPlatformServer(platformId) ? 'static/browser' : ''}`;
 const seoFactory = (seoService: SeoService) => seoService.start.bind(seoService);
 const broadcastChannelFactory = (broadcastService: BroadcastService) => () => broadcastService.createChannel();
 const cacheFactory = (gqlService: GraphqlService, router: Router) => () => gqlService.initCache().then(() => router.initialNavigation());
 const storageFactory = (config: StorageConfig, pId: Object) => (isPlatformServer(pId) ? new NoopStorage() : new Storage(config));
-const authFactory = (authService: AuthService) => () => authService.refreshFactory();
+const leaderElectorFactory = (broadcastService: BroadcastService) => () => broadcastService.electLeader();
+const authFactory = (authService: AuthService) => () => authService.refreshTokenFactory();
 
 @NgModule({
   declarations: [CahComponent],
@@ -72,6 +73,7 @@ const authFactory = (authService: AuthService) => () => authService.refreshFacto
     GraphqlService,
     CookieService,
     AuthService,
+    NotificationService,
     MainContentRefService,
     DynamicOverlayService,
     LoadingOverlayService,
@@ -110,15 +112,17 @@ const authFactory = (authService: AuthService) => () => authService.refreshFacto
       } as SocialAuthServiceConfig,
     },
     { provide: CSP_NONCE_META, useValue: 'meta[name="CSP-NONCE"]' },
-    { provide: BROADCAST_CHANNEL_OBSERVER, useValue: new BehaviorSubject<BroadcastChannel<BroadCast> | null>(null) },
+    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: false, closeOnNavigation: true } },
     { provide: ɵDomSharedStylesHost, useClass: NonceService },
     { provide: APP_BASE_HREF, useValue: '/' },
     { provide: APP_ID, useValue: 'cah' },
     { provide: APP_HOST, useFactory: hostFactory, deps: [DOCUMENT] },
-    { provide: APP_INITIALIZER, useFactory: authFactory, multi: true, deps: [AuthService] },
+    { provide: STATIC_URL, useFactory: staticURLFactory, deps: [APP_HOST, PLATFORM_ID] },
     { provide: APP_INITIALIZER, useFactory: broadcastChannelFactory, multi: true, deps: [BroadcastService] },
+    { provide: APP_INITIALIZER, useFactory: authFactory, multi: true, deps: [AuthService] },
     { provide: APP_INITIALIZER, useFactory: cacheFactory, multi: true, deps: [GraphqlService, Router] },
     { provide: APP_INITIALIZER, useFactory: seoFactory, multi: true, deps: [SeoService] },
+    { provide: APP_BOOTSTRAP_LISTENER, useFactory: leaderElectorFactory, multi: true, deps: [BroadcastService] },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
     { provide: ErrorHandler, useClass: GlobalErrorInterceptor },

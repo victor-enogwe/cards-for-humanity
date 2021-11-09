@@ -38,7 +38,8 @@
             "optimization": false,
             "namedChunks": true,
             "allowedCommonJsDependencies": [
-              "subscriptions-transport-ws"
+              "subscriptions-transport-ws",
+              "qrcode"
             ],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json"

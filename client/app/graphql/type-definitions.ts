@@ -42,6 +42,26 @@ export const typeDefs = gql`
     isLoggedIn: Boolean
     newGame(id: ID!): NewGameNode
     profile: UserNode
+
+    users(
+      after: String
+      before: String
+      dateJoined: DateTime
+      email: String
+      first: Int
+      firstName: String
+      groups: [ID]
+      isActive: Boolean
+      isStaff: Boolean
+      isSuperuser: Boolean
+      last: Int
+      lastLogin: DateTime
+      lastName: String
+      offset: Int
+      password: String
+      username: String
+      userPermissions: [ID]
+    ): UserNodeConnection
     whiteCards(
       after: String
       before: String
@@ -53,6 +73,7 @@ export const typeDefs = gql`
       text_Icontains: String
       text_Istartswith: String
     ): WhiteCardNodeConnection
+    whoami: UserNode
   }
 
   scalar DateTime
@@ -191,7 +212,7 @@ export const typeDefs = gql`
     rounds: Int!
 
     roundTime: Int!
-    status: String!
+    status: ApiGameStatusChoices!
     updatedAt: DateTime!
   }
 
@@ -273,6 +294,7 @@ export const typeDefs = gql`
       updatedAt: DateTime
       user: ID
     ): PlayerNodeConnection!
+    profile: ProfileNode
     socialAuth(
       after: String
       before: String
@@ -286,6 +308,18 @@ export const typeDefs = gql`
     ): SocialNodeConnection!
 
     username: String!
+  }
+
+  type ProfileNode implements Node {
+    id: ID!
+    role: ApiProfileRoleChoices!
+    user: UserNode!
+  }
+
+  enum ApiProfileRoleChoices {
+    MANAGER
+
+    USER
   }
 
   type SocialNodeConnection {
@@ -312,6 +346,16 @@ export const typeDefs = gql`
   }
 
   scalar SocialCamelJSON
+
+  enum ApiGameStatusChoices {
+    AWAITING_CZAR
+
+    AWAITING_PLAYERS
+
+    GAME_ENDED
+
+    GAME_STARTED
+  }
 
   type WhiteCardNodeConnection {
     edgeCount: Int
@@ -354,18 +398,30 @@ export const typeDefs = gql`
     status: String!
   }
 
+  type UserNodeConnection {
+    edgeCount: Int
+
+    edges: [UserNodeEdge]!
+
+    pageInfo: PageInfo!
+    totalCount: Int
+  }
+
+  type UserNodeEdge {
+    cursor: String!
+
+    node: UserNode
+  }
+
   type Mutation {
     createGame(input: CreateGameInput!): CreateGameMutation
     createNewGame(input: CreateGameInput!): CreateNewGameMutation
     createUser(email: String!, password: String!): CreateUserPayload
     deleteRefreshTokenCookie(input: DeleteRefreshTokenCookieInput!): DeleteRefreshTokenCookiePayload
-    deleteTokenCookie(input: DeleteJSONWebTokenCookieInput!): DeleteJSONWebTokenCookiePayload
     refreshToken(input: RefreshInput!): RefreshPayload
-    revokeToken(input: RevokeInput!): RevokePayload
     saveProfile(input: SaveProfileInput!): SaveProfileMutation
 
     socialAuth(input: SocialAuthJWTInput!): SocialAuthJWTPayload
-
     tokenAuth(input: ObtainJSONWebTokenInput!): ObtainJSONWebTokenPayload
     updateGame(id: ID!, input: UpdateGameInput!): EditGameMutation
     verifyToken(input: VerifyInput!): VerifyPayload
@@ -403,6 +459,8 @@ export const typeDefs = gql`
   }
 
   type CreateUserSuccess {
+    profile: ProfileNode
+    refreshToken: String
     token: String
     user: UserNode
   }
@@ -412,15 +470,6 @@ export const typeDefs = gql`
   }
 
   type DeleteRefreshTokenCookiePayload {
-    clientMutationId: String
-    deleted: Boolean!
-  }
-
-  input DeleteJSONWebTokenCookieInput {
-    clientMutationId: String
-  }
-
-  type DeleteJSONWebTokenCookiePayload {
     clientMutationId: String
     deleted: Boolean!
   }
@@ -439,16 +488,6 @@ export const typeDefs = gql`
   }
 
   scalar GenericScalar
-
-  input RevokeInput {
-    clientMutationId: String
-    refreshToken: String
-  }
-
-  type RevokePayload {
-    clientMutationId: String
-    revoked: Int!
-  }
 
   input SaveProfileInput {
     id: ID!
@@ -486,7 +525,7 @@ export const typeDefs = gql`
   }
 
   input UpdateGameInput {
-    status: String!
+    status: ApiGameStatusChoices!
   }
 
   type EditGameMutation {

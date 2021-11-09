@@ -1,0 +1,39 @@
+<form [formGroup]="inviteForm">
+  <div class="d-flex flex-row justify-content-between align-items-center">
+    <div mat-dialog-title [style.margin.px]="0" class="fs-5 flex-grow-1">Invite up to {{data.numPlayers}} players</div>
+    <button [style.zIndex]="999" color="primary" mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div>
+    <div class="d-flex flex-column justify-content-center align-items-center pb-3">
+      <mat-hint class="fs-6 text-small">your invitees will be given priority to join the game before guests.</mat-hint>
+    </div>
+
+    <mat-form-field appearance="outline" *ngFor=" let player of playerControl.controls; let playerIndex=index" formArrayName="players"
+      class="d-flex flex-column flex-grow-1 mb-2">
+      <mat-label [attr.for]="playerIndex">username or email</mat-label>
+      <input matInput [type]="player.value.includes('@') ? 'email' : 'text'" [formControlName]="playerIndex"
+        [id]="'player-' + playerIndex" />
+      <mat-hint class="form-text text-muted d-flex flex-column">
+        <span>enter player {{playerIndex + 1}} email or username.</span>
+        <span *ngIf="hasDuplicate(playerControl.value, player.value)" [ngClass]="{ 'text-danger': true}">duplicate entry</span>
+      </mat-hint>
+      <button matPrefix mat-icon-button color="primary" [disabled]="playerControl.controls.length === 1" cahDebounceClick
+        (debounceClick)="removePlayerControl(playerIndex)">
+        <mat-icon>remove_circle_outline</mat-icon>
+      </button>
+      <button
+        [disabled]="!inviteForm.valid || !player.valid || !player.dirty ||  playerControl.controls.length > playerIndex + 1 || playerControl.controls.length + 1 > data.numPlayers"
+        matSuffix mat-icon-button color="primary" cahDebounceClick (debounceClick)="addNewPlayerControl()">
+        <mat-icon>add_circle_outline</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" class="btn btn-block w-100" cahDebounceClick (debounceClick)="invitePlayers(inviteForm.value)"
+      [disabled]="!inviteForm.valid || !inviteForm.dirty">
+      Invite players
+    </button>
+  </div>
+</form>

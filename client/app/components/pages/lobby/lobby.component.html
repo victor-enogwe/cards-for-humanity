@@ -1,0 +1,8 @@
+<div *ngIf="newGame$ | async as newGame">
+  <cah-link-share [game]="newGame"></cah-link-share>
+  <button mat-mini-fab color="warn" class="position-absolute top-80 end-25 translate-middle-y" aria-label="send invite"
+    matTooltip="invite players" matTooltipPosition="left" cahConfirmDialog [component]="inviteComponent"
+    [config]="{ data: newGame, maxHeight: '403px' }" [listen]="false">
+    <mat-icon>person_add</mat-icon>
+  </button>
+</div>

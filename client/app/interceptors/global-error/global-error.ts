@@ -9,6 +9,7 @@ export class GlobalErrorInterceptor implements ErrorHandler {
   constructor(private notificationService: NotificationService, private loggerService: LoggerService) {}
 
   handleError(error: Error): Observable<never> {
+    console.log(error);
     const message = this.loggerService.getMessage(error);
     this.loggerService.logError(error);
     this.notificationService.notify(message, get(error, 'statusText', get(error, 'name')), { duration: 3000 });

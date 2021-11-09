@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@import "~@angular/material/theming";
 // 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
 @import "~bootstrap/scss/functions";
 // 2. Include any default variable overrides here
@@ -8,21 +8,60 @@
 @import "~bootstrap/scss/mixins";
 @import "~bootstrap/scss/utilities";
 
-@include mat.core();
+@include mat-core();
 
-$bootstrap-primary: mat.define-palette($bootstrap-primary-palette, 500);
-$bootstrap-secondary: mat.define-palette($bootstrap-secondary-palette, A200, A100, A400);
-$bootstrap-warn: mat.define-palette($bootstrap-warning-palette);
+$bootstrap-primary: mat-palette($bootstrap-dark-palette, 700);
+$bootstrap-accent: mat-palette($bootstrap-primary-palette, A200, A100, A400);
+$bootstrap-warn: mat-palette($bootstrap-status, warning);
+$bootstrap-cah: mat-palette($bootstrap-status, cah);
 
-$bootstrap-theme: mat.define-light-theme((
- color: (
-   primary: $bootstrap-primary,
-   accent: $bootstrap-secondary,
-  //  warn: $bootstrap-warn,
- )
-));
+$bootstrap-theme: mat-light-theme($bootstrap-primary, $bootstrap-accent, $bootstrap-warn);
+$bootstrap-theme: map-merge($bootstrap-theme, (cah: $bootstrap-cah));
+$cah: map-get($bootstrap-theme, cah);
 
-@include mat.all-component-themes($bootstrap-theme);
+@mixin cah-color($color) {
+
+  .mat-#{$color},
+  .color-#{$color} {
+    background-color: mat-color($cah, $color) !important;
+    color: mat-color($cah, $color + -contrast) !important;
+
+    &.mat-icon {
+      background-color: inherit !important;
+      color: mat-color($cah, $color) !important;
+    }
+  }
+}
+
+@mixin main-container() {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  flex-grow: 1;
+  height: calc(100vh - 64px) !important;
+  max-height: calc(100vh - 64px) !important;
+  min-height: calc(100vh - 64px) !important;
+  overflow: hidden;
+
+  overflow-y: scroll;
+
+  @include media-breakpoint-down(sm) {
+    height: calc(100vh - 56px);
+  }
+}
+
+@include cah-color(pending);
+@include cah-color(queued);
+@include cah-color(warning);
+@include cah-color(approved);
+@include cah-color(admin-approved);
+@include cah-color(success);
+@include cah-color(danger);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($bootstrap-theme);
 
 // 4. Include any optional Bootstrap components as you like
 @import "~bootstrap/scss/root";
@@ -34,9 +73,13 @@ $bootstrap-theme: mat.define-light-theme((
 @import "~bootstrap/scss/card";
 @import "~bootstrap/scss/buttons";
 @import "~bootstrap/scss/button-group";
+@import "~bootstrap/scss/navbar";
+@import "~bootstrap/scss/badge";
+@import "~bootstrap/scss/alert";
 // Helpers
 @import "~bootstrap/scss/helpers";
 // Utilities
+@import "~bootstrap/scss/utilities";
 @import "~bootstrap/scss/utilities/api";
 
 @import "animations";
@@ -47,10 +90,35 @@ body {
 }
 
 body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
   margin: 0;
-  background: linear-gradient(180deg, #fff 69%, #000 31%);
+  // background: linear-gradient(180deg, #fff 69%, #000 31%);
 }
 
+main, router-outlet+* {
+  @include main-container();
+}
+
+a {
+  &.mat-button, &.mat-raised-button, &.mat-fab, &.mat-mini-fab, &.mat-list-item {
+    &:hover {
+      color: currentColor
+    }
+  }
+}
+
+.icon-big {
+  transform: scale(2);
+}
+
+.icon-huge {
+  transform: scale(4);
+}
+
+.btn:focus,.btn:active {
+   outline: none !important;
+   box-shadow: none;
+}
 
 .rotate {
   animation: rotation 500ms;
@@ -68,6 +136,52 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.mat-column-select {
+  overflow: initial;
+}
+
+.mat-dialog-container {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+mat-paginator {
+  bottom: 0;
+  position: sticky;
+  z-index: 3;
+}
+
+.mat-paginator-container {
+  justify-content: space-between !important;
+}
+
+mat-card-actions {
+  padding: 0 8px 8px 8px !important;
+}
+
+.mat-button-wrapper {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-prefix,
+.mat-form-field-appearance-outline .mat-form-field-suffix {
+  top: 0 !important;
+}
+
+mat-form-field {
+  margin-bottom: .64375em;
+}
+
+mat-form-field[hidden] {
+  display: none;
+}
+
+.mat-error {
+  color: mat-color($cah, 'danger');
 }
 
 .cah-card {
@@ -96,5 +210,143 @@ body {
     border: 1px solid #e2e6ea;
     padding: 10px;
     border-radius: 50%;
+  }
+}
+
+.end-25 {
+  right: 25px;
+}
+
+.top-80 {
+  top: 80%;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll !important;
+}
+
+.avatar {
+  width: 55%;
+
+  @include media-breakpoint-only(lg) {
+    width: 80%;
+  }
+
+  @include media-breakpoint-only(md) {
+    width: 115%;
+  }
+
+  @include media-breakpoint-down(md) {
+    width: 100%;
+  }
+
+  @include media-breakpoint-down(sm) {
+    width: 150%;
+  }
+}
+
+.cah-content {
+  height: calc(100vh - 260px);
+  max-height: calc(100vh - 260px);
+}
+
+table {
+  width: 100%;
+}
+
+tbody {
+  display: block;
+  height: calc(100vh - 276px) !important;
+  max-height: calc(100vh - 276px) !important;
+  min-height: calc(100vh - 276px) !important;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.mat-list-item:hover {
+  border-radius: 10% 0% 0% 10% / 50% 0% 0% 50%;
+}
+
+.list-item-active {
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-radius: 10% 0% 0% 10% / 50% 0% 0% 50%;
+  color: mat-color($cah, primary) !important;
+  font-weight: bold;
+}
+
+
+.mat-paginator-range-label {
+  margin: 0 !important;
+}
+
+.mat-header-cell,
+.mat-cell,
+.mat-footer-cell {
+  padding-right: 24px;
+  word-break: break-all;
+}
+
+.mat-row {
+  cursor: pointer;
+
+  &:hover {
+    background-color: #eeeeee;
+  }
+}
+
+.row-selected {
+  background-color: #eeeeee;
+
+  &:hover {
+    background-color: #dddddd !important;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  mat-header-row {
+    display: none;
+  }
+
+  mat-row {
+    align-items: start;
+    flex-direction: column;
+    padding-left: 24px;
+    padding-right: 24px;
+    position: relative;
+
+    mat-cell {
+      &.actions {
+        padding-left: 24px;
+        position: absolute;
+        right: 0;
+      }
+    }
+  }
+
+  mat-row,
+  mat-footer-row {
+    min-height: auto;
+    padding-bottom: 14px;
+    padding-top: 14px;
+  }
+
+  mat-cell:first-of-type,
+  mat-header-cell:first-of-type,
+  mat-footer-cell:first-of-type {
+    padding-left: 0 !important;
+  }
+
+  .mat-card-title {
+    font-size: 14px;
+  }
+
+  .title {
+    line-height: 1;
+  }
+
+  tbody {
+    height: calc(100vh - 276px) !important;
+    max-height: calc(100vh - 276px) !important;
+    min-height: calc(100vh - 276px) !important;
   }
 }

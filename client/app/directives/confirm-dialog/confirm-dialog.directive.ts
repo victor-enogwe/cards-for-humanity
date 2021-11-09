@@ -18,7 +18,7 @@ export class ConfirmDialogDirective {
   @Output() afterOpen: EventEmitter<string> = new EventEmitter();
   @Output() beforeClosed: EventEmitter<string> = new EventEmitter();
   confirmDialog: EventEmitter<boolean> = new EventEmitter();
-  defaultConfig: MatDialogConfig = { width: '300px', autoFocus: true, hasBackdrop: true, disableClose: true };
+  defaultConfig: MatDialogConfig = { maxWidth: '300px', autoFocus: true, hasBackdrop: true, disableClose: true };
 
   constructor(public dialog: MatDialog) {}
 

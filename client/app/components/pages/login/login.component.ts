@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { lastValueFrom, of } from 'rxjs';
-import { debounceTime, finalize, mergeMap, tap } from 'rxjs/operators';
+import { finalize, mergeMap, tap } from 'rxjs/operators';
 import { AuthUser } from '../../../@types/global';
-import { ObtainJsonWebTokenPayload } from '../../../@types/graphql';
 import { AuthService } from '../../../services/auth/auth.service';
 import { FormService } from '../../../services/form/form.service';
 
@@ -21,7 +20,7 @@ export class LoginComponent {
   loginSocial = this.authService.signUpSocial;
   fieldHasError = this.formService.fieldHasError;
   loginForm = this.formBuilder.group({
-    username: [this.user.username || '', [Validators.required, this.validateUser]],
+    username: [this.user.username || '', [Validators.required, this.formService.validateUser]],
     password: [this.user.password || '', [Validators.required]],
     remember: [this.user.remember],
   });
@@ -34,15 +33,7 @@ export class LoginComponent {
     private router: Router,
   ) {}
 
-  validateUser(usernameControl: AbstractControl): { [key: string]: any } | null {
-    const username: string = usernameControl.value;
-    const isEmail = username.includes('@');
-    return isEmail ? Validators.email(usernameControl) : Validators.required(usernameControl);
-  }
-
-  rememberUser(credentials: AuthUser, { payload, token }: ObtainJsonWebTokenPayload) {
-    this.authService.auth$.next(token);
-    this.authService.profile$.next(payload);
+  rememberUser(credentials: AuthUser) {
     switch (credentials.remember) {
       case true:
         return this.authService.setCookie({
@@ -61,8 +52,8 @@ export class LoginComponent {
         tap(() => form.disable()),
         mergeMap(({ value: { username, password } }) => this.authService.signInManual({ username, password })),
         tap(() => this.authService),
-        tap(({ data }) => this.rememberUser(form.value, data?.tokenAuth!)),
-        debounceTime(1000),
+        tap(({ data }) => this.authService.persistAuth(data?.tokenAuth!)),
+        tap(() => this.rememberUser(form.value)),
         tap(() => this.router.navigate(['/play'])),
         finalize(() => form.enable()),
       ),

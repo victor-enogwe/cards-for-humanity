@@ -123,6 +123,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_filters',
+    'pgtrigger',
     'django_cron',
     'graphene_django',
     'channels',
@@ -237,6 +238,7 @@ GRAPHQL_JWT = {
     "JWT_COOKIE_NAME": "CAH",
     "JWT_REFRESH_TOKEN_COOKIE_NAME": "CAH_TM",
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+    'JWT_PAYLOAD_HANDLER': 'api.utils.jwt_payload',
     "JWT_COOKIE_SECURE": True,
     "JWT_COOKIE_SAMESITE": "Strict",
     "JWT_CSRF_ROTATION": True,
@@ -324,32 +326,32 @@ DATABASES = {
     }
 }
 
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": env('REDIS_HOST'),
-#         "OPTIONS": {
-#             'DB': env('REDIS_DB'),
-#             'PASSWORD': env('REDIS_PASSWORD'),
-#             'SOCKET_TIMEOUT': 5,
-#             'SOCKET_CONNECT_TIMEOUT': 5,
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#             'CONNECTION_POOL_CLASS': 'redis.BlockingConnectionPool',
-#             'PARSER_CLASS': 'redis.connection.HiredisParser',
-#             'SERIALIZER_CLASS': 'redis_cache.serializers.JSONSerializer',
-#             'COMPRESSOR_CLASS': 'redis_cache.compressors.ZLibCompressor',
-#             'CONNECTION_POOL_CLASS_KWARGS': {
-#                 'max_connections': 50,
-#                 'timeout': 20
-#             },
-#             'COMPRESSOR_CLASS_KWARGS': {
-#                 'level': 5
-#             },
-#             'SERIALIZER_CLASS_KWARGS': {}
-#         },
-#         "KEY_PREFIX": "example"
-#     }
-# }
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env('REDIS_HOST'),
+        "OPTIONS": {
+            'DB': env('REDIS_DB'),
+            'PASSWORD': env('REDIS_PASSWORD'),
+            'SOCKET_TIMEOUT': 5,
+            'SOCKET_CONNECT_TIMEOUT': 5,
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            'CONNECTION_POOL_CLASS': 'redis.BlockingConnectionPool',
+            'PARSER_CLASS': 'redis.connection.HiredisParser',
+            'SERIALIZER_CLASS': 'redis_cache.serializers.JSONSerializer',
+            'COMPRESSOR_CLASS': 'redis_cache.compressors.ZLibCompressor',
+            'CONNECTION_POOL_CLASS_KWARGS': {
+                'max_connections': 50,
+                'timeout': 20
+            },
+            'COMPRESSOR_CLASS_KWARGS': {
+                'level': 5
+            },
+            'SERIALIZER_CLASS_KWARGS': {}
+        },
+        "KEY_PREFIX": "example"
+    }
+}
 
 
 # Password validation

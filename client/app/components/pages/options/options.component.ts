@@ -1,10 +1,11 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { ScrollDispatcher } from '@angular/cdk/scrolling';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling/virtual-scroll-viewport';
-import { AfterViewInit, ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import omit from 'lodash.omit';
-import { first, map, skip, Subscription, switchMap, zip } from 'rxjs';
+import { first, lastValueFrom, map, skip, Subscription, switchMap, zip } from 'rxjs';
 import { filter } from 'rxjs/internal/operators/filter';
 import { tap } from 'rxjs/internal/operators/tap';
 import { Genre, TRelayEdge } from '../../../@types/global';
@@ -19,12 +20,14 @@ import { GenreService } from '../../../services/genre/genre.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OptionsComponent implements OnInit, AfterViewInit, OnDestroy {
-  @HostBinding('class') class = 'd-flex flex-column flex-grow-1 flex-fill w-100';
   @ViewChild('selectGenreCdk') selectGenreVirtualScroll!: CdkVirtualScrollViewport;
+  playType: 'join' | 'create' | undefined;
+  avatar!: string;
   genreOptionsForm = this.formBuilder.group({
     genres: new FormControl([], [Validators.required, Validators.maxLength(5)]),
   });
   gameOptionsForm = this.formBuilder.group({
+    id: new FormControl('', [Validators.required]),
     genres: new FormControl([], [Validators.required, Validators.maxLength(5)]),
     rounds: new FormControl(5, [Validators.required, Validators.min(5), Validators.max(50)]),
     roundTime: new FormControl(10, [Validators.required, Validators.min(10), Validators.max(60)]),
@@ -33,7 +36,7 @@ export class OptionsComponent implements OnInit, AfterViewInit, OnDestroy {
   });
   pageSize = 10;
   private genreQuery$ = this.genreService.fetchGenres({ first: this.pageSize });
-  private gameOptionsQuery$ = this.gameService.fetchGameOptions({ id: 1 });
+  private gameOptionsQuery$ = this.gameService.resolve();
   genres$ = this.genreQuery$.valueChanges;
   breakpointObserver$ = this.breakpointObserver
     .observe('(min-width: 560px)')
@@ -61,13 +64,11 @@ export class OptionsComponent implements OnInit, AfterViewInit, OnDestroy {
       ),
       map((genres) => genres.map(({ node }) => node)),
     ),
-    this.gameOptionsQuery$.valueChanges.pipe(
-      first(),
-      map(({ data: { newGame } }) => newGame),
-    ),
+    this.gameOptionsQuery$,
   );
 
   constructor(
+    private router: Router,
     private formBuilder: FormBuilder,
     private genreService: GenreService,
     private gameService: GameService,
@@ -137,7 +138,16 @@ export class OptionsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   createNewGame() {
     const game: NewGameNode = { ...this.gameOptionsForm.value, ...this.genreOptionsForm.value };
-    console.log(game);
-    return this.gameService.createNewGame(game);
+    return lastValueFrom(this.gameService.createNewGame(game).pipe(tap(() => this.router.navigateByUrl('play/lobby'))));
+  }
+
+  joinGame() {}
+
+  selectAvatar(avatar: string) {
+    this.avatar = avatar;
+  }
+
+  clearAvatarSelection() {
+    this.avatar = '';
   }
 }
