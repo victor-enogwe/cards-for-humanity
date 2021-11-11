@@ -1,12 +1,12 @@
 export type PossibleTypesResultData = {
   possibleTypes: {
-    Node: ['BlackCardNode', 'GenreNode', 'GameNode', 'PlayerNode', 'UserNode', 'ProfileNode', 'SocialNode', 'WhiteCardNode'];
+    Node: ['BlackCardNode', 'GenreNode', 'GameNode', 'UserNode', 'PlayerNode', 'ProfileNode', 'SocialNode', 'WhiteCardNode'];
     CreateUserPayload: ['CreateUserFailEmailExists', 'CreateUserFailOthers', 'CreateUserSuccess'];
   };
 };
 const result: PossibleTypesResultData = {
   possibleTypes: {
-    Node: ['BlackCardNode', 'GenreNode', 'GameNode', 'PlayerNode', 'UserNode', 'ProfileNode', 'SocialNode', 'WhiteCardNode'],
+    Node: ['BlackCardNode', 'GenreNode', 'GameNode', 'UserNode', 'PlayerNode', 'ProfileNode', 'SocialNode', 'WhiteCardNode'],
     CreateUserPayload: ['CreateUserFailEmailExists', 'CreateUserFailOthers', 'CreateUserSuccess'],
   },
 };

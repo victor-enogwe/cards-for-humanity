@@ -145,8 +145,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
+    # 'django.middleware.cache.UpdateCacheMiddleware',
+    # 'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 # Authentication backends
@@ -230,7 +230,7 @@ GRAPHENE = {
     'JWT_VERIFY_EXPIRATION': True,
     "DJANGO_CHOICE_FIELD_ENUM_V3_NAMING": True,
     'GRAPHIQL_HEADER_EDITOR_ENABLED': True,
-    'SUBSCRIPTION_PATH': 'graphql/ws'
+    'SUBSCRIPTION_PATH': '/graphql/ws'
 }
 
 GRAPHQL_JWT = {
@@ -252,6 +252,9 @@ GRAPHQL_JWT = {
     "JWT_EXPIRATION_DELTA": timedelta(minutes=5),
     "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
 }
+
+FIXTURE_DIRS = [os.path.join(BASE_DIR, 'api/fixtures/cah/{path}'.format(
+    path=path)) for path in ['genres', 'blackcards', 'whitecards']]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
 

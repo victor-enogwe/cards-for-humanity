@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { FetchResult } from '@apollo/client/core';
 import {
@@ -43,6 +43,7 @@ export class AuthService extends Service {
   user!: SocialUser;
 
   constructor(
+    private zone: NgZone,
     @Inject(SOCIAL_AUTH_CONFIG) config: SocialAuthServiceConfig | Promise<SocialAuthServiceConfig>,
     private broadcastService: BroadcastService,
     private apollo: Apollo,
@@ -173,8 +174,8 @@ export class AuthService extends Service {
 
   refreshTokenFactory() {
     return this.refreshToken({}).pipe(
-      tap(({ data }) => this.persistAuth(data?.refreshToken!)),
-      tap(({ data }) => this.broadcastService.channel.postMessage({ event: 'login', data })),
+      tap(({ data }) => this.zone.run(() => this.persistAuth(data?.refreshToken!))),
+      tap(({ data }) => this.zone.run(() => this.broadcastService.channel.postMessage({ event: 'login', data }))),
       catchError(() => of(null)),
     );
   }

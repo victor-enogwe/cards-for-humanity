@@ -29,12 +29,13 @@ class GraphiQLView(GraphQLView):
     graphiql_version = "1.4.6"
     graphiql_sri = "sha256-tlxVFtFy80Ef6/oAHw6Chxy0Q6+Bijf6250V8n1n26k="
     graphiql_css_sri = "sha256-HADQowUuFum02+Ckkv5Yu5ygRoLllHZqg0TFZXY7NHI="
-    graphiql_csp = tuple(list(CSP_STYLE_SRC) +
-                         ["'unsafe-inline'", "cdn.jsdelivr.net"])
-    graphiql_script_csp = tuple(list(graphiql_csp) + ["'unsafe-eval'"])
     # ws
     subscriptions_transport_ws_version = "0.11.0"
     subscriptions_transport_ws_sri = "sha256-LrJG/jaHdVX6G2h4XMd1mmjSb60KaDa9K1RMl8xEO0o="
+
+    graphiql_csp = tuple(list(CSP_STYLE_SRC) +
+                         ["'unsafe-inline'", "cdn.jsdelivr.net"])
+    graphiql_script_csp = tuple(list(graphiql_csp) + ["'unsafe-eval'"])
 
     @csp_update(
         STYLE_SRC=graphiql_csp,

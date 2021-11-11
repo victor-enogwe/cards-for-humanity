@@ -27,7 +27,16 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [PlayComponent, GenreComponent, OptionsComponent, LobbyComponent, InviteComponent, LinkShareComponent, AvatarComponent, AvailableGamesComponent],
+  declarations: [
+    PlayComponent,
+    GenreComponent,
+    OptionsComponent,
+    LobbyComponent,
+    InviteComponent,
+    LinkShareComponent,
+    AvatarComponent,
+    AvailableGamesComponent,
+  ],
   imports: [RouterModule.forChild(routes), SharedModule],
   providers: [GenreService, GameService, LobbyGuard],
 })

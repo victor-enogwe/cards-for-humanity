@@ -30,7 +30,7 @@
 
     <mat-step state="smart_toy" *ngIf="playType">
       <ng-template matStepLabel>Select Your Avatar</ng-template>
-      <cah-avatar (avatarSelected)="selectAvatar($event)" [selected]="avatar"></cah-avatar>
+      <cah-avatar (avatarSelected)="selectAvatar($event)" [selectedAvatar]="avatar"></cah-avatar>
 
       <div class="btn-toolbar" role="toolbar" aria-label="game options navigation buttons">
         <div class="btn-group btn-group-lg flex-fill" role="group" aria-label="reset button">
@@ -58,7 +58,7 @@
           <ng-template matStepLabel>Select Game Play Options</ng-template>
 
           <div class="d-flex flex-grow-1 justify-content-center">
-            <img *ngIf="avatar" [src]="avatar | safeUrl" width="120px" class="d-none d-xl-block mx-auto" />
+            <img *ngIf="avatar" [src]="avatar.link| safeUrl" width="120px" class="d-none d-xl-block mx-auto" />
           </div>
 
           <form [formGroup]="genreOptionsForm" class="mt-4">
@@ -143,8 +143,9 @@
 
     <mat-step step="videogame_asset" *ngIf="playType === 'join'">
       <ng-template matStepLabel>Select Game Room</ng-template>
-      <div class="d-flex flex-grow-1 justify-content-center">
-        <img *ngIf="avatar" [src]="avatar | safeUrl" width="120px" class="d-none d-xl-block mx-auto" />
+      <div *ngIf="avatar" class="d-flex flex-grow-1 justify-content-center" matTooltip="{{avatar.name | uppercase}}"
+        matTooltipPosition="above">
+        <img [src]="avatar.link| safeUrl" width="120px" class="d-none d-xl-block mx-auto" />
       </div>
 
       <cah-available-games></cah-available-games>

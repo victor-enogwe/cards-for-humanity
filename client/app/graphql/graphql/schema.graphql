@@ -167,6 +167,7 @@ type GenreNode implements Node {
     after: String
     before: String
     createdAt: DateTime
+    creator: ID
     first: Int
     genres: [ID]
     last: Int
@@ -177,6 +178,7 @@ type GenreNode implements Node {
     roundTime: Int
     status: String
     updatedAt: DateTime
+    winner: ID
   ): GameNodeConnection!
   """
   The ID of the object.
@@ -225,6 +227,7 @@ type GameNodeEdge {
 
 type GameNode implements Node {
   createdAt: DateTime!
+  creator: UserNode!
   genres(
     after: String
     before: String
@@ -276,101 +279,30 @@ type GameNode implements Node {
   roundTime: Int!
   status: ApiGameStatusChoices!
   updatedAt: DateTime!
-}
-
-type GenreNodeConnection {
-  edgeCount: Int
-  """
-  Contains the nodes in this connection.
-  """
-  edges: [GenreNodeEdge]!
-  """
-  Pagination data for this connection.
-  """
-  pageInfo: PageInfo!
-  totalCount: Int
-}
-
-"""
-A Relay edge containing a `GenreNode` and its cursor.
-"""
-type GenreNodeEdge {
-  """
-  A cursor for use in pagination
-  """
-  cursor: String!
-  """
-  The item at the end of the edge
-  """
-  node: GenreNode
-}
-
-"""
-The Relay compliant `PageInfo` type, containing data necessary to paginate this connection.
-"""
-type PageInfo {
-  """
-  When paginating forwards, the cursor to continue.
-  """
-  endCursor: String
-  """
-  When paginating forwards, are there more items?
-  """
-  hasNextPage: Boolean!
-  """
-  When paginating backwards, are there more items?
-  """
-  hasPreviousPage: Boolean!
-  """
-  When paginating backwards, the cursor to continue.
-  """
-  startCursor: String
-}
-
-type PlayerNodeConnection {
-  edgeCount: Int
-  """
-  Contains the nodes in this connection.
-  """
-  edges: [PlayerNodeEdge]!
-  """
-  Pagination data for this connection.
-  """
-  pageInfo: PageInfo!
-  totalCount: Int
-}
-
-"""
-A Relay edge containing a `PlayerNode` and its cursor.
-"""
-type PlayerNodeEdge {
-  """
-  A cursor for use in pagination
-  """
-  cursor: String!
-  """
-  The item at the end of the edge
-  """
-  node: PlayerNode
-}
-
-type PlayerNode implements Node {
-  createdAt: DateTime!
-  czar: Boolean!
-  game: GameNode!
-  """
-  The ID of the object.
-  """
-  id: ID!
-  score: Int!
-  updatedAt: DateTime!
-  user: UserNode!
+  winner: UserNode!
 }
 
 type UserNode implements Node {
   dateJoined: DateTime!
   email: String!
   firstName: String!
+  gameSet(
+    after: String
+    before: String
+    createdAt: DateTime
+    creator: ID
+    first: Int
+    genres: [ID]
+    last: Int
+    numPlayers: Int
+    numSpectators: Int
+    offset: Int
+    rounds: Int
+    roundTime: Int
+    status: String
+    updatedAt: DateTime
+    winner: ID
+  ): GameNodeConnection!
   """
   The ID of the object.
   """
@@ -418,6 +350,85 @@ type UserNode implements Node {
   Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
   """
   username: String!
+  winners(
+    after: String
+    before: String
+    createdAt: DateTime
+    creator: ID
+    first: Int
+    genres: [ID]
+    last: Int
+    numPlayers: Int
+    numSpectators: Int
+    offset: Int
+    rounds: Int
+    roundTime: Int
+    status: String
+    updatedAt: DateTime
+    winner: ID
+  ): GameNodeConnection!
+}
+
+type PlayerNodeConnection {
+  edgeCount: Int
+  """
+  Contains the nodes in this connection.
+  """
+  edges: [PlayerNodeEdge]!
+  """
+  Pagination data for this connection.
+  """
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+"""
+A Relay edge containing a `PlayerNode` and its cursor.
+"""
+type PlayerNodeEdge {
+  """
+  A cursor for use in pagination
+  """
+  cursor: String!
+  """
+  The item at the end of the edge
+  """
+  node: PlayerNode
+}
+
+type PlayerNode implements Node {
+  createdAt: DateTime!
+  czar: Boolean!
+  game: GameNode!
+  """
+  The ID of the object.
+  """
+  id: ID!
+  score: Int!
+  updatedAt: DateTime!
+  user: UserNode!
+}
+
+"""
+The Relay compliant `PageInfo` type, containing data necessary to paginate this connection.
+"""
+type PageInfo {
+  """
+  When paginating forwards, the cursor to continue.
+  """
+  endCursor: String
+  """
+  When paginating forwards, are there more items?
+  """
+  hasNextPage: Boolean!
+  """
+  When paginating backwards, are there more items?
+  """
+  hasPreviousPage: Boolean!
+  """
+  When paginating backwards, the cursor to continue.
+  """
+  startCursor: String
 }
 
 type ProfileNode implements Node {
@@ -482,6 +493,33 @@ type SocialNode implements Node {
 }
 
 scalar SocialCamelJSON
+
+type GenreNodeConnection {
+  edgeCount: Int
+  """
+  Contains the nodes in this connection.
+  """
+  edges: [GenreNodeEdge]!
+  """
+  Pagination data for this connection.
+  """
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+"""
+A Relay edge containing a `GenreNode` and its cursor.
+"""
+type GenreNodeEdge {
+  """
+  A cursor for use in pagination
+  """
+  cursor: String!
+  """
+  The item at the end of the edge
+  """
+  node: GenreNode
+}
 
 """
 An enumeration.
@@ -617,6 +655,7 @@ type Mutation {
 }
 
 input CreateGameInput {
+  creator: ID!
   genres: [ID]!
   """
   no of players
@@ -635,6 +674,7 @@ input CreateGameInput {
   seconds
   """
   roundTime: Int
+  winner: ID!
 }
 
 type CreateGameMutation {
@@ -751,14 +791,9 @@ type VerifyPayload {
 Root Subscription for the cards against humanity api.
 """
 type Subscription {
-  gameSubscription: GameSubscriptionNode
-  genreSubscription: GenreSubscriptionType
+  gameSubscription(gameRoom: String, user: String): GameSubscriptionNode
 }
 
 type GameSubscriptionNode {
-  event: String
-}
-
-type GenreSubscriptionType {
   event: String
 }

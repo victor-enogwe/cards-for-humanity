@@ -15,6 +15,11 @@ export interface AnyObject<V = any> {
   [property: string]: V;
 }
 
+export interface Avatar {
+  name: string;
+  link: string;
+}
+
 export interface BroadCast extends AnyObject {
   event: 'login' | 'logout' | 'tab-leader-election';
   message?: string;

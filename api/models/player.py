@@ -1,15 +1,24 @@
 from django.db import models
+from pgtrigger import Delete, F, Protect, Q, Update, register
+
+from api.models.timestamp import TimestampBase
 from config.settings import AUTH_USER_MODEL
-from ..utils import AutoDateTimeField, timezone
 
 
-class Player(models.Model):
+@register(Protect(
+    name="protect_fields_player",
+    operation=Update,
+    condition=(
+        Q(old__created_at__df=F('new__created_at')) |
+        Q(old__game__df=F('new__game')) |
+        Q(old__user__df=F('new__user'))
+    )
+))
+class Player(TimestampBase):
     game = models.ForeignKey('api.Game', on_delete=models.CASCADE)
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
     score = models.PositiveSmallIntegerField(default=0)
     czar = models.BooleanField(default=False)
-    created_at = models.DateTimeField(default=timezone.now, editable=False)
-    updated_at = AutoDateTimeField(auto_now=True, editable=False)
     objects = models.Manager()
 
     class Meta:
@@ -19,4 +28,5 @@ class Player(models.Model):
         return 'Player {0}'.format(self.user)
 
     class Meta:
-        indexes = (models.Index(fields=('czar',)), models.Index(fields=('score',)),)
+        indexes = (models.Index(fields=('czar',)),
+                   models.Index(fields=('score',)),)

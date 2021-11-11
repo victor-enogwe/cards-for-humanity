@@ -1,7 +1,11 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models.enums import TextChoices
+from pgtrigger import Delete, F, Protect, Q, Update, register
 
-from ..utils import AutoDateTimeField, min_max_validator, timezone
+from api.models.timestamp import TimestampBase
+from django.utils import timezone
+
+from ..utils import join_end_default, min_max_validator
 
 
 class GameStatus(models.TextChoices):
@@ -11,8 +15,26 @@ class GameStatus(models.TextChoices):
     GE = 'Game Ended'
 
 
-class Game(models.Model):
+@register(Protect(name="protect_deletes_game", operation=Delete))
+@register(Protect(
+    name="protect_fields_game",
+    operation=Update,
+    condition=(
+        Q(old__created_at__df=F('new__created_at')) |
+        Q(old__creator__df=F('new__creator')) |
+        Q(old__round_time__df=F('new__round_time')) |
+        Q(old__rounds__df=F('new__rounds')) |
+        Q(old__num_players__df=F('new__num_players')) |
+        Q(old__num_spectators__df=F('new__num_spectators')) |
+        Q(old__winner__df=F('new__winner'))
+    )
+))
+class Game(TimestampBase):
+    creator = models.ForeignKey(
+        'api.User', on_delete=models.CASCADE, editable=False)
     genres = models.ManyToManyField('api.Genre')
+    join_ends_at = models.DateTimeField(
+        default=join_end_default, validators=[MinValueValidator(limit_value=join_end_default)], help_text='seconds')
     round_time = models.SmallIntegerField(
         default=10, validators=min_max_validator(10, 60), help_text='seconds')
     rounds = models.SmallIntegerField(
@@ -24,12 +46,16 @@ class Game(models.Model):
     status = models.CharField(
         max_length=20, choices=GameStatus.choices, default='GAP')
     winner = models.ForeignKey(
-        'api.User', on_delete=models.CASCADE, related_name="winners")
-    creator = models.ForeignKey(
-        'api.User', on_delete=models.CASCADE, editable=False)
-    created_at = models.DateTimeField(default=timezone.now, editable=False)
-    updated_at = AutoDateTimeField(auto_now=True, editable=False)
+        'api.User', on_delete=models.CASCADE, related_name="winners", blank=True)
     objects = models.Manager()
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(join_ends_at__gte=timezone.timedelta(milliseconds=30000)),
+                name='join_ends_now_future'
+            )
+        ]
 
     def __str__(self):
         return 'Game {0}'.format(self.id)

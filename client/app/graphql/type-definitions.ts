@@ -129,6 +129,7 @@ export const typeDefs = gql`
       after: String
       before: String
       createdAt: DateTime
+      creator: ID
       first: Int
       genres: [ID]
       last: Int
@@ -139,6 +140,7 @@ export const typeDefs = gql`
       roundTime: Int
       status: String
       updatedAt: DateTime
+      winner: ID
     ): GameNodeConnection!
 
     id: ID!
@@ -173,6 +175,7 @@ export const typeDefs = gql`
 
   type GameNode implements Node {
     createdAt: DateTime!
+    creator: UserNode!
     genres(
       after: String
       before: String
@@ -214,63 +217,30 @@ export const typeDefs = gql`
     roundTime: Int!
     status: ApiGameStatusChoices!
     updatedAt: DateTime!
-  }
-
-  type GenreNodeConnection {
-    edgeCount: Int
-
-    edges: [GenreNodeEdge]!
-
-    pageInfo: PageInfo!
-    totalCount: Int
-  }
-
-  type GenreNodeEdge {
-    cursor: String!
-
-    node: GenreNode
-  }
-
-  type PageInfo {
-    endCursor: String
-
-    hasNextPage: Boolean!
-
-    hasPreviousPage: Boolean!
-
-    startCursor: String
-  }
-
-  type PlayerNodeConnection {
-    edgeCount: Int
-
-    edges: [PlayerNodeEdge]!
-
-    pageInfo: PageInfo!
-    totalCount: Int
-  }
-
-  type PlayerNodeEdge {
-    cursor: String!
-
-    node: PlayerNode
-  }
-
-  type PlayerNode implements Node {
-    createdAt: DateTime!
-    czar: Boolean!
-    game: GameNode!
-
-    id: ID!
-    score: Int!
-    updatedAt: DateTime!
-    user: UserNode!
+    winner: UserNode!
   }
 
   type UserNode implements Node {
     dateJoined: DateTime!
     email: String!
     firstName: String!
+    gameSet(
+      after: String
+      before: String
+      createdAt: DateTime
+      creator: ID
+      first: Int
+      genres: [ID]
+      last: Int
+      numPlayers: Int
+      numSpectators: Int
+      offset: Int
+      rounds: Int
+      roundTime: Int
+      status: String
+      updatedAt: DateTime
+      winner: ID
+    ): GameNodeConnection!
 
     id: ID!
 
@@ -308,6 +278,59 @@ export const typeDefs = gql`
     ): SocialNodeConnection!
 
     username: String!
+    winners(
+      after: String
+      before: String
+      createdAt: DateTime
+      creator: ID
+      first: Int
+      genres: [ID]
+      last: Int
+      numPlayers: Int
+      numSpectators: Int
+      offset: Int
+      rounds: Int
+      roundTime: Int
+      status: String
+      updatedAt: DateTime
+      winner: ID
+    ): GameNodeConnection!
+  }
+
+  type PlayerNodeConnection {
+    edgeCount: Int
+
+    edges: [PlayerNodeEdge]!
+
+    pageInfo: PageInfo!
+    totalCount: Int
+  }
+
+  type PlayerNodeEdge {
+    cursor: String!
+
+    node: PlayerNode
+  }
+
+  type PlayerNode implements Node {
+    createdAt: DateTime!
+    czar: Boolean!
+    game: GameNode!
+
+    id: ID!
+    score: Int!
+    updatedAt: DateTime!
+    user: UserNode!
+  }
+
+  type PageInfo {
+    endCursor: String
+
+    hasNextPage: Boolean!
+
+    hasPreviousPage: Boolean!
+
+    startCursor: String
   }
 
   type ProfileNode implements Node {
@@ -346,6 +369,21 @@ export const typeDefs = gql`
   }
 
   scalar SocialCamelJSON
+
+  type GenreNodeConnection {
+    edgeCount: Int
+
+    edges: [GenreNodeEdge]!
+
+    pageInfo: PageInfo!
+    totalCount: Int
+  }
+
+  type GenreNodeEdge {
+    cursor: String!
+
+    node: GenreNode
+  }
 
   enum ApiGameStatusChoices {
     AWAITING_CZAR
@@ -428,6 +466,7 @@ export const typeDefs = gql`
   }
 
   input CreateGameInput {
+    creator: ID!
     genres: [ID]!
 
     numPlayers: Int
@@ -438,6 +477,7 @@ export const typeDefs = gql`
     rounds: Int
 
     roundTime: Int
+    winner: ID!
   }
 
   type CreateGameMutation {
@@ -543,15 +583,10 @@ export const typeDefs = gql`
   }
 
   type Subscription {
-    gameSubscription: GameSubscriptionNode
-    genreSubscription: GenreSubscriptionType
+    gameSubscription(gameRoom: String, user: String): GameSubscriptionNode
   }
 
   type GameSubscriptionNode {
-    event: String
-  }
-
-  type GenreSubscriptionType {
     event: String
   }
 `;

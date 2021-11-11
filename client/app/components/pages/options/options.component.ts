@@ -8,8 +8,8 @@ import omit from 'lodash.omit';
 import { first, lastValueFrom, map, skip, Subscription, switchMap, zip } from 'rxjs';
 import { filter } from 'rxjs/internal/operators/filter';
 import { tap } from 'rxjs/internal/operators/tap';
-import { Genre, TRelayEdge } from '../../../@types/global';
-import { NewGameNode } from '../../../@types/graphql';
+import { Avatar, Genre, TRelayEdge } from '../../../@types/global';
+import { CreateGameInput, NewGameNode } from '../../../@types/graphql';
 import { GameService } from '../../../services/game/game.service';
 import { GenreService } from '../../../services/genre/genre.service';
 
@@ -22,7 +22,7 @@ import { GenreService } from '../../../services/genre/genre.service';
 export class OptionsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('selectGenreCdk') selectGenreVirtualScroll!: CdkVirtualScrollViewport;
   playType: 'join' | 'create' | undefined;
-  avatar!: string;
+  avatar!: Avatar | undefined;
   genreOptionsForm = this.formBuilder.group({
     genres: new FormControl([], [Validators.required, Validators.maxLength(5)]),
   });
@@ -137,17 +137,17 @@ export class OptionsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   createNewGame() {
-    const game: NewGameNode = { ...this.gameOptionsForm.value, ...this.genreOptionsForm.value };
+    const game: CreateGameInput = { ...this.gameOptionsForm.value, ...this.genreOptionsForm.value };
     return lastValueFrom(this.gameService.createNewGame(game).pipe(tap(() => this.router.navigateByUrl('play/lobby'))));
   }
 
   joinGame() {}
 
-  selectAvatar(avatar: string) {
+  selectAvatar(avatar: Avatar) {
     this.avatar = avatar;
   }
 
   clearAvatarSelection() {
-    this.avatar = '';
+    this.avatar = undefined;
   }
 }

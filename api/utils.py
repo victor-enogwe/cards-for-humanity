@@ -17,7 +17,11 @@ def game_name(variation='for'):
 
 def min_max_validator(min, max):
     message = 'value should be >= {0} and <= {1}'.format(min, max)
-    return [MinValueValidator(min), MaxValueValidator(max)]
+    return [MinValueValidator(min, message=message), MaxValueValidator(max, message=message)]
+
+
+def join_end_default():
+    return timezone.now() + timezone.timedelta(milliseconds=30000)
 
 
 def jwt_cookie(view_func):

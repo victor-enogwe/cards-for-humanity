@@ -11,6 +11,7 @@ import {
   QueryList,
   ViewChildren,
 } from '@angular/core';
+import { Avatar } from '../../../@types/global';
 import { STATIC_URL } from '../../../modules/cah/cah.module';
 
 @Component({
@@ -21,8 +22,8 @@ import { STATIC_URL } from '../../../modules/cah/cah.module';
 })
 export class AvatarComponent implements AfterContentInit {
   @ViewChildren('avatarDiv') images!: QueryList<HTMLImageElement & Highlightable>;
-  @Output() avatarSelected: EventEmitter<string> = new EventEmitter<string>();
-  @Input() selected!: string;
+  @Output() avatarSelected: EventEmitter<Avatar> = new EventEmitter<Avatar>();
+  @Input() selectedAvatar!: Avatar | undefined;
   private keyBoardEventsManager!: ActiveDescendantKeyManager<HTMLImageElement>;
   avatars = [
     'abby',
@@ -41,7 +42,7 @@ export class AvatarComponent implements AfterContentInit {
     'luther',
     'rainbowness',
     'shin',
-  ].map((name) => `${this.staticURL}assets/img/avatars/${name}.gif`);
+  ].map((name) => ({ name, link: `${this.staticURL}assets/img/avatars/${name}.gif` }));
 
   constructor(@Inject(STATIC_URL) private staticURL: string) {}
 

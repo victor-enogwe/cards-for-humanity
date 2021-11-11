@@ -23,8 +23,10 @@
     "format": "prettier --ignore-path .gitignore \"client/**/*.+(ts|js|tsx)\" --write",
     "e2e": "ng e2e",
     "activate": "source ./env/bin/activate",
+    "migrate:fixtures": "./plugins/fixtures.js",
     "migrate:create": "python manage.py makemigrations",
-    "migrate:run": "python manage.py migrate"
+    "migrate:run": "python manage.py migrate",
+    "migrate:load": "python manage.py loaddata json-aginst-humanity-genres.json"
   },
   "repository": {
     "type": "git",
@@ -139,6 +141,7 @@
     "@typescript-eslint/eslint-plugin": "4.28.2",
     "@typescript-eslint/parser": "4.28.2",
     "ajv-formats": "2.1.1",
+    "commander": "8.3.0",
     "concurrently": "^5.0.2",
     "dotenv": "^8.2.0",
     "eslint": "^7.26.0",
@@ -151,7 +154,6 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
-    "node-fetch": "^2.6.0",
     "prettier": "2.4.1",
     "protractor": "~7.0.0",
     "ts-node": "~8.3.0",

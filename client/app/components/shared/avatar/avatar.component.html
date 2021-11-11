@@ -1,6 +1,7 @@
 <div class="row cah-content overflow-hidden overflow-y-scroll g-3">
   <div #avatarDiv class="d-flex col-6 col-md-3 justify-content-center align-items-center" *ngFor="let avatar of avatars"
-    [ngClass]="{ 'shadow': avatar === selected }" cahDebounceClick (debounceClick)="avatarSelected.emit(avatar)" tabindex="-1" role="div">
-    <img [src]="avatar | safeUrl" class="avatar" />
+    matTooltip="{{avatar.name | uppercase}}" matTooltipPosition="above" [ngClass]="{ 'shadow': avatar.name === selectedAvatar?.name }"
+    cahDebounceClick (debounceClick)="avatarSelected.emit(avatar)" tabindex="-1" role="div">
+    <img [src]="avatar.link| safeUrl" class="avatar" />
   </div>
 </div>
