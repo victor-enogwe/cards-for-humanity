@@ -20755,8 +20755,8 @@ function makeGenreFixtures(genres) {
     })))
 }
 
-function getDirectories(type) {
-  const baseDir = type === 'fixtures' ? 'api/fixtures/cah' : type
+function getDirectories() {
+  const baseDir = 'api/fixtures/cah'
   const genreDir = path.join(__dirname, `../${baseDir}/genres`)
   const blackCardDir = path.join(__dirname, `../${baseDir}/blackcards`)
   const whiteCardDir = path.join(__dirname, `../${baseDir}/whitecards`)
@@ -20774,7 +20774,7 @@ async function makeDirectories(...directories) {
 
 async function createFixtures(type) {
   const isData = type === 'data'
-  const directories = getDirectories(type)
+  const directories = getDirectories()
   const [genreDir, blackCardDir, whiteCardDir] = directories
 
   await deleteDirectories(...directories)

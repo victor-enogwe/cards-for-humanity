@@ -23,10 +23,10 @@
     "format": "prettier --ignore-path .gitignore \"client/**/*.+(ts|js|tsx)\" --write",
     "e2e": "ng e2e",
     "activate": "source ./env/bin/activate",
-    "migrate:fixtures": "./plugins/fixtures.js",
+    "migrate:fixtures": "./plugins/fixtures.js -d",
     "migrate:create": "python manage.py makemigrations",
     "migrate:run": "python manage.py migrate",
-    "migrate:load": "python manage.py loaddata json-aginst-humanity-genres.json"
+    "migrate:load": "python manage.py loaddata *.json"
   },
   "repository": {
     "type": "git",

@@ -1,5 +1,5 @@
 from django.db import models
-from pgtrigger import Delete, F, Protect, Q, Update, register
+from pgtrigger import F, Protect, Q, Update, register
 
 from api.models.timestamp import TimestampBase
 from config.settings import AUTH_USER_MODEL

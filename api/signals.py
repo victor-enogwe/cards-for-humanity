@@ -2,8 +2,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from graphql_jwt.refresh_token.signals import refresh_token_rotated
 
-from api.models import Profile, User
-
+from api.models.profile import Profile
+from api.models.user import User
 
 @receiver(refresh_token_rotated)
 def revoke_refresh_token(sender, request, refresh_token, **kwargs):

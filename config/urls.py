@@ -23,8 +23,8 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView
 
-from api.schema import GraphqlWsConsumer
-from api.utils import jwt_cookie
+from api.graphql.ws_consumer import GraphqlWsConsumer
+from api.utils.functions import jwt_cookie
 from config.settings import DEBUG
 from config.views import AngularView, GraphiQLView
 

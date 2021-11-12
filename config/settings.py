@@ -216,12 +216,12 @@ ROOT_URLCONF = 'config.urls'
 
 GQL_MIDDLEWARE = [
     'graphql_jwt.middleware.JSONWebTokenMiddleware',
-    'api.schema.middlewares.AuthorizationMiddleware',
-    'api.schema.middlewares.DepromiseSubscription'
+    'api.middlewares.gql_auth.AuthorizationMiddleware',
+    'api.middlewares.gql_depromise_subscription.DepromiseSubscription'
 ]
 
 GRAPHENE = {
-    'SCHEMA': 'api.schema.schema',  # Where your Graphene schema lives
+    'SCHEMA': 'api.graphql.schema',  # Where your Graphene schema lives
     'SCHEMA_INDENT': 2,
     # we can set the 'max_limit' kwarg on your DjangoConnectionField too
     'RELAY_CONNECTION_MAX_LIMIT': sys.maxsize,
@@ -238,7 +238,7 @@ GRAPHQL_JWT = {
     "JWT_COOKIE_NAME": "CAH",
     "JWT_REFRESH_TOKEN_COOKIE_NAME": "CAH_TM",
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
-    'JWT_PAYLOAD_HANDLER': 'api.utils.jwt_payload',
+    'JWT_PAYLOAD_HANDLER': 'api.utils.functions.jwt_payload',
     "JWT_COOKIE_SECURE": True,
     "JWT_COOKIE_SAMESITE": "Strict",
     "JWT_CSRF_ROTATION": True,

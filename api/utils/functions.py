@@ -1,23 +1,84 @@
+import json
 import os
+import re
 from datetime import datetime
 from functools import wraps
+from os import listdir, path
+from os.path import isfile, join
 
-from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db import models
+from django.db import migrations
 from django.http.request import HttpRequest
 from django.utils import timezone
-from graphene import Int, relay
 from graphql_jwt.settings import jwt_settings
 from graphql_jwt.utils import delete_cookie, set_cookie
+
+from api.models.user import User
+from config.settings import env
+
+
+def load_data(filepath):
+    data = open(filepath, encoding='utf-8')
+    items = json.load(data)
+    data.close()
+    return items
+
+
+def create_admin(apps, schema_editor):
+    try:
+        return User.objects.create_superuser(
+            username=env('ADMIN_USER'),
+            email=env('ADMIN_EMAIL'),
+            password=env('ADMIN_PASSWORD')
+        )
+    except:
+        return print('admin user exists')
+
+
+def delete_admin(apps, schema_editor):
+    return User.objects.get(email=env('ADMIN_EMAIL')).delete()
+
+
+def create_genres(filepath):
+    def create(apps, schema_editor):
+        Genre = apps.get_model('api', 'Genre')
+        genres = [Genre.objects.get_or_create(
+            **item) for item in load_data(filepath)]
+
+        return [item for item, created in genres]
+    return create
+
+
+def find_genre(description, genres):
+    try:
+        return [item for item in genres if item.description == description][0]
+    except:
+        return None
+
+
+def create_blackcards(filepath):
+    def cards(apps, schema_editor):
+        BlackCard = apps.get_model('api', 'BlackCard')
+        genres = apps.get_model('api', 'Genre').objects.all()
+        data = load_data(filepath)
+        return [BlackCard.objects.get_or_create(**{**item, 'genre': find_genre(item['genre'], genres)}) for item in data]
+    return cards
+
+
+def create_whitecards(filepath):
+    def cards(apps, schema_editor):
+        WhiteCard = apps.get_model('api', 'WhiteCard')
+        genres = apps.get_model('api', 'Genre').objects.all()
+        data = load_data(filepath)
+        return [WhiteCard.objects.get_or_create(**{**item, 'genre': find_genre(item['genre'], genres)}) for item in data]
+    return cards
+
+
+def filenames(dirpath):
+    return [path.join(dirpath, f) for f in listdir(dirpath) if isfile(join(dirpath, f)) and re.match('^[A-Za-z]', f)]
 
 
 def game_name(variation='for'):
     return 'cards {0} humanity'.format(variation)
-
-
-def min_max_validator(min, max):
-    message = 'value should be >= {0} and <= {1}'.format(min, max)
-    return [MinValueValidator(min, message=message), MaxValueValidator(max, message=message)]
 
 
 def join_end_default():
@@ -73,22 +134,3 @@ def jwt_payload(user, context=None):
     payload[claims_url]['x-cah-default-role'] = user.profile.role
     payload[claims_url]['x-cah-user-id'] = str(user.id)
     return payload
-
-
-class AutoDateTimeField(models.DateTimeField):
-    def pre_save(self, model_instance, add):
-        return timezone.now()
-
-
-class ExtendedConnection(relay.Connection):
-    class Meta:
-        abstract = True
-
-    total_count = Int()
-    edge_count = Int()
-
-    def resolve_total_count(root, info, **kwargs):
-        return root.length
-
-    def resolve_edge_count(root, info, **kwargs):
-        return len(root.edges)

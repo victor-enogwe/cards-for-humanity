@@ -15,7 +15,10 @@ text_validators = [MinLengthValidator(5, text_error_message), text_regex]
 @register(Protect(name="protect_deletes_black_card", operation=Delete))
 class BlackCard(TimestampBase):
     text = models.CharField(
-        max_length=255, validators=text_validators, help_text=text_error_message)
+        max_length=255,
+        validators=text_validators,
+        help_text=text_error_message
+    )
     genre = models.ForeignKey('api.Genre', on_delete=models.CASCADE)
     pick = models.CharField(max_length=5, choices=pick, default='1')
     objects = models.Manager()

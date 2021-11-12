@@ -1,16 +1,20 @@
 from django.contrib.auth.backends import ModelBackend, get_user_model
 
+from api.models.password import Password
+
+
 class EmailOrUsernameModelBackend(ModelBackend):
     '''This is a ModelBacked that allows authentication with either a username or an email address.'''
+
     def authenticate(self, request, username=None, password=None, **kwargs):
         if username is None:
-            username = kwargs.get(get_user_model().USERNAME_FIELD)
+            username = kwargs.get(get_user_model().username)
         if password is None:
-            password = kwargs.get(get_user_model().PASSWORD_FIELD)
-            
+            password = kwargs.get(Password.password)
+
         # case insensitive lookup by email **email__iexact**
         field = 'email__iexact' if '@' in username else 'username'
-        kwargs = { field: username }
+        kwargs = {field: username}
 
         try:
             user = get_user_model().objects.get(**kwargs)

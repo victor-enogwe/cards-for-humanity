@@ -1,6 +1,7 @@
 from django.db import models
+from django.utils import timezone
 
-from ..utils import AutoDateTimeField, timezone
+from api.utils.autodatetime import AutoDateTimeField
 
 
 class TimestampBase(models.Model):
