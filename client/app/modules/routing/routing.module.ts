@@ -24,7 +24,13 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy', initialNavigation: 'disabled' })],
+  imports: [
+    RouterModule.forRoot(routes, {
+      relativeLinkResolution: 'legacy',
+      initialNavigation: 'disabled',
+      canceledNavigationResolution: 'computed',
+    }),
+  ],
   exports: [RouterModule],
   providers: [NoAuthGuard, AuthGuard],
 })
