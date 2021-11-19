@@ -45,7 +45,7 @@
   "homepage": "https://github.com/victor-enogwe/cards-against-humanity#readme",
   "private": true,
   "engines": {
-    "node": ">=12.16.3 <=17.1.0",
+    "node": ">=12.16.3 <=16.13.0",
     "npm": ">=6.14.4",
     "yarn": ">=1.22.0"
   },
