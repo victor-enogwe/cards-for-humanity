@@ -24,6 +24,10 @@
     "e2e": "ng e2e",
     "activate": "source ./env/bin/activate",
     "migrate:fixtures": "./plugins/fixtures.js -d",
+    "migrate:clear:admin": "find . -path '*/migrations/*.pyc'  -delete",
+    "migrate:clear:cah": "find . -path '*/migrations/*.py' -not -name '__init__.py' -not -name '0002_cah.py' -delete",
+    "migrate:clear": "yarn migrate:clear:admin && yarn migrate:clear:cah",
+    "migrate:reinstall": "pip install --upgrade --force-reinstall  Django",
     "migrate:create": "python manage.py makemigrations",
     "migrate:run": "python manage.py migrate",
     "migrate:load": "python manage.py loaddata *.json"

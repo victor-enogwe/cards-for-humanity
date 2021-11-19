@@ -13,4 +13,4 @@ class TimestampBase(models.Model):
 
     # Fields
     created_at = models.DateTimeField(default=timezone.now, editable=False)
-    updated_at = AutoDateTimeField(auto_now=True, editable=False)
+    updated_at = AutoDateTimeField(editable=False)

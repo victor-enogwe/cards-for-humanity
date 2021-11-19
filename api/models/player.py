@@ -10,8 +10,8 @@ from config.settings import AUTH_USER_MODEL
     operation=Update,
     condition=(
         Q(old__created_at__df=F('new__created_at')) |
-        Q(old__game__df=F('new__game')) |
-        Q(old__user__df=F('new__user'))
+        Q(old__game_id__df=F('new__game_id')) |
+        Q(old__user_id__df=F('new__user_id'))
     )
 ))
 class Player(TimestampBase):
@@ -25,7 +25,7 @@ class Player(TimestampBase):
         unique_together = ('game', 'user')
 
     def __str__(self):
-        return 'Player {0}'.format(self.user)
+        return 'Player: {0}'.format(self.user.id)
 
     class Meta:
         indexes = (models.Index(fields=('czar',)),

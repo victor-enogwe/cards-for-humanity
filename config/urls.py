@@ -56,5 +56,5 @@ urlpatterns = [
     url('graphql', jwt_cookie(csrf_exempt(graphql_view)) if DEBUG else graphql_view),
     url('favicon.ico',
         RedirectView.as_view(url='static/browser/assets/img/favicon.ico')),
-    path('', include(angular_urls))
+    path('app/', include(angular_urls))
 ]

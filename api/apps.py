@@ -5,5 +5,5 @@ class ApiConfig(AppConfig):
     name = 'api'
 
     def ready(self) -> None:
-        import api.signals
+        import api.receivers
         return super().ready()

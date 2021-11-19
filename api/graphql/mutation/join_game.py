@@ -2,7 +2,7 @@ import graphene
 from graphene.types.mutation import Mutation
 
 from api.models.player import Player
-from api.graphql.inputs import JoinGameInput
+from api.graphql.inputs import JoinGameMutationInput
 from api.graphql.nodes import GameNode
 
 
@@ -11,7 +11,7 @@ class JoinGameMutation(Mutation):
     game = graphene.Field(GameNode)
 
     class Arguments:
-        input = JoinGameInput(required=True)
+        input = JoinGameMutationInput(required=True)
 
     def mutate(root, info, input):
         player = Player(player=input['player_id'], game=input['game_id'])

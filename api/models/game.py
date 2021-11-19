@@ -61,7 +61,7 @@ class Game(TimestampBase):
     status = models.CharField(
         max_length=20,
         choices=GameStatus.choices,
-        default='GAP'
+        default=GameStatus.GAP
     )
     winner = models.ForeignKey(
         AUTH_USER_MODEL,
@@ -72,4 +72,4 @@ class Game(TimestampBase):
     objects = models.Manager()
 
     def __str__(self):
-        return 'Game {0}'.format(self.id)
+        return 'Game: {0}'.format(self.id)

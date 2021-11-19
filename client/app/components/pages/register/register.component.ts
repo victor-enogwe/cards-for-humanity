@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { catchError, mergeMap, tap } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth/auth.service';
 import { FormService } from '../../../services/form/form.service';
@@ -11,10 +12,13 @@ import { FormService } from '../../../services/form/form.service';
   templateUrl: './register.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit, OnDestroy {
   signUpSocial = this.authService.signUpSocial;
   showPassword = false;
   showRepeatPassword = false;
+  isMobile = new BehaviorSubject<boolean>(false);
+  showSocialAuth = false;
+  breakpointSubscription!: Subscription;
   registerForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
     password: [
@@ -37,7 +41,18 @@ export class RegisterComponent {
     private formService: FormService,
     private authService: AuthService,
     private router: Router,
+    private breakpointObserver: BreakpointObserver,
   ) {}
+
+  ngOnInit(): void {
+    this.breakpointSubscription = this.breakpointObserver
+      .observe('(max-width: 992px)')
+      .subscribe(({ matches }) => this.isMobile.next(matches));
+  }
+
+  ngOnDestroy(): void {
+    this.breakpointSubscription.unsubscribe();
+  }
 
   signUpManual(event: any, form: FormGroup) {
     const user = form.value;

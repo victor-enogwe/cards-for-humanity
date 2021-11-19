@@ -1,6 +1,6 @@
 from graphene_django_cud.mutations.create import DjangoCreateMutation
 
-from api.models import Game
+from api.models.game import Game
 
 
 class CreateGameMutation(DjangoCreateMutation):

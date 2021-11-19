@@ -1,14 +1,22 @@
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from api.models.timestamp import TimestampBase
-from api.utils.enums import Conversion, Gender, Provider
-from config.settings import AUTH_USER_MODEL
+from api.utils.constants import username_help_text
+from api.utils.enums import Gender
 
 
 class Profile(TimestampBase):
-    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
+    provider = models.ForeignKey('api.Provider', on_delete=models.CASCADE)
     first_name = models.CharField(help_text="First Name", max_length=50)
     last_name = models.CharField(help_text="Last Name", max_length=50)
+    username = models.CharField(
+        _('username'),
+        max_length=40,
+        help_text=_(username_help_text),
+        validators=[UnicodeUsernameValidator()],
+    )
     gender = models.CharField(
         max_length=6,
         choices=Gender.choices,
@@ -20,19 +28,6 @@ class Profile(TimestampBase):
         help_text="Birth Date",
         blank=True,
         null=True
-    )
-    conversion_mode = models.CharField(
-        help_text="Account Type",
-        choices=Conversion.choices,
-        default=Conversion.CREATED,
-        max_length=10,
-        editable=False
-    )
-    provider = models.CharField(
-        help_text="Account Type",
-        choices=Provider.choices,
-        default=Provider.CAH,
-        max_length=10,
     )
 
     @property

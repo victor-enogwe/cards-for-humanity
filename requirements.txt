@@ -33,6 +33,7 @@ django-graphql-jwt==0.3.4
 django-graphql-social-auth==0.1.4
 django-pgconnection==1.0.2
 django-pgtrigger==2.4.0
+django-phonenumber-field==6.0.0
 django-redis==5.0.0
 django-redis-cache==3.0.0
 djangorestframework==3.12.4
@@ -52,6 +53,7 @@ multidict==5.2.0
 Naked==0.1.31
 oauthlib==3.1.1
 packaging==21.0
+phonenumberslite==8.12.37
 pip-upgrader==1.4.15
 promise==2.3
 psycopg2==2.9.1

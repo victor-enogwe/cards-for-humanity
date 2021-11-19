@@ -16,6 +16,7 @@ from datetime import timedelta
 
 import environ
 from corsheaders.defaults import default_headers
+from django.contrib.auth.password_validation import get_default_password_validators
 
 # source environment variables
 root = environ.Path(__file__) - 3  # get root of the project
@@ -113,6 +114,12 @@ CSP_FONT_SRC = ("'self'", "fonts.googleapis.com", "fonts.gstatic.com")
 
 CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src', 'img-src']
 
+DEV_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+PROD_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_BACKEND = DEV_EMAIL_BACKEND if DEBUG else PROD_EMAIL_BACKEND
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -124,6 +131,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_filters',
     'pgtrigger',
+    'phonenumber_field',
     'django_cron',
     'graphene_django',
     'channels',
@@ -151,10 +159,9 @@ MIDDLEWARE = [
 
 # Authentication backends
 AUTHENTICATION_BACKENDS = [
-    'graphql_jwt.backends.JSONWebTokenBackend',
     'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.facebook.FacebookOAuth2',
-    'api.auth.backends.EmailOrUsernameModelBackend'
+    'api.auth.backends.email.EmailModelBackend'
 ]
 
 CRON_CLASSES = [
@@ -221,7 +228,8 @@ GQL_MIDDLEWARE = [
 ]
 
 GRAPHENE = {
-    'SCHEMA': 'api.graphql.schema',  # Where your Graphene schema lives
+    # Where your Graphene schema lives
+    'SCHEMA': 'api.graphql.ws_consumer.gql_schema',
     'SCHEMA_INDENT': 2,
     # we can set the 'max_limit' kwarg on your DjangoConnectionField too
     'RELAY_CONNECTION_MAX_LIMIT': sys.maxsize,
@@ -319,8 +327,8 @@ DATABASES = {
         'USER': env.str('DB_USER'),
         'PORT': env.str('DB_PORT'),
         'PASSWORD': env.str('DB_PASSWORD'),
-        'CONN_MAX_AGE': 0,
         'TIME_ZONE': 'UTC',
+        'CONN_MAX_AGE': 0,
         'CHARSET': 'UTF8',
         'OPTIONS': {},
         'TEST': {
@@ -361,18 +369,10 @@ CACHES = {
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+    {'NAME': 'api.utils.validators.RegexPasswordValidator'},
 ]
 
 

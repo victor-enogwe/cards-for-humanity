@@ -1,4 +1,5 @@
 from django.core.validators import MaxValueValidator, MinLengthValidator, MinValueValidator, RegexValidator
+from django.utils.translation import gettext_lazy as _
 
 from api.utils.constants import password_error_message, text_error_message
 
@@ -7,16 +8,7 @@ password_regex = RegexValidator(
     password_error_message
 )
 
-password_validators = [MinLengthValidator(
-    5, password_error_message), password_regex]
-
-phone_regex = RegexValidator(
-    regex=r"^\+?1?\d{9,15}$",
-    message=(
-        "Phone number must be entered in the format: '+999999999'. "
-        "Up to 15 digits allowed."
-    ),
-)
+password_validators = [password_regex]
 
 text_regex_validator = RegexValidator(
     r'^[A-Za-z]([\w+|-|\s|\'|\"|\.|!]?)+',
@@ -26,6 +18,18 @@ text_validators = [
     MinLengthValidator(5, text_error_message),
     text_regex_validator
 ]
+
+
+class RegexPasswordValidator:
+    """
+    Validate whether the password is alphanumeric.
+    """
+
+    def validate(self, password, user=None):
+        return password_regex.__call__(password)
+
+    def get_help_text(self):
+        return password_error_message
 
 
 def min_max_validator(min, max):

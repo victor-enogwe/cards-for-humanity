@@ -1,7 +1,14 @@
-<cah-auth-container title="Register">
-  <div class="col-md-12 col-lg-6 mb-5 p-md-5">
+<cah-auth-container title="Register" class="flex-fill">
+  <div *ngIf="isMobile | async" class="btn-group d-md-none mb-3" role="group" aria-label="registration methods">
+    <button mat-stroked-button type="button" class="btn" [ngClass]="{ 'btn-secondary': !showSocialAuth, 'btn-light': showSocialAuth}"
+      (click)="showSocialAuth=!showSocialAuth">Email</button>
+    <button mat-stroked-button type="button" class="btn" [ngClass]="{ 'btn-secondary': showSocialAuth, 'btn-light': !showSocialAuth}"
+      (click)="showSocialAuth=!showSocialAuth">Social</button>
+  </div>
+
+  <div class="col-md-12 col-lg-6 mb-5 p-md-5" [ngClass]="{ 'd-none': (isMobile | async) && !showSocialAuth}">
     <div class="row px-3 p-md-0">
-      <h6 class="card-title text-center text-muted mb-3">Social Signup</h6>
+      <h6 *ngIf="!(isMobile | async)" class="card-title text-center text-muted mb-3">Social Signup</h6>
       <button mat-raised-button #facebook class="btn btn-lg btn-block btn-primary" [hidden]="google.disabled" [ngClass]="{
         'progress-bar': facebook.disabled,
         'progress-bar-striped': facebook.disabled,
@@ -16,8 +23,9 @@
       </button>
     </div>
   </div>
-  <div class="col-md-12 col-lg-6 p-md-5 border-or">
-    <h6 class="card-title text-center text-muted mb-3">Sign up Manually</h6>
+
+  <div class="col-md-12 col-lg-6 p-md-5 border-or" [ngClass]="{ 'd-none': (isMobile | async) && showSocialAuth}">
+    <h6 *ngIf="!(isMobile | async)" class="card-title text-center text-muted mb-3">Sign up Manually</h6>
     <form [formGroup]="registerForm">
       <mat-form-field class="form-group d-block pb-3">
         <mat-label for="email">email</mat-label>

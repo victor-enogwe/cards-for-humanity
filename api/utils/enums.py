@@ -16,7 +16,8 @@ class Gender(TextChoices):
 
 class Conversion(TextChoices):
     INVITED = 'Invited'
-    CREATED = 'created'
+    CREATED = 'Created'
+    SUPERUSER = 'Superuser'
 
 
 class Provider(TextChoices):
@@ -24,9 +25,14 @@ class Provider(TextChoices):
     GOOGLE = 'Google'
     INSTAGRAM = 'Instagram'
     FACEBOOK = 'Facebook'
-    CAH = 'Cah'
+    EMAIL = 'Email'
 
 
-class PasswordErrors:
-    PASSWORD_SAME = "PASSWORD_SAME"
-    PASSWORD_WEAK = "PASSWORD_WEAK"
+class EmailType(TextChoices):
+    PLAY_INVITATION = 'Account Invitation'
+    EMAIL_VERIFICATION = 'Email Verification'
+    PASSWORD_RESET = 'Password Reset'
+
+
+class CardRating(TextChoices):
+    NORMAL = 'Normal'

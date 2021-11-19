@@ -2,8 +2,14 @@ from graphql_jwt.decorators import login_required
 
 
 class AuthorizationMiddleware(object):
-    auth_fields = ['whiteCards', 'blackCards', 'game',
-                   'verifyToken', 'refreshToken', 'revokeToken', ]
+    auth_fields = [
+        'whiteCards',
+        'blackCards',
+        'game',
+        'verifyToken',
+        'refreshToken',
+        'revokeToken',
+    ]
 
     @login_required
     def auth(self, next, root, info, **kwargs):

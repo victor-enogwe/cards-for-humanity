@@ -1,11 +1,20 @@
 from channels_graphql_ws import GraphqlWsConsumer as GQLConsumer
+from graphene import Schema
 
-from api.graphql.schema import schema
+from api.graphql.mutation.mutation import Mutation
+from api.graphql.query.query import Query
+from api.graphql.subscription.subscription import Subscription
+
+gql_schema = Schema(
+    query=Query,
+    mutation=Mutation,
+    subscription=Subscription
+)
 
 
 class GraphqlWsConsumer(GQLConsumer):
     """Channels WebSocket consumer which provides GraphQL API."""
-    schema = schema
+    schema = gql_schema
     send_keepalive_every = 60
     confirm_subscriptions = True
     group_name_prefix = 'cah'
