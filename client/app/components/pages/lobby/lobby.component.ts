@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NewGameNode } from 'client/app/@types/graphql';
 import { map, Observable } from 'rxjs';
+import { NewGameNode } from '../../../@types/graphql';
 import { InviteComponent } from '../../shared/invite/invite.component';
 
 @Component({

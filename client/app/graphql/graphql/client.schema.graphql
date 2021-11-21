@@ -1,6 +1,14 @@
-input SaveProfileInput {
-  id: ID!
-  username: String!
+input CreateGameMutationInput {
+  roundTime: Int!
+  rounds: Int!
+  numPlayers: Int!
+  numSpectators: Int!
+  status: String!
+  genres: [ID]!
+}
+
+input SetFullWidthMutationInput {
+  fullWidth: Boolean!
 }
 
 type NewGameNode {
@@ -17,23 +25,22 @@ type CreateNewGameMutation {
   newGame: NewGameNode
 }
 
-type SaveProfileMutation {
-  profile: UserNode
+type SetFullWidthMutation {
+  fullWidth: Boolean
 }
 
 extend type Query {
   newGame(id: ID!): NewGameNode
   """
   @client
-   user authenticated flag
+   page is full width
   """
-  isLoggedIn: Boolean
-  profile: UserNode
+  fullWidth: Boolean
 }
 
 extend type Mutation {
-  createNewGame(input: CreateGameInput!): CreateNewGameMutation
-  saveProfile(input: SaveProfileInput!): SaveProfileMutation
+  createNewGame(input: CreateGameMutationInput!): CreateNewGameMutation
+  setFullWidth(input: SetFullWidthMutationInput!): SetFullWidthMutation
 }
 
 extend type GenreNode {

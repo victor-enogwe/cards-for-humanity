@@ -18,8 +18,8 @@ from graphql_jwt.decorators import csrf_rotation, exceptions, on_token_auth_reso
 from graphql_jwt.settings import jwt_settings
 from graphql_jwt.utils import delete_cookie, set_cookie
 
-from api.models.provider import Provider
 from api.models.profile import Profile
+from api.models.provider import Provider
 from api.utils.graphql_errors import GraphQLErrors
 from config.settings import env
 
@@ -226,8 +226,9 @@ def get_generic_parent_admin_link(obj):
 
 
 def jwt_payload(user, context=None):
+    print(user, context)
     provider = Provider.objects.get(user=user)
-    profile = Profile.objects.get(provider=provider)
+    profile: Profile = Profile.objects.get(provider=provider)
     host = os.getenv("HOST", None)
     claims_url = '{0}/claims'.format(host)
     jwt_datetime = datetime.utcnow() + jwt_settings.JWT_EXPIRATION_DELTA
@@ -235,7 +236,7 @@ def jwt_payload(user, context=None):
     payload = {}
     payload['username'] = str(profile.username)  # For library compatibility
     payload['sub'] = str(user.id)
-    payload['sub_name'] = profile.username
+    payload['sub_name'] = profile.full_name.title()
     payload['sub_email'] = provider.email
     payload['exp'] = jwt_expires
     payload[claims_url] = {}

@@ -46,7 +46,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.breakpointSubscription = this.breakpointObserver
-      .observe('(max-width: 992px)')
+      .observe('(max-width: 576px)')
       .subscribe(({ matches }) => this.isMobile.next(matches));
   }
 

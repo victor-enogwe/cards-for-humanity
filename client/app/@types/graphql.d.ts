@@ -1,6 +1,7 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
 export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
@@ -18,109 +19,58 @@ export interface Scalars {
    * [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
    */
   DateTime: any;
-  SocialCamelJSON: any;
   /**
    * The `GenericScalar` scalar type represents a generic
    * GraphQL scalar value that could be:
    * String, Boolean, Int, Float, List or Object.
    */
   GenericScalar: any;
+  SocialCamelJSON: any;
 }
 
-/** Root Query for the cards against humanity api. */
-export interface Query {
-  readonly __typename?: 'Query';
-  readonly blackCards?: Maybe<BlackCardNodeConnection>;
-  readonly game?: Maybe<GameNode>;
-  /** all cards genre */
-  readonly genres?: Maybe<GenreNodeConnection>;
-  /**
-   * @client
-   *  user authenticated flag
-   */
-  readonly isLoggedIn?: Maybe<Scalars['Boolean']>;
-  readonly newGame?: Maybe<NewGameNode>;
-  readonly profile?: Maybe<UserNode>;
-  /** find users */
-  readonly users?: Maybe<UserNodeConnection>;
-  readonly whiteCards?: Maybe<WhiteCardNodeConnection>;
-  readonly whoami?: Maybe<UserNode>;
+/** An enumeration. */
+export enum ApiBlackCardPickChoices {
+  /** pick1 */
+  A_1 = 'A_1',
+  /** pick2 */
+  A_2 = 'A_2',
 }
 
-/** Root Query for the cards against humanity api. */
-export interface QueryBlackCardsArgs {
-  after?: Maybe<Scalars['String']>;
-  before?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['DateTime']>;
-  first?: Maybe<Scalars['Int']>;
-  genre?: Maybe<Scalars['ID']>;
-  last?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  pick?: Maybe<Scalars['String']>;
-  text?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['DateTime']>;
+/** An enumeration. */
+export enum ApiBlackCardRatingChoices {
+  /** Normal */
+  NORMAL = 'NORMAL',
 }
 
-/** Root Query for the cards against humanity api. */
-export interface QueryGameArgs {
-  id?: Maybe<Scalars['ID']>;
+/** An enumeration. */
+export enum ApiGameStatusChoices {
+  /** Gac */
+  AWAITING_CZAR = 'AWAITING_CZAR',
+  /** Gap */
+  AWAITING_PLAYERS = 'AWAITING_PLAYERS',
+  /** Ge */
+  GAME_ENDED = 'GAME_ENDED',
+  /** Gs */
+  GAME_STARTED = 'GAME_STARTED',
 }
 
-/** Root Query for the cards against humanity api. */
-export interface QueryGenresArgs {
-  after?: Maybe<Scalars['String']>;
-  before?: Maybe<Scalars['String']>;
-  credit?: Maybe<Scalars['String']>;
-  credit_Icontains?: Maybe<Scalars['String']>;
-  credit_Istartswith?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  description_Icontains?: Maybe<Scalars['String']>;
-  description_Istartswith?: Maybe<Scalars['String']>;
-  first?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['Float']>;
-  id_Gt?: Maybe<Scalars['Float']>;
-  id_Lt?: Maybe<Scalars['Float']>;
-  last?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
+/** An enumeration. */
+export enum ApiWhiteCardRatingChoices {
+  /** Normal */
+  NORMAL = 'NORMAL',
 }
 
-/** Root Query for the cards against humanity api. */
-export interface QueryNewGameArgs {
-  id: Scalars['ID'];
-}
-
-/** Root Query for the cards against humanity api. */
-export interface QueryUsersArgs {
-  after?: Maybe<Scalars['String']>;
-  before?: Maybe<Scalars['String']>;
-  dateJoined?: Maybe<Scalars['DateTime']>;
-  email?: Maybe<Scalars['String']>;
-  first?: Maybe<Scalars['Int']>;
-  firstName?: Maybe<Scalars['String']>;
-  groups?: Maybe<ReadonlyArray<Maybe<Scalars['ID']>>>;
-  isActive?: Maybe<Scalars['Boolean']>;
-  isStaff?: Maybe<Scalars['Boolean']>;
-  isSuperuser?: Maybe<Scalars['Boolean']>;
-  last?: Maybe<Scalars['Int']>;
-  lastLogin?: Maybe<Scalars['DateTime']>;
-  lastName?: Maybe<Scalars['String']>;
-  offset?: Maybe<Scalars['Int']>;
-  password?: Maybe<Scalars['String']>;
-  username?: Maybe<Scalars['String']>;
-  userPermissions?: Maybe<ReadonlyArray<Maybe<Scalars['ID']>>>;
-}
-
-/** Root Query for the cards against humanity api. */
-export interface QueryWhiteCardsArgs {
-  after?: Maybe<Scalars['String']>;
-  before?: Maybe<Scalars['String']>;
-  first?: Maybe<Scalars['Int']>;
-  genre?: Maybe<Scalars['ID']>;
-  last?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  text?: Maybe<Scalars['String']>;
-  text_Icontains?: Maybe<Scalars['String']>;
-  text_Istartswith?: Maybe<Scalars['String']>;
+export interface BlackCardNode extends Node {
+  readonly __typename?: 'BlackCardNode';
+  readonly createdAt: Scalars['DateTime'];
+  readonly genre: GenreNode;
+  /** The ID of the object. */
+  readonly id: Scalars['ID'];
+  readonly pick: ApiBlackCardPickChoices;
+  readonly rating: ApiBlackCardRatingChoices;
+  /** text allows 2-255 characters(alphabets and -,_,.,',",space) */
+  readonly text: Scalars['String'];
+  readonly updatedAt: Scalars['DateTime'];
 }
 
 export interface BlackCardNodeConnection {
@@ -142,79 +92,92 @@ export interface BlackCardNodeEdge {
   readonly node?: Maybe<BlackCardNode>;
 }
 
-export interface BlackCardNode extends Node {
-  readonly __typename?: 'BlackCardNode';
+export interface CreateGameMutationInput {
+  readonly genres: ReadonlyArray<InputMaybe<Scalars['ID']>>;
+  readonly numPlayers: Scalars['Int'];
+  readonly numSpectators: Scalars['Int'];
+  readonly roundTime: Scalars['Int'];
+  readonly rounds: Scalars['Int'];
+  readonly status: Scalars['String'];
+}
+
+export interface CreateNewGameMutation {
+  readonly __typename?: 'CreateNewGameMutation';
+  readonly newGame?: Maybe<NewGameNode>;
+}
+
+export interface CreateUserMutation {
+  readonly __typename?: 'CreateUserMutation';
+  readonly ok?: Maybe<Scalars['Boolean']>;
+}
+
+export interface CreateUserMutationInput {
+  readonly email: Scalars['String'];
+  readonly password: Scalars['String'];
+}
+
+export interface DeleteRefreshTokenCookieInput {
+  readonly clientMutationId?: InputMaybe<Scalars['String']>;
+}
+
+export interface DeleteRefreshTokenCookiePayload {
+  readonly __typename?: 'DeleteRefreshTokenCookiePayload';
+  readonly clientMutationId?: Maybe<Scalars['String']>;
+  readonly deleted: Scalars['Boolean'];
+}
+
+export interface GameNode extends Node {
+  readonly __typename?: 'GameNode';
   readonly createdAt: Scalars['DateTime'];
-  readonly genre: GenreNode;
+  readonly creator: UserNode;
+  readonly genres: GenreNodeConnection;
   /** The ID of the object. */
   readonly id: Scalars['ID'];
-  readonly pick: ApiBlackCardPickChoices;
-  /** text allows 5-255 characters(alphabets and -,_,?,',",space) */
-  readonly text: Scalars['String'];
+  /** seconds */
+  readonly joinEndsAt: Scalars['DateTime'];
+  /** no of players */
+  readonly numPlayers: Scalars['Int'];
+  /** no of spectators */
+  readonly numSpectators: Scalars['Int'];
+  readonly playerSet: PlayerNodeConnection;
+  /** seconds */
+  readonly roundTime: Scalars['Int'];
+  /** no of game rounds */
+  readonly rounds: Scalars['Int'];
+  readonly status: ApiGameStatusChoices;
   readonly updatedAt: Scalars['DateTime'];
+  readonly winner: UserNode;
 }
 
-/** An object with an ID */
-export interface Node {
-  /** The ID of the object. */
-  readonly id: Scalars['ID'];
+export interface GameNodeGenresArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  credit?: InputMaybe<Scalars['String']>;
+  credit_Icontains?: InputMaybe<Scalars['String']>;
+  credit_Istartswith?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  description_Icontains?: InputMaybe<Scalars['String']>;
+  description_Istartswith?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['Float']>;
+  id_Gt?: InputMaybe<Scalars['Float']>;
+  id_Lt?: InputMaybe<Scalars['Float']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
 }
 
-export interface GenreNode extends Node {
-  readonly __typename?: 'GenreNode';
-  readonly blackcardSet: BlackCardNodeConnection;
-  /** credit creator(url) */
-  readonly credit?: Maybe<Scalars['String']>;
-  /** description allows 2-255 characters(alphabets and -,_,.,',",space) */
-  readonly description: Scalars['String'];
-  readonly gameSet: GameNodeConnection;
-  /** The ID of the object. */
-  readonly id: Scalars['ID'];
-  readonly selected?: Maybe<Scalars['Boolean']>;
-  readonly whitecardSet: WhiteCardNodeConnection;
-}
-
-export interface GenreNodeBlackcardSetArgs {
-  after?: Maybe<Scalars['String']>;
-  before?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['DateTime']>;
-  first?: Maybe<Scalars['Int']>;
-  genre?: Maybe<Scalars['ID']>;
-  last?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  pick?: Maybe<Scalars['String']>;
-  text?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['DateTime']>;
-}
-
-export interface GenreNodeGameSetArgs {
-  after?: Maybe<Scalars['String']>;
-  before?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['DateTime']>;
-  creator?: Maybe<Scalars['ID']>;
-  first?: Maybe<Scalars['Int']>;
-  genres?: Maybe<ReadonlyArray<Maybe<Scalars['ID']>>>;
-  last?: Maybe<Scalars['Int']>;
-  numPlayers?: Maybe<Scalars['Int']>;
-  numSpectators?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  rounds?: Maybe<Scalars['Int']>;
-  roundTime?: Maybe<Scalars['Int']>;
-  status?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['DateTime']>;
-  winner?: Maybe<Scalars['ID']>;
-}
-
-export interface GenreNodeWhitecardSetArgs {
-  after?: Maybe<Scalars['String']>;
-  before?: Maybe<Scalars['String']>;
-  first?: Maybe<Scalars['Int']>;
-  genre?: Maybe<Scalars['ID']>;
-  last?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  text?: Maybe<Scalars['String']>;
-  text_Icontains?: Maybe<Scalars['String']>;
-  text_Istartswith?: Maybe<Scalars['String']>;
+export interface GameNodePlayerSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  czar?: InputMaybe<Scalars['Boolean']>;
+  first?: InputMaybe<Scalars['Int']>;
+  game?: InputMaybe<Scalars['ID']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  score?: InputMaybe<Scalars['Int']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
+  user?: InputMaybe<Scalars['ID']>;
 }
 
 export interface GameNodeConnection {
@@ -236,231 +199,63 @@ export interface GameNodeEdge {
   readonly node?: Maybe<GameNode>;
 }
 
-export interface GameNode extends Node {
-  readonly __typename?: 'GameNode';
-  readonly createdAt: Scalars['DateTime'];
-  readonly creator: UserNode;
-  readonly genres: GenreNodeConnection;
-  /** The ID of the object. */
-  readonly id: Scalars['ID'];
-  /** no of players */
-  readonly numPlayers: Scalars['Int'];
-  /** no of spectators */
-  readonly numSpectators: Scalars['Int'];
-  readonly playerSet: PlayerNodeConnection;
-  /** no of game rounds */
-  readonly rounds: Scalars['Int'];
-  /** seconds */
-  readonly roundTime: Scalars['Int'];
-  readonly status: ApiGameStatusChoices;
-  readonly updatedAt: Scalars['DateTime'];
-  readonly winner: UserNode;
-}
-
-export interface GameNodeGenresArgs {
-  after?: Maybe<Scalars['String']>;
-  before?: Maybe<Scalars['String']>;
-  credit?: Maybe<Scalars['String']>;
-  credit_Icontains?: Maybe<Scalars['String']>;
-  credit_Istartswith?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  description_Icontains?: Maybe<Scalars['String']>;
-  description_Istartswith?: Maybe<Scalars['String']>;
-  first?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['Float']>;
-  id_Gt?: Maybe<Scalars['Float']>;
-  id_Lt?: Maybe<Scalars['Float']>;
-  last?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-}
-
-export interface GameNodePlayerSetArgs {
-  after?: Maybe<Scalars['String']>;
-  before?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['DateTime']>;
-  czar?: Maybe<Scalars['Boolean']>;
-  first?: Maybe<Scalars['Int']>;
-  game?: Maybe<Scalars['ID']>;
-  last?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  score?: Maybe<Scalars['Int']>;
-  updatedAt?: Maybe<Scalars['DateTime']>;
-  user?: Maybe<Scalars['ID']>;
-}
-
-export interface UserNode extends Node {
-  readonly __typename?: 'UserNode';
-  readonly dateJoined: Scalars['DateTime'];
-  readonly email: Scalars['String'];
-  readonly firstName: Scalars['String'];
+export interface GenreNode extends Node {
+  readonly __typename?: 'GenreNode';
+  readonly blackcardSet: BlackCardNodeConnection;
+  /** credit creator(url) */
+  readonly credit?: Maybe<Scalars['String']>;
+  /** description allows 2-255 characters(alphabets and -,_,.,',",space) */
+  readonly description: Scalars['String'];
   readonly gameSet: GameNodeConnection;
   /** The ID of the object. */
   readonly id: Scalars['ID'];
-  /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  readonly isActive: Scalars['Boolean'];
-  /** Designates whether the user can log into this admin site. */
-  readonly isStaff: Scalars['Boolean'];
-  /** Designates that this user has all permissions without explicitly assigning them. */
-  readonly isSuperuser: Scalars['Boolean'];
-  readonly lastLogin?: Maybe<Scalars['DateTime']>;
-  readonly lastName: Scalars['String'];
-  readonly playerSet: PlayerNodeConnection;
-  readonly profile?: Maybe<ProfileNode>;
-  readonly socialAuth: SocialNodeConnection;
-  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
-  readonly username: Scalars['String'];
-  readonly winners: GameNodeConnection;
+  readonly selected?: Maybe<Scalars['Boolean']>;
+  readonly whitecardSet: WhiteCardNodeConnection;
 }
 
-export interface UserNodeGameSetArgs {
-  after?: Maybe<Scalars['String']>;
-  before?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['DateTime']>;
-  creator?: Maybe<Scalars['ID']>;
-  first?: Maybe<Scalars['Int']>;
-  genres?: Maybe<ReadonlyArray<Maybe<Scalars['ID']>>>;
-  last?: Maybe<Scalars['Int']>;
-  numPlayers?: Maybe<Scalars['Int']>;
-  numSpectators?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  rounds?: Maybe<Scalars['Int']>;
-  roundTime?: Maybe<Scalars['Int']>;
-  status?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['DateTime']>;
-  winner?: Maybe<Scalars['ID']>;
+export interface GenreNodeBlackcardSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  first?: InputMaybe<Scalars['Int']>;
+  genre?: InputMaybe<Scalars['ID']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  pick?: InputMaybe<Scalars['String']>;
+  rating?: InputMaybe<Scalars['String']>;
+  text?: InputMaybe<Scalars['String']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
 }
 
-export interface UserNodePlayerSetArgs {
-  after?: Maybe<Scalars['String']>;
-  before?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['DateTime']>;
-  czar?: Maybe<Scalars['Boolean']>;
-  first?: Maybe<Scalars['Int']>;
-  game?: Maybe<Scalars['ID']>;
-  last?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  score?: Maybe<Scalars['Int']>;
-  updatedAt?: Maybe<Scalars['DateTime']>;
-  user?: Maybe<Scalars['ID']>;
+export interface GenreNodeGameSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  creator?: InputMaybe<Scalars['ID']>;
+  first?: InputMaybe<Scalars['Int']>;
+  genres?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
+  joinEndsAt?: InputMaybe<Scalars['DateTime']>;
+  last?: InputMaybe<Scalars['Int']>;
+  numPlayers?: InputMaybe<Scalars['Int']>;
+  numSpectators?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  roundTime?: InputMaybe<Scalars['Int']>;
+  rounds?: InputMaybe<Scalars['Int']>;
+  status?: InputMaybe<Scalars['String']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
+  winner?: InputMaybe<Scalars['ID']>;
 }
 
-export interface UserNodeSocialAuthArgs {
-  after?: Maybe<Scalars['String']>;
-  before?: Maybe<Scalars['String']>;
-  first?: Maybe<Scalars['Int']>;
-  last?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  provider?: Maybe<Scalars['String']>;
-  provider_In?: Maybe<ReadonlyArray<Maybe<Scalars['String']>>>;
-  uid?: Maybe<Scalars['String']>;
-  uid_In?: Maybe<ReadonlyArray<Maybe<Scalars['String']>>>;
-}
-
-export interface UserNodeWinnersArgs {
-  after?: Maybe<Scalars['String']>;
-  before?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['DateTime']>;
-  creator?: Maybe<Scalars['ID']>;
-  first?: Maybe<Scalars['Int']>;
-  genres?: Maybe<ReadonlyArray<Maybe<Scalars['ID']>>>;
-  last?: Maybe<Scalars['Int']>;
-  numPlayers?: Maybe<Scalars['Int']>;
-  numSpectators?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  rounds?: Maybe<Scalars['Int']>;
-  roundTime?: Maybe<Scalars['Int']>;
-  status?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['DateTime']>;
-  winner?: Maybe<Scalars['ID']>;
-}
-
-export interface PlayerNodeConnection {
-  readonly __typename?: 'PlayerNodeConnection';
-  readonly edgeCount?: Maybe<Scalars['Int']>;
-  /** Contains the nodes in this connection. */
-  readonly edges: ReadonlyArray<Maybe<PlayerNodeEdge>>;
-  /** Pagination data for this connection. */
-  readonly pageInfo: PageInfo;
-  readonly totalCount?: Maybe<Scalars['Int']>;
-}
-
-/** A Relay edge containing a `PlayerNode` and its cursor. */
-export interface PlayerNodeEdge {
-  readonly __typename?: 'PlayerNodeEdge';
-  /** A cursor for use in pagination */
-  readonly cursor: Scalars['String'];
-  /** The item at the end of the edge */
-  readonly node?: Maybe<PlayerNode>;
-}
-
-export interface PlayerNode extends Node {
-  readonly __typename?: 'PlayerNode';
-  readonly createdAt: Scalars['DateTime'];
-  readonly czar: Scalars['Boolean'];
-  readonly game: GameNode;
-  /** The ID of the object. */
-  readonly id: Scalars['ID'];
-  readonly score: Scalars['Int'];
-  readonly updatedAt: Scalars['DateTime'];
-  readonly user: UserNode;
-}
-
-/** The Relay compliant `PageInfo` type, containing data necessary to paginate this connection. */
-export interface PageInfo {
-  readonly __typename?: 'PageInfo';
-  /** When paginating forwards, the cursor to continue. */
-  readonly endCursor?: Maybe<Scalars['String']>;
-  /** When paginating forwards, are there more items? */
-  readonly hasNextPage: Scalars['Boolean'];
-  /** When paginating backwards, are there more items? */
-  readonly hasPreviousPage: Scalars['Boolean'];
-  /** When paginating backwards, the cursor to continue. */
-  readonly startCursor?: Maybe<Scalars['String']>;
-}
-
-export interface ProfileNode extends Node {
-  readonly __typename?: 'ProfileNode';
-  /** The ID of the object. */
-  readonly id: Scalars['ID'];
-  readonly role: ApiProfileRoleChoices;
-  readonly user: UserNode;
-}
-
-/** An enumeration. */
-export enum ApiProfileRoleChoices {
-  /** Manager */
-  MANAGER = 'MANAGER',
-  /** User */
-  USER = 'USER',
-}
-
-export interface SocialNodeConnection {
-  readonly __typename?: 'SocialNodeConnection';
-  /** Contains the nodes in this connection. */
-  readonly edges: ReadonlyArray<Maybe<SocialNodeEdge>>;
-  /** Pagination data for this connection. */
-  readonly pageInfo: PageInfo;
-}
-
-/** A Relay edge containing a `SocialNode` and its cursor. */
-export interface SocialNodeEdge {
-  readonly __typename?: 'SocialNodeEdge';
-  /** A cursor for use in pagination */
-  readonly cursor: Scalars['String'];
-  /** The item at the end of the edge */
-  readonly node?: Maybe<SocialNode>;
-}
-
-export interface SocialNode extends Node {
-  readonly __typename?: 'SocialNode';
-  readonly created: Scalars['DateTime'];
-  readonly extraData?: Maybe<Scalars['SocialCamelJSON']>;
-  /** The ID of the object. */
-  readonly id: Scalars['ID'];
-  readonly modified: Scalars['DateTime'];
-  readonly provider: Scalars['String'];
-  readonly uid: Scalars['String'];
-  readonly user: UserNode;
+export interface GenreNodeWhitecardSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  genre?: InputMaybe<Scalars['ID']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  text?: InputMaybe<Scalars['String']>;
+  text_Icontains?: InputMaybe<Scalars['String']>;
+  text_Istartswith?: InputMaybe<Scalars['String']>;
 }
 
 export interface GenreNodeConnection {
@@ -482,54 +277,95 @@ export interface GenreNodeEdge {
   readonly node?: Maybe<GenreNode>;
 }
 
-/** An enumeration. */
-export enum ApiGameStatusChoices {
-  /** Gac */
-  AWAITING_CZAR = 'AWAITING_CZAR',
-  /** Gap */
-  AWAITING_PLAYERS = 'AWAITING_PLAYERS',
-  /** Ge */
-  GAME_ENDED = 'GAME_ENDED',
-  /** Gs */
-  GAME_STARTED = 'GAME_STARTED',
+export interface JwtPayloadNode {
+  readonly __typename?: 'JWTPayloadNode';
+  readonly exp?: Maybe<Scalars['Int']>;
+  readonly sub?: Maybe<Scalars['Int']>;
+  readonly subName?: Maybe<Scalars['String']>;
+  readonly username?: Maybe<Scalars['String']>;
 }
 
-export interface WhiteCardNodeConnection {
-  readonly __typename?: 'WhiteCardNodeConnection';
-  readonly edgeCount?: Maybe<Scalars['Int']>;
-  /** Contains the nodes in this connection. */
-  readonly edges: ReadonlyArray<Maybe<WhiteCardNodeEdge>>;
-  /** Pagination data for this connection. */
-  readonly pageInfo: PageInfo;
-  readonly totalCount?: Maybe<Scalars['Int']>;
+export interface JoinGameMutation {
+  readonly __typename?: 'JoinGameMutation';
+  readonly game?: Maybe<GameNode>;
+  readonly ok?: Maybe<Scalars['Boolean']>;
 }
 
-/** A Relay edge containing a `WhiteCardNode` and its cursor. */
-export interface WhiteCardNodeEdge {
-  readonly __typename?: 'WhiteCardNodeEdge';
-  /** A cursor for use in pagination */
-  readonly cursor: Scalars['String'];
-  /** The item at the end of the edge */
-  readonly node?: Maybe<WhiteCardNode>;
+export interface JoinGameMutationInput {
+  readonly gameId: Scalars['ID'];
+  readonly playerId: Scalars['ID'];
 }
 
-export interface WhiteCardNode extends Node {
-  readonly __typename?: 'WhiteCardNode';
-  readonly createdAt: Scalars['DateTime'];
-  readonly genre: GenreNode;
-  /** The ID of the object. */
-  readonly id: Scalars['ID'];
-  /** text allows 2-255 characters(alphabets and -,_,.,',",space) */
-  readonly text: Scalars['String'];
-  readonly updatedAt: Scalars['DateTime'];
+export interface JoinGameSubscription {
+  readonly __typename?: 'JoinGameSubscription';
+  readonly event?: Maybe<Scalars['String']>;
 }
 
-/** An enumeration. */
-export enum ApiBlackCardPickChoices {
-  /** pick1 */
-  A_1 = 'A_1',
-  /** pick2 */
-  A_2 = 'A_2',
+/** Root Mutation for the cards against humanity api. */
+export interface Mutation {
+  readonly __typename?: 'Mutation';
+  readonly createNewGame?: Maybe<CreateNewGameMutation>;
+  readonly createUser?: Maybe<CreateUserMutation>;
+  readonly deleteRefreshTokenCookie?: Maybe<DeleteRefreshTokenCookiePayload>;
+  readonly joinGame?: Maybe<JoinGameMutation>;
+  readonly refreshToken?: Maybe<RefreshPayload>;
+  readonly revokeRefreshToken?: Maybe<RevokePayload>;
+  readonly setFullWidth?: Maybe<SetFullWidthMutation>;
+  /** Social Auth for JSON Web Token (JWT) */
+  readonly socialAuth?: Maybe<SocialAuthJwtPayload>;
+  readonly tokenAuth?: Maybe<ObtainJsonWebTokenMutationPayload>;
+  readonly updateGameStatus?: Maybe<UpdateGameStatusMutation>;
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationCreateNewGameArgs {
+  input: CreateGameMutationInput;
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationCreateUserArgs {
+  input: CreateUserMutationInput;
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationDeleteRefreshTokenCookieArgs {
+  input: DeleteRefreshTokenCookieInput;
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationJoinGameArgs {
+  input: JoinGameMutationInput;
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationRefreshTokenArgs {
+  input: RefreshInput;
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationRevokeRefreshTokenArgs {
+  input: RevokeInput;
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationSetFullWidthArgs {
+  input: SetFullWidthMutationInput;
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationSocialAuthArgs {
+  input: SocialAuthJwtInput;
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationTokenAuthArgs {
+  input: ObtainJsonWebTokenMutationInput;
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationUpdateGameStatusArgs {
+  id: Scalars['ID'];
+  input: UpdateGameInput;
 }
 
 export interface NewGameNode {
@@ -538,9 +374,347 @@ export interface NewGameNode {
   readonly id: Scalars['ID'];
   readonly numPlayers: Scalars['Int'];
   readonly numSpectators: Scalars['Int'];
-  readonly rounds: Scalars['Int'];
   readonly roundTime: Scalars['Int'];
+  readonly rounds: Scalars['Int'];
   readonly status: Scalars['String'];
+}
+
+/** An object with an ID */
+export interface Node {
+  /** The ID of the object. */
+  readonly id: Scalars['ID'];
+}
+
+export interface ObtainJsonWebTokenMutationInput {
+  readonly clientMutationId?: InputMaybe<Scalars['String']>;
+  readonly password: Scalars['String'];
+  readonly username: Scalars['String'];
+}
+
+export interface ObtainJsonWebTokenMutationPayload {
+  readonly __typename?: 'ObtainJSONWebTokenMutationPayload';
+  readonly clientMutationId?: Maybe<Scalars['String']>;
+  readonly payload?: Maybe<JwtPayloadNode>;
+  readonly refreshExpiresIn: Scalars['Int'];
+  readonly refreshToken: Scalars['String'];
+  readonly token: Scalars['String'];
+}
+
+/** The Relay compliant `PageInfo` type, containing data necessary to paginate this connection. */
+export interface PageInfo {
+  readonly __typename?: 'PageInfo';
+  /** When paginating forwards, the cursor to continue. */
+  readonly endCursor?: Maybe<Scalars['String']>;
+  /** When paginating forwards, are there more items? */
+  readonly hasNextPage: Scalars['Boolean'];
+  /** When paginating backwards, are there more items? */
+  readonly hasPreviousPage: Scalars['Boolean'];
+  /** When paginating backwards, the cursor to continue. */
+  readonly startCursor?: Maybe<Scalars['String']>;
+}
+
+export interface PlayerNode extends Node {
+  readonly __typename?: 'PlayerNode';
+  readonly createdAt: Scalars['DateTime'];
+  readonly czar: Scalars['Boolean'];
+  readonly game: GameNode;
+  /** The ID of the object. */
+  readonly id: Scalars['ID'];
+  readonly score: Scalars['Int'];
+  readonly updatedAt: Scalars['DateTime'];
+  readonly user: UserNode;
+}
+
+export interface PlayerNodeConnection {
+  readonly __typename?: 'PlayerNodeConnection';
+  readonly edgeCount?: Maybe<Scalars['Int']>;
+  /** Contains the nodes in this connection. */
+  readonly edges: ReadonlyArray<Maybe<PlayerNodeEdge>>;
+  /** Pagination data for this connection. */
+  readonly pageInfo: PageInfo;
+  readonly totalCount?: Maybe<Scalars['Int']>;
+}
+
+/** A Relay edge containing a `PlayerNode` and its cursor. */
+export interface PlayerNodeEdge {
+  readonly __typename?: 'PlayerNodeEdge';
+  /** A cursor for use in pagination */
+  readonly cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  readonly node?: Maybe<PlayerNode>;
+}
+
+/** Root Query for the cards against humanity api. */
+export interface Query {
+  readonly __typename?: 'Query';
+  readonly blackCards?: Maybe<BlackCardNodeConnection>;
+  /**
+   * @client
+   *  page is full width
+   */
+  readonly fullWidth?: Maybe<Scalars['Boolean']>;
+  readonly game?: Maybe<GameNode>;
+  /** all cards genre */
+  readonly genres?: Maybe<GenreNodeConnection>;
+  readonly newGame?: Maybe<NewGameNode>;
+  /** find users */
+  readonly users?: Maybe<UserNodeConnection>;
+  readonly whiteCards?: Maybe<WhiteCardNodeConnection>;
+}
+
+/** Root Query for the cards against humanity api. */
+export interface QueryBlackCardsArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  first?: InputMaybe<Scalars['Int']>;
+  genre?: InputMaybe<Scalars['ID']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  pick?: InputMaybe<Scalars['String']>;
+  rating?: InputMaybe<Scalars['String']>;
+  text?: InputMaybe<Scalars['String']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
+}
+
+/** Root Query for the cards against humanity api. */
+export interface QueryGameArgs {
+  id?: InputMaybe<Scalars['ID']>;
+}
+
+/** Root Query for the cards against humanity api. */
+export interface QueryGenresArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  credit?: InputMaybe<Scalars['String']>;
+  credit_Icontains?: InputMaybe<Scalars['String']>;
+  credit_Istartswith?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  description_Icontains?: InputMaybe<Scalars['String']>;
+  description_Istartswith?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['Float']>;
+  id_Gt?: InputMaybe<Scalars['Float']>;
+  id_Lt?: InputMaybe<Scalars['Float']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+}
+
+/** Root Query for the cards against humanity api. */
+export interface QueryNewGameArgs {
+  id: Scalars['ID'];
+}
+
+/** Root Query for the cards against humanity api. */
+export interface QueryUsersArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  first?: InputMaybe<Scalars['Int']>;
+  groups?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
+  isActive?: InputMaybe<Scalars['Boolean']>;
+  isAdmin?: InputMaybe<Scalars['Boolean']>;
+  isStaff?: InputMaybe<Scalars['Boolean']>;
+  isSuperuser?: InputMaybe<Scalars['Boolean']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
+  userPermissions?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
+}
+
+/** Root Query for the cards against humanity api. */
+export interface QueryWhiteCardsArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  genre?: InputMaybe<Scalars['ID']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  text?: InputMaybe<Scalars['String']>;
+  text_Icontains?: InputMaybe<Scalars['String']>;
+  text_Istartswith?: InputMaybe<Scalars['String']>;
+}
+
+export interface RefreshInput {
+  readonly clientMutationId?: InputMaybe<Scalars['String']>;
+  readonly refreshToken?: InputMaybe<Scalars['String']>;
+}
+
+export interface RefreshPayload {
+  readonly __typename?: 'RefreshPayload';
+  readonly clientMutationId?: Maybe<Scalars['String']>;
+  readonly payload: Scalars['GenericScalar'];
+  readonly refreshExpiresIn: Scalars['Int'];
+  readonly refreshToken: Scalars['String'];
+  readonly token: Scalars['String'];
+}
+
+export interface RevokeInput {
+  readonly clientMutationId?: InputMaybe<Scalars['String']>;
+  readonly refreshToken?: InputMaybe<Scalars['String']>;
+}
+
+export interface RevokePayload {
+  readonly __typename?: 'RevokePayload';
+  readonly clientMutationId?: Maybe<Scalars['String']>;
+  readonly revoked: Scalars['Int'];
+}
+
+export interface SetFullWidthMutation {
+  readonly __typename?: 'SetFullWidthMutation';
+  readonly fullWidth?: Maybe<Scalars['Boolean']>;
+}
+
+export interface SetFullWidthMutationInput {
+  readonly fullWidth: Scalars['Boolean'];
+}
+
+export interface SocialAuthJwtInput {
+  readonly accessToken: Scalars['String'];
+  readonly clientMutationId?: InputMaybe<Scalars['String']>;
+  readonly provider: Scalars['String'];
+}
+
+/** Social Auth for JSON Web Token (JWT) */
+export interface SocialAuthJwtPayload {
+  readonly __typename?: 'SocialAuthJWTPayload';
+  readonly clientMutationId?: Maybe<Scalars['String']>;
+  readonly social?: Maybe<SocialNode>;
+  readonly token?: Maybe<Scalars['String']>;
+}
+
+export interface SocialNode extends Node {
+  readonly __typename?: 'SocialNode';
+  readonly created: Scalars['DateTime'];
+  readonly extraData?: Maybe<Scalars['SocialCamelJSON']>;
+  /** The ID of the object. */
+  readonly id: Scalars['ID'];
+  readonly modified: Scalars['DateTime'];
+  readonly provider: Scalars['String'];
+  readonly uid: Scalars['String'];
+  readonly user: UserNode;
+}
+
+export interface SocialNodeConnection {
+  readonly __typename?: 'SocialNodeConnection';
+  /** Contains the nodes in this connection. */
+  readonly edges: ReadonlyArray<Maybe<SocialNodeEdge>>;
+  /** Pagination data for this connection. */
+  readonly pageInfo: PageInfo;
+}
+
+/** A Relay edge containing a `SocialNode` and its cursor. */
+export interface SocialNodeEdge {
+  readonly __typename?: 'SocialNodeEdge';
+  /** A cursor for use in pagination */
+  readonly cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  readonly node?: Maybe<SocialNode>;
+}
+
+/** Root Subscription for the cards against humanity api. */
+export interface Subscription {
+  readonly __typename?: 'Subscription';
+  readonly joinGame?: Maybe<JoinGameSubscription>;
+}
+
+/** Root Subscription for the cards against humanity api. */
+export interface SubscriptionJoinGameArgs {
+  gameRoom?: InputMaybe<Scalars['String']>;
+  user?: InputMaybe<Scalars['String']>;
+}
+
+export interface UpdateGameInput {
+  readonly status: ApiGameStatusChoices;
+}
+
+export interface UpdateGameStatusMutation {
+  readonly __typename?: 'UpdateGameStatusMutation';
+  readonly game?: Maybe<GameNode>;
+}
+
+export interface UserNode extends Node {
+  readonly __typename?: 'UserNode';
+  readonly createdAt: Scalars['DateTime'];
+  readonly gameSet: GameNodeConnection;
+  /** The ID of the object. */
+  readonly id: Scalars['ID'];
+  /** Active */
+  readonly isActive: Scalars['Boolean'];
+  /** Is Admin */
+  readonly isAdmin: Scalars['Boolean'];
+  /** Is Staff */
+  readonly isStaff: Scalars['Boolean'];
+  /** Is Superuser */
+  readonly isSuperuser: Scalars['Boolean'];
+  readonly playerSet: PlayerNodeConnection;
+  readonly socialAuth: SocialNodeConnection;
+  readonly updatedAt: Scalars['DateTime'];
+  readonly winners: GameNodeConnection;
+}
+
+export interface UserNodeGameSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  creator?: InputMaybe<Scalars['ID']>;
+  first?: InputMaybe<Scalars['Int']>;
+  genres?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
+  joinEndsAt?: InputMaybe<Scalars['DateTime']>;
+  last?: InputMaybe<Scalars['Int']>;
+  numPlayers?: InputMaybe<Scalars['Int']>;
+  numSpectators?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  roundTime?: InputMaybe<Scalars['Int']>;
+  rounds?: InputMaybe<Scalars['Int']>;
+  status?: InputMaybe<Scalars['String']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
+  winner?: InputMaybe<Scalars['ID']>;
+}
+
+export interface UserNodePlayerSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  czar?: InputMaybe<Scalars['Boolean']>;
+  first?: InputMaybe<Scalars['Int']>;
+  game?: InputMaybe<Scalars['ID']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  score?: InputMaybe<Scalars['Int']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
+  user?: InputMaybe<Scalars['ID']>;
+}
+
+export interface UserNodeSocialAuthArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  provider?: InputMaybe<Scalars['String']>;
+  provider_In?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['String']>>>;
+  uid?: InputMaybe<Scalars['String']>;
+  uid_In?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['String']>>>;
+}
+
+export interface UserNodeWinnersArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  creator?: InputMaybe<Scalars['ID']>;
+  first?: InputMaybe<Scalars['Int']>;
+  genres?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
+  joinEndsAt?: InputMaybe<Scalars['DateTime']>;
+  last?: InputMaybe<Scalars['Int']>;
+  numPlayers?: InputMaybe<Scalars['Int']>;
+  numSpectators?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  roundTime?: InputMaybe<Scalars['Int']>;
+  rounds?: InputMaybe<Scalars['Int']>;
+  status?: InputMaybe<Scalars['String']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
+  winner?: InputMaybe<Scalars['ID']>;
 }
 
 export interface UserNodeConnection {
@@ -562,241 +736,55 @@ export interface UserNodeEdge {
   readonly node?: Maybe<UserNode>;
 }
 
-/** Root Mutation for the cards against humanity api. */
-export interface Mutation {
-  readonly __typename?: 'Mutation';
-  readonly createGame?: Maybe<CreateGameMutation>;
-  readonly createNewGame?: Maybe<CreateNewGameMutation>;
-  readonly createUser?: Maybe<CreateUserPayload>;
-  readonly deleteRefreshTokenCookie?: Maybe<DeleteRefreshTokenCookiePayload>;
-  readonly refreshToken?: Maybe<RefreshPayload>;
-  readonly saveProfile?: Maybe<SaveProfileMutation>;
-  /** Social Auth for JSON Web Token (JWT) */
-  readonly socialAuth?: Maybe<SocialAuthJwtPayload>;
-  readonly tokenAuth?: Maybe<ObtainJsonWebTokenPayload>;
-  readonly updateGame?: Maybe<EditGameMutation>;
-  readonly verifyToken?: Maybe<VerifyPayload>;
-}
-
-/** Root Mutation for the cards against humanity api. */
-export interface MutationCreateGameArgs {
-  input: CreateGameInput;
-}
-
-/** Root Mutation for the cards against humanity api. */
-export interface MutationCreateNewGameArgs {
-  input: CreateGameInput;
-}
-
-/** Root Mutation for the cards against humanity api. */
-export interface MutationCreateUserArgs {
-  email: Scalars['String'];
-  password: Scalars['String'];
-}
-
-/** Root Mutation for the cards against humanity api. */
-export interface MutationDeleteRefreshTokenCookieArgs {
-  input: DeleteRefreshTokenCookieInput;
-}
-
-/** Root Mutation for the cards against humanity api. */
-export interface MutationRefreshTokenArgs {
-  input: RefreshInput;
-}
-
-/** Root Mutation for the cards against humanity api. */
-export interface MutationSaveProfileArgs {
-  input: SaveProfileInput;
-}
-
-/** Root Mutation for the cards against humanity api. */
-export interface MutationSocialAuthArgs {
-  input: SocialAuthJwtInput;
-}
-
-/** Root Mutation for the cards against humanity api. */
-export interface MutationTokenAuthArgs {
-  input: ObtainJsonWebTokenInput;
-}
-
-/** Root Mutation for the cards against humanity api. */
-export interface MutationUpdateGameArgs {
-  id: Scalars['ID'];
-  input: UpdateGameInput;
-}
-
-/** Root Mutation for the cards against humanity api. */
-export interface MutationVerifyTokenArgs {
-  input: VerifyInput;
-}
-
-export interface CreateGameInput {
-  readonly creator: Scalars['ID'];
-  readonly genres: ReadonlyArray<Maybe<Scalars['ID']>>;
-  /** no of players */
-  readonly numPlayers?: Maybe<Scalars['Int']>;
-  /** no of spectators */
-  readonly numSpectators?: Maybe<Scalars['Int']>;
-  readonly playerSet?: Maybe<ReadonlyArray<Maybe<Scalars['ID']>>>;
-  /** no of game rounds */
-  readonly rounds?: Maybe<Scalars['Int']>;
-  /** seconds */
-  readonly roundTime?: Maybe<Scalars['Int']>;
-  readonly winner: Scalars['ID'];
-}
-
-export interface CreateGameMutation {
-  readonly __typename?: 'CreateGameMutation';
-  readonly game?: Maybe<GameNode>;
-}
-
-export interface CreateNewGameMutation {
-  readonly __typename?: 'CreateNewGameMutation';
-  readonly newGame?: Maybe<NewGameNode>;
-}
-
-export type CreateUserPayload = CreateUserFailEmailExists | CreateUserFailOthers | CreateUserSuccess;
-
-export interface CreateUserFailEmailExists {
-  readonly __typename?: 'CreateUserFailEmailExists';
-  readonly errorMessage: Scalars['String'];
-}
-
-export interface CreateUserFailOthers {
-  readonly __typename?: 'CreateUserFailOthers';
-  readonly errorMessage: Scalars['String'];
-}
-
-export interface CreateUserSuccess {
-  readonly __typename?: 'CreateUserSuccess';
-  readonly profile?: Maybe<ProfileNode>;
-  readonly refreshToken?: Maybe<Scalars['String']>;
-  readonly token?: Maybe<Scalars['String']>;
-  readonly user?: Maybe<UserNode>;
-}
-
-export interface DeleteRefreshTokenCookieInput {
-  readonly clientMutationId?: Maybe<Scalars['String']>;
-}
-
-export interface DeleteRefreshTokenCookiePayload {
-  readonly __typename?: 'DeleteRefreshTokenCookiePayload';
-  readonly clientMutationId?: Maybe<Scalars['String']>;
-  readonly deleted: Scalars['Boolean'];
-}
-
-export interface RefreshInput {
-  readonly clientMutationId?: Maybe<Scalars['String']>;
-  readonly refreshToken?: Maybe<Scalars['String']>;
-}
-
-export interface RefreshPayload {
-  readonly __typename?: 'RefreshPayload';
-  readonly clientMutationId?: Maybe<Scalars['String']>;
-  readonly payload: Scalars['GenericScalar'];
-  readonly refreshExpiresIn: Scalars['Int'];
-  readonly refreshToken: Scalars['String'];
-  readonly token: Scalars['String'];
-}
-
-export interface SaveProfileInput {
+export interface WhiteCardNode extends Node {
+  readonly __typename?: 'WhiteCardNode';
+  readonly createdAt: Scalars['DateTime'];
+  readonly genre: GenreNode;
+  /** The ID of the object. */
   readonly id: Scalars['ID'];
-  readonly username: Scalars['String'];
+  readonly rating: ApiWhiteCardRatingChoices;
+  /** text allows 2-255 characters(alphabets and -,_,.,',",space) */
+  readonly text: Scalars['String'];
+  readonly updatedAt: Scalars['DateTime'];
 }
 
-export interface SaveProfileMutation {
-  readonly __typename?: 'SaveProfileMutation';
-  readonly profile?: Maybe<UserNode>;
+export interface WhiteCardNodeConnection {
+  readonly __typename?: 'WhiteCardNodeConnection';
+  readonly edgeCount?: Maybe<Scalars['Int']>;
+  /** Contains the nodes in this connection. */
+  readonly edges: ReadonlyArray<Maybe<WhiteCardNodeEdge>>;
+  /** Pagination data for this connection. */
+  readonly pageInfo: PageInfo;
+  readonly totalCount?: Maybe<Scalars['Int']>;
 }
 
-export interface SocialAuthJwtInput {
-  readonly accessToken: Scalars['String'];
-  readonly clientMutationId?: Maybe<Scalars['String']>;
-  readonly provider: Scalars['String'];
+/** A Relay edge containing a `WhiteCardNode` and its cursor. */
+export interface WhiteCardNodeEdge {
+  readonly __typename?: 'WhiteCardNodeEdge';
+  /** A cursor for use in pagination */
+  readonly cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  readonly node?: Maybe<WhiteCardNode>;
 }
 
-/** Social Auth for JSON Web Token (JWT) */
-export interface SocialAuthJwtPayload {
-  readonly __typename?: 'SocialAuthJWTPayload';
-  readonly clientMutationId?: Maybe<Scalars['String']>;
-  readonly social?: Maybe<SocialNode>;
-  readonly token?: Maybe<Scalars['String']>;
-}
-
-export interface ObtainJsonWebTokenInput {
-  readonly clientMutationId?: Maybe<Scalars['String']>;
-  readonly password: Scalars['String'];
-  readonly username: Scalars['String'];
-}
-
-export interface ObtainJsonWebTokenPayload {
-  readonly __typename?: 'ObtainJSONWebTokenPayload';
-  readonly clientMutationId?: Maybe<Scalars['String']>;
-  readonly payload: Scalars['GenericScalar'];
-  readonly refreshExpiresIn: Scalars['Int'];
-  readonly refreshToken: Scalars['String'];
-  readonly token: Scalars['String'];
-}
-
-export interface UpdateGameInput {
-  readonly status: ApiGameStatusChoices;
-}
-
-export interface EditGameMutation {
-  readonly __typename?: 'EditGameMutation';
-  readonly game?: Maybe<GameNode>;
-}
-
-export interface VerifyInput {
-  readonly clientMutationId?: Maybe<Scalars['String']>;
-  readonly token?: Maybe<Scalars['String']>;
-}
-
-export interface VerifyPayload {
-  readonly __typename?: 'VerifyPayload';
-  readonly clientMutationId?: Maybe<Scalars['String']>;
-  readonly payload: Scalars['GenericScalar'];
-}
-
-/** Root Subscription for the cards against humanity api. */
-export interface Subscription {
-  readonly __typename?: 'Subscription';
-  readonly gameSubscription?: Maybe<GameSubscriptionNode>;
-}
-
-/** Root Subscription for the cards against humanity api. */
-export interface SubscriptionGameSubscriptionArgs {
-  gameRoom?: Maybe<Scalars['String']>;
-  user?: Maybe<Scalars['String']>;
-}
-
-export interface GameSubscriptionNode {
-  readonly __typename?: 'GameSubscriptionNode';
-  readonly event?: Maybe<Scalars['String']>;
-}
-
-export type QueryKeySpecifier = (
-  | 'blackCards'
-  | 'game'
-  | 'genres'
-  | 'isLoggedIn'
-  | 'newGame'
-  | 'profile'
-  | 'users'
-  | 'whiteCards'
-  | 'whoami'
-  | QueryKeySpecifier
+export type BlackCardNodeKeySpecifier = (
+  | 'createdAt'
+  | 'genre'
+  | 'id'
+  | 'pick'
+  | 'rating'
+  | 'text'
+  | 'updatedAt'
+  | BlackCardNodeKeySpecifier
 )[];
-export type QueryFieldPolicy = {
-  blackCards?: FieldPolicy<any> | FieldReadFunction<any>;
-  game?: FieldPolicy<any> | FieldReadFunction<any>;
-  genres?: FieldPolicy<any> | FieldReadFunction<any>;
-  isLoggedIn?: FieldPolicy<any> | FieldReadFunction<any>;
-  newGame?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  users?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteCards?: FieldPolicy<any> | FieldReadFunction<any>;
-  whoami?: FieldPolicy<any> | FieldReadFunction<any>;
+export type BlackCardNodeFieldPolicy = {
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  genre?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  pick?: FieldPolicy<any> | FieldReadFunction<any>;
+  rating?: FieldPolicy<any> | FieldReadFunction<any>;
+  text?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type BlackCardNodeConnectionKeySpecifier = (
   | 'edgeCount'
@@ -816,18 +804,61 @@ export type BlackCardNodeEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type BlackCardNodeKeySpecifier = ('createdAt' | 'genre' | 'id' | 'pick' | 'text' | 'updatedAt' | BlackCardNodeKeySpecifier)[];
-export type BlackCardNodeFieldPolicy = {
-  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
-  genre?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  pick?: FieldPolicy<any> | FieldReadFunction<any>;
-  text?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
+export type CreateNewGameMutationKeySpecifier = ('newGame' | CreateNewGameMutationKeySpecifier)[];
+export type CreateNewGameMutationFieldPolicy = {
+  newGame?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type NodeKeySpecifier = ('id' | NodeKeySpecifier)[];
-export type NodeFieldPolicy = {
+export type CreateUserMutationKeySpecifier = ('ok' | CreateUserMutationKeySpecifier)[];
+export type CreateUserMutationFieldPolicy = {
+  ok?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type DeleteRefreshTokenCookiePayloadKeySpecifier = ('clientMutationId' | 'deleted' | DeleteRefreshTokenCookiePayloadKeySpecifier)[];
+export type DeleteRefreshTokenCookiePayloadFieldPolicy = {
+  clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleted?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type GameNodeKeySpecifier = (
+  | 'createdAt'
+  | 'creator'
+  | 'genres'
+  | 'id'
+  | 'joinEndsAt'
+  | 'numPlayers'
+  | 'numSpectators'
+  | 'playerSet'
+  | 'roundTime'
+  | 'rounds'
+  | 'status'
+  | 'updatedAt'
+  | 'winner'
+  | GameNodeKeySpecifier
+)[];
+export type GameNodeFieldPolicy = {
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  creator?: FieldPolicy<any> | FieldReadFunction<any>;
+  genres?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  joinEndsAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  numPlayers?: FieldPolicy<any> | FieldReadFunction<any>;
+  numSpectators?: FieldPolicy<any> | FieldReadFunction<any>;
+  playerSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  roundTime?: FieldPolicy<any> | FieldReadFunction<any>;
+  rounds?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  winner?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type GameNodeConnectionKeySpecifier = ('edgeCount' | 'edges' | 'pageInfo' | 'totalCount' | GameNodeConnectionKeySpecifier)[];
+export type GameNodeConnectionFieldPolicy = {
+  edgeCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type GameNodeEdgeKeySpecifier = ('cursor' | 'node' | GameNodeEdgeKeySpecifier)[];
+export type GameNodeEdgeFieldPolicy = {
+  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type GenreNodeKeySpecifier = (
   | 'blackcardSet'
@@ -848,81 +879,113 @@ export type GenreNodeFieldPolicy = {
   selected?: FieldPolicy<any> | FieldReadFunction<any>;
   whitecardSet?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type GameNodeConnectionKeySpecifier = ('edgeCount' | 'edges' | 'pageInfo' | 'totalCount' | GameNodeConnectionKeySpecifier)[];
-export type GameNodeConnectionFieldPolicy = {
+export type GenreNodeConnectionKeySpecifier = ('edgeCount' | 'edges' | 'pageInfo' | 'totalCount' | GenreNodeConnectionKeySpecifier)[];
+export type GenreNodeConnectionFieldPolicy = {
   edgeCount?: FieldPolicy<any> | FieldReadFunction<any>;
   edges?: FieldPolicy<any> | FieldReadFunction<any>;
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type GameNodeEdgeKeySpecifier = ('cursor' | 'node' | GameNodeEdgeKeySpecifier)[];
-export type GameNodeEdgeFieldPolicy = {
+export type GenreNodeEdgeKeySpecifier = ('cursor' | 'node' | GenreNodeEdgeKeySpecifier)[];
+export type GenreNodeEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type GameNodeKeySpecifier = (
-  | 'createdAt'
-  | 'creator'
+export type JWTPayloadNodeKeySpecifier = ('exp' | 'sub' | 'subName' | 'username' | JWTPayloadNodeKeySpecifier)[];
+export type JWTPayloadNodeFieldPolicy = {
+  exp?: FieldPolicy<any> | FieldReadFunction<any>;
+  sub?: FieldPolicy<any> | FieldReadFunction<any>;
+  subName?: FieldPolicy<any> | FieldReadFunction<any>;
+  username?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type JoinGameMutationKeySpecifier = ('game' | 'ok' | JoinGameMutationKeySpecifier)[];
+export type JoinGameMutationFieldPolicy = {
+  game?: FieldPolicy<any> | FieldReadFunction<any>;
+  ok?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type JoinGameSubscriptionKeySpecifier = ('event' | JoinGameSubscriptionKeySpecifier)[];
+export type JoinGameSubscriptionFieldPolicy = {
+  event?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MutationKeySpecifier = (
+  | 'createNewGame'
+  | 'createUser'
+  | 'deleteRefreshTokenCookie'
+  | 'joinGame'
+  | 'refreshToken'
+  | 'revokeRefreshToken'
+  | 'setFullWidth'
+  | 'socialAuth'
+  | 'tokenAuth'
+  | 'updateGameStatus'
+  | MutationKeySpecifier
+)[];
+export type MutationFieldPolicy = {
+  createNewGame?: FieldPolicy<any> | FieldReadFunction<any>;
+  createUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteRefreshTokenCookie?: FieldPolicy<any> | FieldReadFunction<any>;
+  joinGame?: FieldPolicy<any> | FieldReadFunction<any>;
+  refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
+  revokeRefreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
+  setFullWidth?: FieldPolicy<any> | FieldReadFunction<any>;
+  socialAuth?: FieldPolicy<any> | FieldReadFunction<any>;
+  tokenAuth?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateGameStatus?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type NewGameNodeKeySpecifier = (
   | 'genres'
   | 'id'
   | 'numPlayers'
   | 'numSpectators'
-  | 'playerSet'
-  | 'rounds'
   | 'roundTime'
+  | 'rounds'
   | 'status'
-  | 'updatedAt'
-  | 'winner'
-  | GameNodeKeySpecifier
+  | NewGameNodeKeySpecifier
 )[];
-export type GameNodeFieldPolicy = {
-  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
-  creator?: FieldPolicy<any> | FieldReadFunction<any>;
+export type NewGameNodeFieldPolicy = {
   genres?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   numPlayers?: FieldPolicy<any> | FieldReadFunction<any>;
   numSpectators?: FieldPolicy<any> | FieldReadFunction<any>;
-  playerSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  rounds?: FieldPolicy<any> | FieldReadFunction<any>;
   roundTime?: FieldPolicy<any> | FieldReadFunction<any>;
+  rounds?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
-  winner?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type UserNodeKeySpecifier = (
-  | 'dateJoined'
-  | 'email'
-  | 'firstName'
-  | 'gameSet'
-  | 'id'
-  | 'isActive'
-  | 'isStaff'
-  | 'isSuperuser'
-  | 'lastLogin'
-  | 'lastName'
-  | 'playerSet'
-  | 'profile'
-  | 'socialAuth'
-  | 'username'
-  | 'winners'
-  | UserNodeKeySpecifier
-)[];
-export type UserNodeFieldPolicy = {
-  dateJoined?: FieldPolicy<any> | FieldReadFunction<any>;
-  email?: FieldPolicy<any> | FieldReadFunction<any>;
-  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
-  gameSet?: FieldPolicy<any> | FieldReadFunction<any>;
+export type NodeKeySpecifier = ('id' | NodeKeySpecifier)[];
+export type NodeFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  isActive?: FieldPolicy<any> | FieldReadFunction<any>;
-  isStaff?: FieldPolicy<any> | FieldReadFunction<any>;
-  isSuperuser?: FieldPolicy<any> | FieldReadFunction<any>;
-  lastLogin?: FieldPolicy<any> | FieldReadFunction<any>;
-  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
-  playerSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  socialAuth?: FieldPolicy<any> | FieldReadFunction<any>;
-  username?: FieldPolicy<any> | FieldReadFunction<any>;
-  winners?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ObtainJSONWebTokenMutationPayloadKeySpecifier = (
+  | 'clientMutationId'
+  | 'payload'
+  | 'refreshExpiresIn'
+  | 'refreshToken'
+  | 'token'
+  | ObtainJSONWebTokenMutationPayloadKeySpecifier
+)[];
+export type ObtainJSONWebTokenMutationPayloadFieldPolicy = {
+  clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
+  payload?: FieldPolicy<any> | FieldReadFunction<any>;
+  refreshExpiresIn?: FieldPolicy<any> | FieldReadFunction<any>;
+  refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
+  token?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PageInfoKeySpecifier = ('endCursor' | 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | PageInfoKeySpecifier)[];
+export type PageInfoFieldPolicy = {
+  endCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
+  startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PlayerNodeKeySpecifier = ('createdAt' | 'czar' | 'game' | 'id' | 'score' | 'updatedAt' | 'user' | PlayerNodeKeySpecifier)[];
+export type PlayerNodeFieldPolicy = {
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  czar?: FieldPolicy<any> | FieldReadFunction<any>;
+  game?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlayerNodeConnectionKeySpecifier = ('edgeCount' | 'edges' | 'pageInfo' | 'totalCount' | PlayerNodeConnectionKeySpecifier)[];
 export type PlayerNodeConnectionFieldPolicy = {
@@ -936,27 +999,54 @@ export type PlayerNodeEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PlayerNodeKeySpecifier = ('createdAt' | 'czar' | 'game' | 'id' | 'score' | 'updatedAt' | 'user' | PlayerNodeKeySpecifier)[];
-export type PlayerNodeFieldPolicy = {
-  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
-  czar?: FieldPolicy<any> | FieldReadFunction<any>;
+export type QueryKeySpecifier = ('blackCards' | 'fullWidth' | 'game' | 'genres' | 'newGame' | 'users' | 'whiteCards' | QueryKeySpecifier)[];
+export type QueryFieldPolicy = {
+  blackCards?: FieldPolicy<any> | FieldReadFunction<any>;
+  fullWidth?: FieldPolicy<any> | FieldReadFunction<any>;
   game?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  score?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
-  user?: FieldPolicy<any> | FieldReadFunction<any>;
+  genres?: FieldPolicy<any> | FieldReadFunction<any>;
+  newGame?: FieldPolicy<any> | FieldReadFunction<any>;
+  users?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteCards?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PageInfoKeySpecifier = ('endCursor' | 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | PageInfoKeySpecifier)[];
-export type PageInfoFieldPolicy = {
-  endCursor?: FieldPolicy<any> | FieldReadFunction<any>;
-  hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>;
-  hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
-  startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+export type RefreshPayloadKeySpecifier = (
+  | 'clientMutationId'
+  | 'payload'
+  | 'refreshExpiresIn'
+  | 'refreshToken'
+  | 'token'
+  | RefreshPayloadKeySpecifier
+)[];
+export type RefreshPayloadFieldPolicy = {
+  clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
+  payload?: FieldPolicy<any> | FieldReadFunction<any>;
+  refreshExpiresIn?: FieldPolicy<any> | FieldReadFunction<any>;
+  refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
+  token?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ProfileNodeKeySpecifier = ('id' | 'role' | 'user' | ProfileNodeKeySpecifier)[];
-export type ProfileNodeFieldPolicy = {
+export type RevokePayloadKeySpecifier = ('clientMutationId' | 'revoked' | RevokePayloadKeySpecifier)[];
+export type RevokePayloadFieldPolicy = {
+  clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
+  revoked?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SetFullWidthMutationKeySpecifier = ('fullWidth' | SetFullWidthMutationKeySpecifier)[];
+export type SetFullWidthMutationFieldPolicy = {
+  fullWidth?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SocialAuthJWTPayloadKeySpecifier = ('clientMutationId' | 'social' | 'token' | SocialAuthJWTPayloadKeySpecifier)[];
+export type SocialAuthJWTPayloadFieldPolicy = {
+  clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
+  social?: FieldPolicy<any> | FieldReadFunction<any>;
+  token?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SocialNodeKeySpecifier = ('created' | 'extraData' | 'id' | 'modified' | 'provider' | 'uid' | 'user' | SocialNodeKeySpecifier)[];
+export type SocialNodeFieldPolicy = {
+  created?: FieldPolicy<any> | FieldReadFunction<any>;
+  extraData?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  role?: FieldPolicy<any> | FieldReadFunction<any>;
+  modified?: FieldPolicy<any> | FieldReadFunction<any>;
+  provider?: FieldPolicy<any> | FieldReadFunction<any>;
+  uid?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SocialNodeConnectionKeySpecifier = ('edges' | 'pageInfo' | SocialNodeConnectionKeySpecifier)[];
@@ -969,27 +1059,61 @@ export type SocialNodeEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SocialNodeKeySpecifier = ('created' | 'extraData' | 'id' | 'modified' | 'provider' | 'uid' | 'user' | SocialNodeKeySpecifier)[];
-export type SocialNodeFieldPolicy = {
-  created?: FieldPolicy<any> | FieldReadFunction<any>;
-  extraData?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  modified?: FieldPolicy<any> | FieldReadFunction<any>;
-  provider?: FieldPolicy<any> | FieldReadFunction<any>;
-  uid?: FieldPolicy<any> | FieldReadFunction<any>;
-  user?: FieldPolicy<any> | FieldReadFunction<any>;
+export type SubscriptionKeySpecifier = ('joinGame' | SubscriptionKeySpecifier)[];
+export type SubscriptionFieldPolicy = {
+  joinGame?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type GenreNodeConnectionKeySpecifier = ('edgeCount' | 'edges' | 'pageInfo' | 'totalCount' | GenreNodeConnectionKeySpecifier)[];
-export type GenreNodeConnectionFieldPolicy = {
+export type UpdateGameStatusMutationKeySpecifier = ('game' | UpdateGameStatusMutationKeySpecifier)[];
+export type UpdateGameStatusMutationFieldPolicy = {
+  game?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserNodeKeySpecifier = (
+  | 'createdAt'
+  | 'gameSet'
+  | 'id'
+  | 'isActive'
+  | 'isAdmin'
+  | 'isStaff'
+  | 'isSuperuser'
+  | 'playerSet'
+  | 'socialAuth'
+  | 'updatedAt'
+  | 'winners'
+  | UserNodeKeySpecifier
+)[];
+export type UserNodeFieldPolicy = {
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  gameSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isActive?: FieldPolicy<any> | FieldReadFunction<any>;
+  isAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  isStaff?: FieldPolicy<any> | FieldReadFunction<any>;
+  isSuperuser?: FieldPolicy<any> | FieldReadFunction<any>;
+  playerSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  socialAuth?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  winners?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserNodeConnectionKeySpecifier = ('edgeCount' | 'edges' | 'pageInfo' | 'totalCount' | UserNodeConnectionKeySpecifier)[];
+export type UserNodeConnectionFieldPolicy = {
   edgeCount?: FieldPolicy<any> | FieldReadFunction<any>;
   edges?: FieldPolicy<any> | FieldReadFunction<any>;
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type GenreNodeEdgeKeySpecifier = ('cursor' | 'node' | GenreNodeEdgeKeySpecifier)[];
-export type GenreNodeEdgeFieldPolicy = {
+export type UserNodeEdgeKeySpecifier = ('cursor' | 'node' | UserNodeEdgeKeySpecifier)[];
+export type UserNodeEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WhiteCardNodeKeySpecifier = ('createdAt' | 'genre' | 'id' | 'rating' | 'text' | 'updatedAt' | WhiteCardNodeKeySpecifier)[];
+export type WhiteCardNodeFieldPolicy = {
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  genre?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  rating?: FieldPolicy<any> | FieldReadFunction<any>;
+  text?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type WhiteCardNodeConnectionKeySpecifier = (
   | 'edgeCount'
@@ -1009,159 +1133,10 @@ export type WhiteCardNodeEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type WhiteCardNodeKeySpecifier = ('createdAt' | 'genre' | 'id' | 'text' | 'updatedAt' | WhiteCardNodeKeySpecifier)[];
-export type WhiteCardNodeFieldPolicy = {
-  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
-  genre?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  text?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type NewGameNodeKeySpecifier = (
-  | 'genres'
-  | 'id'
-  | 'numPlayers'
-  | 'numSpectators'
-  | 'rounds'
-  | 'roundTime'
-  | 'status'
-  | NewGameNodeKeySpecifier
-)[];
-export type NewGameNodeFieldPolicy = {
-  genres?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  numPlayers?: FieldPolicy<any> | FieldReadFunction<any>;
-  numSpectators?: FieldPolicy<any> | FieldReadFunction<any>;
-  rounds?: FieldPolicy<any> | FieldReadFunction<any>;
-  roundTime?: FieldPolicy<any> | FieldReadFunction<any>;
-  status?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type UserNodeConnectionKeySpecifier = ('edgeCount' | 'edges' | 'pageInfo' | 'totalCount' | UserNodeConnectionKeySpecifier)[];
-export type UserNodeConnectionFieldPolicy = {
-  edgeCount?: FieldPolicy<any> | FieldReadFunction<any>;
-  edges?: FieldPolicy<any> | FieldReadFunction<any>;
-  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
-  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type UserNodeEdgeKeySpecifier = ('cursor' | 'node' | UserNodeEdgeKeySpecifier)[];
-export type UserNodeEdgeFieldPolicy = {
-  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
-  node?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type MutationKeySpecifier = (
-  | 'createGame'
-  | 'createNewGame'
-  | 'createUser'
-  | 'deleteRefreshTokenCookie'
-  | 'refreshToken'
-  | 'saveProfile'
-  | 'socialAuth'
-  | 'tokenAuth'
-  | 'updateGame'
-  | 'verifyToken'
-  | MutationKeySpecifier
-)[];
-export type MutationFieldPolicy = {
-  createGame?: FieldPolicy<any> | FieldReadFunction<any>;
-  createNewGame?: FieldPolicy<any> | FieldReadFunction<any>;
-  createUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteRefreshTokenCookie?: FieldPolicy<any> | FieldReadFunction<any>;
-  refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
-  saveProfile?: FieldPolicy<any> | FieldReadFunction<any>;
-  socialAuth?: FieldPolicy<any> | FieldReadFunction<any>;
-  tokenAuth?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateGame?: FieldPolicy<any> | FieldReadFunction<any>;
-  verifyToken?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CreateGameMutationKeySpecifier = ('game' | CreateGameMutationKeySpecifier)[];
-export type CreateGameMutationFieldPolicy = {
-  game?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CreateNewGameMutationKeySpecifier = ('newGame' | CreateNewGameMutationKeySpecifier)[];
-export type CreateNewGameMutationFieldPolicy = {
-  newGame?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CreateUserFailEmailExistsKeySpecifier = ('errorMessage' | CreateUserFailEmailExistsKeySpecifier)[];
-export type CreateUserFailEmailExistsFieldPolicy = {
-  errorMessage?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CreateUserFailOthersKeySpecifier = ('errorMessage' | CreateUserFailOthersKeySpecifier)[];
-export type CreateUserFailOthersFieldPolicy = {
-  errorMessage?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CreateUserSuccessKeySpecifier = ('profile' | 'refreshToken' | 'token' | 'user' | CreateUserSuccessKeySpecifier)[];
-export type CreateUserSuccessFieldPolicy = {
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
-  token?: FieldPolicy<any> | FieldReadFunction<any>;
-  user?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type DeleteRefreshTokenCookiePayloadKeySpecifier = ('clientMutationId' | 'deleted' | DeleteRefreshTokenCookiePayloadKeySpecifier)[];
-export type DeleteRefreshTokenCookiePayloadFieldPolicy = {
-  clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleted?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type RefreshPayloadKeySpecifier = (
-  | 'clientMutationId'
-  | 'payload'
-  | 'refreshExpiresIn'
-  | 'refreshToken'
-  | 'token'
-  | RefreshPayloadKeySpecifier
-)[];
-export type RefreshPayloadFieldPolicy = {
-  clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
-  payload?: FieldPolicy<any> | FieldReadFunction<any>;
-  refreshExpiresIn?: FieldPolicy<any> | FieldReadFunction<any>;
-  refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
-  token?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SaveProfileMutationKeySpecifier = ('profile' | SaveProfileMutationKeySpecifier)[];
-export type SaveProfileMutationFieldPolicy = {
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SocialAuthJWTPayloadKeySpecifier = ('clientMutationId' | 'social' | 'token' | SocialAuthJWTPayloadKeySpecifier)[];
-export type SocialAuthJWTPayloadFieldPolicy = {
-  clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
-  social?: FieldPolicy<any> | FieldReadFunction<any>;
-  token?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type ObtainJSONWebTokenPayloadKeySpecifier = (
-  | 'clientMutationId'
-  | 'payload'
-  | 'refreshExpiresIn'
-  | 'refreshToken'
-  | 'token'
-  | ObtainJSONWebTokenPayloadKeySpecifier
-)[];
-export type ObtainJSONWebTokenPayloadFieldPolicy = {
-  clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
-  payload?: FieldPolicy<any> | FieldReadFunction<any>;
-  refreshExpiresIn?: FieldPolicy<any> | FieldReadFunction<any>;
-  refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
-  token?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type EditGameMutationKeySpecifier = ('game' | EditGameMutationKeySpecifier)[];
-export type EditGameMutationFieldPolicy = {
-  game?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type VerifyPayloadKeySpecifier = ('clientMutationId' | 'payload' | VerifyPayloadKeySpecifier)[];
-export type VerifyPayloadFieldPolicy = {
-  clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
-  payload?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SubscriptionKeySpecifier = ('gameSubscription' | SubscriptionKeySpecifier)[];
-export type SubscriptionFieldPolicy = {
-  gameSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type GameSubscriptionNodeKeySpecifier = ('event' | GameSubscriptionNodeKeySpecifier)[];
-export type GameSubscriptionNodeFieldPolicy = {
-  event?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type StrictTypedTypePolicies = {
-  Query?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier);
-    fields?: QueryFieldPolicy;
+  BlackCardNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | BlackCardNodeKeySpecifier | (() => undefined | BlackCardNodeKeySpecifier);
+    fields?: BlackCardNodeFieldPolicy;
   };
   BlackCardNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | BlackCardNodeConnectionKeySpecifier | (() => undefined | BlackCardNodeConnectionKeySpecifier);
@@ -1171,17 +1146,21 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | BlackCardNodeEdgeKeySpecifier | (() => undefined | BlackCardNodeEdgeKeySpecifier);
     fields?: BlackCardNodeEdgeFieldPolicy;
   };
-  BlackCardNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | BlackCardNodeKeySpecifier | (() => undefined | BlackCardNodeKeySpecifier);
-    fields?: BlackCardNodeFieldPolicy;
+  CreateNewGameMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateNewGameMutationKeySpecifier | (() => undefined | CreateNewGameMutationKeySpecifier);
+    fields?: CreateNewGameMutationFieldPolicy;
   };
-  Node?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | NodeKeySpecifier | (() => undefined | NodeKeySpecifier);
-    fields?: NodeFieldPolicy;
+  CreateUserMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateUserMutationKeySpecifier | (() => undefined | CreateUserMutationKeySpecifier);
+    fields?: CreateUserMutationFieldPolicy;
   };
-  GenreNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | GenreNodeKeySpecifier | (() => undefined | GenreNodeKeySpecifier);
-    fields?: GenreNodeFieldPolicy;
+  DeleteRefreshTokenCookiePayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | DeleteRefreshTokenCookiePayloadKeySpecifier | (() => undefined | DeleteRefreshTokenCookiePayloadKeySpecifier);
+    fields?: DeleteRefreshTokenCookiePayloadFieldPolicy;
+  };
+  GameNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | GameNodeKeySpecifier | (() => undefined | GameNodeKeySpecifier);
+    fields?: GameNodeFieldPolicy;
   };
   GameNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GameNodeConnectionKeySpecifier | (() => undefined | GameNodeConnectionKeySpecifier);
@@ -1191,45 +1170,9 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | GameNodeEdgeKeySpecifier | (() => undefined | GameNodeEdgeKeySpecifier);
     fields?: GameNodeEdgeFieldPolicy;
   };
-  GameNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | GameNodeKeySpecifier | (() => undefined | GameNodeKeySpecifier);
-    fields?: GameNodeFieldPolicy;
-  };
-  UserNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | UserNodeKeySpecifier | (() => undefined | UserNodeKeySpecifier);
-    fields?: UserNodeFieldPolicy;
-  };
-  PlayerNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | PlayerNodeConnectionKeySpecifier | (() => undefined | PlayerNodeConnectionKeySpecifier);
-    fields?: PlayerNodeConnectionFieldPolicy;
-  };
-  PlayerNodeEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | PlayerNodeEdgeKeySpecifier | (() => undefined | PlayerNodeEdgeKeySpecifier);
-    fields?: PlayerNodeEdgeFieldPolicy;
-  };
-  PlayerNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | PlayerNodeKeySpecifier | (() => undefined | PlayerNodeKeySpecifier);
-    fields?: PlayerNodeFieldPolicy;
-  };
-  PageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | PageInfoKeySpecifier | (() => undefined | PageInfoKeySpecifier);
-    fields?: PageInfoFieldPolicy;
-  };
-  ProfileNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ProfileNodeKeySpecifier | (() => undefined | ProfileNodeKeySpecifier);
-    fields?: ProfileNodeFieldPolicy;
-  };
-  SocialNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SocialNodeConnectionKeySpecifier | (() => undefined | SocialNodeConnectionKeySpecifier);
-    fields?: SocialNodeConnectionFieldPolicy;
-  };
-  SocialNodeEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SocialNodeEdgeKeySpecifier | (() => undefined | SocialNodeEdgeKeySpecifier);
-    fields?: SocialNodeEdgeFieldPolicy;
-  };
-  SocialNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SocialNodeKeySpecifier | (() => undefined | SocialNodeKeySpecifier);
-    fields?: SocialNodeFieldPolicy;
+  GenreNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | GenreNodeKeySpecifier | (() => undefined | GenreNodeKeySpecifier);
+    fields?: GenreNodeFieldPolicy;
   };
   GenreNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GenreNodeConnectionKeySpecifier | (() => undefined | GenreNodeConnectionKeySpecifier);
@@ -1239,21 +1182,93 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | GenreNodeEdgeKeySpecifier | (() => undefined | GenreNodeEdgeKeySpecifier);
     fields?: GenreNodeEdgeFieldPolicy;
   };
-  WhiteCardNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | WhiteCardNodeConnectionKeySpecifier | (() => undefined | WhiteCardNodeConnectionKeySpecifier);
-    fields?: WhiteCardNodeConnectionFieldPolicy;
+  JWTPayloadNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | JWTPayloadNodeKeySpecifier | (() => undefined | JWTPayloadNodeKeySpecifier);
+    fields?: JWTPayloadNodeFieldPolicy;
   };
-  WhiteCardNodeEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | WhiteCardNodeEdgeKeySpecifier | (() => undefined | WhiteCardNodeEdgeKeySpecifier);
-    fields?: WhiteCardNodeEdgeFieldPolicy;
+  JoinGameMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | JoinGameMutationKeySpecifier | (() => undefined | JoinGameMutationKeySpecifier);
+    fields?: JoinGameMutationFieldPolicy;
   };
-  WhiteCardNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | WhiteCardNodeKeySpecifier | (() => undefined | WhiteCardNodeKeySpecifier);
-    fields?: WhiteCardNodeFieldPolicy;
+  JoinGameSubscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | JoinGameSubscriptionKeySpecifier | (() => undefined | JoinGameSubscriptionKeySpecifier);
+    fields?: JoinGameSubscriptionFieldPolicy;
+  };
+  Mutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier);
+    fields?: MutationFieldPolicy;
   };
   NewGameNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | NewGameNodeKeySpecifier | (() => undefined | NewGameNodeKeySpecifier);
     fields?: NewGameNodeFieldPolicy;
+  };
+  Node?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | NodeKeySpecifier | (() => undefined | NodeKeySpecifier);
+    fields?: NodeFieldPolicy;
+  };
+  ObtainJSONWebTokenMutationPayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ObtainJSONWebTokenMutationPayloadKeySpecifier | (() => undefined | ObtainJSONWebTokenMutationPayloadKeySpecifier);
+    fields?: ObtainJSONWebTokenMutationPayloadFieldPolicy;
+  };
+  PageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PageInfoKeySpecifier | (() => undefined | PageInfoKeySpecifier);
+    fields?: PageInfoFieldPolicy;
+  };
+  PlayerNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PlayerNodeKeySpecifier | (() => undefined | PlayerNodeKeySpecifier);
+    fields?: PlayerNodeFieldPolicy;
+  };
+  PlayerNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PlayerNodeConnectionKeySpecifier | (() => undefined | PlayerNodeConnectionKeySpecifier);
+    fields?: PlayerNodeConnectionFieldPolicy;
+  };
+  PlayerNodeEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PlayerNodeEdgeKeySpecifier | (() => undefined | PlayerNodeEdgeKeySpecifier);
+    fields?: PlayerNodeEdgeFieldPolicy;
+  };
+  Query?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier);
+    fields?: QueryFieldPolicy;
+  };
+  RefreshPayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | RefreshPayloadKeySpecifier | (() => undefined | RefreshPayloadKeySpecifier);
+    fields?: RefreshPayloadFieldPolicy;
+  };
+  RevokePayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | RevokePayloadKeySpecifier | (() => undefined | RevokePayloadKeySpecifier);
+    fields?: RevokePayloadFieldPolicy;
+  };
+  SetFullWidthMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SetFullWidthMutationKeySpecifier | (() => undefined | SetFullWidthMutationKeySpecifier);
+    fields?: SetFullWidthMutationFieldPolicy;
+  };
+  SocialAuthJWTPayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SocialAuthJWTPayloadKeySpecifier | (() => undefined | SocialAuthJWTPayloadKeySpecifier);
+    fields?: SocialAuthJWTPayloadFieldPolicy;
+  };
+  SocialNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SocialNodeKeySpecifier | (() => undefined | SocialNodeKeySpecifier);
+    fields?: SocialNodeFieldPolicy;
+  };
+  SocialNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SocialNodeConnectionKeySpecifier | (() => undefined | SocialNodeConnectionKeySpecifier);
+    fields?: SocialNodeConnectionFieldPolicy;
+  };
+  SocialNodeEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SocialNodeEdgeKeySpecifier | (() => undefined | SocialNodeEdgeKeySpecifier);
+    fields?: SocialNodeEdgeFieldPolicy;
+  };
+  Subscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SubscriptionKeySpecifier | (() => undefined | SubscriptionKeySpecifier);
+    fields?: SubscriptionFieldPolicy;
+  };
+  UpdateGameStatusMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UpdateGameStatusMutationKeySpecifier | (() => undefined | UpdateGameStatusMutationKeySpecifier);
+    fields?: UpdateGameStatusMutationFieldPolicy;
+  };
+  UserNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserNodeKeySpecifier | (() => undefined | UserNodeKeySpecifier);
+    fields?: UserNodeFieldPolicy;
   };
   UserNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserNodeConnectionKeySpecifier | (() => undefined | UserNodeConnectionKeySpecifier);
@@ -1263,65 +1278,17 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | UserNodeEdgeKeySpecifier | (() => undefined | UserNodeEdgeKeySpecifier);
     fields?: UserNodeEdgeFieldPolicy;
   };
-  Mutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier);
-    fields?: MutationFieldPolicy;
+  WhiteCardNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | WhiteCardNodeKeySpecifier | (() => undefined | WhiteCardNodeKeySpecifier);
+    fields?: WhiteCardNodeFieldPolicy;
   };
-  CreateGameMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CreateGameMutationKeySpecifier | (() => undefined | CreateGameMutationKeySpecifier);
-    fields?: CreateGameMutationFieldPolicy;
+  WhiteCardNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | WhiteCardNodeConnectionKeySpecifier | (() => undefined | WhiteCardNodeConnectionKeySpecifier);
+    fields?: WhiteCardNodeConnectionFieldPolicy;
   };
-  CreateNewGameMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CreateNewGameMutationKeySpecifier | (() => undefined | CreateNewGameMutationKeySpecifier);
-    fields?: CreateNewGameMutationFieldPolicy;
-  };
-  CreateUserFailEmailExists?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CreateUserFailEmailExistsKeySpecifier | (() => undefined | CreateUserFailEmailExistsKeySpecifier);
-    fields?: CreateUserFailEmailExistsFieldPolicy;
-  };
-  CreateUserFailOthers?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CreateUserFailOthersKeySpecifier | (() => undefined | CreateUserFailOthersKeySpecifier);
-    fields?: CreateUserFailOthersFieldPolicy;
-  };
-  CreateUserSuccess?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CreateUserSuccessKeySpecifier | (() => undefined | CreateUserSuccessKeySpecifier);
-    fields?: CreateUserSuccessFieldPolicy;
-  };
-  DeleteRefreshTokenCookiePayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | DeleteRefreshTokenCookiePayloadKeySpecifier | (() => undefined | DeleteRefreshTokenCookiePayloadKeySpecifier);
-    fields?: DeleteRefreshTokenCookiePayloadFieldPolicy;
-  };
-  RefreshPayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | RefreshPayloadKeySpecifier | (() => undefined | RefreshPayloadKeySpecifier);
-    fields?: RefreshPayloadFieldPolicy;
-  };
-  SaveProfileMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SaveProfileMutationKeySpecifier | (() => undefined | SaveProfileMutationKeySpecifier);
-    fields?: SaveProfileMutationFieldPolicy;
-  };
-  SocialAuthJWTPayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SocialAuthJWTPayloadKeySpecifier | (() => undefined | SocialAuthJWTPayloadKeySpecifier);
-    fields?: SocialAuthJWTPayloadFieldPolicy;
-  };
-  ObtainJSONWebTokenPayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ObtainJSONWebTokenPayloadKeySpecifier | (() => undefined | ObtainJSONWebTokenPayloadKeySpecifier);
-    fields?: ObtainJSONWebTokenPayloadFieldPolicy;
-  };
-  EditGameMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | EditGameMutationKeySpecifier | (() => undefined | EditGameMutationKeySpecifier);
-    fields?: EditGameMutationFieldPolicy;
-  };
-  VerifyPayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | VerifyPayloadKeySpecifier | (() => undefined | VerifyPayloadKeySpecifier);
-    fields?: VerifyPayloadFieldPolicy;
-  };
-  Subscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SubscriptionKeySpecifier | (() => undefined | SubscriptionKeySpecifier);
-    fields?: SubscriptionFieldPolicy;
-  };
-  GameSubscriptionNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | GameSubscriptionNodeKeySpecifier | (() => undefined | GameSubscriptionNodeKeySpecifier);
-    fields?: GameSubscriptionNodeFieldPolicy;
+  WhiteCardNodeEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | WhiteCardNodeEdgeKeySpecifier | (() => undefined | WhiteCardNodeEdgeKeySpecifier);
+    fields?: WhiteCardNodeEdgeFieldPolicy;
   };
 };
 export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;
@@ -1363,7 +1330,7 @@ export type SubscriptionSubscribeFn<TResult, TParent, TContext, TArgs> = (
   args: TArgs,
   context: TContext,
   info: GraphQLResolveInfo,
-) => AsyncIterator<TResult> | Promise<AsyncIterator<TResult>>;
+) => AsyncIterable<TResult> | Promise<AsyncIterable<TResult>>;
 
 export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
   parent: TParent,
@@ -1410,181 +1377,157 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
-  Query: ResolverTypeWrapper<{}>;
-  String: ResolverTypeWrapper<Scalars['String']>;
-  DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
+  ApiBlackCardPickChoices: ApiBlackCardPickChoices;
+  ApiBlackCardRatingChoices: ApiBlackCardRatingChoices;
+  ApiGameStatusChoices: ApiGameStatusChoices;
+  ApiWhiteCardRatingChoices: ApiWhiteCardRatingChoices;
+  BlackCardNode: ResolverTypeWrapper<BlackCardNode>;
   BlackCardNodeConnection: ResolverTypeWrapper<BlackCardNodeConnection>;
   BlackCardNodeEdge: ResolverTypeWrapper<BlackCardNodeEdge>;
-  BlackCardNode: ResolverTypeWrapper<BlackCardNode>;
-  Node:
-    | ResolversTypes['BlackCardNode']
-    | ResolversTypes['GenreNode']
-    | ResolversTypes['GameNode']
-    | ResolversTypes['UserNode']
-    | ResolversTypes['PlayerNode']
-    | ResolversTypes['ProfileNode']
-    | ResolversTypes['SocialNode']
-    | ResolversTypes['WhiteCardNode'];
-  GenreNode: ResolverTypeWrapper<GenreNode>;
-  GameNodeConnection: ResolverTypeWrapper<GameNodeConnection>;
-  GameNodeEdge: ResolverTypeWrapper<GameNodeEdge>;
-  GameNode: ResolverTypeWrapper<GameNode>;
-  UserNode: ResolverTypeWrapper<UserNode>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  PlayerNodeConnection: ResolverTypeWrapper<PlayerNodeConnection>;
-  PlayerNodeEdge: ResolverTypeWrapper<PlayerNodeEdge>;
-  PlayerNode: ResolverTypeWrapper<PlayerNode>;
-  PageInfo: ResolverTypeWrapper<PageInfo>;
-  ProfileNode: ResolverTypeWrapper<ProfileNode>;
-  ApiProfileRoleChoices: ApiProfileRoleChoices;
-  SocialNodeConnection: ResolverTypeWrapper<SocialNodeConnection>;
-  SocialNodeEdge: ResolverTypeWrapper<SocialNodeEdge>;
-  SocialNode: ResolverTypeWrapper<SocialNode>;
-  SocialCamelJSON: ResolverTypeWrapper<Scalars['SocialCamelJSON']>;
-  Float: ResolverTypeWrapper<Scalars['Float']>;
-  GenreNodeConnection: ResolverTypeWrapper<GenreNodeConnection>;
-  GenreNodeEdge: ResolverTypeWrapper<GenreNodeEdge>;
-  ApiGameStatusChoices: ApiGameStatusChoices;
-  WhiteCardNodeConnection: ResolverTypeWrapper<WhiteCardNodeConnection>;
-  WhiteCardNodeEdge: ResolverTypeWrapper<WhiteCardNodeEdge>;
-  WhiteCardNode: ResolverTypeWrapper<WhiteCardNode>;
-  ApiBlackCardPickChoices: ApiBlackCardPickChoices;
-  NewGameNode: ResolverTypeWrapper<NewGameNode>;
-  UserNodeConnection: ResolverTypeWrapper<UserNodeConnection>;
-  UserNodeEdge: ResolverTypeWrapper<UserNodeEdge>;
-  Mutation: ResolverTypeWrapper<{}>;
-  CreateGameInput: CreateGameInput;
-  CreateGameMutation: ResolverTypeWrapper<CreateGameMutation>;
+  CreateGameMutationInput: CreateGameMutationInput;
   CreateNewGameMutation: ResolverTypeWrapper<CreateNewGameMutation>;
-  CreateUserPayload:
-    | ResolversTypes['CreateUserFailEmailExists']
-    | ResolversTypes['CreateUserFailOthers']
-    | ResolversTypes['CreateUserSuccess'];
-  CreateUserFailEmailExists: ResolverTypeWrapper<CreateUserFailEmailExists>;
-  CreateUserFailOthers: ResolverTypeWrapper<CreateUserFailOthers>;
-  CreateUserSuccess: ResolverTypeWrapper<CreateUserSuccess>;
+  CreateUserMutation: ResolverTypeWrapper<CreateUserMutation>;
+  CreateUserMutationInput: CreateUserMutationInput;
+  DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   DeleteRefreshTokenCookieInput: DeleteRefreshTokenCookieInput;
   DeleteRefreshTokenCookiePayload: ResolverTypeWrapper<DeleteRefreshTokenCookiePayload>;
+  Float: ResolverTypeWrapper<Scalars['Float']>;
+  GameNode: ResolverTypeWrapper<GameNode>;
+  GameNodeConnection: ResolverTypeWrapper<GameNodeConnection>;
+  GameNodeEdge: ResolverTypeWrapper<GameNodeEdge>;
+  GenericScalar: ResolverTypeWrapper<Scalars['GenericScalar']>;
+  GenreNode: ResolverTypeWrapper<GenreNode>;
+  GenreNodeConnection: ResolverTypeWrapper<GenreNodeConnection>;
+  GenreNodeEdge: ResolverTypeWrapper<GenreNodeEdge>;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
+  JWTPayloadNode: ResolverTypeWrapper<JwtPayloadNode>;
+  JoinGameMutation: ResolverTypeWrapper<JoinGameMutation>;
+  JoinGameMutationInput: JoinGameMutationInput;
+  JoinGameSubscription: ResolverTypeWrapper<JoinGameSubscription>;
+  Mutation: ResolverTypeWrapper<{}>;
+  NewGameNode: ResolverTypeWrapper<NewGameNode>;
+  Node:
+    | ResolversTypes['BlackCardNode']
+    | ResolversTypes['GameNode']
+    | ResolversTypes['GenreNode']
+    | ResolversTypes['PlayerNode']
+    | ResolversTypes['SocialNode']
+    | ResolversTypes['UserNode']
+    | ResolversTypes['WhiteCardNode'];
+  ObtainJSONWebTokenMutationInput: ObtainJsonWebTokenMutationInput;
+  ObtainJSONWebTokenMutationPayload: ResolverTypeWrapper<ObtainJsonWebTokenMutationPayload>;
+  PageInfo: ResolverTypeWrapper<PageInfo>;
+  PlayerNode: ResolverTypeWrapper<PlayerNode>;
+  PlayerNodeConnection: ResolverTypeWrapper<PlayerNodeConnection>;
+  PlayerNodeEdge: ResolverTypeWrapper<PlayerNodeEdge>;
+  Query: ResolverTypeWrapper<{}>;
   RefreshInput: RefreshInput;
   RefreshPayload: ResolverTypeWrapper<RefreshPayload>;
-  GenericScalar: ResolverTypeWrapper<Scalars['GenericScalar']>;
-  SaveProfileInput: SaveProfileInput;
-  SaveProfileMutation: ResolverTypeWrapper<SaveProfileMutation>;
+  RevokeInput: RevokeInput;
+  RevokePayload: ResolverTypeWrapper<RevokePayload>;
+  SetFullWidthMutation: ResolverTypeWrapper<SetFullWidthMutation>;
+  SetFullWidthMutationInput: SetFullWidthMutationInput;
   SocialAuthJWTInput: SocialAuthJwtInput;
   SocialAuthJWTPayload: ResolverTypeWrapper<SocialAuthJwtPayload>;
-  ObtainJSONWebTokenInput: ObtainJsonWebTokenInput;
-  ObtainJSONWebTokenPayload: ResolverTypeWrapper<ObtainJsonWebTokenPayload>;
-  UpdateGameInput: UpdateGameInput;
-  EditGameMutation: ResolverTypeWrapper<EditGameMutation>;
-  VerifyInput: VerifyInput;
-  VerifyPayload: ResolverTypeWrapper<VerifyPayload>;
+  SocialCamelJSON: ResolverTypeWrapper<Scalars['SocialCamelJSON']>;
+  SocialNode: ResolverTypeWrapper<SocialNode>;
+  SocialNodeConnection: ResolverTypeWrapper<SocialNodeConnection>;
+  SocialNodeEdge: ResolverTypeWrapper<SocialNodeEdge>;
+  String: ResolverTypeWrapper<Scalars['String']>;
   Subscription: ResolverTypeWrapper<{}>;
-  GameSubscriptionNode: ResolverTypeWrapper<GameSubscriptionNode>;
+  UpdateGameInput: UpdateGameInput;
+  UpdateGameStatusMutation: ResolverTypeWrapper<UpdateGameStatusMutation>;
+  UserNode: ResolverTypeWrapper<UserNode>;
+  UserNodeConnection: ResolverTypeWrapper<UserNodeConnection>;
+  UserNodeEdge: ResolverTypeWrapper<UserNodeEdge>;
+  WhiteCardNode: ResolverTypeWrapper<WhiteCardNode>;
+  WhiteCardNodeConnection: ResolverTypeWrapper<WhiteCardNodeConnection>;
+  WhiteCardNodeEdge: ResolverTypeWrapper<WhiteCardNodeEdge>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
-  Query: {};
-  String: Scalars['String'];
-  DateTime: Scalars['DateTime'];
-  Int: Scalars['Int'];
-  ID: Scalars['ID'];
+  BlackCardNode: BlackCardNode;
   BlackCardNodeConnection: BlackCardNodeConnection;
   BlackCardNodeEdge: BlackCardNodeEdge;
-  BlackCardNode: BlackCardNode;
-  Node:
-    | ResolversParentTypes['BlackCardNode']
-    | ResolversParentTypes['GenreNode']
-    | ResolversParentTypes['GameNode']
-    | ResolversParentTypes['UserNode']
-    | ResolversParentTypes['PlayerNode']
-    | ResolversParentTypes['ProfileNode']
-    | ResolversParentTypes['SocialNode']
-    | ResolversParentTypes['WhiteCardNode'];
-  GenreNode: GenreNode;
-  GameNodeConnection: GameNodeConnection;
-  GameNodeEdge: GameNodeEdge;
-  GameNode: GameNode;
-  UserNode: UserNode;
   Boolean: Scalars['Boolean'];
-  PlayerNodeConnection: PlayerNodeConnection;
-  PlayerNodeEdge: PlayerNodeEdge;
-  PlayerNode: PlayerNode;
-  PageInfo: PageInfo;
-  ProfileNode: ProfileNode;
-  SocialNodeConnection: SocialNodeConnection;
-  SocialNodeEdge: SocialNodeEdge;
-  SocialNode: SocialNode;
-  SocialCamelJSON: Scalars['SocialCamelJSON'];
-  Float: Scalars['Float'];
-  GenreNodeConnection: GenreNodeConnection;
-  GenreNodeEdge: GenreNodeEdge;
-  WhiteCardNodeConnection: WhiteCardNodeConnection;
-  WhiteCardNodeEdge: WhiteCardNodeEdge;
-  WhiteCardNode: WhiteCardNode;
-  NewGameNode: NewGameNode;
-  UserNodeConnection: UserNodeConnection;
-  UserNodeEdge: UserNodeEdge;
-  Mutation: {};
-  CreateGameInput: CreateGameInput;
-  CreateGameMutation: CreateGameMutation;
+  CreateGameMutationInput: CreateGameMutationInput;
   CreateNewGameMutation: CreateNewGameMutation;
-  CreateUserPayload:
-    | ResolversParentTypes['CreateUserFailEmailExists']
-    | ResolversParentTypes['CreateUserFailOthers']
-    | ResolversParentTypes['CreateUserSuccess'];
-  CreateUserFailEmailExists: CreateUserFailEmailExists;
-  CreateUserFailOthers: CreateUserFailOthers;
-  CreateUserSuccess: CreateUserSuccess;
+  CreateUserMutation: CreateUserMutation;
+  CreateUserMutationInput: CreateUserMutationInput;
+  DateTime: Scalars['DateTime'];
   DeleteRefreshTokenCookieInput: DeleteRefreshTokenCookieInput;
   DeleteRefreshTokenCookiePayload: DeleteRefreshTokenCookiePayload;
+  Float: Scalars['Float'];
+  GameNode: GameNode;
+  GameNodeConnection: GameNodeConnection;
+  GameNodeEdge: GameNodeEdge;
+  GenericScalar: Scalars['GenericScalar'];
+  GenreNode: GenreNode;
+  GenreNodeConnection: GenreNodeConnection;
+  GenreNodeEdge: GenreNodeEdge;
+  ID: Scalars['ID'];
+  Int: Scalars['Int'];
+  JWTPayloadNode: JwtPayloadNode;
+  JoinGameMutation: JoinGameMutation;
+  JoinGameMutationInput: JoinGameMutationInput;
+  JoinGameSubscription: JoinGameSubscription;
+  Mutation: {};
+  NewGameNode: NewGameNode;
+  Node:
+    | ResolversParentTypes['BlackCardNode']
+    | ResolversParentTypes['GameNode']
+    | ResolversParentTypes['GenreNode']
+    | ResolversParentTypes['PlayerNode']
+    | ResolversParentTypes['SocialNode']
+    | ResolversParentTypes['UserNode']
+    | ResolversParentTypes['WhiteCardNode'];
+  ObtainJSONWebTokenMutationInput: ObtainJsonWebTokenMutationInput;
+  ObtainJSONWebTokenMutationPayload: ObtainJsonWebTokenMutationPayload;
+  PageInfo: PageInfo;
+  PlayerNode: PlayerNode;
+  PlayerNodeConnection: PlayerNodeConnection;
+  PlayerNodeEdge: PlayerNodeEdge;
+  Query: {};
   RefreshInput: RefreshInput;
   RefreshPayload: RefreshPayload;
-  GenericScalar: Scalars['GenericScalar'];
-  SaveProfileInput: SaveProfileInput;
-  SaveProfileMutation: SaveProfileMutation;
+  RevokeInput: RevokeInput;
+  RevokePayload: RevokePayload;
+  SetFullWidthMutation: SetFullWidthMutation;
+  SetFullWidthMutationInput: SetFullWidthMutationInput;
   SocialAuthJWTInput: SocialAuthJwtInput;
   SocialAuthJWTPayload: SocialAuthJwtPayload;
-  ObtainJSONWebTokenInput: ObtainJsonWebTokenInput;
-  ObtainJSONWebTokenPayload: ObtainJsonWebTokenPayload;
-  UpdateGameInput: UpdateGameInput;
-  EditGameMutation: EditGameMutation;
-  VerifyInput: VerifyInput;
-  VerifyPayload: VerifyPayload;
+  SocialCamelJSON: Scalars['SocialCamelJSON'];
+  SocialNode: SocialNode;
+  SocialNodeConnection: SocialNodeConnection;
+  SocialNodeEdge: SocialNodeEdge;
+  String: Scalars['String'];
   Subscription: {};
-  GameSubscriptionNode: GameSubscriptionNode;
+  UpdateGameInput: UpdateGameInput;
+  UpdateGameStatusMutation: UpdateGameStatusMutation;
+  UserNode: UserNode;
+  UserNodeConnection: UserNodeConnection;
+  UserNodeEdge: UserNodeEdge;
+  WhiteCardNode: WhiteCardNode;
+  WhiteCardNodeConnection: WhiteCardNodeConnection;
+  WhiteCardNodeEdge: WhiteCardNodeEdge;
 }>;
 
-export type QueryResolvers<
+export type BlackCardNodeResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query'],
+  ParentType extends ResolversParentTypes['BlackCardNode'] = ResolversParentTypes['BlackCardNode'],
 > = ResolversObject<{
-  blackCards?: Resolver<
-    Maybe<ResolversTypes['BlackCardNodeConnection']>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryBlackCardsArgs, never>
-  >;
-  game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType, RequireFields<QueryGameArgs, never>>;
-  genres?: Resolver<Maybe<ResolversTypes['GenreNodeConnection']>, ParentType, ContextType, RequireFields<QueryGenresArgs, never>>;
-  isLoggedIn?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  newGame?: Resolver<Maybe<ResolversTypes['NewGameNode']>, ParentType, ContextType, RequireFields<QueryNewGameArgs, 'id'>>;
-  profile?: Resolver<Maybe<ResolversTypes['UserNode']>, ParentType, ContextType>;
-  users?: Resolver<Maybe<ResolversTypes['UserNodeConnection']>, ParentType, ContextType, RequireFields<QueryUsersArgs, never>>;
-  whiteCards?: Resolver<
-    Maybe<ResolversTypes['WhiteCardNodeConnection']>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryWhiteCardsArgs, never>
-  >;
-  whoami?: Resolver<Maybe<ResolversTypes['UserNode']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  genre?: Resolver<ResolversTypes['GenreNode'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  pick?: Resolver<ResolversTypes['ApiBlackCardPickChoices'], ParentType, ContextType>;
+  rating?: Resolver<ResolversTypes['ApiBlackCardRatingChoices'], ParentType, ContextType>;
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
-
-export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
-  name: 'DateTime';
-}
 
 export type BlackCardNodeConnectionResolvers<
   ContextType = any,
@@ -1606,30 +1549,78 @@ export type BlackCardNodeEdgeResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type BlackCardNodeResolvers<
+export type CreateNewGameMutationResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['BlackCardNode'] = ResolversParentTypes['BlackCardNode'],
+  ParentType extends ResolversParentTypes['CreateNewGameMutation'] = ResolversParentTypes['CreateNewGameMutation'],
 > = ResolversObject<{
-  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  genre?: Resolver<ResolversTypes['GenreNode'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  pick?: Resolver<ResolversTypes['ApiBlackCardPickChoices'], ParentType, ContextType>;
-  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  newGame?: Resolver<Maybe<ResolversTypes['NewGameNode']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type NodeResolvers<
+export type CreateUserMutationResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node'],
+  ParentType extends ResolversParentTypes['CreateUserMutation'] = ResolversParentTypes['CreateUserMutation'],
 > = ResolversObject<{
-  __resolveType: TypeResolveFn<
-    'BlackCardNode' | 'GenreNode' | 'GameNode' | 'UserNode' | 'PlayerNode' | 'ProfileNode' | 'SocialNode' | 'WhiteCardNode',
-    ParentType,
-    ContextType
-  >;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  ok?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
+
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
+  name: 'DateTime';
+}
+
+export type DeleteRefreshTokenCookiePayloadResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['DeleteRefreshTokenCookiePayload'] = ResolversParentTypes['DeleteRefreshTokenCookiePayload'],
+> = ResolversObject<{
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type GameNodeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['GameNode'] = ResolversParentTypes['GameNode'],
+> = ResolversObject<{
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  creator?: Resolver<ResolversTypes['UserNode'], ParentType, ContextType>;
+  genres?: Resolver<ResolversTypes['GenreNodeConnection'], ParentType, ContextType, RequireFields<GameNodeGenresArgs, never>>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  joinEndsAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  numPlayers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  numSpectators?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  playerSet?: Resolver<ResolversTypes['PlayerNodeConnection'], ParentType, ContextType, RequireFields<GameNodePlayerSetArgs, never>>;
+  roundTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  rounds?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['ApiGameStatusChoices'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  winner?: Resolver<ResolversTypes['UserNode'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type GameNodeConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['GameNodeConnection'] = ResolversParentTypes['GameNodeConnection'],
+> = ResolversObject<{
+  edgeCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  edges?: Resolver<ReadonlyArray<Maybe<ResolversTypes['GameNodeEdge']>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type GameNodeEdgeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['GameNodeEdge'] = ResolversParentTypes['GameNodeEdge'],
+> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export interface GenericScalarScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['GenericScalar'], any> {
+  name: 'GenericScalar';
+}
 
 export type GenreNodeResolvers<
   ContextType = any,
@@ -1655,64 +1646,175 @@ export type GenreNodeResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type GameNodeConnectionResolvers<
+export type GenreNodeConnectionResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['GameNodeConnection'] = ResolversParentTypes['GameNodeConnection'],
+  ParentType extends ResolversParentTypes['GenreNodeConnection'] = ResolversParentTypes['GenreNodeConnection'],
 > = ResolversObject<{
   edgeCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  edges?: Resolver<ReadonlyArray<Maybe<ResolversTypes['GameNodeEdge']>>, ParentType, ContextType>;
+  edges?: Resolver<ReadonlyArray<Maybe<ResolversTypes['GenreNodeEdge']>>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type GameNodeEdgeResolvers<
+export type GenreNodeEdgeResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['GameNodeEdge'] = ResolversParentTypes['GameNodeEdge'],
+  ParentType extends ResolversParentTypes['GenreNodeEdge'] = ResolversParentTypes['GenreNodeEdge'],
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['GenreNode']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type GameNodeResolvers<
+export type JwtPayloadNodeResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['GameNode'] = ResolversParentTypes['GameNode'],
+  ParentType extends ResolversParentTypes['JWTPayloadNode'] = ResolversParentTypes['JWTPayloadNode'],
 > = ResolversObject<{
-  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes['UserNode'], ParentType, ContextType>;
-  genres?: Resolver<ResolversTypes['GenreNodeConnection'], ParentType, ContextType, RequireFields<GameNodeGenresArgs, never>>;
+  exp?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  sub?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  subName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type JoinGameMutationResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['JoinGameMutation'] = ResolversParentTypes['JoinGameMutation'],
+> = ResolversObject<{
+  game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
+  ok?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type JoinGameSubscriptionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['JoinGameSubscription'] = ResolversParentTypes['JoinGameSubscription'],
+> = ResolversObject<{
+  event?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type MutationResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation'],
+> = ResolversObject<{
+  createNewGame?: Resolver<
+    Maybe<ResolversTypes['CreateNewGameMutation']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateNewGameArgs, 'input'>
+  >;
+  createUser?: Resolver<
+    Maybe<ResolversTypes['CreateUserMutation']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateUserArgs, 'input'>
+  >;
+  deleteRefreshTokenCookie?: Resolver<
+    Maybe<ResolversTypes['DeleteRefreshTokenCookiePayload']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteRefreshTokenCookieArgs, 'input'>
+  >;
+  joinGame?: Resolver<Maybe<ResolversTypes['JoinGameMutation']>, ParentType, ContextType, RequireFields<MutationJoinGameArgs, 'input'>>;
+  refreshToken?: Resolver<
+    Maybe<ResolversTypes['RefreshPayload']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationRefreshTokenArgs, 'input'>
+  >;
+  revokeRefreshToken?: Resolver<
+    Maybe<ResolversTypes['RevokePayload']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationRevokeRefreshTokenArgs, 'input'>
+  >;
+  setFullWidth?: Resolver<
+    Maybe<ResolversTypes['SetFullWidthMutation']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationSetFullWidthArgs, 'input'>
+  >;
+  socialAuth?: Resolver<
+    Maybe<ResolversTypes['SocialAuthJWTPayload']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationSocialAuthArgs, 'input'>
+  >;
+  tokenAuth?: Resolver<
+    Maybe<ResolversTypes['ObtainJSONWebTokenMutationPayload']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationTokenAuthArgs, 'input'>
+  >;
+  updateGameStatus?: Resolver<
+    Maybe<ResolversTypes['UpdateGameStatusMutation']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateGameStatusArgs, 'id' | 'input'>
+  >;
+}>;
+
+export type NewGameNodeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['NewGameNode'] = ResolversParentTypes['NewGameNode'],
+> = ResolversObject<{
+  genres?: Resolver<ReadonlyArray<Maybe<ResolversTypes['ID']>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   numPlayers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   numSpectators?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  playerSet?: Resolver<ResolversTypes['PlayerNodeConnection'], ParentType, ContextType, RequireFields<GameNodePlayerSetArgs, never>>;
-  rounds?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   roundTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  status?: Resolver<ResolversTypes['ApiGameStatusChoices'], ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  winner?: Resolver<ResolversTypes['UserNode'], ParentType, ContextType>;
+  rounds?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type UserNodeResolvers<
+export type NodeResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['UserNode'] = ResolversParentTypes['UserNode'],
+  ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node'],
 > = ResolversObject<{
-  dateJoined?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  gameSet?: Resolver<ResolversTypes['GameNodeConnection'], ParentType, ContextType, RequireFields<UserNodeGameSetArgs, never>>;
+  __resolveType: TypeResolveFn<
+    'BlackCardNode' | 'GameNode' | 'GenreNode' | 'PlayerNode' | 'SocialNode' | 'UserNode' | 'WhiteCardNode',
+    ParentType,
+    ContextType
+  >;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  isActive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  isStaff?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  isSuperuser?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  lastLogin?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  playerSet?: Resolver<ResolversTypes['PlayerNodeConnection'], ParentType, ContextType, RequireFields<UserNodePlayerSetArgs, never>>;
-  profile?: Resolver<Maybe<ResolversTypes['ProfileNode']>, ParentType, ContextType>;
-  socialAuth?: Resolver<ResolversTypes['SocialNodeConnection'], ParentType, ContextType, RequireFields<UserNodeSocialAuthArgs, never>>;
-  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  winners?: Resolver<ResolversTypes['GameNodeConnection'], ParentType, ContextType, RequireFields<UserNodeWinnersArgs, never>>;
+}>;
+
+export type ObtainJsonWebTokenMutationPayloadResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['ObtainJSONWebTokenMutationPayload'] = ResolversParentTypes['ObtainJSONWebTokenMutationPayload'],
+> = ResolversObject<{
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  payload?: Resolver<Maybe<ResolversTypes['JWTPayloadNode']>, ParentType, ContextType>;
+  refreshExpiresIn?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type PageInfoResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo'],
+> = ResolversObject<{
+  endCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  hasPreviousPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  startCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type PlayerNodeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['PlayerNode'] = ResolversParentTypes['PlayerNode'],
+> = ResolversObject<{
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  czar?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  game?: Resolver<ResolversTypes['GameNode'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  score?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['UserNode'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -1736,37 +1838,82 @@ export type PlayerNodeEdgeResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type PlayerNodeResolvers<
+export type QueryResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['PlayerNode'] = ResolversParentTypes['PlayerNode'],
+  ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query'],
 > = ResolversObject<{
-  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  czar?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  game?: Resolver<ResolversTypes['GameNode'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  score?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  user?: Resolver<ResolversTypes['UserNode'], ParentType, ContextType>;
+  blackCards?: Resolver<
+    Maybe<ResolversTypes['BlackCardNodeConnection']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryBlackCardsArgs, never>
+  >;
+  fullWidth?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType, RequireFields<QueryGameArgs, never>>;
+  genres?: Resolver<Maybe<ResolversTypes['GenreNodeConnection']>, ParentType, ContextType, RequireFields<QueryGenresArgs, never>>;
+  newGame?: Resolver<Maybe<ResolversTypes['NewGameNode']>, ParentType, ContextType, RequireFields<QueryNewGameArgs, 'id'>>;
+  users?: Resolver<Maybe<ResolversTypes['UserNodeConnection']>, ParentType, ContextType, RequireFields<QueryUsersArgs, never>>;
+  whiteCards?: Resolver<
+    Maybe<ResolversTypes['WhiteCardNodeConnection']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryWhiteCardsArgs, never>
+  >;
+}>;
+
+export type RefreshPayloadResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['RefreshPayload'] = ResolversParentTypes['RefreshPayload'],
+> = ResolversObject<{
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  payload?: Resolver<ResolversTypes['GenericScalar'], ParentType, ContextType>;
+  refreshExpiresIn?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type PageInfoResolvers<
+export type RevokePayloadResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo'],
+  ParentType extends ResolversParentTypes['RevokePayload'] = ResolversParentTypes['RevokePayload'],
 > = ResolversObject<{
-  endCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  hasPreviousPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  startCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  revoked?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type ProfileNodeResolvers<
+export type SetFullWidthMutationResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['ProfileNode'] = ResolversParentTypes['ProfileNode'],
+  ParentType extends ResolversParentTypes['SetFullWidthMutation'] = ResolversParentTypes['SetFullWidthMutation'],
 > = ResolversObject<{
+  fullWidth?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type SocialAuthJwtPayloadResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['SocialAuthJWTPayload'] = ResolversParentTypes['SocialAuthJWTPayload'],
+> = ResolversObject<{
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  social?: Resolver<Maybe<ResolversTypes['SocialNode']>, ParentType, ContextType>;
+  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export interface SocialCamelJsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['SocialCamelJSON'], any> {
+  name: 'SocialCamelJSON';
+}
+
+export type SocialNodeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['SocialNode'] = ResolversParentTypes['SocialNode'],
+> = ResolversObject<{
+  created?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  extraData?: Resolver<Maybe<ResolversTypes['SocialCamelJSON']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  role?: Resolver<ResolversTypes['ApiProfileRoleChoices'], ParentType, ContextType>;
+  modified?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  provider?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  uid?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['UserNode'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -1789,87 +1936,42 @@ export type SocialNodeEdgeResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type SocialNodeResolvers<
+export type SubscriptionResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['SocialNode'] = ResolversParentTypes['SocialNode'],
+  ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription'],
 > = ResolversObject<{
-  created?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  extraData?: Resolver<Maybe<ResolversTypes['SocialCamelJSON']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  modified?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  provider?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  uid?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  user?: Resolver<ResolversTypes['UserNode'], ParentType, ContextType>;
+  joinGame?: SubscriptionResolver<
+    Maybe<ResolversTypes['JoinGameSubscription']>,
+    'joinGame',
+    ParentType,
+    ContextType,
+    RequireFields<SubscriptionJoinGameArgs, never>
+  >;
+}>;
+
+export type UpdateGameStatusMutationResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['UpdateGameStatusMutation'] = ResolversParentTypes['UpdateGameStatusMutation'],
+> = ResolversObject<{
+  game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export interface SocialCamelJsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['SocialCamelJSON'], any> {
-  name: 'SocialCamelJSON';
-}
-
-export type GenreNodeConnectionResolvers<
+export type UserNodeResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['GenreNodeConnection'] = ResolversParentTypes['GenreNodeConnection'],
-> = ResolversObject<{
-  edgeCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  edges?: Resolver<ReadonlyArray<Maybe<ResolversTypes['GenreNodeEdge']>>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type GenreNodeEdgeResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['GenreNodeEdge'] = ResolversParentTypes['GenreNodeEdge'],
-> = ResolversObject<{
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['GenreNode']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type WhiteCardNodeConnectionResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['WhiteCardNodeConnection'] = ResolversParentTypes['WhiteCardNodeConnection'],
-> = ResolversObject<{
-  edgeCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  edges?: Resolver<ReadonlyArray<Maybe<ResolversTypes['WhiteCardNodeEdge']>>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type WhiteCardNodeEdgeResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['WhiteCardNodeEdge'] = ResolversParentTypes['WhiteCardNodeEdge'],
-> = ResolversObject<{
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['WhiteCardNode']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type WhiteCardNodeResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['WhiteCardNode'] = ResolversParentTypes['WhiteCardNode'],
+  ParentType extends ResolversParentTypes['UserNode'] = ResolversParentTypes['UserNode'],
 > = ResolversObject<{
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  genre?: Resolver<ResolversTypes['GenreNode'], ParentType, ContextType>;
+  gameSet?: Resolver<ResolversTypes['GameNodeConnection'], ParentType, ContextType, RequireFields<UserNodeGameSetArgs, never>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  isActive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isAdmin?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isStaff?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isSuperuser?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  playerSet?: Resolver<ResolversTypes['PlayerNodeConnection'], ParentType, ContextType, RequireFields<UserNodePlayerSetArgs, never>>;
+  socialAuth?: Resolver<ResolversTypes['SocialNodeConnection'], ParentType, ContextType, RequireFields<UserNodeSocialAuthArgs, never>>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type NewGameNodeResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['NewGameNode'] = ResolversParentTypes['NewGameNode'],
-> = ResolversObject<{
-  genres?: Resolver<ReadonlyArray<Maybe<ResolversTypes['ID']>>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  numPlayers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  numSpectators?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  rounds?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  roundTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  status?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  winners?: Resolver<ResolversTypes['GameNodeConnection'], ParentType, ContextType, RequireFields<UserNodeWinnersArgs, never>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -1893,254 +1995,80 @@ export type UserNodeEdgeResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type MutationResolvers<
+export type WhiteCardNodeResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation'],
+  ParentType extends ResolversParentTypes['WhiteCardNode'] = ResolversParentTypes['WhiteCardNode'],
 > = ResolversObject<{
-  createGame?: Resolver<
-    Maybe<ResolversTypes['CreateGameMutation']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationCreateGameArgs, 'input'>
-  >;
-  createNewGame?: Resolver<
-    Maybe<ResolversTypes['CreateNewGameMutation']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationCreateNewGameArgs, 'input'>
-  >;
-  createUser?: Resolver<
-    Maybe<ResolversTypes['CreateUserPayload']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationCreateUserArgs, 'email' | 'password'>
-  >;
-  deleteRefreshTokenCookie?: Resolver<
-    Maybe<ResolversTypes['DeleteRefreshTokenCookiePayload']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationDeleteRefreshTokenCookieArgs, 'input'>
-  >;
-  refreshToken?: Resolver<
-    Maybe<ResolversTypes['RefreshPayload']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationRefreshTokenArgs, 'input'>
-  >;
-  saveProfile?: Resolver<
-    Maybe<ResolversTypes['SaveProfileMutation']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationSaveProfileArgs, 'input'>
-  >;
-  socialAuth?: Resolver<
-    Maybe<ResolversTypes['SocialAuthJWTPayload']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationSocialAuthArgs, 'input'>
-  >;
-  tokenAuth?: Resolver<
-    Maybe<ResolversTypes['ObtainJSONWebTokenPayload']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationTokenAuthArgs, 'input'>
-  >;
-  updateGame?: Resolver<
-    Maybe<ResolversTypes['EditGameMutation']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateGameArgs, 'id' | 'input'>
-  >;
-  verifyToken?: Resolver<Maybe<ResolversTypes['VerifyPayload']>, ParentType, ContextType, RequireFields<MutationVerifyTokenArgs, 'input'>>;
-}>;
-
-export type CreateGameMutationResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['CreateGameMutation'] = ResolversParentTypes['CreateGameMutation'],
-> = ResolversObject<{
-  game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  genre?: Resolver<ResolversTypes['GenreNode'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  rating?: Resolver<ResolversTypes['ApiWhiteCardRatingChoices'], ParentType, ContextType>;
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type CreateNewGameMutationResolvers<
+export type WhiteCardNodeConnectionResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['CreateNewGameMutation'] = ResolversParentTypes['CreateNewGameMutation'],
+  ParentType extends ResolversParentTypes['WhiteCardNodeConnection'] = ResolversParentTypes['WhiteCardNodeConnection'],
 > = ResolversObject<{
-  newGame?: Resolver<Maybe<ResolversTypes['NewGameNode']>, ParentType, ContextType>;
+  edgeCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  edges?: Resolver<ReadonlyArray<Maybe<ResolversTypes['WhiteCardNodeEdge']>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type CreateUserPayloadResolvers<
+export type WhiteCardNodeEdgeResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['CreateUserPayload'] = ResolversParentTypes['CreateUserPayload'],
+  ParentType extends ResolversParentTypes['WhiteCardNodeEdge'] = ResolversParentTypes['WhiteCardNodeEdge'],
 > = ResolversObject<{
-  __resolveType: TypeResolveFn<'CreateUserFailEmailExists' | 'CreateUserFailOthers' | 'CreateUserSuccess', ParentType, ContextType>;
-}>;
-
-export type CreateUserFailEmailExistsResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['CreateUserFailEmailExists'] = ResolversParentTypes['CreateUserFailEmailExists'],
-> = ResolversObject<{
-  errorMessage?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type CreateUserFailOthersResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['CreateUserFailOthers'] = ResolversParentTypes['CreateUserFailOthers'],
-> = ResolversObject<{
-  errorMessage?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type CreateUserSuccessResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['CreateUserSuccess'] = ResolversParentTypes['CreateUserSuccess'],
-> = ResolversObject<{
-  profile?: Resolver<Maybe<ResolversTypes['ProfileNode']>, ParentType, ContextType>;
-  refreshToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  user?: Resolver<Maybe<ResolversTypes['UserNode']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type DeleteRefreshTokenCookiePayloadResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['DeleteRefreshTokenCookiePayload'] = ResolversParentTypes['DeleteRefreshTokenCookiePayload'],
-> = ResolversObject<{
-  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type RefreshPayloadResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['RefreshPayload'] = ResolversParentTypes['RefreshPayload'],
-> = ResolversObject<{
-  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  payload?: Resolver<ResolversTypes['GenericScalar'], ParentType, ContextType>;
-  refreshExpiresIn?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export interface GenericScalarScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['GenericScalar'], any> {
-  name: 'GenericScalar';
-}
-
-export type SaveProfileMutationResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['SaveProfileMutation'] = ResolversParentTypes['SaveProfileMutation'],
-> = ResolversObject<{
-  profile?: Resolver<Maybe<ResolversTypes['UserNode']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type SocialAuthJwtPayloadResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['SocialAuthJWTPayload'] = ResolversParentTypes['SocialAuthJWTPayload'],
-> = ResolversObject<{
-  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  social?: Resolver<Maybe<ResolversTypes['SocialNode']>, ParentType, ContextType>;
-  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type ObtainJsonWebTokenPayloadResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['ObtainJSONWebTokenPayload'] = ResolversParentTypes['ObtainJSONWebTokenPayload'],
-> = ResolversObject<{
-  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  payload?: Resolver<ResolversTypes['GenericScalar'], ParentType, ContextType>;
-  refreshExpiresIn?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type EditGameMutationResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['EditGameMutation'] = ResolversParentTypes['EditGameMutation'],
-> = ResolversObject<{
-  game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type VerifyPayloadResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['VerifyPayload'] = ResolversParentTypes['VerifyPayload'],
-> = ResolversObject<{
-  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  payload?: Resolver<ResolversTypes['GenericScalar'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type SubscriptionResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription'],
-> = ResolversObject<{
-  gameSubscription?: SubscriptionResolver<
-    Maybe<ResolversTypes['GameSubscriptionNode']>,
-    'gameSubscription',
-    ParentType,
-    ContextType,
-    RequireFields<SubscriptionGameSubscriptionArgs, never>
-  >;
-}>;
-
-export type GameSubscriptionNodeResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['GameSubscriptionNode'] = ResolversParentTypes['GameSubscriptionNode'],
-> = ResolversObject<{
-  event?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['WhiteCardNode']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
-  Query?: QueryResolvers<ContextType>;
-  DateTime?: GraphQLScalarType;
+  BlackCardNode?: BlackCardNodeResolvers<ContextType>;
   BlackCardNodeConnection?: BlackCardNodeConnectionResolvers<ContextType>;
   BlackCardNodeEdge?: BlackCardNodeEdgeResolvers<ContextType>;
-  BlackCardNode?: BlackCardNodeResolvers<ContextType>;
-  Node?: NodeResolvers<ContextType>;
-  GenreNode?: GenreNodeResolvers<ContextType>;
+  CreateNewGameMutation?: CreateNewGameMutationResolvers<ContextType>;
+  CreateUserMutation?: CreateUserMutationResolvers<ContextType>;
+  DateTime?: GraphQLScalarType;
+  DeleteRefreshTokenCookiePayload?: DeleteRefreshTokenCookiePayloadResolvers<ContextType>;
+  GameNode?: GameNodeResolvers<ContextType>;
   GameNodeConnection?: GameNodeConnectionResolvers<ContextType>;
   GameNodeEdge?: GameNodeEdgeResolvers<ContextType>;
-  GameNode?: GameNodeResolvers<ContextType>;
-  UserNode?: UserNodeResolvers<ContextType>;
-  PlayerNodeConnection?: PlayerNodeConnectionResolvers<ContextType>;
-  PlayerNodeEdge?: PlayerNodeEdgeResolvers<ContextType>;
-  PlayerNode?: PlayerNodeResolvers<ContextType>;
-  PageInfo?: PageInfoResolvers<ContextType>;
-  ProfileNode?: ProfileNodeResolvers<ContextType>;
-  SocialNodeConnection?: SocialNodeConnectionResolvers<ContextType>;
-  SocialNodeEdge?: SocialNodeEdgeResolvers<ContextType>;
-  SocialNode?: SocialNodeResolvers<ContextType>;
-  SocialCamelJSON?: GraphQLScalarType;
+  GenericScalar?: GraphQLScalarType;
+  GenreNode?: GenreNodeResolvers<ContextType>;
   GenreNodeConnection?: GenreNodeConnectionResolvers<ContextType>;
   GenreNodeEdge?: GenreNodeEdgeResolvers<ContextType>;
-  WhiteCardNodeConnection?: WhiteCardNodeConnectionResolvers<ContextType>;
-  WhiteCardNodeEdge?: WhiteCardNodeEdgeResolvers<ContextType>;
-  WhiteCardNode?: WhiteCardNodeResolvers<ContextType>;
+  JWTPayloadNode?: JwtPayloadNodeResolvers<ContextType>;
+  JoinGameMutation?: JoinGameMutationResolvers<ContextType>;
+  JoinGameSubscription?: JoinGameSubscriptionResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
   NewGameNode?: NewGameNodeResolvers<ContextType>;
+  Node?: NodeResolvers<ContextType>;
+  ObtainJSONWebTokenMutationPayload?: ObtainJsonWebTokenMutationPayloadResolvers<ContextType>;
+  PageInfo?: PageInfoResolvers<ContextType>;
+  PlayerNode?: PlayerNodeResolvers<ContextType>;
+  PlayerNodeConnection?: PlayerNodeConnectionResolvers<ContextType>;
+  PlayerNodeEdge?: PlayerNodeEdgeResolvers<ContextType>;
+  Query?: QueryResolvers<ContextType>;
+  RefreshPayload?: RefreshPayloadResolvers<ContextType>;
+  RevokePayload?: RevokePayloadResolvers<ContextType>;
+  SetFullWidthMutation?: SetFullWidthMutationResolvers<ContextType>;
+  SocialAuthJWTPayload?: SocialAuthJwtPayloadResolvers<ContextType>;
+  SocialCamelJSON?: GraphQLScalarType;
+  SocialNode?: SocialNodeResolvers<ContextType>;
+  SocialNodeConnection?: SocialNodeConnectionResolvers<ContextType>;
+  SocialNodeEdge?: SocialNodeEdgeResolvers<ContextType>;
+  Subscription?: SubscriptionResolvers<ContextType>;
+  UpdateGameStatusMutation?: UpdateGameStatusMutationResolvers<ContextType>;
+  UserNode?: UserNodeResolvers<ContextType>;
   UserNodeConnection?: UserNodeConnectionResolvers<ContextType>;
   UserNodeEdge?: UserNodeEdgeResolvers<ContextType>;
-  Mutation?: MutationResolvers<ContextType>;
-  CreateGameMutation?: CreateGameMutationResolvers<ContextType>;
-  CreateNewGameMutation?: CreateNewGameMutationResolvers<ContextType>;
-  CreateUserPayload?: CreateUserPayloadResolvers<ContextType>;
-  CreateUserFailEmailExists?: CreateUserFailEmailExistsResolvers<ContextType>;
-  CreateUserFailOthers?: CreateUserFailOthersResolvers<ContextType>;
-  CreateUserSuccess?: CreateUserSuccessResolvers<ContextType>;
-  DeleteRefreshTokenCookiePayload?: DeleteRefreshTokenCookiePayloadResolvers<ContextType>;
-  RefreshPayload?: RefreshPayloadResolvers<ContextType>;
-  GenericScalar?: GraphQLScalarType;
-  SaveProfileMutation?: SaveProfileMutationResolvers<ContextType>;
-  SocialAuthJWTPayload?: SocialAuthJwtPayloadResolvers<ContextType>;
-  ObtainJSONWebTokenPayload?: ObtainJsonWebTokenPayloadResolvers<ContextType>;
-  EditGameMutation?: EditGameMutationResolvers<ContextType>;
-  VerifyPayload?: VerifyPayloadResolvers<ContextType>;
-  Subscription?: SubscriptionResolvers<ContextType>;
-  GameSubscriptionNode?: GameSubscriptionNodeResolvers<ContextType>;
+  WhiteCardNode?: WhiteCardNodeResolvers<ContextType>;
+  WhiteCardNodeConnection?: WhiteCardNodeConnectionResolvers<ContextType>;
+  WhiteCardNodeEdge?: WhiteCardNodeEdgeResolvers<ContextType>;
 }>;

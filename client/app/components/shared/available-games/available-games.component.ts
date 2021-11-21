@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { GameNode } from 'client/app/@types/graphql';
+import { GameNode } from '../../../@types/graphql';
 
 @Component({
   selector: 'cah-available-games',

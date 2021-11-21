@@ -1,11 +1,15 @@
 import { gql } from '../../utils/gql';
-import { USER_NODE_FRAGMENT } from '../fragments';
 
 export const LOGIN_MANUAL_MUTATION = gql`
-  mutation TokenAuth($input: ObtainJSONWebTokenInput!) {
+  mutation TokenAuth($input: ObtainJSONWebTokenMutationInput!) {
     tokenAuth(input: $input) {
       token
-      payload
+      payload {
+        username
+        sub
+        subName
+        exp
+      }
     }
   }
 `;
@@ -19,14 +23,18 @@ export const REFRESH_TOKEN = gql`
   }
 `;
 
-export const SAVE_PROFILE_MUTATION = gql`
-  ${USER_NODE_FRAGMENT}
+export const REVOKE_REFRESH_TOKEN = gql`
+  mutation RevokeRefreshToken($input: RevokeInput!) {
+    revokeRefreshToken(input: $input) {
+      revoked
+    }
+  }
+`;
 
-  mutation SaveProfile($input: SaveProfileInput!) {
-    saveProfile(input: $input) @client {
-      profile @client {
-        ...UserNode
-      }
+export const DELETE_REFRESH_TOKEN_COOKIE = gql`
+  mutation DeleteRefreshToken($input: DeleteRefreshTokenCookieInput!) {
+    deleteRefreshTokenCookie(input: $input) {
+      deleted
     }
   }
 `;

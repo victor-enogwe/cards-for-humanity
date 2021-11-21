@@ -24,8 +24,6 @@ class UserManager(models.Manager):
         email = Provider.normalize_email(email)
         user = self.model.objects.create(**extra_fields)
         provider: Provider = Provider.objects.create(email=email, user=user)
-        provider.verification_email()
-        raise ValueError('hello world')
         password_instance = Password(user=user, is_active=True)
         password_instance.set_password(password)
         Profile.objects.create(provider=provider)

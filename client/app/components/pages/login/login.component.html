@@ -15,18 +15,18 @@
         'progress-bar-striped': facebook.disabled,
         'progress-bar-animated': facebook.disabled
       }">
-        Login with Facebook
+        Login With Facebook
       </button>
       <button mat-raised-button #google class="btn btn-lg btn-block btn-danger mt-3" cahDebounceClick (debounceClick)="loginSocial($event)"
         [hidden]="facebook.disabled"
         [ngClass]="{ 'progress-bar': google.disabled, 'progress-bar-striped': google.disabled, 'progress-bar-animated': google.disabled }">
-        Login with Google
+        Login With Google
       </button>
     </div>
   </div>
 
   <div class="col-md-12 col-lg-6 p-md-5 border-or d-md-block" [ngClass]="{ 'd-none': (isMobile | async) && showSocialAuth}">
-    <h6 *ngIf="!(isMobile | async)" class="card-title text-center text-muted mb-3">Sign in Manually</h6>
+    <h6 *ngIf="!(isMobile | async)" class="card-title text-center text-muted mb-3">Login With Email</h6>
     <form [formGroup]="loginForm">
       <mat-form-field class="form-group d-block pb-3">
         <mat-label [attr.for]="loginForm.controls.username.value.includes('@') ? 'email' : 'username'">username or email</mat-label>

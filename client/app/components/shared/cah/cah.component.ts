@@ -1,5 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
+import { BehaviorSubject } from 'rxjs';
 import { loadingAnimations, navigationAnimations } from '../../../animations';
 import { STATIC_URL } from '../../../modules/cah/cah.module';
 import { SafeUrlPipe } from '../../../pipes/safe-url/safe-url.pipe';
@@ -13,6 +14,7 @@ import { MainContentRefService } from '../../../services/main-content-ref/main-c
 })
 export class CahComponent implements AfterViewInit {
   @ViewChild('mainContent') mainContent!: ElementRef<HTMLBaseElement>;
+  fullWidth$ = new BehaviorSubject<boolean>(false);
   svgIcons: { [key: string]: string } = {
     cah_card: 'assets/img/card.svg',
   };
@@ -27,7 +29,6 @@ export class CahComponent implements AfterViewInit {
       this.matIconRegistry.addSvgIcon(name, this.safeUrlPipe.transform(`${this.staticURL}${url}`, 'iframe')),
     );
   }
-
   ngAfterViewInit(): void {
     this.mainContentRefService.mainContentRef(this.mainContent);
   }

@@ -1,21 +1,26 @@
 from django.core.mail import send_mail
 from django.db import models
-from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
-from pgtrigger import Protect, Update, register
+from pgtrigger import F, Protect, Q, Update, register
 from phonenumber_field.modelfields import PhoneNumberField
 
 from api.models.timestamp import TimestampBase
-from api.models.verification_code import VerificationCode
-from api.utils.constants import password_allowed_chars
 from api.utils.enums import Conversion
 from api.utils.enums import Provider as ProviderEnum
 from config.settings import AUTH_USER_MODEL
 
 
 @register(Protect(
-    name="protect_update_email",
-    operation=Update
+    name="protect_update_provider",
+    operation=Update,
+    condition=(
+        Q(old__user_id__df=F('new__user_id')) |
+        Q(old__email__df=F('new__email')) |
+        Q(old__phone__df=F('new__phone')) |
+        Q(old__seed__df=F('new__seed')) |
+        Q(old__provider__df=F('new__provider')) |
+        Q(old__conversion_mode__df=F('new__conversion_mode'))
+    )
 ))
 class Provider(TimestampBase):
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)

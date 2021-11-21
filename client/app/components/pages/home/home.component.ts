@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { CahComponent } from '../../shared/cah/cah.component';
 
 @Component({
   selector: 'cah-home',
@@ -6,4 +7,14 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrls: ['./home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent {}
+export class HomeComponent implements AfterViewInit, OnDestroy {
+  constructor(private cahComponent: CahComponent) {}
+
+  ngAfterViewInit(): void {
+    this.cahComponent.fullWidth$.next(true);
+  }
+
+  ngOnDestroy(): void {
+    this.cahComponent.fullWidth$.next(false);
+  }
+}

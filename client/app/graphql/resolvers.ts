@@ -18,9 +18,6 @@ export function defaultResolver<T>(query: DocumentNode) {
 
 export const resolvers: Resolvers = {
   Query: {
-    // isLoggedIn(...args) {
-    //   return defaultResolver<boolean>(IS_LOGGED_IN_QUERY)(...args);
-    // },
     // newGame(_root, args, { cache }: { cache: InMemoryCache; getCacheKey: Function }) {
     //   const value: NewGameNode | null = cache.readQuery({
     //     query: NEW_GAME_QUERY,

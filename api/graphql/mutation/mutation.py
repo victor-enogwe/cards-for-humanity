@@ -1,7 +1,7 @@
 from graphene.types.objecttype import ObjectType
 from graphql_jwt.relay import DeleteRefreshTokenCookie as DeleteRefreshTokenCookieMutation
 from graphql_jwt.relay import Refresh as RefreshTokenMutation
-from graphql_jwt.relay import Verify as VerifyTokenMutation
+from graphql_jwt.relay import Revoke as RevokeRefreshTokenMutation
 from graphql_social_auth.relay import SocialAuthJWT as SocialAuthJWTMutation
 
 # from api.graphql.mutation.create_game import CreateGameMutation
@@ -19,6 +19,6 @@ class Mutation(ObjectType):
     join_game = JoinGameMutation.Field()
     social_auth = SocialAuthJWTMutation.Field()
     token_auth = ObtainJSONWebTokenMutation.Field()
-    verify_token = VerifyTokenMutation.Field()
     refresh_token = RefreshTokenMutation.Field()
+    revoke_refresh_token = RevokeRefreshTokenMutation.Field()
     delete_refresh_token_cookie = DeleteRefreshTokenCookieMutation.Field()

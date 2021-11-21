@@ -9,7 +9,7 @@ import { first, lastValueFrom, map, skip, Subscription, switchMap, zip } from 'r
 import { filter } from 'rxjs/internal/operators/filter';
 import { tap } from 'rxjs/internal/operators/tap';
 import { Avatar, Genre, TRelayEdge } from '../../../@types/global';
-import { CreateGameInput, NewGameNode } from '../../../@types/graphql';
+import { CreateGameMutationInput, NewGameNode } from '../../../@types/graphql';
 import { GameService } from '../../../services/game/game.service';
 import { GenreService } from '../../../services/genre/genre.service';
 
@@ -39,7 +39,7 @@ export class OptionsComponent implements OnInit, AfterViewInit, OnDestroy {
   private gameOptionsQuery$ = this.gameService.resolve();
   genres$ = this.genreQuery$.valueChanges;
   breakpointObserver$ = this.breakpointObserver
-    .observe('(min-width: 560px)')
+    .observe('(min-width: 576px)')
     .pipe(map(({ matches }) => (matches ? 'horizontal' : 'vertical')));
   createNewGameOptions$ = this.gameOptionsForm.valueChanges.pipe(switchMap((data) => this.gameService.createNewGame(data)));
   selectGenreVirtualScroll$ = this.scrollDispatcher.scrolled().pipe(
@@ -137,7 +137,7 @@ export class OptionsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   createNewGame() {
-    const game: CreateGameInput = { ...this.gameOptionsForm.value, ...this.genreOptionsForm.value };
+    const game: CreateGameMutationInput = { ...this.gameOptionsForm.value, ...this.genreOptionsForm.value };
     return lastValueFrom(this.gameService.createNewGame(game).pipe(tap(() => this.router.navigateByUrl('play/lobby'))));
   }
 

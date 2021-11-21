@@ -1,6 +1,6 @@
 <header>
   <cah-nav></cah-nav>
 </header>
-<main #mainContent role="main" class="container">
+<main #mainContent role="main" [ngClass]="{ container: !(fullWidth$ | async), 'container-fluid': (fullWidth$ | async) }">
   <router-outlet @navigationAnimations></router-outlet>
 </main>

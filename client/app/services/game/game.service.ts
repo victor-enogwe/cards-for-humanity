@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { first, map, Observable, switchMap } from 'rxjs';
-import { CreateGameInput, NewGameNode } from '../../@types/graphql';
+import { CreateGameMutationInput, NewGameNode } from '../../@types/graphql';
 import { CREATE_GAME_LOCAL_MUTATION, CREATE_GAME_MUTATION, NEW_GAME_QUERY } from '../../graphql';
 import { AuthService } from '../auth/auth.service';
 
@@ -19,7 +19,7 @@ export class GameService {
     });
   }
 
-  createNewGame(game: CreateGameInput) {
+  createNewGame(game: CreateGameMutationInput) {
     return this.apollo.mutate({
       mutation: CREATE_GAME_LOCAL_MUTATION,
       variables: { input: game },
@@ -33,7 +33,7 @@ export class GameService {
     });
   }
 
-  createGame(game: CreateGameInput) {
+  createGame(game: CreateGameMutationInput) {
     return this.apollo.mutate({
       mutation: CREATE_GAME_MUTATION,
       variables: { input: game },

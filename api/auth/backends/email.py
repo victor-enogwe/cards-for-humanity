@@ -1,7 +1,6 @@
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from django.http import HttpRequest
 from graphql import GraphQLError
 
@@ -41,11 +40,11 @@ class EmailModelBackend(ModelBackend):
             if not self.user_can_authenticate(user):
                 raise GraphQLError(GraphQLErrors.USER_SIGNIN__INACTIVE_USER)
 
-            if not self.is_verified:
+            if not provider.is_verified:
                 raise GraphQLError(GraphQLErrors.NOT_VERIFIED)
 
             return user
-        except Password.DoesNotExist or User.DoesNotExist or Provider.DoesNotExist:
+        except (Password.DoesNotExist, User.DoesNotExist, Provider.DoesNotExist):
             raise GraphQLError(
                 GraphQLErrors.USER_SIGNIN__INVALID_CREDENTIALS
             )

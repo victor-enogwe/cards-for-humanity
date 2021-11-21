@@ -24,7 +24,7 @@
     </div>
   </div>
 
-  <div class="col-md-12 col-lg-6 p-md-5 border-or" [ngClass]="{ 'd-none': (isMobile | async) && showSocialAuth}">
+  <div class="col-md-12 col-lg-6 p-md-5" [ngClass]="{ 'd-none': (isMobile | async) && showSocialAuth}">
     <h6 *ngIf="!(isMobile | async)" class="card-title text-center text-muted mb-3">Sign up Manually</h6>
     <form [formGroup]="registerForm">
       <mat-form-field class="form-group d-block pb-3">

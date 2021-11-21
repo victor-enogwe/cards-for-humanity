@@ -3,11 +3,11 @@ import { Injectable } from '@angular/core';
 import { ApolloLink, FetchResult, NextLink, Observable as LinkObservable, Operation } from '@apollo/client/core';
 import { Options } from 'apollo-angular/http';
 import { Request } from 'apollo-angular/http/types';
-import { AnyObject } from 'client/app/@types/global';
 import { environment } from 'client/environments/environment';
 import { extractFiles } from 'extract-files';
 import { print } from 'graphql';
 import { Observable } from 'rxjs';
+import { AnyObject } from '../../@types/global';
 
 @Injectable({
   providedIn: 'root',

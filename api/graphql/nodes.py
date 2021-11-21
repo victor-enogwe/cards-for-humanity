@@ -61,8 +61,10 @@ class BlackCardNode(DjangoObjectType):
 
 
 class JWTPayloadNode(graphene.ObjectType):
-    refresh_token = graphene.String()
-    pass
+    username = graphene.String()
+    sub = graphene.Int()
+    sub_name = graphene.String()
+    exp = graphene.Int()
 
 
 class UserNode(DjangoObjectType):

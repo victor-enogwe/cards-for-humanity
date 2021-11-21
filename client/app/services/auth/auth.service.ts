@@ -10,20 +10,20 @@ import {
 } from 'angularx-social-login';
 import { Apollo } from 'apollo-angular';
 import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, lastValueFrom, Observable, of } from 'rxjs';
 import { tap } from 'rxjs/internal/operators/tap';
-import { catchError, first, map, mergeMap } from 'rxjs/operators';
+import { catchError, first, map, mergeMap, switchMap } from 'rxjs/operators';
 import { BroadCast, SignUpData } from '../../@types/global';
 import {
+  DeleteRefreshTokenCookieInput,
   Mutation,
-  ObtainJsonWebTokenInput,
-  ObtainJsonWebTokenPayload,
+  ObtainJsonWebTokenMutationInput,
+  ObtainJsonWebTokenMutationPayload,
   RefreshInput,
   RefreshPayload,
-  SaveProfileInput,
-  UserNode,
+  RevokeInput,
 } from '../../@types/graphql';
-import { IS_LOGGED_IN_QUERY, LOGIN_MANUAL_MUTATION, PROFILE_QUERY, REFRESH_TOKEN, SAVE_PROFILE_MUTATION } from '../../graphql';
+import { DELETE_REFRESH_TOKEN_COOKIE, LOGIN_MANUAL_MUTATION, REFRESH_TOKEN, REVOKE_REFRESH_TOKEN } from '../../graphql';
 import { SOCIAL_AUTH_CONFIG } from '../../modules/cah/cah.module';
 import { gql } from '../../utils/gql';
 import { BroadcastService } from '../broadcast/broadcast.service';
@@ -34,7 +34,7 @@ import { BroadcastService } from '../broadcast/broadcast.service';
 })
 export class AuthService extends Service {
   auth$ = new BehaviorSubject<string | null>(null);
-  profile$ = new BehaviorSubject<Partial<UserNode> | null>(null);
+  profile$ = new BehaviorSubject<ObtainJsonWebTokenMutationPayload['payload'] | null>(null);
   username$ = this.profile$.pipe(
     first(),
     map((data) => data?.username!),
@@ -76,8 +76,8 @@ export class AuthService extends Service {
   }
 
   signUpSocial(event: any) {
-    return of(event)
-      .pipe(
+    return lastValueFrom(
+      of(event).pipe(
         tap((e) => (e.target.disabled = true)),
         mergeMap(() => (event.target.textContent.includes('Facebook') ? this.signInWithFB() : this.signInWithGoogle())),
         tap(console.log),
@@ -89,8 +89,8 @@ export class AuthService extends Service {
           event.target.disabled = false;
           return error;
         }),
-      )
-      .toPromise();
+      ),
+    );
   }
 
   signUpManual(user: SocialUser) {
@@ -120,7 +120,7 @@ export class AuthService extends Service {
     });
   }
 
-  signInManual(input: ObtainJsonWebTokenInput) {
+  signInManual(input: ObtainJsonWebTokenMutationInput) {
     return this.apollo.mutate<Pick<Mutation, 'tokenAuth'>>({
       mutation: LOGIN_MANUAL_MUTATION,
       variables: { input },
@@ -136,8 +136,20 @@ export class AuthService extends Service {
     });
   }
 
-  saveProfile(input: SaveProfileInput) {
-    return this.apollo.mutate<Pick<Mutation, 'saveProfile'>>({ mutation: SAVE_PROFILE_MUTATION, variables: { input } });
+  revokeRefreshToken(input: RevokeInput) {
+    return this.apollo.mutate<Pick<Mutation, 'revokeRefreshToken'>>({
+      mutation: REVOKE_REFRESH_TOKEN,
+      variables: { input },
+      fetchPolicy: 'network-only',
+    });
+  }
+
+  deleteRefreshTokenCookie(input: DeleteRefreshTokenCookieInput) {
+    return this.apollo.mutate<Pick<Mutation, 'deleteRefreshTokenCookie'>>({
+      mutation: DELETE_REFRESH_TOKEN_COOKIE,
+      variables: { input },
+      fetchPolicy: 'network-only',
+    });
   }
 
   setCookie({ name, value, expiry, path = '/' }: { name: string; value: string; expiry?: number | Date; path?: string }) {
@@ -149,10 +161,15 @@ export class AuthService extends Service {
   }
 
   logOut() {
-    this.clearCookies('/');
-    this.apollo.client.writeQuery({ query: IS_LOGGED_IN_QUERY, data: false });
-    this.apollo.client.writeQuery({ query: PROFILE_QUERY, data: null });
-    this.signOut(true);
+    return of(this.clearCookies('/'))
+      .pipe(switchMap(() => this.revokeRefreshToken({})))
+      .pipe(switchMap(() => this.deleteRefreshTokenCookie({})))
+      .pipe(switchMap(() => (Boolean(this.user?.authToken) ? this.signOut(true) : of(null))))
+      .pipe(
+        tap(() => this.auth$.next(null)),
+        tap(() => this.profile$.next(null)),
+        tap(() => this.router.navigate(['/'])),
+      );
   }
 
   encodeObject(item: object) {
@@ -167,7 +184,7 @@ export class AuthService extends Service {
     }
   }
 
-  persistAuth({ payload, token }: ObtainJsonWebTokenPayload | RefreshPayload) {
+  persistAuth({ payload, token }: ObtainJsonWebTokenMutationPayload | RefreshPayload) {
     this.auth$.next(token);
     this.profile$.next(payload);
   }

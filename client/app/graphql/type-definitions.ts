@@ -7,76 +7,41 @@ export const typeDefs = gql`
     subscription: Subscription
   }
 
-  type Query {
-    blackCards(
-      after: String
-      before: String
-      createdAt: DateTime
-      first: Int
-      genre: ID
-      last: Int
-      offset: Int
-      pick: String
-      text: String
-      updatedAt: DateTime
-    ): BlackCardNodeConnection
-    game(id: ID): GameNode
+  enum ApiBlackCardPickChoices {
+    A_1
 
-    genres(
-      after: String
-      before: String
-      credit: String
-      credit_Icontains: String
-      credit_Istartswith: String
-      description: String
-      description_Icontains: String
-      description_Istartswith: String
-      first: Int
-      id: Float
-      id_Gt: Float
-      id_Lt: Float
-      last: Int
-      offset: Int
-    ): GenreNodeConnection
-
-    isLoggedIn: Boolean
-    newGame(id: ID!): NewGameNode
-    profile: UserNode
-
-    users(
-      after: String
-      before: String
-      dateJoined: DateTime
-      email: String
-      first: Int
-      firstName: String
-      groups: [ID]
-      isActive: Boolean
-      isStaff: Boolean
-      isSuperuser: Boolean
-      last: Int
-      lastLogin: DateTime
-      lastName: String
-      offset: Int
-      password: String
-      username: String
-      userPermissions: [ID]
-    ): UserNodeConnection
-    whiteCards(
-      after: String
-      before: String
-      first: Int
-      genre: ID
-      last: Int
-      offset: Int
-      text: String
-      text_Icontains: String
-      text_Istartswith: String
-    ): WhiteCardNodeConnection
-    whoami: UserNode
+    A_2
   }
 
-  scalar DateTime
+  enum ApiBlackCardRatingChoices {
+    NORMAL
+  }
+
+  enum ApiGameStatusChoices {
+    AWAITING_CZAR
+
+    AWAITING_PLAYERS
+
+    GAME_ENDED
+
+    GAME_STARTED
+  }
+
+  enum ApiWhiteCardRatingChoices {
+    NORMAL
+  }
+
+  type BlackCardNode implements Node {
+    createdAt: DateTime!
+    genre: GenreNode!
+
+    id: ID!
+    pick: ApiBlackCardPickChoices!
+    rating: ApiBlackCardRatingChoices!
+
+    text: String!
+    updatedAt: DateTime!
+  }
 
   type BlackCardNodeConnection {
     edgeCount: Int
@@ -93,84 +58,37 @@ export const typeDefs = gql`
     node: BlackCardNode
   }
 
-  type BlackCardNode implements Node {
-    createdAt: DateTime!
-    genre: GenreNode!
-
-    id: ID!
-    pick: ApiBlackCardPickChoices!
-
-    text: String!
-    updatedAt: DateTime!
+  input CreateGameMutationInput {
+    genres: [ID]!
+    numPlayers: Int!
+    numSpectators: Int!
+    roundTime: Int!
+    rounds: Int!
+    status: String!
   }
 
-  interface Node {
-    id: ID!
+  type CreateNewGameMutation {
+    newGame: NewGameNode
   }
 
-  type GenreNode implements Node {
-    blackcardSet(
-      after: String
-      before: String
-      createdAt: DateTime
-      first: Int
-      genre: ID
-      last: Int
-      offset: Int
-      pick: String
-      text: String
-      updatedAt: DateTime
-    ): BlackCardNodeConnection!
-
-    credit: String
-
-    description: String!
-    gameSet(
-      after: String
-      before: String
-      createdAt: DateTime
-      creator: ID
-      first: Int
-      genres: [ID]
-      last: Int
-      numPlayers: Int
-      numSpectators: Int
-      offset: Int
-      rounds: Int
-      roundTime: Int
-      status: String
-      updatedAt: DateTime
-      winner: ID
-    ): GameNodeConnection!
-
-    id: ID!
-    selected: Boolean
-    whitecardSet(
-      after: String
-      before: String
-      first: Int
-      genre: ID
-      last: Int
-      offset: Int
-      text: String
-      text_Icontains: String
-      text_Istartswith: String
-    ): WhiteCardNodeConnection!
+  type CreateUserMutation {
+    ok: Boolean
   }
 
-  type GameNodeConnection {
-    edgeCount: Int
-
-    edges: [GameNodeEdge]!
-
-    pageInfo: PageInfo!
-    totalCount: Int
+  input CreateUserMutationInput {
+    email: String!
+    password: String!
   }
 
-  type GameNodeEdge {
-    cursor: String!
+  scalar DateTime
 
-    node: GameNode
+  input DeleteRefreshTokenCookieInput {
+    clientMutationId: String
+  }
+
+  type DeleteRefreshTokenCookiePayload {
+    clientMutationId: String
+    deleted: Boolean!
   }
 
   type GameNode implements Node {
@@ -195,6 +113,8 @@ export const typeDefs = gql`
 
     id: ID!
 
+    joinEndsAt: DateTime!
+
     numPlayers: Int!
 
     numSpectators: Int!
@@ -212,18 +132,49 @@ export const typeDefs = gql`
       user: ID
     ): PlayerNodeConnection!
 
-    rounds: Int!
-
     roundTime: Int!
+
+    rounds: Int!
     status: ApiGameStatusChoices!
     updatedAt: DateTime!
     winner: UserNode!
   }
 
-  type UserNode implements Node {
-    dateJoined: DateTime!
-    email: String!
-    firstName: String!
+  type GameNodeConnection {
+    edgeCount: Int
+
+    edges: [GameNodeEdge]!
+
+    pageInfo: PageInfo!
+    totalCount: Int
+  }
+
+  type GameNodeEdge {
+    cursor: String!
+
+    node: GameNode
+  }
+
+  scalar GenericScalar
+
+  type GenreNode implements Node {
+    blackcardSet(
+      after: String
+      before: String
+      createdAt: DateTime
+      first: Int
+      genre: ID
+      last: Int
+      offset: Int
+      pick: String
+      rating: String
+      text: String
+      updatedAt: DateTime
+    ): BlackCardNodeConnection!
+
+    credit: String
+
+    description: String!
     gameSet(
       after: String
       before: String
@@ -231,70 +182,130 @@ export const typeDefs = gql`
       creator: ID
       first: Int
       genres: [ID]
+      joinEndsAt: DateTime
       last: Int
       numPlayers: Int
       numSpectators: Int
       offset: Int
-      rounds: Int
       roundTime: Int
+      rounds: Int
       status: String
       updatedAt: DateTime
       winner: ID
     ): GameNodeConnection!
 
     id: ID!
-
-    isActive: Boolean!
-
-    isStaff: Boolean!
-
-    isSuperuser: Boolean!
-    lastLogin: DateTime
-    lastName: String!
-    playerSet(
-      after: String
-      before: String
-      createdAt: DateTime
-      czar: Boolean
-      first: Int
-      game: ID
-      last: Int
-      offset: Int
-      score: Int
-      updatedAt: DateTime
-      user: ID
-    ): PlayerNodeConnection!
-    profile: ProfileNode
-    socialAuth(
+    selected: Boolean
+    whitecardSet(
       after: String
       before: String
       first: Int
+      genre: ID
       last: Int
       offset: Int
-      provider: String
-      provider_In: [String]
-      uid: String
-      uid_In: [String]
-    ): SocialNodeConnection!
+      text: String
+      text_Icontains: String
+      text_Istartswith: String
+    ): WhiteCardNodeConnection!
+  }
 
+  type GenreNodeConnection {
+    edgeCount: Int
+
+    edges: [GenreNodeEdge]!
+
+    pageInfo: PageInfo!
+    totalCount: Int
+  }
+
+  type GenreNodeEdge {
+    cursor: String!
+
+    node: GenreNode
+  }
+
+  type JWTPayloadNode {
+    exp: Int
+    sub: Int
+    subName: String
+    username: String
+  }
+
+  type JoinGameMutation {
+    game: GameNode
+    ok: Boolean
+  }
+
+  input JoinGameMutationInput {
+    gameId: ID!
+    playerId: ID!
+  }
+
+  type JoinGameSubscription {
+    event: String
+  }
+
+  type Mutation {
+    createNewGame(input: CreateGameMutationInput!): CreateNewGameMutation
+    createUser(input: CreateUserMutationInput!): CreateUserMutation
+    deleteRefreshTokenCookie(input: DeleteRefreshTokenCookieInput!): DeleteRefreshTokenCookiePayload
+    joinGame(input: JoinGameMutationInput!): JoinGameMutation
+    refreshToken(input: RefreshInput!): RefreshPayload
+    revokeRefreshToken(input: RevokeInput!): RevokePayload
+    setFullWidth(input: SetFullWidthMutationInput!): SetFullWidthMutation
+
+    socialAuth(input: SocialAuthJWTInput!): SocialAuthJWTPayload
+    tokenAuth(input: ObtainJSONWebTokenMutationInput!): ObtainJSONWebTokenMutationPayload
+    updateGameStatus(id: ID!, input: UpdateGameInput!): UpdateGameStatusMutation
+  }
+
+  type NewGameNode {
+    genres: [ID]!
+    id: ID!
+    numPlayers: Int!
+    numSpectators: Int!
+    roundTime: Int!
+    rounds: Int!
+    status: String!
+  }
+
+  interface Node {
+    id: ID!
+  }
+
+  input ObtainJSONWebTokenMutationInput {
+    clientMutationId: String
+    password: String!
     username: String!
-    winners(
-      after: String
-      before: String
-      createdAt: DateTime
-      creator: ID
-      first: Int
-      genres: [ID]
-      last: Int
-      numPlayers: Int
-      numSpectators: Int
-      offset: Int
-      rounds: Int
-      roundTime: Int
-      status: String
-      updatedAt: DateTime
-      winner: ID
-    ): GameNodeConnection!
+  }
+
+  type ObtainJSONWebTokenMutationPayload {
+    clientMutationId: String
+    payload: JWTPayloadNode
+    refreshExpiresIn: Int!
+    refreshToken: String!
+    token: String!
+  }
+
+  type PageInfo {
+    endCursor: String
+
+    hasNextPage: Boolean!
+
+    hasPreviousPage: Boolean!
+
+    startCursor: String
+  }
+
+  type PlayerNode implements Node {
+    createdAt: DateTime!
+    czar: Boolean!
+    game: GameNode!
+
+    id: ID!
+    score: Int!
+    updatedAt: DateTime!
+    user: UserNode!
   }
 
   type PlayerNodeConnection {
@@ -312,37 +323,124 @@ export const typeDefs = gql`
     node: PlayerNode
   }
 
-  type PlayerNode implements Node {
-    createdAt: DateTime!
-    czar: Boolean!
-    game: GameNode!
+  type Query {
+    blackCards(
+      after: String
+      before: String
+      createdAt: DateTime
+      first: Int
+      genre: ID
+      last: Int
+      offset: Int
+      pick: String
+      rating: String
+      text: String
+      updatedAt: DateTime
+    ): BlackCardNodeConnection
+
+    fullWidth: Boolean
+    game(id: ID): GameNode
+
+    genres(
+      after: String
+      before: String
+      credit: String
+      credit_Icontains: String
+      credit_Istartswith: String
+      description: String
+      description_Icontains: String
+      description_Istartswith: String
+      first: Int
+      id: Float
+      id_Gt: Float
+      id_Lt: Float
+      last: Int
+      offset: Int
+    ): GenreNodeConnection
+    newGame(id: ID!): NewGameNode
+
+    users(
+      after: String
+      before: String
+      createdAt: DateTime
+      first: Int
+      groups: [ID]
+      isActive: Boolean
+      isAdmin: Boolean
+      isStaff: Boolean
+      isSuperuser: Boolean
+      last: Int
+      offset: Int
+      updatedAt: DateTime
+      userPermissions: [ID]
+    ): UserNodeConnection
+    whiteCards(
+      after: String
+      before: String
+      first: Int
+      genre: ID
+      last: Int
+      offset: Int
+      text: String
+      text_Icontains: String
+      text_Istartswith: String
+    ): WhiteCardNodeConnection
+  }
+
+  input RefreshInput {
+    clientMutationId: String
+    refreshToken: String
+  }
+
+  type RefreshPayload {
+    clientMutationId: String
+    payload: GenericScalar!
+    refreshExpiresIn: Int!
+    refreshToken: String!
+    token: String!
+  }
+
+  input RevokeInput {
+    clientMutationId: String
+    refreshToken: String
+  }
+
+  type RevokePayload {
+    clientMutationId: String
+    revoked: Int!
+  }
+
+  type SetFullWidthMutation {
+    fullWidth: Boolean
+  }
+
+  input SetFullWidthMutationInput {
+    fullWidth: Boolean!
+  }
+
+  input SocialAuthJWTInput {
+    accessToken: String!
+    clientMutationId: String
+    provider: String!
+  }
+
+  type SocialAuthJWTPayload {
+    clientMutationId: String
+    social: SocialNode
+    token: String
+  }
+
+  scalar SocialCamelJSON
+
+  type SocialNode implements Node {
+    created: DateTime!
+    extraData: SocialCamelJSON
 
     id: ID!
-    score: Int!
-    updatedAt: DateTime!
+    modified: DateTime!
+    provider: String!
+    uid: String!
     user: UserNode!
-  }
-
-  type PageInfo {
-    endCursor: String
-
-    hasNextPage: Boolean!
-
-    hasPreviousPage: Boolean!
-
-    startCursor: String
-  }
-
-  type ProfileNode implements Node {
-    id: ID!
-    role: ApiProfileRoleChoices!
-    user: UserNode!
-  }
-
-  enum ApiProfileRoleChoices {
-    MANAGER
-
-    USER
   }
 
   type SocialNodeConnection {
@@ -357,83 +455,91 @@ export const typeDefs = gql`
     node: SocialNode
   }
 
-  type SocialNode implements Node {
-    created: DateTime!
-    extraData: SocialCamelJSON
-
-    id: ID!
-    modified: DateTime!
-    provider: String!
-    uid: String!
-    user: UserNode!
+  type Subscription {
+    joinGame(gameRoom: String, user: String): JoinGameSubscription
   }
 
-  scalar SocialCamelJSON
-
-  type GenreNodeConnection {
-    edgeCount: Int
-
-    edges: [GenreNodeEdge]!
-
-    pageInfo: PageInfo!
-    totalCount: Int
+  input UpdateGameInput {
+    status: ApiGameStatusChoices!
   }
 
-  type GenreNodeEdge {
-    cursor: String!
-
-    node: GenreNode
+  type UpdateGameStatusMutation {
+    game: GameNode
   }
 
-  enum ApiGameStatusChoices {
-    AWAITING_CZAR
-
-    AWAITING_PLAYERS
-
-    GAME_ENDED
-
-    GAME_STARTED
-  }
-
-  type WhiteCardNodeConnection {
-    edgeCount: Int
-
-    edges: [WhiteCardNodeEdge]!
-
-    pageInfo: PageInfo!
-    totalCount: Int
-  }
-
-  type WhiteCardNodeEdge {
-    cursor: String!
-
-    node: WhiteCardNode
-  }
-
-  type WhiteCardNode implements Node {
+  type UserNode implements Node {
     createdAt: DateTime!
-    genre: GenreNode!
+    gameSet(
+      after: String
+      before: String
+      createdAt: DateTime
+      creator: ID
+      first: Int
+      genres: [ID]
+      joinEndsAt: DateTime
+      last: Int
+      numPlayers: Int
+      numSpectators: Int
+      offset: Int
+      roundTime: Int
+      rounds: Int
+      status: String
+      updatedAt: DateTime
+      winner: ID
+    ): GameNodeConnection!
 
     id: ID!
 
-    text: String!
+    isActive: Boolean!
+
+    isAdmin: Boolean!
+
+    isStaff: Boolean!
+
+    isSuperuser: Boolean!
+    playerSet(
+      after: String
+      before: String
+      createdAt: DateTime
+      czar: Boolean
+      first: Int
+      game: ID
+      last: Int
+      offset: Int
+      score: Int
+      updatedAt: DateTime
+      user: ID
+    ): PlayerNodeConnection!
+    socialAuth(
+      after: String
+      before: String
+      first: Int
+      last: Int
+      offset: Int
+      provider: String
+      provider_In: [String]
+      uid: String
+      uid_In: [String]
+    ): SocialNodeConnection!
     updatedAt: DateTime!
-  }
-
-  enum ApiBlackCardPickChoices {
-    A_1
-
-    A_2
-  }
-
-  type NewGameNode {
-    genres: [ID]!
-    id: ID!
-    numPlayers: Int!
-    numSpectators: Int!
-    rounds: Int!
-    roundTime: Int!
-    status: String!
+    winners(
+      after: String
+      before: String
+      createdAt: DateTime
+      creator: ID
+      first: Int
+      genres: [ID]
+      joinEndsAt: DateTime
+      last: Int
+      numPlayers: Int
+      numSpectators: Int
+      offset: Int
+      roundTime: Int
+      rounds: Int
+      status: String
+      updatedAt: DateTime
+      winner: ID
+    ): GameNodeConnection!
   }
 
   type UserNodeConnection {
@@ -451,142 +557,29 @@ export const typeDefs = gql`
     node: UserNode
   }
 
-  type Mutation {
-    createGame(input: CreateGameInput!): CreateGameMutation
-    createNewGame(input: CreateGameInput!): CreateNewGameMutation
-    createUser(email: String!, password: String!): CreateUserPayload
-    deleteRefreshTokenCookie(input: DeleteRefreshTokenCookieInput!): DeleteRefreshTokenCookiePayload
-    refreshToken(input: RefreshInput!): RefreshPayload
-    saveProfile(input: SaveProfileInput!): SaveProfileMutation
+  type WhiteCardNode implements Node {
+    createdAt: DateTime!
+    genre: GenreNode!
 
-    socialAuth(input: SocialAuthJWTInput!): SocialAuthJWTPayload
-    tokenAuth(input: ObtainJSONWebTokenInput!): ObtainJSONWebTokenPayload
-    updateGame(id: ID!, input: UpdateGameInput!): EditGameMutation
-    verifyToken(input: VerifyInput!): VerifyPayload
-  }
-
-  input CreateGameInput {
-    creator: ID!
-    genres: [ID]!
-
-    numPlayers: Int
-
-    numSpectators: Int
-    playerSet: [ID]
-
-    rounds: Int
-
-    roundTime: Int
-    winner: ID!
-  }
-
-  type CreateGameMutation {
-    game: GameNode
-  }
-
-  type CreateNewGameMutation {
-    newGame: NewGameNode
-  }
-
-  union CreateUserPayload = CreateUserFailEmailExists | CreateUserFailOthers | CreateUserSuccess
-
-  type CreateUserFailEmailExists {
-    errorMessage: String!
-  }
-
-  type CreateUserFailOthers {
-    errorMessage: String!
-  }
-
-  type CreateUserSuccess {
-    profile: ProfileNode
-    refreshToken: String
-    token: String
-    user: UserNode
-  }
-
-  input DeleteRefreshTokenCookieInput {
-    clientMutationId: String
-  }
-
-  type DeleteRefreshTokenCookiePayload {
-    clientMutationId: String
-    deleted: Boolean!
-  }
-
-  input RefreshInput {
-    clientMutationId: String
-    refreshToken: String
-  }
-
-  type RefreshPayload {
-    clientMutationId: String
-    payload: GenericScalar!
-    refreshExpiresIn: Int!
-    refreshToken: String!
-    token: String!
-  }
-
-  scalar GenericScalar
-
-  input SaveProfileInput {
     id: ID!
-    username: String!
+    rating: ApiWhiteCardRatingChoices!
+
+    text: String!
+    updatedAt: DateTime!
   }
 
-  type SaveProfileMutation {
-    profile: UserNode
+  type WhiteCardNodeConnection {
+    edgeCount: Int
+
+    edges: [WhiteCardNodeEdge]!
+
+    pageInfo: PageInfo!
+    totalCount: Int
   }
 
-  input SocialAuthJWTInput {
-    accessToken: String!
-    clientMutationId: String
-    provider: String!
-  }
+  type WhiteCardNodeEdge {
+    cursor: String!
 
-  type SocialAuthJWTPayload {
-    clientMutationId: String
-    social: SocialNode
-    token: String
-  }
-
-  input ObtainJSONWebTokenInput {
-    clientMutationId: String
-    password: String!
-    username: String!
-  }
-
-  type ObtainJSONWebTokenPayload {
-    clientMutationId: String
-    payload: GenericScalar!
-    refreshExpiresIn: Int!
-    refreshToken: String!
-    token: String!
-  }
-
-  input UpdateGameInput {
-    status: ApiGameStatusChoices!
-  }
-
-  type EditGameMutation {
-    game: GameNode
-  }
-
-  input VerifyInput {
-    clientMutationId: String
-    token: String
-  }
-
-  type VerifyPayload {
-    clientMutationId: String
-    payload: GenericScalar!
-  }
-
-  type Subscription {
-    gameSubscription(gameRoom: String, user: String): GameSubscriptionNode
-  }
-
-  type GameSubscriptionNode {
-    event: String
+    node: WhiteCardNode
   }
 `;
