@@ -20,10 +20,14 @@ enum ApiBlackCardRatingChoices {
 
 """An enumeration."""
 enum ApiGameStatusChoices {
+  """Gaa"""
+  AWAITING_ANSWERS
   """Gac"""
   AWAITING_CZAR
   """Gap"""
   AWAITING_PLAYERS
+  """Gc"""
+  GAME_CANCELED
   """Ge"""
   GAME_ENDED
   """Gs"""
@@ -63,6 +67,25 @@ type BlackCardNodeEdge {
   cursor: String!
   """The item at the end of the edge"""
   node: BlackCardNode
+}
+
+input CreateGameInput {
+  genres: [ID]!
+  """seconds"""
+  joinEndsAt: DateTime
+  """no of players"""
+  numPlayers: Int
+  """no of spectators"""
+  numSpectators: Int
+  playerSet: [ID]
+  """seconds"""
+  roundTime: Int
+  """no of game rounds"""
+  rounds: Int
+}
+
+type CreateGameMutation {
+  game: GameNode
 }
 
 input CreateGameMutationInput {
@@ -122,7 +145,7 @@ type GameNode implements Node {
   rounds: Int!
   status: ApiGameStatusChoices!
   updatedAt: DateTime!
-  winner: UserNode!
+  winner: UserNode
 }
 
 type GameNodeConnection {
@@ -202,6 +225,7 @@ type JoinGameSubscription {
 
 """Root Mutation for the cards against humanity api."""
 type Mutation {
+  createGame(input: CreateGameInput!): CreateGameMutation
   createNewGame(input: CreateGameMutationInput!): CreateNewGameMutation
   createUser(input: CreateUserMutationInput!): CreateUserMutation
   deleteRefreshTokenCookie(input: DeleteRefreshTokenCookieInput!): DeleteRefreshTokenCookiePayload
@@ -218,6 +242,7 @@ type Mutation {
 type NewGameNode {
   genres: [ID]!
   id: ID!
+  joinEndsAt: DateTime
   numPlayers: Int!
   numSpectators: Int!
   roundTime: Int!

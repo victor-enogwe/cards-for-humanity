@@ -18,9 +18,13 @@ export const typeDefs = gql`
   }
 
   enum ApiGameStatusChoices {
+    AWAITING_ANSWERS
+
     AWAITING_CZAR
 
     AWAITING_PLAYERS
+
+    GAME_CANCELED
 
     GAME_ENDED
 
@@ -56,6 +60,25 @@ export const typeDefs = gql`
     cursor: String!
 
     node: BlackCardNode
+  }
+
+  input CreateGameInput {
+    genres: [ID]!
+
+    joinEndsAt: DateTime
+
+    numPlayers: Int
+
+    numSpectators: Int
+    playerSet: [ID]
+
+    roundTime: Int
+
+    rounds: Int
+  }
+
+  type CreateGameMutation {
+    game: GameNode
   }
 
   input CreateGameMutationInput {
@@ -137,7 +160,7 @@ export const typeDefs = gql`
     rounds: Int!
     status: ApiGameStatusChoices!
     updatedAt: DateTime!
-    winner: UserNode!
+    winner: UserNode
   }
 
   type GameNodeConnection {
@@ -246,6 +269,7 @@ export const typeDefs = gql`
   }
 
   type Mutation {
+    createGame(input: CreateGameInput!): CreateGameMutation
     createNewGame(input: CreateGameMutationInput!): CreateNewGameMutation
     createUser(input: CreateUserMutationInput!): CreateUserMutation
     deleteRefreshTokenCookie(input: DeleteRefreshTokenCookieInput!): DeleteRefreshTokenCookiePayload
@@ -262,6 +286,7 @@ export const typeDefs = gql`
   type NewGameNode {
     genres: [ID]!
     id: ID!
+    joinEndsAt: DateTime
     numPlayers: Int!
     numSpectators: Int!
     roundTime: Int!

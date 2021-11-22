@@ -1,26 +1,25 @@
-import { BreakpointObserver } from '@angular/cdk/layout';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject, lastValueFrom, of, Subscription } from 'rxjs';
-import { finalize, mergeMap, tap } from 'rxjs/operators';
+import { lastValueFrom, of } from 'rxjs';
+import { finalize, map, mergeMap, tap } from 'rxjs/operators';
 import { AuthUser } from '../../../@types/global';
 import { AuthService } from '../../../services/auth/auth.service';
 import { FormService } from '../../../services/form/form.service';
+import { UIService } from '../../../services/ui/ui.service';
 
 @Component({
   selector: 'cah-login',
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent {
   rememberCookie = 'CAH_RM';
   showPassword = false;
   user = this.authService.decodeObject(this.cookieService.get(this.rememberCookie)) as AuthUser;
-  isMobile = new BehaviorSubject<boolean>(false);
+  isMobile$ = this.uiService.isMobile$.pipe(map((value) => (value ? 'true' : 'false')));
   showSocialAuth = false;
-  breakpointSubscription!: Subscription;
   loginSocial = this.authService.signUpSocial;
   fieldHasError = this.formService.fieldHasError;
   loginForm = this.formBuilder.group({
@@ -35,18 +34,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private formService: FormService,
     private authService: AuthService,
     private router: Router,
-    private breakpointObserver: BreakpointObserver,
+    private uiService: UIService,
   ) {}
-
-  ngOnInit(): void {
-    this.breakpointSubscription = this.breakpointObserver
-      .observe('(max-width: 576px)')
-      .subscribe(({ matches }) => this.isMobile.next(matches));
-  }
-
-  ngOnDestroy(): void {
-    this.breakpointSubscription.unsubscribe();
-  }
 
   rememberUser(credentials: AuthUser) {
     switch (credentials.remember) {

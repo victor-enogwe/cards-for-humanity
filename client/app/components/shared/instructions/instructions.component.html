@@ -1,0 +1,32 @@
+<div id="instructions" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <mat-card *ngFor="let instruction of instructions; let index=index" class="carousel-item border-0 mat-elevation-z0"
+      [ngClass]="{ active: activeIndex === index, 'd-none': activeIndex !== index}">
+      <mat-card-header class="d-flex align-items-center justify-content-center px-5 mb-2">
+        <h5 class="card-title">How To Play: <span class="text-muted">Step {{index + 1}}</span></h5>
+        <img [src]="avatars[index]?.link!| safeUrl" mat-card-avatar [alt]="avatars[index]?.name">
+      </mat-card-header>
+      <mat-card-content class="d-flex justify-content-center align-items-center mx-5 text-center alert alert-{{colors[index]}}">
+        <p class="card-text">{{instruction}}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+
+  <button class="carousel-control-prev" type="button" data-bs-target="#instructions" data-bs-slide="prev" matTooltip="prev"
+    matTooltipPosition="right" (click)="navigate('backward')">
+    <mat-icon color="primary">arrow_back_ios</mat-icon>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#instructions" data-bs-slide="next" matTooltip="next"
+    matTooltipPosition="left" (click)="navigate('forward')">
+    <mat-icon color="primary">arrow_forward_ios</mat-icon>
+  </button>
+
+  <div class="carousel-indicators position-relative">
+    <button *ngFor="let color of colors; let index=index" type="button" class="bg-{{color}}" data-bs-target="#instructions"
+      [attr.data-bs-slide-to]="index" aria-current="true" [attr.aria-label]="'Slide ' + index"
+      [ngClass]="{ active: activeIndex === index, 'bg-gradient bg-dark': activeIndex === index}"></button>
+  </div>
+
+  <cah-fab *ngIf="data?.showDialogClose" [style.bottom.px]="-50" color="primary" label="go back" mat-dialog-close icon="close"></cah-fab>
+</div>

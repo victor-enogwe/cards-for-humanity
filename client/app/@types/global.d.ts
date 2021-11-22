@@ -1,3 +1,6 @@
+import { ThemePalette } from '@angular/material/core';
+import { MatDialogConfig } from '@angular/material/dialog';
+import { TooltipPosition } from '@angular/material/tooltip';
 import { UrlTree } from '@angular/router';
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
 import { QueryInfo } from '@apollo/client/core/QueryInfo';
@@ -155,4 +158,26 @@ export interface SeoData {
 export interface ConfirmDialogData extends AnyObject {
   title: string;
   description?: string;
+}
+
+export type MatFabMenuDirection = 'top' | 'bottom' | 'left' | 'right';
+
+export type FabMenuLayout = 'flex-column' | 'flex-column-reverse' | 'flex-row' | 'flex-row-reverse';
+
+export type FabMenuLayoutDirections = { [key in MatFabMenuDirection]: FabMenuLayout };
+
+export interface MatFabMenu {
+  id: string | number;
+  icon?: string; // please use either icon or imgUrl
+  iconColor?: ThemePalette;
+  tooltip?: string;
+  tooltipPosition?: TooltipPosition;
+  color?: ThemePalette | 'success' | 'warning' | 'danger' | 'queued';
+  imgUrl?: string;
+  directives?: {
+    cahDialogComponent: {
+      component: any;
+      config: MatDialogConfig;
+    };
+  };
 }

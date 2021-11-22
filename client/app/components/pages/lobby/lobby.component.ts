@@ -12,7 +12,7 @@ import { InviteComponent } from '../../shared/invite/invite.component';
 })
 export class LobbyComponent {
   newGame$: Observable<NewGameNode> = this.route.data.pipe(map((data) => data.newGame));
-  inviteOnly: boolean = true;
+  inviteOnly!: boolean;
   inviteComponent = InviteComponent;
 
   constructor(private route: ActivatedRoute) {}

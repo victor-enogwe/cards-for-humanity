@@ -1,0 +1,12 @@
+:host {
+  bottom: 84px;
+  position: absolute;
+  right: 32px;
+  z-index: 2;
+}
+
+.is-mobile {
+  :host {
+    bottom: 25%;
+  }
+}

@@ -67,6 +67,7 @@
     "net": false
   },
   "dependencies": {
+    "@angular-material-components/datetime-picker": "7.0.0",
     "@angular/animations": "13.0.2",
     "@angular/cdk": "13.0.2",
     "@angular/common": "13.0.2",

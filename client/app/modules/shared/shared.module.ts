@@ -5,9 +5,12 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QRCodeModule } from 'angularx-qrcode';
 import { ConfirmationDialogComponent } from '../../components/shared/confirmation-dialog/confirmation-dialog.component';
+import { FabMenuComponent } from '../../components/shared/fab-menu/fab-menu.component';
+import { FabComponent } from '../../components/shared/fab/fab.component';
+import { InstructionsComponent } from '../../components/shared/instructions/instructions.component';
 import { LoadingComponent } from '../../components/shared/loading/loading.component';
 import { NavComponent } from '../../components/shared/nav/nav.component';
-import { QrCodeComponent } from '../../components/shared/qr-code/qr-code.component';
+import { QRCodeComponent } from '../../components/shared/qr-code/qr-code.component';
 import { ConfirmDialogDirective } from '../../directives/confirm-dialog/confirm-dialog.directive';
 import { DebounceClickDirective } from '../../directives/debounce-click/debounce-click.directive';
 import { DialogComponentDirective } from '../../directives/dialog-component/dialog-component.directive';
@@ -22,7 +25,10 @@ import { MaterialModule } from '../material/material.module';
     NavComponent,
     LoadingComponent,
     ConfirmationDialogComponent,
-    QrCodeComponent,
+    QRCodeComponent,
+    FabComponent,
+    FabMenuComponent,
+    InstructionsComponent,
     SafeUrlPipe,
     ConfirmDialogDirective,
     DebounceClickDirective,
@@ -42,7 +48,10 @@ import { MaterialModule } from '../material/material.module';
     NavComponent,
     LoadingComponent,
     ConfirmationDialogComponent,
-    QrCodeComponent,
+    QRCodeComponent,
+    FabComponent,
+    FabMenuComponent,
+    InstructionsComponent,
     SafeUrlPipe,
     ConfirmDialogDirective,
     DebounceClickDirective,

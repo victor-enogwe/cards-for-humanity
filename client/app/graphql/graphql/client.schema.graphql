@@ -19,6 +19,7 @@ type NewGameNode {
   numSpectators: Int!
   status: String!
   genres: [ID]!
+  joinEndsAt: DateTime
 }
 
 type CreateNewGameMutation {

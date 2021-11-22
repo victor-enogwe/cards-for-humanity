@@ -5,14 +5,13 @@ import {
   Component,
   EventEmitter,
   HostListener,
-  Inject,
   Input,
   Output,
   QueryList,
   ViewChildren,
 } from '@angular/core';
 import { Avatar } from '../../../@types/global';
-import { STATIC_URL } from '../../../modules/cah/cah.module';
+import { UIService } from '../../../services/ui/ui.service';
 
 @Component({
   selector: 'cah-avatar',
@@ -25,26 +24,9 @@ export class AvatarComponent implements AfterContentInit {
   @Output() avatarSelected: EventEmitter<Avatar> = new EventEmitter<Avatar>();
   @Input() selectedAvatar!: Avatar | undefined;
   private keyBoardEventsManager!: ActiveDescendantKeyManager<HTMLImageElement>;
-  avatars = [
-    'abby',
-    'alfred',
-    'andina',
-    'astro',
-    'camile',
-    'dorothy',
-    'dudai',
-    'eduardo',
-    'general',
-    'grace',
-    'iranir',
-    'jennifer',
-    'labrat',
-    'luther',
-    'rainbowness',
-    'shin',
-  ].map((name) => ({ name, link: `${this.staticURL}assets/img/avatars/${name}.gif` }));
+  avatars = this.uiService.avatars;
 
-  constructor(@Inject(STATIC_URL) private staticURL: string) {}
+  constructor(private uiService: UIService) {}
 
   ngAfterContentInit(): void {
     this.keyBoardEventsManager = new ActiveDescendantKeyManager(this.images).withWrap();

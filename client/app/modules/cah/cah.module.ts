@@ -31,6 +31,8 @@ import { MainContentRefService } from '../../services/main-content-ref/main-cont
 import { NonceService } from '../../services/nonce/nonce.service';
 import { NotificationService } from '../../services/notification/notification.service';
 import { SeoService } from '../../services/seo/seo.service';
+import { UIService } from '../../services/ui/ui.service';
+import { UtilsService } from '../../services/utils/utils.service';
 import { NoopStorage } from '../../utils/noop-storage';
 
 export const APP_HOST = new InjectionToken<string>('host');
@@ -75,10 +77,12 @@ const authFactory = (authService: AuthService) => () => authService.refreshToken
     AuthService,
     NotificationService,
     MainContentRefService,
+    UIService,
     DynamicOverlayService,
     LoadingOverlayService,
     CahDialogService,
     LoggerService,
+    UtilsService,
     HttpLink,
     HttpLinkService,
     BroadcastService,

@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { first, map, Observable, switchMap } from 'rxjs';
-import { CreateGameMutationInput, NewGameNode } from '../../@types/graphql';
+import { first, map, Observable } from 'rxjs';
+import { CreateGameInput, CreateGameMutationInput, NewGameNode } from '../../@types/graphql';
 import { CREATE_GAME_LOCAL_MUTATION, CREATE_GAME_MUTATION, NEW_GAME_QUERY } from '../../graphql';
-import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameService {
-  constructor(private apollo: Apollo, private authService: AuthService) {}
+  constructor(private apollo: Apollo) {}
 
   fetchGameOptions(variables: { id: string }) {
     return this.apollo.watchQuery<{ newGame: NewGameNode }>({
@@ -33,7 +32,7 @@ export class GameService {
     });
   }
 
-  createGame(game: CreateGameMutationInput) {
+  createGame(game: CreateGameInput) {
     return this.apollo.mutate({
       mutation: CREATE_GAME_MUTATION,
       variables: { input: game },
@@ -48,13 +47,9 @@ export class GameService {
   }
 
   resolve(): Observable<NewGameNode> {
-    return this.authService.username$.pipe(
-      switchMap((username) =>
-        this.fetchGameOptions({ id: username! }).valueChanges.pipe(
-          first(),
-          map(({ data }) => ({ ...data.newGame, id: username })),
-        ),
-      ),
+    return this.fetchGameOptions({ id: 'newGame' }).valueChanges.pipe(
+      first(),
+      map(({ data }) => ({ ...data.newGame, id: 'newGame' })),
     );
   }
 }

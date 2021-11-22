@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NewGameNode } from '../../../@types/graphql';
 import { APP_HOST } from '../../../modules/cah/cah.module';
 import { FormService } from '../../../services/form/form.service';
-import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'cah-invite',
@@ -14,15 +13,17 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 })
 export class InviteComponent {
   inviteForm = this.formBuilder.group({
-    players: new FormArray([this.createPlayerControl()], [Validators.maxLength(this.data.numPlayers), this.formService.duplicateValidator]),
+    players: new FormArray(
+      [this.createPlayerControl()],
+      [Validators.maxLength(this.data.game.numPlayers), this.formService.duplicateValidator],
+    ),
   });
 
   constructor(
     private formBuilder: FormBuilder,
     private formService: FormService,
     @Inject(APP_HOST) public host: string,
-    public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: NewGameNode,
+    @Inject(MAT_DIALOG_DATA) public data: { game: NewGameNode; inviteOnly: boolean },
   ) {}
 
   get playerControl(): FormArray {

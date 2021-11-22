@@ -1,10 +1,10 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
-import { BehaviorSubject } from 'rxjs';
 import { loadingAnimations, navigationAnimations } from '../../../animations';
 import { STATIC_URL } from '../../../modules/cah/cah.module';
 import { SafeUrlPipe } from '../../../pipes/safe-url/safe-url.pipe';
 import { MainContentRefService } from '../../../services/main-content-ref/main-content-ref.service';
+import { UIService } from '../../../services/ui/ui.service';
 
 @Component({
   selector: 'cah-root',
@@ -14,7 +14,7 @@ import { MainContentRefService } from '../../../services/main-content-ref/main-c
 })
 export class CahComponent implements AfterViewInit {
   @ViewChild('mainContent') mainContent!: ElementRef<HTMLBaseElement>;
-  fullWidth$ = new BehaviorSubject<boolean>(false);
+  fullWidth$ = this.uiService.fullWidth$;
   svgIcons: { [key: string]: string } = {
     cah_card: 'assets/img/card.svg',
   };
@@ -24,6 +24,7 @@ export class CahComponent implements AfterViewInit {
     private matIconRegistry: MatIconRegistry,
     private safeUrlPipe: SafeUrlPipe,
     private mainContentRefService: MainContentRefService,
+    private uiService: UIService,
   ) {
     Object.entries(this.svgIcons).forEach(([name, url]) =>
       this.matIconRegistry.addSvgIcon(name, this.safeUrlPipe.transform(`${this.staticURL}${url}`, 'iframe')),

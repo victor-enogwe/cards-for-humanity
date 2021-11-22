@@ -1,7 +1,7 @@
-import { BreakpointObserver } from '@angular/cdk/layout';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { lastValueFrom, map } from 'rxjs';
 import { AuthService } from '../../../services/auth/auth.service';
+import { UIService } from '../../../services/ui/ui.service';
 
 @Component({
   selector: 'cah-nav',
@@ -11,9 +11,9 @@ import { AuthService } from '../../../services/auth/auth.service';
 })
 export class NavComponent {
   authenticated$ = this.authService.auth$.pipe(map((auth) => (auth ? 'yes' : 'no')));
-  isMobile$ = this.breakpointObserver.observe('(min-width: 576px)').pipe(map(({ matches }) => !matches));
+  isMobile$ = this.uiService.isMobile$;
 
-  constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService) {}
+  constructor(private uiService: UIService, private authService: AuthService) {}
 
   async logout() {
     return lastValueFrom(this.authService.logOut());

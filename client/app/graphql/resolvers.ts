@@ -2,7 +2,7 @@ import { DocumentNode, InMemoryCache } from '@apollo/client/core';
 import { AnyObject } from '../@types/global';
 import { GenreNode, Resolvers } from '../@types/graphql';
 import { GENRE_NODE_FRAGMENT } from './fragments';
-import { NEW_GAME_QUERY } from './queries';
+import { FULL_WIDTH_QUERY, NEW_GAME_QUERY } from './queries';
 
 export function defaultResolver<T>(query: DocumentNode) {
   return (_root: AnyObject, args: AnyObject, { cache }: { cache: InMemoryCache; getCacheKey: Function }, info: AnyObject): T | null => {
@@ -48,6 +48,20 @@ export const resolvers: Resolvers = {
           id,
           ...(args.input as any),
         },
+      });
+    },
+    setFullWidth(_root, args, { cache }: { cache: InMemoryCache }) {
+      cache.writeQuery({
+        query: FULL_WIDTH_QUERY,
+        data: {
+          __typename: 'Boolean',
+          fullWidth: args.input.fullWidth,
+        },
+      });
+
+      return Promise.resolve({
+        __typename: 'SetFullWidthMutation',
+        fullWidth: args.input.fullWidth,
       });
     },
   },

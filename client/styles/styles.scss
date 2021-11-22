@@ -76,6 +76,7 @@ $cah: map-get($bootstrap-theme, cah);
 @import "~bootstrap/scss/navbar";
 @import "~bootstrap/scss/badge";
 @import "~bootstrap/scss/alert";
+@import "~bootstrap/scss/carousel";
 // Helpers
 @import "~bootstrap/scss/helpers";
 // Utilities
@@ -94,6 +95,10 @@ body {
   margin: 0;
   // background: url(/assets/img/cah-bg.jpg) center 50% no-repeat;
   // background: linear-gradient(180deg, #fff 69%, #000 31%);
+}
+
+.container-fluid {
+  padding: 0
 }
 
 main, router-outlet+* {
@@ -135,7 +140,7 @@ a {
 
 .mat-button-wrapper {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
 }
 
@@ -160,12 +165,6 @@ mat-paginator {
 
 mat-card-actions {
   padding: 0 8px 8px 8px !important;
-}
-
-.mat-button-wrapper {
-  align-items: center;
-  display: flex;
-  justify-content: center;
 }
 
 .mat-form-field-appearance-outline .mat-form-field-prefix,
@@ -222,6 +221,14 @@ mat-form-field[hidden] {
   top: 80%;
 }
 
+.h-30 {
+  min-height: 30% !important;
+
+  @media (max-width: 320px) {
+    min-height: 50% !important;
+  }
+}
+
 .overflow-y-scroll {
   overflow-y: scroll !important;
 }
@@ -249,105 +256,107 @@ mat-form-field[hidden] {
 .cah-content {
   height: calc(100vh - 260px);
   max-height: calc(100vh - 260px);
-}
-
-table {
-  width: 100%;
-}
-
-tbody {
-  display: block;
-  height: calc(100vh - 276px) !important;
-  max-height: calc(100vh - 276px) !important;
-  min-height: calc(100vh - 276px) !important;
-  overflow-x: hidden;
+  overflow: hidden;
   overflow-y: scroll;
 }
 
-.mat-list-item:hover {
-  border-radius: 10% 0% 0% 10% / 50% 0% 0% 50%;
-}
+// table {
+//   width: 100%;
+// }
 
-.list-item-active {
-  background: rgba(0, 0, 0, 0.1) !important;
-  border-radius: 10% 0% 0% 10% / 50% 0% 0% 50%;
-  color: mat-color($cah, primary) !important;
-  font-weight: bold;
-}
+// tbody {
+//   display: block;
+//   height: calc(100vh - 276px) !important;
+//   max-height: calc(100vh - 276px) !important;
+//   min-height: calc(100vh - 276px) !important;
+//   overflow-x: hidden;
+//   overflow-y: scroll;
+// }
+
+// .mat-list-item:hover {
+//   border-radius: 10% 0% 0% 10% / 50% 0% 0% 50%;
+// }
+
+// .list-item-active {
+//   background: rgba(0, 0, 0, 0.1) !important;
+//   border-radius: 10% 0% 0% 10% / 50% 0% 0% 50%;
+//   color: mat-color($cah, primary) !important;
+//   font-weight: bold;
+// }
 
 
-.mat-paginator-range-label {
-  margin: 0 !important;
-}
+// .mat-paginator-range-label {
+//   margin: 0 !important;
+// }
 
-.mat-header-cell,
-.mat-cell,
-.mat-footer-cell {
-  padding-right: 24px;
-  word-break: break-all;
-}
+// .mat-header-cell,
+// .mat-cell,
+// .mat-footer-cell {
+//   padding-right: 24px;
+//   word-break: break-all;
+// }
 
-.mat-row {
-  cursor: pointer;
+// .mat-row {
+//   cursor: pointer;
 
-  &:hover {
-    background-color: #eeeeee;
-  }
-}
+//   &:hover {
+//     background-color: #eeeeee;
+//   }
+// }
 
-.row-selected {
-  background-color: #eeeeee;
+// .row-selected {
+//   background-color: #eeeeee;
 
-  &:hover {
-    background-color: #dddddd !important;
-  }
-}
+//   &:hover {
+//     background-color: #dddddd !important;
+//   }
+// }
 
-@include media-breakpoint-down(md) {
-  mat-header-row {
-    display: none;
-  }
+// @include media-breakpoint-down(md) {
+//   mat-header-row {
+//     display: none;
+//   }
 
-  mat-row {
-    align-items: start;
-    flex-direction: column;
-    padding-left: 24px;
-    padding-right: 24px;
-    position: relative;
+//   mat-row {
+//     align-items: start;
+//     flex-direction: column;
+//     padding-left: 24px;
+//     padding-right: 24px;
+//     position: relative;
 
-    mat-cell {
-      &.actions {
-        padding-left: 24px;
-        position: absolute;
-        right: 0;
-      }
-    }
-  }
+//     mat-cell {
+//       &.actions {
+//         padding-left: 24px;
+//         position: absolute;
+//         right: 0;
+//       }
+//     }
+//   }
 
-  mat-row,
-  mat-footer-row {
-    min-height: auto;
-    padding-bottom: 14px;
-    padding-top: 14px;
-  }
+//   mat-row,
+//   mat-footer-row {
+//     min-height: auto;
+//     padding-bottom: 14px;
+//     padding-top: 14px;
+//   }
 
-  mat-cell:first-of-type,
-  mat-header-cell:first-of-type,
-  mat-footer-cell:first-of-type {
-    padding-left: 0 !important;
-  }
+//   mat-cell:first-of-type,
+//   mat-header-cell:first-of-type,
+//   mat-footer-cell:first-of-type {
+//     padding-left: 0 !important;
+//   }
 
-  .mat-card-title {
-    font-size: 14px;
-  }
+//   .mat-card-title {
+//     font-size: 14px;
+//   }
 
-  .title {
-    line-height: 1;
-  }
+//   .title {
+//     line-height: 1;
+//   }
 
-  tbody {
-    height: calc(100vh - 276px) !important;
-    max-height: calc(100vh - 276px) !important;
-    min-height: calc(100vh - 276px) !important;
-  }
-}
+//   tbody {
+//     height: calc(100vh - 276px) !important;
+//     max-height: calc(100vh - 276px) !important;
+//     min-height: calc(100vh - 276px) !important;
+//   }
+// }

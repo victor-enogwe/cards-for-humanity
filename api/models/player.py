@@ -1,10 +1,18 @@
 from django.db import models
-from pgtrigger import F, Protect, Q, Update, register
+from pgtrigger import F, Insert, Protect, Q, Update, register
 
 from api.models.timestamp import TimestampBase
+from api.utils.enums import Avatars
 from config.settings import AUTH_USER_MODEL
 
 
+@register(Protect(
+    name='protect_players_creation',
+    operation=Insert,
+    condition=(
+        Q(models.Count('old__game__player_set') == F('new__game__num_players'))
+    )
+))
 @register(Protect(
     name="protect_fields_player",
     operation=Update,
@@ -19,6 +27,11 @@ class Player(TimestampBase):
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
     score = models.PositiveSmallIntegerField(default=0)
     czar = models.BooleanField(default=False)
+    spectator = models.BooleanField(default=False)
+    avatar = models.CharField(
+        max_length=20,
+        choices=Avatars.choices,
+    )
     objects = models.Manager()
 
     class Meta:

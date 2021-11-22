@@ -1,6 +1,7 @@
 from django.core.validators import MinValueValidator
 from django.db import models
 from pgtrigger import Delete, F, Protect, Q, Update, register
+from pgtrigger.core import FSM
 
 from api.models.timestamp import TimestampBase
 from api.utils.enums import GameStatus
@@ -15,12 +16,23 @@ from config.settings import AUTH_USER_MODEL
     operation=Update,
     condition=(
         Q(old__created_at__df=F('new__created_at')) |
-        Q(old__creator__df=F('new__creator')) |
+        Q(old__creator_id__df=F('new__creator_id')) |
         Q(old__round_time__df=F('new__round_time')) |
         Q(old__rounds__df=F('new__rounds')) |
         Q(old__num_players__df=F('new__num_players')) |
         Q(old__num_spectators__df=F('new__num_spectators')) |
-        Q(old__winner__df=F('new__winner'))
+        Q(old__winner_id__isnull=False)
+    )
+))
+@register(FSM(
+    name='validate_game_status_transitions',
+    field='status',
+    transitions=(
+        (GameStatus.GAP, GameStatus.GS),
+        (GameStatus.GAP, GameStatus.GC),
+        (GameStatus.GAC, GameStatus.GAA),
+        (GameStatus.GAA, GameStatus.GAC),
+        (GameStatus.GAA, GameStatus.GE)
     )
 ))
 class Game(TimestampBase):
@@ -67,7 +79,8 @@ class Game(TimestampBase):
         AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="winners",
-        blank=True
+        blank=True,
+        null=True
     )
     objects = models.Manager()
 

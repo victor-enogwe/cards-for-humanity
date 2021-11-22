@@ -48,3 +48,5 @@ class EmailModelBackend(ModelBackend):
             raise GraphQLError(
                 GraphQLErrors.USER_SIGNIN__INVALID_CREDENTIALS
             )
+        except Exception as error:
+            raise GraphQLError(error)

@@ -44,10 +44,14 @@ export enum ApiBlackCardRatingChoices {
 
 /** An enumeration. */
 export enum ApiGameStatusChoices {
+  /** Gaa */
+  AWAITING_ANSWERS = 'AWAITING_ANSWERS',
   /** Gac */
   AWAITING_CZAR = 'AWAITING_CZAR',
   /** Gap */
   AWAITING_PLAYERS = 'AWAITING_PLAYERS',
+  /** Gc */
+  GAME_CANCELED = 'GAME_CANCELED',
   /** Ge */
   GAME_ENDED = 'GAME_ENDED',
   /** Gs */
@@ -90,6 +94,26 @@ export interface BlackCardNodeEdge {
   readonly cursor: Scalars['String'];
   /** The item at the end of the edge */
   readonly node?: Maybe<BlackCardNode>;
+}
+
+export interface CreateGameInput {
+  readonly genres: ReadonlyArray<InputMaybe<Scalars['ID']>>;
+  /** seconds */
+  readonly joinEndsAt?: InputMaybe<Scalars['DateTime']>;
+  /** no of players */
+  readonly numPlayers?: InputMaybe<Scalars['Int']>;
+  /** no of spectators */
+  readonly numSpectators?: InputMaybe<Scalars['Int']>;
+  readonly playerSet?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
+  /** seconds */
+  readonly roundTime?: InputMaybe<Scalars['Int']>;
+  /** no of game rounds */
+  readonly rounds?: InputMaybe<Scalars['Int']>;
+}
+
+export interface CreateGameMutation {
+  readonly __typename?: 'CreateGameMutation';
+  readonly game?: Maybe<GameNode>;
 }
 
 export interface CreateGameMutationInput {
@@ -146,7 +170,7 @@ export interface GameNode extends Node {
   readonly rounds: Scalars['Int'];
   readonly status: ApiGameStatusChoices;
   readonly updatedAt: Scalars['DateTime'];
-  readonly winner: UserNode;
+  readonly winner?: Maybe<UserNode>;
 }
 
 export interface GameNodeGenresArgs {
@@ -304,6 +328,7 @@ export interface JoinGameSubscription {
 /** Root Mutation for the cards against humanity api. */
 export interface Mutation {
   readonly __typename?: 'Mutation';
+  readonly createGame?: Maybe<CreateGameMutation>;
   readonly createNewGame?: Maybe<CreateNewGameMutation>;
   readonly createUser?: Maybe<CreateUserMutation>;
   readonly deleteRefreshTokenCookie?: Maybe<DeleteRefreshTokenCookiePayload>;
@@ -315,6 +340,11 @@ export interface Mutation {
   readonly socialAuth?: Maybe<SocialAuthJwtPayload>;
   readonly tokenAuth?: Maybe<ObtainJsonWebTokenMutationPayload>;
   readonly updateGameStatus?: Maybe<UpdateGameStatusMutation>;
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationCreateGameArgs {
+  input: CreateGameInput;
 }
 
 /** Root Mutation for the cards against humanity api. */
@@ -372,6 +402,7 @@ export interface NewGameNode {
   readonly __typename?: 'NewGameNode';
   readonly genres: ReadonlyArray<Maybe<Scalars['ID']>>;
   readonly id: Scalars['ID'];
+  readonly joinEndsAt?: Maybe<Scalars['DateTime']>;
   readonly numPlayers: Scalars['Int'];
   readonly numSpectators: Scalars['Int'];
   readonly roundTime: Scalars['Int'];
@@ -804,6 +835,10 @@ export type BlackCardNodeEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CreateGameMutationKeySpecifier = ('game' | CreateGameMutationKeySpecifier)[];
+export type CreateGameMutationFieldPolicy = {
+  game?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CreateNewGameMutationKeySpecifier = ('newGame' | CreateNewGameMutationKeySpecifier)[];
 export type CreateNewGameMutationFieldPolicy = {
   newGame?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -908,6 +943,7 @@ export type JoinGameSubscriptionFieldPolicy = {
   event?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MutationKeySpecifier = (
+  | 'createGame'
   | 'createNewGame'
   | 'createUser'
   | 'deleteRefreshTokenCookie'
@@ -921,6 +957,7 @@ export type MutationKeySpecifier = (
   | MutationKeySpecifier
 )[];
 export type MutationFieldPolicy = {
+  createGame?: FieldPolicy<any> | FieldReadFunction<any>;
   createNewGame?: FieldPolicy<any> | FieldReadFunction<any>;
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteRefreshTokenCookie?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -935,6 +972,7 @@ export type MutationFieldPolicy = {
 export type NewGameNodeKeySpecifier = (
   | 'genres'
   | 'id'
+  | 'joinEndsAt'
   | 'numPlayers'
   | 'numSpectators'
   | 'roundTime'
@@ -945,6 +983,7 @@ export type NewGameNodeKeySpecifier = (
 export type NewGameNodeFieldPolicy = {
   genres?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  joinEndsAt?: FieldPolicy<any> | FieldReadFunction<any>;
   numPlayers?: FieldPolicy<any> | FieldReadFunction<any>;
   numSpectators?: FieldPolicy<any> | FieldReadFunction<any>;
   roundTime?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1145,6 +1184,10 @@ export type StrictTypedTypePolicies = {
   BlackCardNodeEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | BlackCardNodeEdgeKeySpecifier | (() => undefined | BlackCardNodeEdgeKeySpecifier);
     fields?: BlackCardNodeEdgeFieldPolicy;
+  };
+  CreateGameMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateGameMutationKeySpecifier | (() => undefined | CreateGameMutationKeySpecifier);
+    fields?: CreateGameMutationFieldPolicy;
   };
   CreateNewGameMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateNewGameMutationKeySpecifier | (() => undefined | CreateNewGameMutationKeySpecifier);
@@ -1385,6 +1428,8 @@ export type ResolversTypes = ResolversObject<{
   BlackCardNodeConnection: ResolverTypeWrapper<BlackCardNodeConnection>;
   BlackCardNodeEdge: ResolverTypeWrapper<BlackCardNodeEdge>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  CreateGameInput: CreateGameInput;
+  CreateGameMutation: ResolverTypeWrapper<CreateGameMutation>;
   CreateGameMutationInput: CreateGameMutationInput;
   CreateNewGameMutation: ResolverTypeWrapper<CreateNewGameMutation>;
   CreateUserMutation: ResolverTypeWrapper<CreateUserMutation>;
@@ -1453,6 +1498,8 @@ export type ResolversParentTypes = ResolversObject<{
   BlackCardNodeConnection: BlackCardNodeConnection;
   BlackCardNodeEdge: BlackCardNodeEdge;
   Boolean: Scalars['Boolean'];
+  CreateGameInput: CreateGameInput;
+  CreateGameMutation: CreateGameMutation;
   CreateGameMutationInput: CreateGameMutationInput;
   CreateNewGameMutation: CreateNewGameMutation;
   CreateUserMutation: CreateUserMutation;
@@ -1549,6 +1596,14 @@ export type BlackCardNodeEdgeResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type CreateGameMutationResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['CreateGameMutation'] = ResolversParentTypes['CreateGameMutation'],
+> = ResolversObject<{
+  game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type CreateNewGameMutationResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['CreateNewGameMutation'] = ResolversParentTypes['CreateNewGameMutation'],
@@ -1594,7 +1649,7 @@ export type GameNodeResolvers<
   rounds?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['ApiGameStatusChoices'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  winner?: Resolver<ResolversTypes['UserNode'], ParentType, ContextType>;
+  winner?: Resolver<Maybe<ResolversTypes['UserNode']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -1698,6 +1753,12 @@ export type MutationResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation'],
 > = ResolversObject<{
+  createGame?: Resolver<
+    Maybe<ResolversTypes['CreateGameMutation']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateGameArgs, 'input'>
+  >;
   createNewGame?: Resolver<
     Maybe<ResolversTypes['CreateNewGameMutation']>,
     ParentType,
@@ -1761,6 +1822,7 @@ export type NewGameNodeResolvers<
 > = ResolversObject<{
   genres?: Resolver<ReadonlyArray<Maybe<ResolversTypes['ID']>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  joinEndsAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   numPlayers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   numSpectators?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   roundTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -2032,6 +2094,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   BlackCardNode?: BlackCardNodeResolvers<ContextType>;
   BlackCardNodeConnection?: BlackCardNodeConnectionResolvers<ContextType>;
   BlackCardNodeEdge?: BlackCardNodeEdgeResolvers<ContextType>;
+  CreateGameMutation?: CreateGameMutationResolvers<ContextType>;
   CreateNewGameMutation?: CreateNewGameMutationResolvers<ContextType>;
   CreateUserMutation?: CreateUserMutationResolvers<ContextType>;
   DateTime?: GraphQLScalarType;

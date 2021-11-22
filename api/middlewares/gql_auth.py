@@ -10,6 +10,7 @@ class AuthorizationMiddleware(object):
         'blackCards',
         'whoami',
         'users',
+        'createGame',
         'joinGame',
     ]
 

@@ -1,24 +1,23 @@
-import { BreakpointObserver } from '@angular/cdk/layout';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { BehaviorSubject, of, Subscription } from 'rxjs';
-import { catchError, mergeMap, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth/auth.service';
 import { FormService } from '../../../services/form/form.service';
+import { UIService } from '../../../services/ui/ui.service';
 
 @Component({
   selector: 'cah-register',
   templateUrl: './register.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegisterComponent implements OnInit, OnDestroy {
+export class RegisterComponent {
   signUpSocial = this.authService.signUpSocial;
   showPassword = false;
   showRepeatPassword = false;
-  isMobile = new BehaviorSubject<boolean>(false);
+  isMobile$ = this.uiService.isMobile$.pipe(map((value) => (value ? 'true' : 'false')));
   showSocialAuth = false;
-  breakpointSubscription!: Subscription;
   registerForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
     password: [
@@ -41,18 +40,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private formService: FormService,
     private authService: AuthService,
     private router: Router,
-    private breakpointObserver: BreakpointObserver,
+    private uiService: UIService,
   ) {}
-
-  ngOnInit(): void {
-    this.breakpointSubscription = this.breakpointObserver
-      .observe('(max-width: 576px)')
-      .subscribe(({ matches }) => this.isMobile.next(matches));
-  }
-
-  ngOnDestroy(): void {
-    this.breakpointSubscription.unsubscribe();
-  }
 
   signUpManual(event: any, form: FormGroup) {
     const user = form.value;

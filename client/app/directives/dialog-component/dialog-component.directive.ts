@@ -22,6 +22,7 @@ export class DialogComponentDirective {
   async clickEvent(event: MouseEvent): Promise<void> {
     event.preventDefault();
     event.stopPropagation();
+    if (!this.component) return;
     const mainContentRefService: MainContentRefService = get(this.component, 'mainContentRefService', this.mainContentRefService);
     const elementRef: ElementRef = get(this.component, 'viewContainerRef', mainContentRefService.ref);
     mainContentRefService.mainContentRef(elementRef);

@@ -1,0 +1,16 @@
+<div class="d-flex {{layout}} flex-grow-1 align-items-center justify-content-center gy-3">
+  <div fxLayoutAlign=" center">
+    <button (click)="isActive = !isActive" [color]="color" [disabled]="disabled"
+      [ngClass]="{ 'mat-fab' : !isActive, 'mat-mini-fab' : isActive }" mat-fab>
+      <mat-icon [@fabToggler]="{value: isActive}">{{icon}}</mat-icon>
+    </button>
+  </div>
+  <div *ngIf="isActive" [@fabStagger]="fabButtons.length" class="d-flex {{layout}} align-items-center justify-content-center my-2">
+    <button *ngFor=" let fab of fabButtons" (click)="selectFabMenu(fab)" [color]="fab?.color" [matTooltip]="fab?.tooltip!"
+      [matTooltipPosition]="fab?.tooltipPosition!" [ngClass]="{'fullSVG' : fab?.imgUrl, 'my-3': true }" mat-fab cahDialogComponent
+      [config]="fab.directives?.cahDialogComponent?.config!" [component]="fab?.directives?.cahDialogComponent?.component">
+      <mat-icon *ngIf="fab?.icon" [color]="fab?.iconColor">{{fab?.icon}}</mat-icon>
+      <img *ngIf="fab?.imgUrl" [src]="fab?.imgUrl" alt="icon">
+    </button>
+  </div>
+</div>
