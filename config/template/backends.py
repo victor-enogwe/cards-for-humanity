@@ -45,7 +45,6 @@ class AngularTemplate:
             js_render.stdout.decode(encoding='UTF-8'))
         html = sub(r"(<script)|(<style)",
                    self.format(request), html, 0, IGNORECASE)
-        print(html)
         self.template.source = """
         {load}
         {html}
@@ -68,7 +67,6 @@ class AngularTemplate:
             context['request'] = request
             context['csrf_input'] = csrf_input_lazy(request)
             context['csrf_token'] = csrf_token_lazy(request)
-        print(context)
         context = make_context(
             context, request, autoescape=self.backend.engine.autoescape)
 

@@ -2,6 +2,17 @@
 
 from django.utils.translation import gettext_lazy as _
 
+auth_fields = [
+    'genres',
+    'game',
+    'whiteCards',
+    'blackCards',
+    'whoami',
+    'users',
+    'createGame',
+    'joinGame',
+]
+
 password_error_message = _(
     "password must have a minimum of 8 characters\n"
     "password must have a maximum of 30 characters\n"

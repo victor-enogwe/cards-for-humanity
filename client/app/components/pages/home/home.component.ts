@@ -23,10 +23,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     },
     {
       id: 'show_instructions',
-      icon: 'help_center',
+      icon: 'quiz',
       tooltip: 'How To Play',
       tooltipPosition: 'left',
-      color: 'queued',
+      color: 'accent',
       directives: {
         cahDialogComponent: {
           component: InstructionsComponent,

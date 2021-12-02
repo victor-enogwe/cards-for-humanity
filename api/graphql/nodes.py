@@ -62,9 +62,19 @@ class BlackCardNode(DjangoObjectType):
 
 class JWTPayloadNode(graphene.ObjectType):
     username = graphene.String()
+    iss = graphene.String()
     sub = graphene.Int()
-    sub_name = graphene.String()
+    aud = graphene.String()
     exp = graphene.Int()
+    nbf = graphene.Int()
+    iat = graphene.Int()
+    jti = graphene.String()
+    username = graphene.String()
+    provider = graphene.String()
+    name = graphene.String()
+    email = graphene.String()
+    email_verified = graphene.Boolean()
+    name = graphene.String()
 
 
 class UserNode(DjangoObjectType):

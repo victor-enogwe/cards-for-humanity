@@ -4,10 +4,6 @@ import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class LoggerService {
-  log = console.log;
-
-  constructor() {}
-
   getMessage(error: Error): string {
     const matches = get(error, 'message', '').match(/".+"/);
     return get(matches, '0', error?.message)
@@ -23,7 +19,6 @@ export class LoggerService {
     // Use external logging service
     if (!environment.production) {
       if (error.stack) {
-        // console.log(error.name, error.stack);
       }
     }
   }

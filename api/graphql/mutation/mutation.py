@@ -1,6 +1,5 @@
 from graphene.types.objecttype import ObjectType
 from graphql_jwt.relay import DeleteRefreshTokenCookie as DeleteRefreshTokenCookieMutation
-from graphql_jwt.relay import Refresh as RefreshTokenMutation
 from graphql_jwt.relay import Revoke as RevokeRefreshTokenMutation
 from graphql_social_auth.relay import SocialAuthJWT as SocialAuthJWTMutation
 
@@ -8,6 +7,7 @@ from api.graphql.mutation.create_game import CreateGameMutation
 from api.graphql.mutation.create_user import CreateUserMutation
 from api.graphql.mutation.join_game import JoinGameMutation
 from api.graphql.mutation.obtain_jwt import ObtainJSONWebTokenMutation
+from api.graphql.mutation.refresh_token import RefreshTokenMutation
 from api.graphql.mutation.update_game_status import UpdateGameStatusMutation
 
 

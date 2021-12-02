@@ -6,6 +6,7 @@ import { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
 import { QueryInfo } from '@apollo/client/core/QueryInfo';
 import { TIncomingRelay as TIncoming } from '@apollo/client/utilities/policies/pagination';
 import { Observable } from 'rxjs';
+import { ApiPlayerAvatarChoices } from './graphql';
 
 declare global {
   interface Window {
@@ -19,7 +20,7 @@ export interface AnyObject<V = any> {
 }
 
 export interface Avatar {
-  name: string;
+  name: keyof typeof ApiPlayerAvatarChoices;
   link: string;
 }
 
@@ -181,3 +182,8 @@ export interface MatFabMenu {
     };
   };
 }
+
+export type PlayType = 'create' | 'join';
+
+// TODO: use more specific type if https://github.com/microsoft/TypeScript/issues/41160 lands
+export type RGBAColor = `#${string}`;

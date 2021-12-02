@@ -37,3 +37,6 @@ class UserManager(models.Manager):
     def create_superuser(self, email: str = None, password: str = None, **extra_fields):
         extra_fields = self.set_extras(True, **extra_fields)
         self.create_user_base(email, password, **extra_fields)
+
+    def get_by_natural_key(self, username):
+        return self.get(**{self.model.USERNAME_FIELD: username})

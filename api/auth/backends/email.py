@@ -16,10 +16,9 @@ class EmailModelBackend(ModelBackend):
     def authenticate(self, request: HttpRequest, username: str = None, password: str = None, **kwargs):
         email = username
         if email is None:
-            email = kwargs.get('email')
+            email = kwargs.get('email') or kwargs.get('input')['username']
         if password is None:
             password = kwargs.get(Password.PASSWORD_FIELD)
-        print(email, username, password, kwargs)
 
         if email is None or password is None:
             raise GraphQLError(GraphQLErrors.USER_SIGNIN__INVALID_CREDENTIALS)

@@ -25,10 +25,17 @@ $cah: map-get($bootstrap-theme, cah);
   .color-#{$color} {
     background-color: mat-color($cah, $color) !important;
     color: mat-color($cah, $color + -contrast) !important;
+    border-color: mat-color($cah, $color) !important;
 
-    &.mat-icon {
+    &[class^="mat-"] {
       background-color: inherit !important;
       color: mat-color($cah, $color) !important;
+      svg {
+        fill: mat-color($cah, $color) !important;
+        path {
+          stroke: mat-color($cah, $color) !important;
+        }
+      }
     }
   }
 }
@@ -38,16 +45,9 @@ $cah: map-get($bootstrap-theme, cah);
   position: relative;
   flex-direction: column;
   flex-grow: 1;
-  height: calc(100vh - 64px) !important;
-  max-height: calc(100vh - 64px) !important;
-  min-height: calc(100vh - 64px) !important;
+  flex: 1 1 auto;
   overflow: hidden;
-
   overflow-y: scroll;
-
-  @include media-breakpoint-down(sm) {
-    height: calc(100vh - 56px);
-  }
 }
 
 @include cah-color(pending);
@@ -254,10 +254,23 @@ mat-form-field[hidden] {
 }
 
 .cah-content {
-  height: calc(100vh - 260px);
-  max-height: calc(100vh - 260px);
+  height: calc(100vh - 180px);
+  max-height: calc(100vh - 180px);
   overflow: hidden;
   overflow-y: scroll;
+}
+
+.mat-step-label {
+  align-items: center;
+  justify-content: center;
+}
+
+.mat-horizontal-content-container, .mat-horizontal-stepper-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  flex-grow: 1;
+  justify-content: space-between;
 }
 
 // table {

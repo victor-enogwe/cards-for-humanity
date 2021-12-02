@@ -1,11 +1,11 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Inject, Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { TIncomingRelay } from 'client/app/@types/global';
-import { FULL_WIDTH_QUERY, SET_FULL_WIDTH_MUTATION } from 'client/app/graphql';
-import { STATIC_URL } from 'client/app/modules/cah/cah.module';
 import { map } from 'rxjs';
+import { Avatar, TIncomingRelay } from '../../@types/global';
 import { Mutation, SetFullWidthMutationInput } from '../../@types/graphql';
+import { FULL_WIDTH_QUERY, SET_FULL_WIDTH_MUTATION } from '../../graphql';
+import { STATIC_URL } from '../../modules/cah/cah.module';
 
 @Injectable({
   providedIn: 'root',
@@ -13,24 +13,25 @@ import { Mutation, SetFullWidthMutationInput } from '../../@types/graphql';
 export class UIService {
   isMobile$ = this.breakpointObserver.observe('(max-width: 576px)').pipe(map(({ matches }) => matches));
   fullWidth$ = this.getFulWidth().valueChanges.pipe(map(({ data: { fullWidth } }) => fullWidth));
-  avatars = [
-    'abby',
-    'alfred',
-    'andina',
-    'astro',
-    'camile',
-    'dorothy',
-    'dudai',
-    'eduardo',
-    'general',
-    'grace',
-    'iranir',
-    'jennifer',
-    'labrat',
-    'luther',
-    'rainbowness',
-    'shin',
-  ].map((name) => ({ name, link: `${this.staticURL}assets/img/avatars/${name}.gif` }));
+  avatarNames: Avatar['name'][] = [
+    'ABBY',
+    'ALFRED',
+    'ANDINA',
+    'ASTRO',
+    'CAMILE',
+    'DOROTHY',
+    'DUDAI',
+    'EDUARDO',
+    'GENERAL',
+    'GRACE',
+    'IRANIR',
+    'JENNIFER',
+    'LABRAT',
+    'LUTHER',
+    'RAINBOWNESS',
+    'SHIN',
+  ];
+  avatars: Avatar[] = this.avatarNames.map((name) => ({ name, link: `${this.staticURL}assets/img/avatars/${name.toLowerCase()}.gif` }));
 
   constructor(private breakpointObserver: BreakpointObserver, private apollo: Apollo, @Inject(STATIC_URL) private staticURL: string) {}
 

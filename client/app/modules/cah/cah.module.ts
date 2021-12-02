@@ -1,6 +1,6 @@
 import { APP_BASE_HREF, DOCUMENT, isPlatformServer } from '@angular/common';
 import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { APP_BOOTSTRAP_LISTENER, APP_ID, APP_INITIALIZER, ErrorHandler, InjectionToken, NgModule, PLATFORM_ID } from '@angular/core';
+import { APP_ID, APP_INITIALIZER, ErrorHandler, InjectionToken, NgModule, PLATFORM_ID } from '@angular/core';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -13,6 +13,7 @@ import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } f
 import { APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { CookieService } from 'ngx-cookie-service';
+import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CahComponent } from '../../components/shared/cah/cah.component';
 import { GlobalErrorInterceptor } from '../../interceptors/global-error/global-error';
@@ -20,7 +21,6 @@ import { HttpErrorInterceptor } from '../../interceptors/http-error/http.error.i
 import { CahRoutingModule } from '../../modules/routing/routing.module';
 import { SharedModule } from '../../modules/shared/shared.module';
 import { AuthService } from '../../services/auth/auth.service';
-import { BroadcastService } from '../../services/broadcast/broadcast.service';
 import { CahDialogService } from '../../services/cah-dialog/cah-dialog.service';
 import { DynamicOverlayService } from '../../services/dynamic-overlay/dynamic-overlay.service';
 import { GraphqlService } from '../../services/graphql/graphql.service';
@@ -33,6 +33,7 @@ import { NotificationService } from '../../services/notification/notification.se
 import { SeoService } from '../../services/seo/seo.service';
 import { UIService } from '../../services/ui/ui.service';
 import { UtilsService } from '../../services/utils/utils.service';
+import { Crypt } from '../../utils/crypt';
 import { NoopStorage } from '../../utils/noop-storage';
 
 export const APP_HOST = new InjectionToken<string>('host');
@@ -40,15 +41,16 @@ export const STATIC_URL = new InjectionToken<string>('static_path');
 export const SOCIAL_AUTH_CONFIG = new InjectionToken<SocialAuthServiceConfig>('SocialAuthServiceConfig.config');
 export const STORAGE_CONFIG_TOKEN = new InjectionToken<StorageConfig>('Storage.config');
 export const CSP_NONCE_META = new InjectionToken<string>('cspMetaSelector');
+export const CRYPT = new InjectionToken<Crypt>('crypt');
+export const AUTH_TOKEN$ = new InjectionToken<BehaviorSubject<string | null>>('auth_token$');
 
 const hostFactory = (document: Document) => document.location.origin;
 const staticURLFactory = (host: string, platformId: Object) => `${host}/${isPlatformServer(platformId) ? 'static/browser' : ''}`;
 const seoFactory = (seoService: SeoService) => seoService.start.bind(seoService);
-const broadcastChannelFactory = (broadcastService: BroadcastService) => () => broadcastService.createChannel();
 const cacheFactory = (gqlService: GraphqlService, router: Router) => () => gqlService.initCache().then(() => router.initialNavigation());
 const storageFactory = (config: StorageConfig, pId: Object) => (isPlatformServer(pId) ? new NoopStorage() : new Storage(config));
-const leaderElectorFactory = (broadcastService: BroadcastService) => () => broadcastService.electLeader();
 const authFactory = (authService: AuthService) => () => authService.refreshTokenFactory();
+const cryptrFactory = (host: string) => new Crypt(host);
 
 @NgModule({
   declarations: [CahComponent],
@@ -72,9 +74,10 @@ const authFactory = (authService: AuthService) => () => authService.refreshToken
   ],
   providers: [
     SeoService,
+    HttpLink,
+    HttpLinkService,
     GraphqlService,
     CookieService,
-    AuthService,
     NotificationService,
     MainContentRefService,
     UIService,
@@ -83,9 +86,7 @@ const authFactory = (authService: AuthService) => () => authService.refreshToken
     CahDialogService,
     LoggerService,
     UtilsService,
-    HttpLink,
-    HttpLinkService,
-    BroadcastService,
+    AuthService,
     {
       provide: STORAGE_CONFIG_TOKEN,
       useValue: {
@@ -122,11 +123,11 @@ const authFactory = (authService: AuthService) => () => authService.refreshToken
     { provide: APP_ID, useValue: 'cah' },
     { provide: APP_HOST, useFactory: hostFactory, deps: [DOCUMENT] },
     { provide: STATIC_URL, useFactory: staticURLFactory, deps: [APP_HOST, PLATFORM_ID] },
-    { provide: APP_INITIALIZER, useFactory: broadcastChannelFactory, multi: true, deps: [BroadcastService] },
     { provide: APP_INITIALIZER, useFactory: authFactory, multi: true, deps: [AuthService] },
     { provide: APP_INITIALIZER, useFactory: cacheFactory, multi: true, deps: [GraphqlService, Router] },
     { provide: APP_INITIALIZER, useFactory: seoFactory, multi: true, deps: [SeoService] },
-    { provide: APP_BOOTSTRAP_LISTENER, useFactory: leaderElectorFactory, multi: true, deps: [BroadcastService] },
+    { provide: CRYPT, useFactory: cryptrFactory, deps: [APP_HOST] },
+    { provide: AUTH_TOKEN$, useValue: new BehaviorSubject<string | null>(null) },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
     { provide: ErrorHandler, useClass: GlobalErrorInterceptor },

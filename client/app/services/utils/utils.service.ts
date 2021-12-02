@@ -1,9 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
+import { AnyObject } from '../../@types/global';
+import { CRYPT } from '../../modules/cah/cah.module';
+import { Crypt } from '../../utils/crypt';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UtilsService {
+  constructor(@Inject(CRYPT) private readonly crypt: Crypt) {}
+
   randomNumberFromInterval({ min, max }: { min: number; max: number }): number {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
@@ -37,5 +42,32 @@ export class UtilsService {
     const counter = () => (count === ceiling ? floor : (count += increment));
 
     return counter;
+  }
+
+  isJSON(value: any): boolean {
+    try {
+      return Boolean(JSON.parse(value));
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async encode(item: string | AnyObject, count: number = 1): Promise<string> {
+    const value = typeof item === 'object' ? JSON.stringify(item) : item;
+    if (count < 1) return value;
+    const encrypted = await this.crypt.encrypt(value);
+    return this.encode(encrypted, count - 1);
+  }
+
+  async decode<T>(item: string | null, count: number = 1): Promise<T | AnyObject | null> {
+    try {
+      if (!item) throw new Error('item must be a string');
+      const decoded = await this.crypt.decrypt(item);
+      const value = this.isJSON(decoded) ? JSON.parse(decoded) : decoded;
+      if (count < 2) return value;
+      return this.decode(decoded, count - 1);
+    } catch (error) {
+      return null;
+    }
   }
 }

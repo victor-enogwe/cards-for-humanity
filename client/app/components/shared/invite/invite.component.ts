@@ -42,9 +42,7 @@ export class InviteComponent {
     this.playerControl.removeAt(position);
   }
 
-  invitePlayers({ players }: { players: string[] }) {
-    console.log(players);
-  }
+  invitePlayers({ players }: { players: string[] }) {}
 
   hasDuplicate(items: unknown[], value: unknown) {
     return items.filter((item) => item === value).length > 1;

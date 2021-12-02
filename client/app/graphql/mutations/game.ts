@@ -4,7 +4,7 @@ import { GAME_NODE_FRAGMENT, NEW_GAME_NODE_FRAGMENT } from '../fragments';
 export const CREATE_GAME_MUTATION = gql`
   ${GAME_NODE_FRAGMENT}
 
-  mutation CreateGame($input: CreateGameMutationInput!) {
+  mutation CreateGame($input: CreateGameInput!) {
     createGame(input: $input) {
       game {
         ...GameNode

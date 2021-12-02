@@ -6,13 +6,13 @@ from api.utils.enums import Avatars
 from config.settings import AUTH_USER_MODEL
 
 
-@register(Protect(
-    name='protect_players_creation',
-    operation=Insert,
-    condition=(
-        Q(models.Count('old__game__player_set') == F('new__game__num_players'))
-    )
-))
+# @register(Protect(
+#     name='protect_players_creation',
+#     operation=Insert,
+#     condition=(
+#         Q(models.Count('old__game__player_set') = F('new__game__num_players'))
+#     )
+# ))
 @register(Protect(
     name="protect_fields_player",
     operation=Update,
@@ -31,6 +31,7 @@ class Player(TimestampBase):
     avatar = models.CharField(
         max_length=20,
         choices=Avatars.choices,
+        default=Avatars.DOROTHY
     )
     objects = models.Manager()
 

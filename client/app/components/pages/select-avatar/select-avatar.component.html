@@ -1,0 +1,28 @@
+<mat-stepper linear aria-label="game avatars" class="d-flex flex-column flex-fill">
+  <mat-step state="smart_toy" aria-label="select an avatar">
+    <ng-template matStepLabel>Select Your Avatar</ng-template>
+    <ng-template matStepContent>
+      <cah-avatar (avatarSelected)="selectAvatar($event)" [selectedAvatar]="avatar ?? route.snapshot.data?.newGame.avatar"></cah-avatar>
+
+      <div class="btn-toolbar" role="toolbar" aria-label="game options navigation buttons">
+        <div class="btn-group btn-group-lg flex-fill" role="group" aria-label="reset button">
+          <button mat-icon-button aria-label="reset steps" matTooltip="reset" matTooltipPosition="right" cahDebounceClick
+            (debounceClick)="avatar=undefined">
+            <mat-icon>settings_backup_restore</mat-icon>
+          </button>
+        </div>
+
+        <div class="btn-group btn-group-lg flex-fill justify-content-between" role="group" aria-label="next button">
+          <button mat-icon-button flexFill aria-label="previous step" matTooltip="Back" matTooltipPosition="right" [routerLink]="['/play']">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+
+          <button matTooltip="Next" matTooltipPosition="left" mat-icon-button flexFill matStepperNext [disabled]="!avatar"
+            [routerLink]="['/play', playType + '-game']" [state]="{ avatar }">
+            <mat-icon aria-hidden="false" aria-label="next step">arrow_forward</mat-icon>
+          </button>
+        </div>
+      </div>
+    </ng-template>
+  </mat-step>
+</mat-stepper>

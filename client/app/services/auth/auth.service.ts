@@ -1,4 +1,4 @@
-import { Inject, Injectable, NgZone } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { FetchResult } from '@apollo/client/core';
 import {
@@ -13,28 +13,29 @@ import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject, lastValueFrom, Observable, of } from 'rxjs';
 import { tap } from 'rxjs/internal/operators/tap';
 import { catchError, first, map, mergeMap, switchMap } from 'rxjs/operators';
-import { BroadCast, SignUpData } from '../../@types/global';
+import { AuthUser, SignUpData } from '../../@types/global';
 import {
   DeleteRefreshTokenCookieInput,
   Mutation,
   ObtainJsonWebTokenMutationInput,
   ObtainJsonWebTokenMutationPayload,
-  RefreshInput,
-  RefreshPayload,
+  RefreshTokenMutationInput,
+  RefreshTokenMutationPayload,
   RevokeInput,
 } from '../../@types/graphql';
 import { DELETE_REFRESH_TOKEN_COOKIE, LOGIN_MANUAL_MUTATION, REFRESH_TOKEN, REVOKE_REFRESH_TOKEN } from '../../graphql';
-import { SOCIAL_AUTH_CONFIG } from '../../modules/cah/cah.module';
+import { APP_HOST, AUTH_TOKEN$, SOCIAL_AUTH_CONFIG } from '../../modules/cah/cah.module';
 import { gql } from '../../utils/gql';
-import { BroadcastService } from '../broadcast/broadcast.service';
+import { UtilsService } from '../utils/utils.service';
 
 @Injectable({
   providedIn: 'root',
   deps: ['SocialAuthServiceConfig'],
 })
 export class AuthService extends Service {
-  auth$ = new BehaviorSubject<string | null>(null);
+  rememberCookieName = 'CAH_RM';
   profile$ = new BehaviorSubject<ObtainJsonWebTokenMutationPayload['payload'] | null>(null);
+  cookie$ = new BehaviorSubject<string | null>(null);
   username$ = this.profile$.pipe(
     first(),
     map((data) => data?.username!),
@@ -43,12 +44,13 @@ export class AuthService extends Service {
   user!: SocialUser;
 
   constructor(
-    private zone: NgZone,
     @Inject(SOCIAL_AUTH_CONFIG) config: SocialAuthServiceConfig | Promise<SocialAuthServiceConfig>,
-    private broadcastService: BroadcastService,
+    @Inject(APP_HOST) private readonly host: string,
+    @Inject(AUTH_TOKEN$) private readonly auth_token$: BehaviorSubject<string | null>,
     private apollo: Apollo,
-    public cookieService: CookieService,
     private router: Router,
+    public cookieService: CookieService,
+    private utilsService: UtilsService,
   ) {
     super(config);
     this.authState.pipe(tap((user) => (this.user = user))).subscribe();
@@ -128,7 +130,7 @@ export class AuthService extends Service {
     });
   }
 
-  refreshToken(input: RefreshInput) {
+  refreshToken(input: RefreshTokenMutationInput) {
     return this.apollo.mutate<Pick<Mutation, 'refreshToken'>>({
       mutation: REFRESH_TOKEN,
       variables: { input },
@@ -153,11 +155,32 @@ export class AuthService extends Service {
   }
 
   setCookie({ name, value, expiry, path = '/' }: { name: string; value: string; expiry?: number | Date; path?: string }) {
-    return this.cookieService.set(name, value, expiry, path, undefined, false, 'Strict');
+    const { hostname, protocol } = new URL(this.host);
+    const secure = protocol.endsWith('s');
+    return this.cookieService.set(name, value, expiry, path, hostname, secure, 'Strict');
   }
 
   clearCookies(path = '/') {
-    return this.cookieService.deleteAll(path);
+    return this.cookieService.deleteAll(path, this.host, true, 'Strict');
+  }
+
+  async rememberUser(credentials: AuthUser) {
+    switch (credentials.remember) {
+      case true:
+        const now = new Date(Date.now());
+        return this.setCookie({
+          name: this.rememberCookieName,
+          value: await this.utilsService.encode(credentials, 5),
+          path: '/auth/login',
+          expiry: new Date(now.setFullYear(now.getFullYear() + 1)),
+        });
+      default:
+        return this.clearCookies('/auth/login');
+    }
+  }
+
+  restoreRememberedUser() {
+    this.cookie$.next(this.cookieService.get(this.rememberCookieName));
   }
 
   logOut() {
@@ -166,43 +189,21 @@ export class AuthService extends Service {
       .pipe(switchMap(() => this.deleteRefreshTokenCookie({})))
       .pipe(switchMap(() => (Boolean(this.user?.authToken) ? this.signOut(true) : of(null))))
       .pipe(
-        tap(() => this.auth$.next(null)),
+        tap(() => this.auth_token$.next(null)),
         tap(() => this.profile$.next(null)),
-        tap(() => this.router.navigate(['/'])),
+        tap(() => this.router.navigate(['/'], { replaceUrl: true })),
       );
   }
 
-  encodeObject(item: object) {
-    return btoa(btoa(JSON.stringify(item)));
-  }
-
-  decodeObject(item: string): object {
-    try {
-      return JSON.parse(atob(atob(item)));
-    } catch (error) {
-      return {};
-    }
-  }
-
-  persistAuth({ payload, token }: ObtainJsonWebTokenMutationPayload | RefreshPayload) {
-    this.auth$.next(token);
+  persistAuth({ payload, token }: ObtainJsonWebTokenMutationPayload | RefreshTokenMutationPayload) {
+    this.auth_token$.next(token);
     this.profile$.next(payload);
   }
 
   refreshTokenFactory() {
     return this.refreshToken({}).pipe(
-      tap(({ data }) => this.zone.run(() => this.persistAuth(data?.refreshToken!))),
-      tap(({ data }) => this.zone.run(() => this.broadcastService.channel.postMessage({ event: 'login', data }))),
+      tap(({ data }) => this.persistAuth(data?.refreshToken!)),
       catchError(() => of(null)),
     );
-  }
-
-  broadcastListener({ event, data }: BroadCast) {
-    switch (event) {
-      case 'login':
-        return this.persistAuth(data?.refreshToken!);
-      default:
-        return;
-    }
   }
 }

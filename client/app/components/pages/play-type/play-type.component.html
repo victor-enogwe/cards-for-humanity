@@ -1,0 +1,23 @@
+<div class="d-flex flex-column flex-fill justify-content-center align-items-center">
+  <button mat-raised-button class="btn btn-lg mb-3" [ngClass]="{ 'btn-dark': playType === 'join' }" [style.width]="'230px'"
+    (click)="playType='join'">
+    JOIN A GAME
+    <mat-icon aria-hidden="false" aria-label="next step" class="px-3">sports_kabaddi</mat-icon>
+  </button>
+  <button mat-raised-button class="btn btn-lg" [style.width]="'230px'" [ngClass]="{ 'btn-dark': playType === 'create' }"
+    (click)="playType='create'">
+    CREATE A GAME
+    <mat-icon aria-hidden="false" aria-label="next step" class="px-3">add_circle_outline
+    </mat-icon>
+  </button>
+</div>
+
+<div class="btn-toolbar justify-content-end my-3" role="toolbar" aria-label="game options navigation buttons">
+
+  <div class="btn-group btn-group-lg" role="group" aria-label="next button">
+    <button mat-icon-button flexFill aria-label="next step" matTooltip="Next" matTooltipPosition="left" [routerLink]="['select-avatar']"
+      [state]="{ playType }">
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+  </div>
+</div>

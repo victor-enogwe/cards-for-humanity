@@ -10,7 +10,7 @@
     ],
     "include": [
         "client/**/*.d.ts"
-    ],
+, "client/app/@types/graphql.ts"    ],
     "exclude": [
         "client/test.ts",
         "client/**/*.spec.ts",

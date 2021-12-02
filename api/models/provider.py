@@ -112,5 +112,8 @@ class Provider(TimestampBase):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
+    def get_by_natural_key(self, username):
+        return self.get(email=username).user
+
     def __str__(self):
         return self.email or self.phone

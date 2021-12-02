@@ -1,10 +1,12 @@
 import json
 import os
 import re
+from calendar import timegm
 from datetime import datetime
 from functools import wraps
 from os import listdir, path
 from os.path import isfile, join
+from uuid import uuid4
 
 from django.contrib.auth import authenticate, get_user_model
 from django.core import management
@@ -12,11 +14,12 @@ from django.http.request import HttpRequest
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext as _
 from graphene.utils.thenables import maybe_thenable
 from graphql.error.base import GraphQLError
 from graphql_jwt.decorators import csrf_rotation, exceptions, on_token_auth_resolve, refresh_expiration, setup_jwt_cookie, signals
 from graphql_jwt.settings import jwt_settings
-from graphql_jwt.utils import delete_cookie, set_cookie
+from graphql_jwt.utils import delete_cookie, get_payload, set_cookie
 
 from api.models.profile import Profile
 from api.models.provider import Provider
@@ -100,7 +103,6 @@ def jwt_cookie(view_func):
             expires = datetime.utcnow() + jwt_settings.JWT_EXPIRATION_DELTA
             if hasattr(request, "jwt_refresh_token"):
                 refresh_token = request.jwt_refresh_token
-                print(refresh_token)
                 expires = (
                     refresh_token.created + jwt_settings.JWT_REFRESH_EXPIRATION_DELTA
                 )
@@ -130,7 +132,7 @@ def require_login(func):
     """
 
     def mutator(self, info, *args, **kwargs):
-        """Prevent non-authed users from accessing protected mutations."""
+        """Prevent non-authenticated users from accessing protected mutations."""
         if info is None or info.context is None:
             raise GraphQLErrors(GraphQLErrors.NOT_AUTHORIZED)
 
@@ -225,24 +227,59 @@ def get_generic_parent_admin_link(obj):
     return get_generic_object_admin_link(obj, "owner_id", "owner_type")
 
 
+def get_user_by_payload(payload):
+    username = jwt_settings.JWT_PAYLOAD_GET_USERNAME_HANDLER(payload)
+    user_id = payload.get('sub')
+    user = None
+
+    if username:
+        user = Provider.objects.get(email=username).user
+
+    if not username and user_id:
+        user = jwt_settings.JWT_GET_USER_BY_NATURAL_KEY_HANDLER(user_id)
+
+    if not username and not user_id:
+        raise exceptions.JSONWebTokenError(_("Invalid payload"))
+
+    if user is not None and not getattr(user, "is_active", True):
+        raise exceptions.JSONWebTokenError(_("User is disabled"))
+    return user
+
+
+def get_user_by_token(token, context=None):
+    payload = get_payload(token, context)
+    return get_user_by_payload(payload)
+
+
 def jwt_payload(user, context=None):
-    print(user, context)
-    provider = Provider.objects.get(user=user)
+    provider: Provider = Provider.objects.get(user=user)
     profile: Profile = Profile.objects.get(provider=provider)
     host = os.getenv("HOST", None)
     claims_url = '{0}/claims'.format(host)
     jwt_datetime = datetime.utcnow() + jwt_settings.JWT_EXPIRATION_DELTA
     jwt_expires = int(jwt_datetime.timestamp())
-    payload = {}
-    payload['username'] = str(profile.username)  # For library compatibility
-    payload['sub'] = str(user.id)
-    payload['sub_name'] = profile.full_name.title()
-    payload['sub_email'] = provider.email
-    payload['exp'] = jwt_expires
-    payload[claims_url] = {}
-    payload[claims_url]['x-cah-allowed-roles'] = []
-    payload[claims_url]['x-cah-default-role'] = None
-    payload[claims_url]['x-cah-user-id'] = str(user.id)
+    iat = timegm(datetime.utcnow().utctimetuple())
+    payload = {
+        'iss': jwt_settings.JWT_ISSUER,
+        'sub': str(user.id),
+        'aud': jwt_settings.JWT_AUDIENCE,
+        'exp': jwt_expires,
+        'nbf': iat,
+        'iat': iat,
+        'jti': uuid4().hex,
+        # For library compatibility
+        'username': str(profile.username),
+        'provider': str(profile.id),
+        'name': profile.full_name.title(),
+        'email': provider.email,
+        'email_verified': provider.is_verified,
+        claims_url: {
+            'x-cah-allowed-roles': [],
+            'x-cah-default-role': None,
+            'x-cah-user-id': str(user.id)
+        }
+    }
+
     return payload
 
 
@@ -255,12 +292,12 @@ def token_auth(f):
         context = info.context
         context._jwt_token_auth = True
         username = kwargs.get('username')
-
         user = authenticate(
             request=context,
             username=username,
             password=password,
         )
+
         if user is None:
             raise exceptions.JSONWebTokenError(
                 GraphQLErrors.USER_SIGNIN__INVALID_CREDENTIALS)

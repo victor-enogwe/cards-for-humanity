@@ -22,7 +22,6 @@ export const resolvers: Resolvers = {
     //   const value: NewGameNode | null = cache.readQuery({
     //     query: NEW_GAME_QUERY,
     //   });
-    //   console.log(value, _root);
     //   return value;
     // },
   },

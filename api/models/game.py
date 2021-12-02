@@ -84,5 +84,14 @@ class Game(TimestampBase):
     )
     objects = models.Manager()
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                name='unique_game_status',
+                fields=('status',),
+                condition=Q(status=GameStatus.GAP)
+            )
+        ]
+
     def __str__(self):
         return 'Game: {0}'.format(self.id)

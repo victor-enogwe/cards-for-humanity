@@ -15,5 +15,5 @@
   "include": [
     "client/**/*.spec.ts",
     "client/**/*.d.ts"
-  ]
+, "client/app/@types/graphql.ts"  ]
 }

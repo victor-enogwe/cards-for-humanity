@@ -1,10 +1,12 @@
 import { isPlatformServer } from '@angular/common';
+import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import {
   ApolloClientOptions,
   ApolloLink,
   FetchResult,
   from,
+  GraphQLRequest,
   InMemoryCache,
   NormalizedCacheObject,
   Observable,
@@ -19,10 +21,12 @@ import { createPersistedQueryLink } from 'apollo-angular/persisted-queries';
 import { IonicStorageWrapper, persistCache } from 'apollo3-cache-persist';
 import { sha256 } from 'crypto-hash';
 import { CookieService } from 'ngx-cookie-service';
+import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Definition } from '../../@types/global';
+import { AnyObject, Definition } from '../../@types/global';
 import { IntrospectionLink, resolvers, typeDefs, typePolicies } from '../../graphql';
 import possibleTypes from '../../graphql/possible-types';
+import { AUTH_TOKEN$ } from '../../modules/cah/cah.module';
 import { HttpLinkService } from '../http-link/http-link.service';
 
 @Injectable({
@@ -39,7 +43,7 @@ export class GraphqlService {
   });
   ssr = isPlatformServer(this.platformId);
   introspectionLink = new IntrospectionLink();
-  headersLink = setContext(this.headers.bind(this));
+  headersLink = setContext(this.setHeaders.bind(this));
   errorLink = onError(this.handleErrors.bind(this));
   persistedQueryLink = createPersistedQueryLink({ sha256 });
   wsLink = this.ssr
@@ -80,9 +84,10 @@ export class GraphqlService {
   };
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(AUTH_TOKEN$) private auth_token$: BehaviorSubject<string | null>,
     private readonly storage: Storage,
     private httpLink: HttpLinkService,
-    @Inject(PLATFORM_ID) private platformId: Object,
     private cookieService: CookieService,
   ) {}
 
@@ -112,15 +117,23 @@ export class GraphqlService {
     }
   }
 
-  headers(_: any, { headers }: any): { headers: { [key: string]: string } } {
-    return {
-      headers: {
-        Accept: 'charset=utf-8',
-        'Content-Type': 'application/json',
-        'X-CSRFToken': this.cookieService.get('csrftoken'),
-        ...headers,
-      },
-    };
+  setHeaders({ operationName }: GraphQLRequest, { headers: prevHeaders }: { headers?: AnyObject }): { headers: HttpHeaders } {
+    const headers = new HttpHeaders({
+      Accept: 'charset=utf-8',
+      'Content-Type': 'application/json',
+      'X-CSRFToken': this.cookieService.get('csrftoken'),
+      ...prevHeaders,
+    });
+
+    console.log(prevHeaders, operationName);
+
+    switch (operationName) {
+      case 'TokenAuth':
+      case 'RefreshToken':
+        return { headers };
+      default:
+        return { headers: headers.set('Authorization', `Bearer ${this.auth_token$.getValue()}`) };
+    }
   }
 
   handleErrors({ graphQLErrors, networkError }: ErrorResponse): Observable<FetchResult> | void {

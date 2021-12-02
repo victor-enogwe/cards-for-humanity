@@ -1,9 +1,7 @@
 import { gql } from '../../utils/gql';
 import { GENRE_NODE_FRAGMENT } from './genre';
-import { PAGE_INFO_FRAGMENT } from './page-info';
 
 export const GAME_NODE_FRAGMENT = gql`
-  ${PAGE_INFO_FRAGMENT}
   ${GENRE_NODE_FRAGMENT}
 
   fragment GameNode on GameNode {
@@ -26,7 +24,14 @@ export const GAME_NODE_FRAGMENT = gql`
     playerSet(first: 10) {
       edges {
         node {
-          ...PlayerNode
+          id
+          czar
+          spectator
+          avatar
+          score
+          user {
+            id
+          }
         }
         cursor
       }

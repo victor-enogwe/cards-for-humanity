@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { lastValueFrom, map } from 'rxjs';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { BehaviorSubject, lastValueFrom, map } from 'rxjs';
+import { AUTH_TOKEN$ } from '../../../modules/cah/cah.module';
 import { AuthService } from '../../../services/auth/auth.service';
 import { UIService } from '../../../services/ui/ui.service';
 
@@ -10,10 +11,14 @@ import { UIService } from '../../../services/ui/ui.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavComponent {
-  authenticated$ = this.authService.auth$.pipe(map((auth) => (auth ? 'yes' : 'no')));
+  authenticated$ = this.auth_token$.pipe(map((auth) => (auth ? 'yes' : 'no')));
   isMobile$ = this.uiService.isMobile$;
 
-  constructor(private uiService: UIService, private authService: AuthService) {}
+  constructor(
+    @Inject(AUTH_TOKEN$) private auth_token$: BehaviorSubject<string | null>,
+    private uiService: UIService,
+    private authService: AuthService,
+  ) {}
 
   async logout() {
     return lastValueFrom(this.authService.logOut());

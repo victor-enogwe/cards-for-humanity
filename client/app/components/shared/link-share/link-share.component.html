@@ -2,7 +2,7 @@
   <mat-toolbar-row class="justify-content-between">
     <div matSuffix class="d-flex flex-row align-items-center justify-content-center">
       <button mat-icon-button color="primary" cahConfirmDialog [component]="qrCodeComponent"
-        [config]="{ data: { title: 'Invite QrCode', qrdata: host + '/' + game.id, colorDark: '#e5001f'  } }" [listen]="false"
+        [config]="{ data: { title: 'Invite QrCode', value: host + '/' + game.id, darkColor: '#e5001f'  } }" [listen]="false"
         aria-label="invite QR code" matTooltip="invite qr code" matTooltipPosition="right">
         <mat-icon>qr_code_2</mat-icon>
       </button>

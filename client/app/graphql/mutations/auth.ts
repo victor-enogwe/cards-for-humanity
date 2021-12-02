@@ -7,7 +7,7 @@ export const LOGIN_MANUAL_MUTATION = gql`
       payload {
         username
         sub
-        subName
+        name
         exp
       }
     }
@@ -15,10 +15,15 @@ export const LOGIN_MANUAL_MUTATION = gql`
 `;
 
 export const REFRESH_TOKEN = gql`
-  mutation RefreshToken($input: RefreshInput!) {
+  mutation RefreshToken($input: RefreshTokenMutationInput!) {
     refreshToken(input: $input) {
       token
-      payload
+      payload {
+        username
+        sub
+        name
+        exp
+      }
     }
   }
 `;

@@ -35,6 +35,42 @@ enum ApiGameStatusChoices {
 }
 
 """An enumeration."""
+enum ApiPlayerAvatarChoices {
+  """Abby"""
+  ABBY
+  """Alfred"""
+  ALFRED
+  """Andina"""
+  ANDINA
+  """Astro"""
+  ASTRO
+  """Camile"""
+  CAMILE
+  """Dorothy"""
+  DOROTHY
+  """Dudai"""
+  DUDAI
+  """Eduardo"""
+  EDUARDO
+  """General"""
+  GENERAL
+  """Grace"""
+  GRACE
+  """Iranir"""
+  IRANIR
+  """Jennifer"""
+  JENNIFER
+  """Labrat"""
+  LABRAT
+  """Luther"""
+  LUTHER
+  """Rainbowness"""
+  RAINBOWNESS
+  """Shin"""
+  SHIN
+}
+
+"""An enumeration."""
 enum ApiWhiteCardRatingChoices {
   """Normal"""
   NORMAL
@@ -89,7 +125,9 @@ type CreateGameMutation {
 }
 
 input CreateGameMutationInput {
+  avatar: ApiPlayerAvatarChoices!
   genres: [ID]!
+  joinEndsAt: DateTime!
   numPlayers: Int!
   numSpectators: Int!
   roundTime: Int!
@@ -138,7 +176,7 @@ type GameNode implements Node {
   numPlayers: Int!
   """no of spectators"""
   numSpectators: Int!
-  playerSet(after: String, before: String, createdAt: DateTime, czar: Boolean, first: Int, game: ID, last: Int, offset: Int, score: Int, updatedAt: DateTime, user: ID): PlayerNodeConnection!
+  playerSet(after: String, avatar: String, before: String, createdAt: DateTime, czar: Boolean, first: Int, game: ID, last: Int, offset: Int, score: Int, spectator: Boolean, updatedAt: DateTime, user: ID): PlayerNodeConnection!
   """seconds"""
   roundTime: Int!
   """no of game rounds"""
@@ -164,13 +202,6 @@ type GameNodeEdge {
   """The item at the end of the edge"""
   node: GameNode
 }
-
-"""
-The `GenericScalar` scalar type represents a generic
-GraphQL scalar value that could be:
-String, Boolean, Int, Float, List or Object.
-"""
-scalar GenericScalar
 
 type GenreNode implements Node {
   blackcardSet(after: String, before: String, createdAt: DateTime, first: Int, genre: ID, last: Int, offset: Int, pick: String, rating: String, text: String, updatedAt: DateTime): BlackCardNodeConnection!
@@ -203,9 +234,17 @@ type GenreNodeEdge {
 }
 
 type JWTPayloadNode {
+  aud: String
+  email: String
+  emailVerified: Boolean
   exp: Int
+  iat: Int
+  iss: String
+  jti: String
+  name: String
+  nbf: Int
+  provider: String
   sub: Int
-  subName: String
   username: String
 }
 
@@ -230,7 +269,7 @@ type Mutation {
   createUser(input: CreateUserMutationInput!): CreateUserMutation
   deleteRefreshTokenCookie(input: DeleteRefreshTokenCookieInput!): DeleteRefreshTokenCookiePayload
   joinGame(input: JoinGameMutationInput!): JoinGameMutation
-  refreshToken(input: RefreshInput!): RefreshPayload
+  refreshToken(input: RefreshTokenMutationInput!): RefreshTokenMutationPayload
   revokeRefreshToken(input: RevokeInput!): RevokePayload
   setFullWidth(input: SetFullWidthMutationInput!): SetFullWidthMutation
   """Social Auth for JSON Web Token (JWT)"""
@@ -240,9 +279,10 @@ type Mutation {
 }
 
 type NewGameNode {
+  avatar: ApiPlayerAvatarChoices!
   genres: [ID]!
   id: ID!
-  joinEndsAt: DateTime
+  joinEndsAt: DateTime!
   numPlayers: Int!
   numSpectators: Int!
   roundTime: Int!
@@ -283,12 +323,14 @@ type PageInfo {
 }
 
 type PlayerNode implements Node {
+  avatar: ApiPlayerAvatarChoices!
   createdAt: DateTime!
   czar: Boolean!
   game: GameNode!
   """The ID of the object."""
   id: ID!
   score: Int!
+  spectator: Boolean!
   updatedAt: DateTime!
   user: UserNode!
 }
@@ -319,6 +361,8 @@ type Query {
   """
   fullWidth: Boolean
   game(id: ID): GameNode
+  """find games"""
+  games(after: String, before: String, createdAt: DateTime, creator: ID, first: Int, genres: [ID], joinEndsAt: DateTime, last: Int, numPlayers: Int, numSpectators: Int, offset: Int, roundTime: Int, rounds: Int, status: String, updatedAt: DateTime, winner: ID): GameNodeConnection
   """all cards genre"""
   genres(after: String, before: String, credit: String, credit_Icontains: String, credit_Istartswith: String, description: String, description_Icontains: String, description_Istartswith: String, first: Int, id: Float, id_Gt: Float, id_Lt: Float, last: Int, offset: Int): GenreNodeConnection
   newGame(id: ID!): NewGameNode
@@ -327,14 +371,14 @@ type Query {
   whiteCards(after: String, before: String, first: Int, genre: ID, last: Int, offset: Int, text: String, text_Icontains: String, text_Istartswith: String): WhiteCardNodeConnection
 }
 
-input RefreshInput {
+input RefreshTokenMutationInput {
   clientMutationId: String
   refreshToken: String
 }
 
-type RefreshPayload {
+type RefreshTokenMutationPayload {
   clientMutationId: String
-  payload: GenericScalar!
+  payload: JWTPayloadNode
   refreshExpiresIn: Int!
   refreshToken: String!
   token: String!
@@ -425,7 +469,7 @@ type UserNode implements Node {
   isStaff: Boolean!
   """Is Superuser"""
   isSuperuser: Boolean!
-  playerSet(after: String, before: String, createdAt: DateTime, czar: Boolean, first: Int, game: ID, last: Int, offset: Int, score: Int, updatedAt: DateTime, user: ID): PlayerNodeConnection!
+  playerSet(after: String, avatar: String, before: String, createdAt: DateTime, czar: Boolean, first: Int, game: ID, last: Int, offset: Int, score: Int, spectator: Boolean, updatedAt: DateTime, user: ID): PlayerNodeConnection!
   socialAuth(after: String, before: String, first: Int, last: Int, offset: Int, provider: String, provider_In: [String], uid: String, uid_In: [String]): SocialNodeConnection!
   updatedAt: DateTime!
   winners(after: String, before: String, createdAt: DateTime, creator: ID, first: Int, genres: [ID], joinEndsAt: DateTime, last: Int, numPlayers: Int, numSpectators: Int, offset: Int, roundTime: Int, rounds: Int, status: String, updatedAt: DateTime, winner: ID): GameNodeConnection!

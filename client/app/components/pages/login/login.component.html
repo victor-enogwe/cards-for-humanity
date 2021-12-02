@@ -47,7 +47,7 @@
       </mat-form-field>
 
       <div class="d-grid gap-2 d-flex justify-content-around align-items-center mb-3">
-        <mat-checkbox matInput formControlName="remember" class="flex-grow-1 text-muted">Remember me</mat-checkbox>
+        <mat-checkbox color="primary" matInput formControlName="remember" class="flex-grow-1">Remember me</mat-checkbox>
 
         <button mat-raised-button #login type="button" class="btn btn-lg btn-dark flex-grow-1" cahDebounceClick
           (debounceClick)="loginManual(loginForm)" [disabled]="!loginForm.valid || facebook.disabled || google.disabled" [ngClass]="{

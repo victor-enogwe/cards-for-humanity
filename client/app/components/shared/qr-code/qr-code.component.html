@@ -6,9 +6,9 @@
     </button>
   </div>
   <div class="d-flex justify-content-center align-items-center">
-    <qrcode [qrdata]="data.qrdata" [width]="data.width || 200" [errorCorrectionLevel]="data.errorCorrectionLevel || 'H'"
-      [allowEmptyString]="data.allowEmptyString" [colorDark]="data.colorDark" [colorLight]="data.colorLight" [cssClass]="data.cssClass"
-      [elementType]="data.elementType || 'canvas'" [margin]="data.margin" [scale]="data.scale" [version]="data.version">
-    </qrcode>
+    <canvas *ngIf="value" [qrCode]="value" [qrCodeErrorCorrectionLevel]="errorCorrectionLevel" [qrCodeCenterImageSrc]="centerImageSrc"
+      [qrCodeCenterImageWidth]="centerImageSize" [qrCodeCenterImageHeight]="centerImageSize" [qrCodeMargin]="margin" [width]="size"
+      [height]="size" [darkColor]="darkColor" [lightColor]="lightColor">
+    </canvas>
   </div>
 </div>

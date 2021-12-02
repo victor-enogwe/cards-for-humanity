@@ -153,14 +153,15 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
-    # 'django.middleware.cache.UpdateCacheMiddleware',
-    # 'django.middleware.cache.FetchFromCacheMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 # Authentication backends
 AUTHENTICATION_BACKENDS = [
     'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.facebook.FacebookOAuth2',
+    'api.auth.backends.jwt.JWTBackend',
     'api.auth.backends.email.EmailModelBackend'
 ]
 
@@ -222,9 +223,10 @@ SOCIAL_AUTH_PIPELINE = [
 ROOT_URLCONF = 'config.urls'
 
 GQL_MIDDLEWARE = [
+    # 'api.graphql.middlewares.jwt.JWTMiddleware',
     'graphql_jwt.middleware.JSONWebTokenMiddleware',
-    'api.middlewares.gql_auth.AuthorizationMiddleware',
-    'api.middlewares.gql_depromise_subscription.DepromiseSubscription'
+    'api.graphql.middlewares.gql_auth.AuthorizationMiddleware',
+    'api.graphql.middlewares.gql_depromise_subscription.DepromiseSubscription'
 ]
 
 GRAPHENE = {
@@ -247,6 +249,7 @@ GRAPHQL_JWT = {
     "JWT_REFRESH_TOKEN_COOKIE_NAME": "CAH_TM",
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
     'JWT_PAYLOAD_HANDLER': 'api.utils.functions.jwt_payload',
+    "JWT_PAYLOAD_GET_USERNAME_HANDLER": (lambda payload: payload.get('email')),
     "JWT_COOKIE_SECURE": True,
     "JWT_COOKIE_SAMESITE": "Strict",
     "JWT_CSRF_ROTATION": True,

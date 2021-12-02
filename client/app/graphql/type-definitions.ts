@@ -31,6 +31,40 @@ export const typeDefs = gql`
     GAME_STARTED
   }
 
+  enum ApiPlayerAvatarChoices {
+    ABBY
+
+    ALFRED
+
+    ANDINA
+
+    ASTRO
+
+    CAMILE
+
+    DOROTHY
+
+    DUDAI
+
+    EDUARDO
+
+    GENERAL
+
+    GRACE
+
+    IRANIR
+
+    JENNIFER
+
+    LABRAT
+
+    LUTHER
+
+    RAINBOWNESS
+
+    SHIN
+  }
+
   enum ApiWhiteCardRatingChoices {
     NORMAL
   }
@@ -82,7 +116,9 @@ export const typeDefs = gql`
   }
 
   input CreateGameMutationInput {
+    avatar: ApiPlayerAvatarChoices!
     genres: [ID]!
+    joinEndsAt: DateTime!
     numPlayers: Int!
     numSpectators: Int!
     roundTime: Int!
@@ -143,6 +179,7 @@ export const typeDefs = gql`
     numSpectators: Int!
     playerSet(
       after: String
+      avatar: String
       before: String
       createdAt: DateTime
       czar: Boolean
@@ -151,6 +188,7 @@ export const typeDefs = gql`
       last: Int
       offset: Int
       score: Int
+      spectator: Boolean
       updatedAt: DateTime
       user: ID
     ): PlayerNodeConnection!
@@ -177,8 +215,6 @@ export const typeDefs = gql`
 
     node: GameNode
   }
-
-  scalar GenericScalar
 
   type GenreNode implements Node {
     blackcardSet(
@@ -248,9 +284,17 @@ export const typeDefs = gql`
   }
 
   type JWTPayloadNode {
+    aud: String
+    email: String
+    emailVerified: Boolean
     exp: Int
+    iat: Int
+    iss: String
+    jti: String
+    name: String
+    nbf: Int
+    provider: String
     sub: Int
-    subName: String
     username: String
   }
 
@@ -274,7 +318,7 @@ export const typeDefs = gql`
     createUser(input: CreateUserMutationInput!): CreateUserMutation
     deleteRefreshTokenCookie(input: DeleteRefreshTokenCookieInput!): DeleteRefreshTokenCookiePayload
     joinGame(input: JoinGameMutationInput!): JoinGameMutation
-    refreshToken(input: RefreshInput!): RefreshPayload
+    refreshToken(input: RefreshTokenMutationInput!): RefreshTokenMutationPayload
     revokeRefreshToken(input: RevokeInput!): RevokePayload
     setFullWidth(input: SetFullWidthMutationInput!): SetFullWidthMutation
 
@@ -284,9 +328,10 @@ export const typeDefs = gql`
   }
 
   type NewGameNode {
+    avatar: ApiPlayerAvatarChoices!
     genres: [ID]!
     id: ID!
-    joinEndsAt: DateTime
+    joinEndsAt: DateTime!
     numPlayers: Int!
     numSpectators: Int!
     roundTime: Int!
@@ -323,12 +368,14 @@ export const typeDefs = gql`
   }
 
   type PlayerNode implements Node {
+    avatar: ApiPlayerAvatarChoices!
     createdAt: DateTime!
     czar: Boolean!
     game: GameNode!
 
     id: ID!
     score: Int!
+    spectator: Boolean!
     updatedAt: DateTime!
     user: UserNode!
   }
@@ -365,6 +412,25 @@ export const typeDefs = gql`
 
     fullWidth: Boolean
     game(id: ID): GameNode
+
+    games(
+      after: String
+      before: String
+      createdAt: DateTime
+      creator: ID
+      first: Int
+      genres: [ID]
+      joinEndsAt: DateTime
+      last: Int
+      numPlayers: Int
+      numSpectators: Int
+      offset: Int
+      roundTime: Int
+      rounds: Int
+      status: String
+      updatedAt: DateTime
+      winner: ID
+    ): GameNodeConnection
 
     genres(
       after: String
@@ -412,14 +478,14 @@ export const typeDefs = gql`
     ): WhiteCardNodeConnection
   }
 
-  input RefreshInput {
+  input RefreshTokenMutationInput {
     clientMutationId: String
     refreshToken: String
   }
 
-  type RefreshPayload {
+  type RefreshTokenMutationPayload {
     clientMutationId: String
-    payload: GenericScalar!
+    payload: JWTPayloadNode
     refreshExpiresIn: Int!
     refreshToken: String!
     token: String!
@@ -524,6 +590,7 @@ export const typeDefs = gql`
     isSuperuser: Boolean!
     playerSet(
       after: String
+      avatar: String
       before: String
       createdAt: DateTime
       czar: Boolean
@@ -532,6 +599,7 @@ export const typeDefs = gql`
       last: Int
       offset: Int
       score: Int
+      spectator: Boolean
       updatedAt: DateTime
       user: ID
     ): PlayerNodeConnection!

@@ -3,7 +3,6 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QRCodeModule } from 'angularx-qrcode';
 import { ConfirmationDialogComponent } from '../../components/shared/confirmation-dialog/confirmation-dialog.component';
 import { FabMenuComponent } from '../../components/shared/fab-menu/fab-menu.component';
 import { FabComponent } from '../../components/shared/fab/fab.component';
@@ -16,6 +15,7 @@ import { DebounceClickDirective } from '../../directives/debounce-click/debounce
 import { DialogComponentDirective } from '../../directives/dialog-component/dialog-component.directive';
 import { LoadingOverlayDirective } from '../../directives/loading-overlay/loading-overlay.directive';
 import { MatInputFocusDirective } from '../../directives/mat-input-focus/mat-input-focus.directive';
+import { QrCodeDirective } from '../../directives/qr-code/qr-code.directive';
 import { SafeUrlPipe } from '../../pipes/safe-url/safe-url.pipe';
 import { CahDialogService } from '../../services/cah-dialog/cah-dialog.service';
 import { MaterialModule } from '../material/material.module';
@@ -35,6 +35,7 @@ import { MaterialModule } from '../material/material.module';
     DialogComponentDirective,
     LoadingOverlayDirective,
     MatInputFocusDirective,
+    QrCodeDirective,
   ],
   providers: [SafeUrlPipe, CahDialogService],
   exports: [
@@ -44,7 +45,6 @@ import { MaterialModule } from '../material/material.module';
     MaterialModule,
     ScrollingModule,
     ClipboardModule,
-    QRCodeModule,
     NavComponent,
     LoadingComponent,
     ConfirmationDialogComponent,
@@ -58,7 +58,8 @@ import { MaterialModule } from '../material/material.module';
     DialogComponentDirective,
     LoadingOverlayDirective,
     MatInputFocusDirective,
+    QrCodeDirective,
   ],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MaterialModule, ScrollingModule, ClipboardModule, QRCodeModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MaterialModule, ScrollingModule, ClipboardModule],
 })
 export class SharedModule {}

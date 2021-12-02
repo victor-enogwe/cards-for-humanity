@@ -5,6 +5,8 @@ input CreateGameMutationInput {
   numSpectators: Int!
   status: String!
   genres: [ID]!
+  joinEndsAt: DateTime!
+  avatar: ApiPlayerAvatarChoices!
 }
 
 input SetFullWidthMutationInput {
@@ -19,7 +21,8 @@ type NewGameNode {
   numSpectators: Int!
   status: String!
   genres: [ID]!
-  joinEndsAt: DateTime
+  joinEndsAt: DateTime!
+  avatar: ApiPlayerAvatarChoices!
 }
 
 type CreateNewGameMutation {

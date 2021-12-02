@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from api.models.timestamp import TimestampBase
 from api.utils.constants import username_help_text
-from api.utils.enums import Gender
+from api.utils.enums import Avatars, Gender
 
 
 class Profile(TimestampBase):
@@ -16,6 +16,13 @@ class Profile(TimestampBase):
         max_length=40,
         help_text=_(username_help_text),
         validators=[UnicodeUsernameValidator()],
+    )
+    avatar = models.CharField(
+        max_length=20,
+        choices=Avatars.choices,
+        default=None,
+        blank=True,
+        null=True
     )
     gender = models.CharField(
         max_length=6,
