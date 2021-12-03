@@ -4,9 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import omit from 'lodash.omit';
 import { lastValueFrom, Subscription, switchMap } from 'rxjs';
 import { Avatar, Genre, PlayType } from '../../../@types/global';
-import { ApiPlayerAvatarChoices, CreateGameInput, NewGameNode } from '../../../@types/graphql';
+import { CreateGameInput, NewGameNode } from '../../../@types/graphql';
 import { GameService } from '../../../services/game/game.service';
 import { GenreService } from '../../../services/genre/genre.service';
+import { UIService } from '../../../services/ui/ui.service';
 
 @Component({
   selector: 'cah-create-game',
@@ -17,7 +18,7 @@ import { GenreService } from '../../../services/genre/genre.service';
 export class CreateGameComponent implements OnInit, OnDestroy {
   pageSize = 10;
   playType: PlayType = this.router.getCurrentNavigation()?.extras?.state?.playType;
-  avatar: Avatar = this.router.getCurrentNavigation()?.extras.state?.avatar;
+  avatar?: Avatar = this.uiService.avatars.find(({ name }) => name === this.router.getCurrentNavigation()?.extras.state?.avatar);
   defaultJoinPeriod = new Date(new Date(Date.now()).getTime() + 600000);
   private genreQuery$ = this.genreService.fetchGenres({ first: this.pageSize });
   genres$ = this.genreQuery$.valueChanges;
@@ -28,9 +29,9 @@ export class CreateGameComponent implements OnInit, OnDestroy {
     rounds: 5,
     genres: [],
     numSpectators: 1,
-    ...this.route.snapshot.data?.newGame,
+    ...omit(this.route.snapshot.data?.newGame, '__typename'),
     joinEndsAt: this.defaultJoinPeriod,
-    avatar: this.avatar.name as ApiPlayerAvatarChoices,
+    avatar: this.avatar?.name!,
   };
   gameOptionsForm = this.formBuilder.group({
     id: new FormControl(this.newGameDefaultOptions.id),
@@ -51,10 +52,12 @@ export class CreateGameComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private genreService: GenreService,
     private gameService: GameService,
+    private uiService: UIService,
   ) {}
 
   ngOnInit(): void {
     this.gameOptionsChangesSubscription = this.gameOptionsChanges$.subscribe();
+    this.gameOptionsForm.setValue(this.newGameDefaultOptions);
   }
 
   ngOnDestroy(): void {

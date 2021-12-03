@@ -25,6 +25,7 @@ generates:
       - "typescript-resolvers"
     config:
       declarationKind: interface
+      enumsAsTypes: true
       dedupeFragments: true
       immutableTypes: true
       preResolveTypes: true

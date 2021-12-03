@@ -5,7 +5,7 @@
       <ng-template matStepLabel>Select Game Play Options</ng-template>
       <ng-template matStepContent>
         <div class="d-flex flex-column flex-grow-1 flex-fill">
-          <div class="d-flex flex-grow-1 align-items-center justify-content-center w-100 d-none d-lg-block ">
+          <div *ngIf="avatar" class="d-flex flex-grow-1 align-items-center justify-content-center w-100 d-none d-lg-block ">
             <img [src]="avatar.link| safeUrl" class="d-block mx-auto" height="350" alt="{{avatar.name}}" />
           </div>
 
@@ -27,8 +27,8 @@
               <mat-label>Choose when game joining period ends</mat-label>
               <input matInput [ngxMatDatetimePicker]="picker" [min]="defaultJoinPeriod" formControlName="joinEndsAt">
               <mat-datepicker-toggle matSuffix [for]="$any(picker)"></mat-datepicker-toggle>
-              <ngx-mat-datetime-picker #picker [showSpinners]="true" [showSeconds]="true" [stepHour]="1" [stepMinute]="1"
-                [stepSecond]="1" [touchUi]="true" [enableMeridian]="true" [disableMinute]="false" [hideTime]="false">
+              <ngx-mat-datetime-picker #picker [showSpinners]="true" [showSeconds]="true" [stepHour]="1" [stepMinute]="1" [stepSecond]="1"
+                [touchUi]="true" [enableMeridian]="true" [disableMinute]="false" [hideTime]="false">
               </ngx-mat-datetime-picker>
             </mat-form-field>
 
@@ -58,8 +58,8 @@
               </mat-label>
               <input matInput type="number" min="0" max="9" step="1" formControlName="numPlayers" class="d-none invisible" />
               <mat-slider [min]="0" [max]="9" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
-                [value]="gameOptionsForm.controls.numPlayers.value"
-                (change)="gameOptionsForm.controls.numPlayers.setValue($event.value)" aria-labelledby="no of players">
+                [value]="gameOptionsForm.controls.numPlayers.value" (change)="gameOptionsForm.controls.numPlayers.setValue($event.value)"
+                aria-labelledby="no of players">
               </mat-slider>
             </mat-form-field>
 

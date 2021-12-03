@@ -9,12 +9,12 @@ import { Avatar, PlayType } from '../../../@types/global';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectAvatarComponent {
-  avatar?: Avatar = this.route.snapshot.data?.newGame?.avatar;
+  avatar?: Avatar['name'] = this.route.snapshot.data?.newGame?.avatar;
   playType: PlayType = this.router.getCurrentNavigation()?.extras.state?.playType;
 
   constructor(public route: ActivatedRoute, private router: Router) {}
 
-  selectAvatar(avatar: Avatar) {
-    this.avatar = avatar;
+  selectAvatar(avatar?: Avatar | null) {
+    this.avatar = avatar?.name;
   }
 }

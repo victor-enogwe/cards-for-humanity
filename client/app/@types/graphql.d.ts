@@ -23,76 +23,71 @@ export interface Scalars {
 }
 
 /** An enumeration. */
-export enum ApiBlackCardPickChoices {
+export type ApiBlackCardPickChoices =
   /** pick1 */
-  A_1 = 'A_1',
+  | 'A_1'
   /** pick2 */
-  A_2 = 'A_2',
-}
+  | 'A_2';
 
 /** An enumeration. */
-export enum ApiBlackCardRatingChoices {
+export type ApiBlackCardRatingChoices =
   /** Normal */
-  NORMAL = 'NORMAL',
-}
+  'NORMAL';
 
 /** An enumeration. */
-export enum ApiGameStatusChoices {
+export type ApiGameStatusChoices =
   /** Gaa */
-  AWAITING_ANSWERS = 'AWAITING_ANSWERS',
+  | 'AWAITING_ANSWERS'
   /** Gac */
-  AWAITING_CZAR = 'AWAITING_CZAR',
+  | 'AWAITING_CZAR'
   /** Gap */
-  AWAITING_PLAYERS = 'AWAITING_PLAYERS',
+  | 'AWAITING_PLAYERS'
   /** Gc */
-  GAME_CANCELED = 'GAME_CANCELED',
+  | 'GAME_CANCELED'
   /** Ge */
-  GAME_ENDED = 'GAME_ENDED',
+  | 'GAME_ENDED'
   /** Gs */
-  GAME_STARTED = 'GAME_STARTED',
-}
+  | 'GAME_STARTED';
 
 /** An enumeration. */
-export enum ApiPlayerAvatarChoices {
+export type ApiPlayerAvatarChoices =
   /** Abby */
-  ABBY = 'ABBY',
+  | 'ABBY'
   /** Alfred */
-  ALFRED = 'ALFRED',
+  | 'ALFRED'
   /** Andina */
-  ANDINA = 'ANDINA',
+  | 'ANDINA'
   /** Astro */
-  ASTRO = 'ASTRO',
+  | 'ASTRO'
   /** Camile */
-  CAMILE = 'CAMILE',
+  | 'CAMILE'
   /** Dorothy */
-  DOROTHY = 'DOROTHY',
+  | 'DOROTHY'
   /** Dudai */
-  DUDAI = 'DUDAI',
+  | 'DUDAI'
   /** Eduardo */
-  EDUARDO = 'EDUARDO',
+  | 'EDUARDO'
   /** General */
-  GENERAL = 'GENERAL',
+  | 'GENERAL'
   /** Grace */
-  GRACE = 'GRACE',
+  | 'GRACE'
   /** Iranir */
-  IRANIR = 'IRANIR',
+  | 'IRANIR'
   /** Jennifer */
-  JENNIFER = 'JENNIFER',
+  | 'JENNIFER'
   /** Labrat */
-  LABRAT = 'LABRAT',
+  | 'LABRAT'
   /** Luther */
-  LUTHER = 'LUTHER',
+  | 'LUTHER'
   /** Rainbowness */
-  RAINBOWNESS = 'RAINBOWNESS',
+  | 'RAINBOWNESS'
   /** Shin */
-  SHIN = 'SHIN',
-}
+  | 'SHIN';
 
 /** An enumeration. */
-export enum ApiWhiteCardRatingChoices {
+export type ApiWhiteCardRatingChoices =
   /** Normal */
-  NORMAL = 'NORMAL',
-}
+  'NORMAL';
 
 export interface BlackCardNode extends Node {
   readonly __typename?: 'BlackCardNode';

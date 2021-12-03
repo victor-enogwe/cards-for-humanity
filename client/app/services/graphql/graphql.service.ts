@@ -102,7 +102,7 @@ export class GraphqlService {
     );
   }
 
-  queryKind({ query }: any): boolean {
+  queryKind({ query }: GraphQLRequest): boolean {
     const { kind, operation }: Definition = getMainDefinition(query);
     switch (kind) {
       case 'OperationDefinition':
@@ -117,15 +117,13 @@ export class GraphqlService {
     }
   }
 
-  setHeaders({ operationName }: GraphQLRequest, { headers: prevHeaders }: { headers?: AnyObject }): { headers: HttpHeaders } {
+  httpHeaders({ operationName }: GraphQLRequest, { headers: prevHeaders }: { headers?: AnyObject }): { headers: HttpHeaders } {
     const headers = new HttpHeaders({
       Accept: 'charset=utf-8',
       'Content-Type': 'application/json',
       'X-CSRFToken': this.cookieService.get('csrftoken'),
       ...prevHeaders,
     });
-
-    console.log(prevHeaders, operationName);
 
     switch (operationName) {
       case 'TokenAuth':
@@ -134,6 +132,19 @@ export class GraphqlService {
       default:
         return { headers: headers.set('Authorization', `Bearer ${this.auth_token$.getValue()}`) };
     }
+  }
+
+  wsHeaders({ operationName }: GraphQLRequest, { headers: prevHeaders }: { headers?: any }): { headers: any } {
+    return {
+      Accept: 'charset=utf-8',
+      'Content-Type': 'application/json',
+      'X-CSRFToken': this.cookieService.get('csrftoken'),
+      ...prevHeaders,
+    };
+  }
+
+  setHeaders(request: GraphQLRequest, { headers }: { headers?: AnyObject }): { headers: HttpHeaders | AnyObject } {
+    return this.queryKind(request) ? this.httpHeaders(request, { headers }) : this.wsHeaders(request, { headers });
   }
 
   handleErrors({ graphQLErrors, networkError }: ErrorResponse): Observable<FetchResult> | void {

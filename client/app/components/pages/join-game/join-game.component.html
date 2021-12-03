@@ -2,12 +2,12 @@
   <mat-step step="videogame_asset" aria-label="choose game to join">
     <ng-template matStepLabel>Join A Game</ng-template>
     <ng-template matStepContent>
-      <div class="d-flex flex-grow-1 justify-content-center d-none d-lg-block" matTooltip="{{avatar.name | uppercase}}"
+      <div *ngIf="avatar" class="d-flex flex-grow-1 justify-content-center d-none d-lg-block" matTooltip="{{avatar.name | uppercase}}"
         matTooltipPosition="above">
-        <img [src]="avatar.link| safeUrl" class="d-block mx-auto" height="350" alt="{{avatar.name}}" />
+        <img [src]="avatar.link | safeUrl" class="d-block mx-auto" height="350" alt="{{avatar.name}}" />
       </div>
 
-      <cah-available-games></cah-available-games>
+      <cah-available-games class="flex-grow-1"></cah-available-games>
 
       <div class="btn-toolbar pt-3" role="toolbar" aria-label="game options navigation buttons">
         <div class="btn-group btn-group-lg flex-fill" role="group" aria-label="reset button">

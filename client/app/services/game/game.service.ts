@@ -18,14 +18,15 @@ export class GameService {
     });
   }
 
-  createNewGame(game: CreateGameMutationInput) {
+  createNewGame(game: Partial<CreateGameMutationInput>) {
     return this.apollo.mutate({
       mutation: CREATE_GAME_LOCAL_MUTATION,
-      variables: { input: game },
+      variables: { input: { id: 'newGame', ...game } },
       optimisticResponse: {
         __typename: 'Mutation',
         createNewGame: {
           __typename: 'CreateNewGameMutation',
+          id: 'newGame',
           ...game,
         },
       },

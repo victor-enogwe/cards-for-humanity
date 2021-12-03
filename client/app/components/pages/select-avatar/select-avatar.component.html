@@ -1,13 +1,13 @@
 <mat-stepper linear aria-label="game avatars" class="d-flex flex-column flex-fill">
   <mat-step state="smart_toy" aria-label="select an avatar">
-    <ng-template matStepLabel>Select Your Avatar</ng-template>
+    <ng-template matStepLabel>Select Your Avatar {{route.snapshot.data?.newGame.avatar}}</ng-template>
     <ng-template matStepContent>
-      <cah-avatar (avatarSelected)="selectAvatar($event)" [selectedAvatar]="avatar ?? route.snapshot.data?.newGame.avatar"></cah-avatar>
+      <cah-avatar (onAvatarSelect)="selectAvatar($event)" [selected]="avatar"></cah-avatar>
 
       <div class="btn-toolbar" role="toolbar" aria-label="game options navigation buttons">
         <div class="btn-group btn-group-lg flex-fill" role="group" aria-label="reset button">
           <button mat-icon-button aria-label="reset steps" matTooltip="reset" matTooltipPosition="right" cahDebounceClick
-            (debounceClick)="avatar=undefined">
+            (debounceClick)="selectAvatar()">
             <mat-icon>settings_backup_restore</mat-icon>
           </button>
         </div>

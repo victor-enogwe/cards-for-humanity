@@ -15,7 +15,7 @@ export class UtilsService {
 
   randomItemsFromArray<T>(amount: number) {
     return (array: T[]) =>
-      array.reduce((accumulated: T[], _current: T, _index: number, currentArray: T[]) => {
+      [...array].reduce((accumulated: T[], _current: T, _index: number, currentArray: T[]) => {
         const max = currentArray.length - 1;
         const chosenIndex = this.randomNumberFromInterval({ min: 0, max });
         const chosen = currentArray[chosenIndex];

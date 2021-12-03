@@ -159,10 +159,11 @@ MIDDLEWARE = [
 
 # Authentication backends
 AUTHENTICATION_BACKENDS = [
+    # "graphql_jwt.backends.JSONWebTokenBackend",
+    'api.auth.backends.jwt.JWTBackend',
+    'api.auth.backends.email.EmailModelBackend',
     'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.facebook.FacebookOAuth2',
-    'api.auth.backends.jwt.JWTBackend',
-    'api.auth.backends.email.EmailModelBackend'
 ]
 
 CRON_CLASSES = [
@@ -223,10 +224,9 @@ SOCIAL_AUTH_PIPELINE = [
 ROOT_URLCONF = 'config.urls'
 
 GQL_MIDDLEWARE = [
-    # 'api.graphql.middlewares.jwt.JWTMiddleware',
-    'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    'api.graphql.middlewares.gql_depromise_subscription.DepromiseSubscription',
     'api.graphql.middlewares.gql_auth.AuthorizationMiddleware',
-    'api.graphql.middlewares.gql_depromise_subscription.DepromiseSubscription'
+    'graphql_jwt.middleware.JSONWebTokenMiddleware',
 ]
 
 GRAPHENE = {

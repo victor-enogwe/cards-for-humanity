@@ -6,10 +6,15 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
   Output,
   QueryList,
+  SimpleChanges,
   ViewChildren,
 } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { Avatar } from '../../../@types/global';
 import { UIService } from '../../../services/ui/ui.service';
 
@@ -19,14 +24,32 @@ import { UIService } from '../../../services/ui/ui.service';
   styleUrls: ['./avatar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AvatarComponent implements AfterContentInit {
+export class AvatarComponent implements OnInit, OnDestroy, OnChanges, AfterContentInit {
+  // eslint-disable-next-line @angular-eslint/no-output-on-prefix
+  @Output() onAvatarSelect = new EventEmitter<Avatar | null | undefined>();
+  @Input() selected?: Avatar['name'];
   @ViewChildren('avatarDiv') images!: QueryList<HTMLImageElement & Highlightable>;
-  @Output() avatarSelected: EventEmitter<Avatar> = new EventEmitter<Avatar>();
-  @Input() selectedAvatar!: Avatar | undefined;
-  private keyBoardEventsManager!: ActiveDescendantKeyManager<HTMLImageElement>;
+  avatar$ = new BehaviorSubject<Avatar | null | undefined>(null);
   avatars = this.uiService.avatars;
+  avatarSubscription!: Subscription;
+  private keyBoardEventsManager!: ActiveDescendantKeyManager<HTMLImageElement>;
 
   constructor(private uiService: UIService) {}
+
+  ngOnInit(): void {
+    this.avatarSubscription = this.avatar$.asObservable().subscribe((avatar) => this.onAvatarSelect.emit(avatar));
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const selected = changes?.selected;
+    if (selected) {
+      this.avatar$.next(this.avatars.find(({ name }) => name === selected.currentValue));
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.avatarSubscription.unsubscribe();
+  }
 
   ngAfterContentInit(): void {
     this.keyBoardEventsManager = new ActiveDescendantKeyManager(this.images).withWrap();

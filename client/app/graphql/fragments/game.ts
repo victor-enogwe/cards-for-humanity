@@ -47,5 +47,6 @@ export const NEW_GAME_NODE_FRAGMENT = gql`
     numSpectators @client
     status @client
     genres @client
+    avatar @client
   }
 `;

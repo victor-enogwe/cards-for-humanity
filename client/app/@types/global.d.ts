@@ -20,7 +20,7 @@ export interface AnyObject<V = any> {
 }
 
 export interface Avatar {
-  name: keyof typeof ApiPlayerAvatarChoices;
+  name: ApiPlayerAvatarChoices;
   link: string;
 }
 
