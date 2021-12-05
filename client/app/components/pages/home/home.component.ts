@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { lastValueFrom, map } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { MatFabMenu } from '../../../@types/global';
 import { UIService } from '../../../services/ui/ui.service';
 import { InstructionsComponent } from '../../shared/instructions/instructions.component';
@@ -12,7 +12,7 @@ import { InstructionsComponent } from '../../shared/instructions/instructions.co
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent implements AfterViewInit, OnDestroy {
-  isMobile$ = this.uiService.isMobile$.pipe(map((value) => (value ? 'true' : 'false')));
+  isMobile$ = this.uiService.isMobile$;
   playFabMenu: MatFabMenu[] = [
     {
       id: 'play_game',

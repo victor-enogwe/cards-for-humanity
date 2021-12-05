@@ -1,23 +1,24 @@
-from django.core.validators import MaxValueValidator, MinLengthValidator, MinValueValidator, RegexValidator
+from django.core.validators import (
+    MaxValueValidator,
+    MinLengthValidator,
+    MinValueValidator,
+    RegexValidator,
+)
 from django.utils.translation import gettext_lazy as _
 
 from api.utils.constants import password_error_message, text_error_message
 
 password_regex = RegexValidator(
-    r'^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$',
-    password_error_message
+    r"^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$",
+    password_error_message,
 )
 
 password_validators = [password_regex]
 
 text_regex_validator = RegexValidator(
-    r'^[A-Za-z]([\w+|-|\s|\'|\"|\.|!]?)+',
-    text_error_message
+    r"^[A-Za-z]([\w+|-|\s|\'|\"|\.|!]?)+", text_error_message
 )
-text_validators = [
-    MinLengthValidator(5, text_error_message),
-    text_regex_validator
-]
+text_validators = [MinLengthValidator(5, text_error_message), text_regex_validator]
 
 
 class RegexPasswordValidator:
@@ -33,5 +34,8 @@ class RegexPasswordValidator:
 
 
 def min_max_validator(min, max):
-    message = 'value should be >= {0} and <= {1}'.format(min, max)
-    return [MinValueValidator(min, message=message), MaxValueValidator(max, message=message)]
+    message = "value should be >= {0} and <= {1}".format(min, max)
+    return [
+        MinValueValidator(min, message=message),
+        MaxValueValidator(max, message=message),
+    ]

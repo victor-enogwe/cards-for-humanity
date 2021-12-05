@@ -6,4 +6,4 @@ from api.models.blackcard import BlackCard
 class BlackCardSerializer(ModelSerializer):
     class Meta:
         model = BlackCard
-        fields = '__all__'
+        fields = "__all__"

@@ -1,7 +1,7 @@
-<div class="d-flex flex-column h-100 align-items-center" *ngIf="isMobile$ | async as isMobile">
+<div class="d-flex flex-column h-100 align-items-center" *ngIf="{ isMobile: isMobile$ | async } as data">
   <div class="row d-flex flex-column bg-row w-100 mx-n3 justify-content-center text-center flex-grow-1"
-    [ngClass]="{ 'h-30': isMobile === 'true', 'h-50': isMobile === 'false' }">
-    <h1 class="fw-bolder" [ngClass]="{ 'display-1': isMobile === 'false'}">Cards Against Humanity.</h1>
+    [ngClass]="{ 'h-30': data?.isMobile, 'h-50': !data?.isMobile }">
+    <h1 class="fw-bolder" [ngClass]="{ 'display-1': !data?.isMobile}">Cards Against Humanity.</h1>
     <p class="lead text-muted fw-normal fst-italic mb-5 pb-5">A party game for horrible people.</p>
   </div>
   <div class="row container d-flex flex-row justify-content-center flex-grow-1 py-3">
@@ -21,7 +21,7 @@
       </p>
     </div>
 
-    <div *ngIf="isMobile === 'false'" class="col-sm col-md-6 d-flex flex-column flex-grow-1 justify-content-center">
+    <div *ngIf="!data?.isMobile" class="col-sm col-md-6 d-flex flex-column flex-grow-1 justify-content-center">
       <cah-instructions></cah-instructions>
       <div class="d-md-flex w-100 flex-row row row-cols-3 align-items-center justify-content-center">
         <button mat-raised-button type="button" class="btn btn-lg btn-dark text-uppercase font-weight-bolder" routerLink="auth">
@@ -31,6 +31,6 @@
       </div>
     </div>
   </div>
-  <cah-fab-menu *ngIf="isMobile === 'true'" [fabButtons]="playFabMenu" color="primary" icon="gamepad" (ngClick)="fabItemClicked($event)">
+  <cah-fab-menu *ngIf="data?.isMobile" [fabButtons]="playFabMenu" color="primary" icon="gamepad" (ngClick)="fabItemClicked($event)">
   </cah-fab-menu>
 </div>

@@ -14,7 +14,7 @@ from config.settings import BASE_DIR
 
 
 class AngularTemplate:
-    template_name: str = 'angular'
+    template_name: str = "angular"
 
     def __init__(self, template: Template, backend: DjangoTemplates):
         self.template = template
@@ -29,8 +29,8 @@ class AngularTemplate:
             match = match_object.group(0)
             nonce = force_text(request.csp_nonce)
             group = {
-                '<script': '<script nonce="{0}" '.format(nonce),
-                '<style': '<style nonce="{0}" '.format(nonce)
+                "<script": '<script nonce="{0}" '.format(nonce),
+                "<style": '<style nonce="{0}" '.format(nonce),
             }
 
             return group[match]
@@ -38,25 +38,24 @@ class AngularTemplate:
         return replace
 
     def html_render(self, request=None, context=None):
-        renderer = os.path.join(BASE_DIR, 'static/main.js')
-        js_render = muterun_js(
-            renderer, request.build_absolute_uri(request.path))
-        html = '{0}'.format(
-            js_render.stdout.decode(encoding='UTF-8'))
-        html = sub(r"(<script)|(<style)",
-                   self.format(request), html, 0, IGNORECASE)
+        renderer = os.path.join(BASE_DIR, "static/main.js")
+        js_render = muterun_js(renderer, request.build_absolute_uri(request.path))
+        html = "{0}".format(js_render.stdout.decode(encoding="UTF-8"))
+        html = sub(r"(<script)|(<style)", self.format(request), html, 0, IGNORECASE)
         self.template.source = """
         {load}
         {html}
-        """.format(html=html, load="{% load cache i18n csp %}")
+        """.format(
+            html=html, load="{% load cache i18n csp %}"
+        )
 
         self.template.nodelist = self.template.compile_nodelist()
 
         return self.template.render(context)
 
     def render_type(self, request: HttpRequest):
-        content_types = request.META.get('HTTP_ACCEPT').split(',')
-        extension = request.path.split('.')[-1]
+        content_types = request.META.get("HTTP_ACCEPT").split(",")
+        extension = request.path.split(".")[-1]
 
         return content_types + [extension]
 
@@ -64,11 +63,12 @@ class AngularTemplate:
         if context is None:
             context = {}
         if request is not None:
-            context['request'] = request
-            context['csrf_input'] = csrf_input_lazy(request)
-            context['csrf_token'] = csrf_token_lazy(request)
+            context["request"] = request
+            context["csrf_input"] = csrf_input_lazy(request)
+            context["csrf_token"] = csrf_token_lazy(request)
         context = make_context(
-            context, request, autoescape=self.backend.engine.autoescape)
+            context, request, autoescape=self.backend.engine.autoescape
+        )
 
         try:
             return self.html_render(request, context)

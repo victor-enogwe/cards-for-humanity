@@ -19,9 +19,13 @@ export const GAME_NODE_FRAGMENT = gql`
     numPlayers
     numSpectators
     status
+    joinEndsAt
+    creator {
+      id
+    }
     createdAt
     updatedAt
-    playerSet(first: 10) {
+    playerSet(first: 20) {
       edges {
         node {
           id
@@ -45,6 +49,7 @@ export const NEW_GAME_NODE_FRAGMENT = gql`
     rounds @client
     numPlayers @client
     numSpectators @client
+    joinEndsAt @client
     status @client
     genres @client
     avatar @client

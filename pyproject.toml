@@ -2,13 +2,110 @@
 name = "cards-against-humanity"
 version = "0.1.0"
 description = "A party game for horrible people."
-authors = ["victor-enogwe <victor.enogwe@gmail.com>"]
+authors = ["Victor Enogwe <victor.enogwe@gmail.com>"]
 license = "UNLICENSED"
+readme = "README.md"
+repository = "https://github.com/victor-enogwe/cards-against-humanity"
+homepage = "https://www.victorenogwe.me"
+keywords = ["cards", "cards against humanity"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+channels = "^3.0.4"
+Django = "^3.2.9"
+django-cors-headers = "^3.10.1"
+django-cron = "^0.5.1"
+django-csp = "^3.7"
+django-filter = "^21.1"
+django-graphql-jwt = "^0.3.4"
+django-graphql-social-auth = "^0.1.4"
+django-pgconnection = "^1.0.2"
+django-pgtrigger = "^2.4.0"
+django-phonenumber-field = "^6.0.0"
+django-redis = "^5.1.0"
+django-redis-cache = "^3.0.0"
+djangorestframework = "^3.12.4"
+graphene = "^3.0"
+graphene-django = {version = "^3.0.0b7", allow-prereleases = true}
+graphene-django-cud = "^0.9.0"
+graphql-core = "^3.1.6"
+graphql-relay = "^3.1.0"
+psycopg2 = "^2.9.2"
+naked = {git = "https://github.com/chrissimpkins/naked.git/"}
+python-environ = "^0.4.54"
+social-auth-app-django = "^5.0.0"
+social-auth-core = "^4.1.0"
+phonenumberslite = "^8.12.38"
+channels-redis = "^3.3.1"
 
 [tool.poetry.dev-dependencies]
+black = { version = "*", allow-prereleases = true }
+pre-commit = "*"
+pydocstyle = "*"
+pylint = "*"
+pytest = "^3.4"
+
+# ---------------------------------------------------------------- BLACK
+# Black - the uncompromising code formatter.
+# https://black.readthedocs.io/en/stable/index.html
+[tool.black]
+target-version = ['py39']
+
+# --------------------------------------------------------------- PYLINT
+# Pylint code checker configuration.
+# - Pylint docs:
+#   https://pylint.readthedocs.io/en/latest/
+# - Configuration reference:
+#   http://pylint.pycqa.org/en/latest/technical_reference/features.html
+[tool.pylint.MASTER]
+# Work in parallel.
+# Parallel work disabled due to a bug in the pylint-django:
+# https://github.com/PyCQA/pylint-django/issues/276
+#jobs = "0"
+jobs = "1"
+load-plugins = "pylint_quotes,pylint_django"
+# Do not store results of previous runs.
+persistent = "no"
+# Allow to load C extension modules.
+unsafe-load-any-extension = "yes"
+[tool.pylint."MESSAGES CONTROL"]
+# bad-continuation: Black does the job, no need to check.
+# design: Do not count lines, members, ..., no use.
+# similarities: Duplication does not mean bad design by itself.
+disable = "bad-continuation,design,similarities"
+enable = "c-extension-no-member"
+[tool.pylint.BASIC]
+# It is OK to have 2-letters identifiers, e.g. 'id' or 'ok'. Also allow
+# long identifiers, cause there is a strong line length limitation which
+# will force engineers to thing twice before giving too long names.
+argument-rgx = "[a-z_][a-z0-9_]{1,64}$"
+attr-rgx = "[a-z_][a-z0-9_]{1,64}$"
+bad-names = "foo,bar,baz,toto,tutu,tata,response,paths"
+class-attribute-rgx = "([A-Za-z_][A-Za-z0-9_]{1,64}|(__.*__))$"
+function-rgx = "[a-z_][a-z0-9_]{1,64}$"
+good-names = "i,j,k,ex,Run,_"
+method-rgx = "[a-z_][a-z0-9_]{1,64}$"
+# Docstrings are needed everywhere.
+no-docstring-rgx = "^$"
+variable-rgx = "[a-z_][a-z0-9_]{1,64}$"
+[tool.pylint.FORMAT]
+max-line-length="88"
+max-module-lines="9000" # Right, over nine thousand!
+[tool.pylint.STRING_QUOTES]
+docstring-quote = "double"
+string-quote = "double-avoid-escape"
+triple-quote = "double"
+[tool.pylint.PYLINT_DJANGO]
+# NOTE: When Pytest runs Pylint this setting is overwritten by the
+# environment variable `DJANGO_SETTINGS_MODULE` set by `pytest-django`.
+# Anyway, the setting is still useful when VS Code runs Pylint directly.
+django-settings-module = "example.settings"
+[tool.pylint.REFACTORING]
+# We have line length 88, no need to check.
+max-nested-blocks = "9000"
+[tool.pylint.REPORTS]
+reports = "no"
+score = "no"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

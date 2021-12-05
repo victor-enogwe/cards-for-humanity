@@ -10,39 +10,40 @@ from api.utils.enums import Provider as ProviderEnum
 from config.settings import AUTH_USER_MODEL
 
 
-@register(Protect(
-    name="protect_update_provider",
-    operation=Update,
-    condition=(
-        Q(old__user_id__df=F('new__user_id')) |
-        Q(old__email__df=F('new__email')) |
-        Q(old__phone__df=F('new__phone')) |
-        Q(old__seed__df=F('new__seed')) |
-        Q(old__provider__df=F('new__provider')) |
-        Q(old__conversion_mode__df=F('new__conversion_mode'))
+@register(
+    Protect(
+        name="protect_update_provider",
+        operation=Update,
+        condition=(
+            Q(old__user_id__df=F("new__user_id"))
+            | Q(old__email__df=F("new__email"))
+            | Q(old__phone__df=F("new__phone"))
+            | Q(old__seed__df=F("new__seed"))
+            | Q(old__provider__df=F("new__provider"))
+            | Q(old__conversion_mode__df=F("new__conversion_mode"))
+        ),
     )
-))
+)
 class Provider(TimestampBase):
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
-    last_login = models.DateTimeField(_('last login'), blank=True, null=True)
+    last_login = models.DateTimeField(_("last login"), blank=True, null=True)
     primary = models.BooleanField(default=False)
     email = models.EmailField(
         unique=True,
-        verbose_name='email',
+        verbose_name="email",
         blank=True,
         null=True,
-        error_messages={'unique': 'A user with that email already exists.'}
+        error_messages={"unique": "A user with that email already exists."},
     )
     phone = PhoneNumberField(
         unique=True,
-        verbose_name='phone',
+        verbose_name="phone",
         blank=True,
         null=True,
-        error_messages={
-            'unique': 'A user with that phone number already exists.'}
+        error_messages={"unique": "A user with that phone number already exists."},
     )
     seed = models.CharField(
-        _('token seed'),
+        _("token seed"),
         max_length=40,
         blank=True,
         null=True,
@@ -59,13 +60,10 @@ class Provider(TimestampBase):
         choices=Conversion.choices,
         default=Conversion.CREATED,
         max_length=10,
-        editable=False
+        editable=False,
     )
     verified_at = models.DateTimeField(
-        help_text="Date Verified",
-        blank=True,
-        default=None,
-        null=True
+        help_text="Date Verified", blank=True, default=None, null=True
     )
     objects = models.Manager()
 
@@ -74,9 +72,9 @@ class Provider(TimestampBase):
             models.CheckConstraint(
                 name="api_provider_email_or_phone",
                 check=(
-                    models.Q(email__isnull=False, phone__isnull=True, seed__isnull=True) |
-                    models.Q(phone__isnull=False, email__isnull=True) |
-                    models.Q(seed__isnull=False, email__isnull=True)
+                    models.Q(email__isnull=False, phone__isnull=True, seed__isnull=True)
+                    | models.Q(phone__isnull=False, email__isnull=True)
+                    | models.Q(seed__isnull=False, email__isnull=True)
                 ),
             )
         ]
@@ -95,13 +93,13 @@ class Provider(TimestampBase):
         """
         Normalize the email address by lowercasing the domain part of it.
         """
-        email = email or ''
+        email = email or ""
         try:
-            email_name, domain_part = email.strip().rsplit('@', 1)
+            email_name, domain_part = email.strip().rsplit("@", 1)
         except ValueError:
             pass
         else:
-            email = email_name + '@' + domain_part.lower()
+            email = email_name + "@" + domain_part.lower()
         return email
 
     def clean(self):

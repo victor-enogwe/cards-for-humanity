@@ -9,6 +9,7 @@ class TimestampBase(models.Model):
 
     class Meta:
         """Timestamp model meta information."""
+
         abstract = True
 
     # Fields

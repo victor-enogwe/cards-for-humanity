@@ -13,33 +13,31 @@ from api.models.timestamp import TimestampBase
 from api.utils.user_manager import UserManager
 
 
-@register(SoftDelete(name='protect_soft_delete_user', field='is_active', value=False))
-@register(Protect(
-    name="protect_mutate_user",
-    operation=Update,
-    condition=(
-        Q(old__created_at__df=F('new__created_at')) |
-        Q(old__is_staff__df=F('new__is_staff')) |
-        Q(old__is_admin__df=F('new__is_admin')) |
-        Q(old__is_superuser__df=F('new__is_superuser'))
-    )
-))
+@register(
+    SoftDelete(name="protect_soft_delete_user", field="is_active", value=False),
+    Protect(
+        name="protect_mutate_user",
+        operation=Update,
+        condition=(
+            Q(old__created_at__df=F("new__created_at"))
+            | Q(old__is_staff__df=F("new__is_staff"))
+            | Q(old__is_admin__df=F("new__is_admin"))
+            | Q(old__is_superuser__df=F("new__is_superuser"))
+        ),
+    ),
+)
 class User(PermissionsMixin, TimestampBase):
-    USERNAME_FIELD = 'id'
+    USERNAME_FIELD = "id"
     REQUIRED_FIELDS = []
-    is_active = models.BooleanField(
-        _('is active'),
-        default=True,
-        help_text="Active"
-    )
+    is_active = models.BooleanField(_("is active"), default=True, help_text="Active")
     is_staff = models.BooleanField(help_text="Is Staff", default=False)
     is_admin = models.BooleanField(help_text="Is Admin", default=False)
     is_superuser = models.BooleanField(help_text="Is Superuser", default=False)
     objects = UserManager()
 
     class Meta:
-        verbose_name = _('user')
-        verbose_name_plural = _('users')
+        verbose_name = _("user")
+        verbose_name_plural = _("users")
 
     def __str__(self):
         return str(self.id)
@@ -66,8 +64,8 @@ class User(PermissionsMixin, TimestampBase):
     def _legacy_get_session_auth_hash(self):
         # RemovedInDjango40Warning: pre-Django 3.1 hashes will be invalid.
         password = Password.objects.get(user=self, is_active=True)
-        key_salt = 'django.contrib.auth.models.AbstractBaseUser.get_session_auth_hash'
-        return salted_hmac(key_salt, password.password, algorithm='sha1').hexdigest()
+        key_salt = "django.contrib.auth.models.AbstractBaseUser.get_session_auth_hash"
+        return salted_hmac(key_salt, password.password, algorithm="sha1").hexdigest()
 
     def get_session_auth_hash(self):
         password = Password.objects.get(user=self, is_active=True)

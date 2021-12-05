@@ -16,47 +16,47 @@ class GenreNode(DjangoObjectType):
     class Meta:
         model = Genre
         filter_fields = {
-            'id': ['exact', 'lt', 'gt'],
-            'description': ['exact', 'icontains', 'istartswith'],
-            'credit': ['exact', 'icontains', 'istartswith']
+            "id": ["exact", "lt", "gt"],
+            "description": ["exact", "icontains", "istartswith"],
+            "credit": ["exact", "icontains", "istartswith"],
         }
-        interfaces = (relay.Node, )
+        interfaces = (relay.Node,)
         connection_class = ExtendedConnection
 
 
 class PlayerNode(DjangoObjectType):
     class Meta:
         model = Player
-        filter_fields = '__all__'
-        interfaces = (relay.Node, )
+        filter_fields = "__all__"
+        interfaces = (relay.Node,)
         connection_class = ExtendedConnection
 
 
 class GameNode(DjangoObjectType):
     class Meta:
         model = Game
-        filter_fields = '__all__'
-        interfaces = (relay.Node, )
+        filter_fields = "__all__"
+        interfaces = (relay.Node,)
         connection_class = ExtendedConnection
 
 
 class WhiteCardNode(DjangoObjectType):
     class Meta:
         model = WhiteCard
-        filter_fields = '__all__'
+        filter_fields = "__all__"
         filter_fields = {
-            'text': ['exact', 'icontains', 'istartswith'],
-            'genre': ['exact']
+            "text": ["exact", "icontains", "istartswith"],
+            "genre": ["exact"],
         }
-        interfaces = (relay.Node, )
+        interfaces = (relay.Node,)
         connection_class = ExtendedConnection
 
 
 class BlackCardNode(DjangoObjectType):
     class Meta:
         model = BlackCard
-        filter_fields = '__all__'
-        interfaces = (relay.Node, )
+        filter_fields = "__all__"
+        interfaces = (relay.Node,)
         connection_class = ExtendedConnection
 
 
@@ -80,15 +80,15 @@ class JWTPayloadNode(graphene.ObjectType):
 class UserNode(DjangoObjectType):
     class Meta:
         model = get_user_model()
-        interfaces = (relay.Node, )
+        interfaces = (relay.Node,)
         exclude_fields = ()
-        filter_fields = '__all__'
+        filter_fields = "__all__"
         connection_class = ExtendedConnection
 
 
 class ProfileNode(DjangoObjectType):
     class Meta:
         model = Profile
-        interfaces = (relay.Node, )
-        filter_fields = '__all__'
+        interfaces = (relay.Node,)
+        filter_fields = "__all__"
         connection_class = ExtendedConnection

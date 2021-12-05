@@ -12,18 +12,16 @@ import { FormService } from '../../../services/form/form.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InviteComponent {
+  numPlayers = this.data.spectator ? this.data.game.numSpectators : this.data.game.numPlayers;
   inviteForm = this.formBuilder.group({
-    players: new FormArray(
-      [this.createPlayerControl()],
-      [Validators.maxLength(this.data.game.numPlayers), this.formService.duplicateValidator],
-    ),
+    players: new FormArray([this.createPlayerControl()], [Validators.maxLength(this.numPlayers), this.formService.duplicateValidator]),
   });
 
   constructor(
     private formBuilder: FormBuilder,
     private formService: FormService,
     @Inject(APP_HOST) public host: string,
-    @Inject(MAT_DIALOG_DATA) public data: { game: NewGameNode; inviteOnly: boolean },
+    @Inject(MAT_DIALOG_DATA) public data: { game: NewGameNode; inviteOnly: boolean; spectator: boolean },
   ) {}
 
   get playerControl(): FormArray {

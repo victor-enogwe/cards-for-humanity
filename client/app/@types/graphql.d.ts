@@ -123,17 +123,26 @@ export interface BlackCardNodeEdge {
 
 export interface CreateGameInput {
   readonly genres: ReadonlyArray<InputMaybe<Scalars['ID']>>;
+  readonly inviteSet?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
   /** seconds */
   readonly joinEndsAt?: InputMaybe<Scalars['DateTime']>;
   /** no of players */
   readonly numPlayers?: InputMaybe<Scalars['Int']>;
   /** no of spectators */
   readonly numSpectators?: InputMaybe<Scalars['Int']>;
-  readonly playerSet?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
+  readonly playerSetAdd?: InputMaybe<ReadonlyArray<InputMaybe<CreateGameInputAddGamePlayerset>>>;
+  readonly private?: InputMaybe<Scalars['Boolean']>;
   /** seconds */
   readonly roundTime?: InputMaybe<Scalars['Int']>;
   /** no of game rounds */
   readonly rounds?: InputMaybe<Scalars['Int']>;
+}
+
+export interface CreateGameInputAddGamePlayerset {
+  readonly avatar?: InputMaybe<ApiPlayerAvatarChoices>;
+  readonly spectator?: InputMaybe<Scalars['Boolean']>;
+  readonly user: Scalars['ID'];
+  readonly winner?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
 }
 
 export interface CreateGameMutation {
@@ -191,13 +200,14 @@ export interface GameNode extends Node {
   /** no of spectators */
   readonly numSpectators: Scalars['Int'];
   readonly playerSet: PlayerNodeConnection;
+  readonly private: Scalars['Boolean'];
   /** seconds */
   readonly roundTime: Scalars['Int'];
   /** no of game rounds */
   readonly rounds: Scalars['Int'];
   readonly status: ApiGameStatusChoices;
   readonly updatedAt: Scalars['DateTime'];
-  readonly winner?: Maybe<UserNode>;
+  readonly winner?: Maybe<PlayerNode>;
 }
 
 export interface GameNodeGenresArgs {
@@ -252,6 +262,22 @@ export interface GameNodeEdge {
   readonly node?: Maybe<GameNode>;
 }
 
+export interface GamePrivacyMutation {
+  readonly __typename?: 'GamePrivacyMutation';
+  readonly game?: Maybe<GameNode>;
+}
+
+export interface GameStatusMutation {
+  readonly __typename?: 'GameStatusMutation';
+  readonly game?: Maybe<GameNode>;
+}
+
+export interface GameSubscription {
+  readonly __typename?: 'GameSubscription';
+  readonly game?: Maybe<GameNode>;
+  readonly room?: Maybe<Scalars['ID']>;
+}
+
 export interface GenreNode extends Node {
   readonly __typename?: 'GenreNode';
   readonly blackcardSet: BlackCardNodeConnection;
@@ -292,6 +318,7 @@ export interface GenreNodeGameSetArgs {
   numPlayers?: InputMaybe<Scalars['Int']>;
   numSpectators?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+  private?: InputMaybe<Scalars['Boolean']>;
   roundTime?: InputMaybe<Scalars['Int']>;
   rounds?: InputMaybe<Scalars['Int']>;
   status?: InputMaybe<Scalars['String']>;
@@ -348,18 +375,14 @@ export interface JwtPayloadNode {
 
 export interface JoinGameMutation {
   readonly __typename?: 'JoinGameMutation';
-  readonly game?: Maybe<GameNode>;
   readonly ok?: Maybe<Scalars['Boolean']>;
+  readonly player?: Maybe<PlayerNode>;
 }
 
 export interface JoinGameMutationInput {
-  readonly gameId: Scalars['ID'];
-  readonly playerId: Scalars['ID'];
-}
-
-export interface JoinGameSubscription {
-  readonly __typename?: 'JoinGameSubscription';
-  readonly event?: Maybe<Scalars['String']>;
+  readonly avatar: Scalars['String'];
+  readonly game: Scalars['ID'];
+  readonly spectator?: InputMaybe<Scalars['Boolean']>;
 }
 
 /** Root Mutation for the cards against humanity api. */
@@ -369,6 +392,8 @@ export interface Mutation {
   readonly createNewGame?: Maybe<CreateNewGameMutation>;
   readonly createUser?: Maybe<CreateUserMutation>;
   readonly deleteRefreshTokenCookie?: Maybe<DeleteRefreshTokenCookiePayload>;
+  readonly gamePrivacy?: Maybe<GamePrivacyMutation>;
+  readonly gameStatus?: Maybe<GameStatusMutation>;
   readonly joinGame?: Maybe<JoinGameMutation>;
   readonly refreshToken?: Maybe<RefreshTokenMutationPayload>;
   readonly revokeRefreshToken?: Maybe<RevokePayload>;
@@ -376,7 +401,6 @@ export interface Mutation {
   /** Social Auth for JSON Web Token (JWT) */
   readonly socialAuth?: Maybe<SocialAuthJwtPayload>;
   readonly tokenAuth?: Maybe<ObtainJsonWebTokenMutationPayload>;
-  readonly updateGameStatus?: Maybe<UpdateGameStatusMutation>;
 }
 
 /** Root Mutation for the cards against humanity api. */
@@ -397,6 +421,18 @@ export interface MutationCreateUserArgs {
 /** Root Mutation for the cards against humanity api. */
 export interface MutationDeleteRefreshTokenCookieArgs {
   input: DeleteRefreshTokenCookieInput;
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationGamePrivacyArgs {
+  id: Scalars['ID'];
+  input: UpdateGamePrivacyInput;
+}
+
+/** Root Mutation for the cards against humanity api. */
+export interface MutationGameStatusArgs {
+  id: Scalars['ID'];
+  input: UpdateGameStatusInput;
 }
 
 /** Root Mutation for the cards against humanity api. */
@@ -427,12 +463,6 @@ export interface MutationSocialAuthArgs {
 /** Root Mutation for the cards against humanity api. */
 export interface MutationTokenAuthArgs {
   input: ObtainJsonWebTokenMutationInput;
-}
-
-/** Root Mutation for the cards against humanity api. */
-export interface MutationUpdateGameStatusArgs {
-  id: Scalars['ID'];
-  input: UpdateGameInput;
 }
 
 export interface NewGameNode {
@@ -494,6 +524,27 @@ export interface PlayerNode extends Node {
   readonly spectator: Scalars['Boolean'];
   readonly updatedAt: Scalars['DateTime'];
   readonly user: UserNode;
+  readonly winner: GameNodeConnection;
+}
+
+export interface PlayerNodeWinnerArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  creator?: InputMaybe<Scalars['ID']>;
+  first?: InputMaybe<Scalars['Int']>;
+  genres?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
+  joinEndsAt?: InputMaybe<Scalars['DateTime']>;
+  last?: InputMaybe<Scalars['Int']>;
+  numPlayers?: InputMaybe<Scalars['Int']>;
+  numSpectators?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  private?: InputMaybe<Scalars['Boolean']>;
+  roundTime?: InputMaybe<Scalars['Int']>;
+  rounds?: InputMaybe<Scalars['Int']>;
+  status?: InputMaybe<Scalars['String']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
+  winner?: InputMaybe<Scalars['ID']>;
 }
 
 export interface PlayerNodeConnection {
@@ -525,6 +576,7 @@ export interface Query {
    */
   readonly fullWidth?: Maybe<Scalars['Boolean']>;
   readonly game?: Maybe<GameNode>;
+  readonly gameInProgress?: Maybe<GameNode>;
   /** find games */
   readonly games?: Maybe<GameNodeConnection>;
   /** all cards genre */
@@ -568,6 +620,7 @@ export interface QueryGamesArgs {
   numPlayers?: InputMaybe<Scalars['Int']>;
   numSpectators?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+  private?: InputMaybe<Scalars['Boolean']>;
   roundTime?: InputMaybe<Scalars['Int']>;
   rounds?: InputMaybe<Scalars['Int']>;
   status?: InputMaybe<Scalars['String']>;
@@ -708,22 +761,20 @@ export interface SocialNodeEdge {
 /** Root Subscription for the cards against humanity api. */
 export interface Subscription {
   readonly __typename?: 'Subscription';
-  readonly joinGame?: Maybe<JoinGameSubscription>;
+  readonly game?: Maybe<GameSubscription>;
 }
 
 /** Root Subscription for the cards against humanity api. */
-export interface SubscriptionJoinGameArgs {
-  gameRoom?: InputMaybe<Scalars['String']>;
-  user?: InputMaybe<Scalars['String']>;
+export interface SubscriptionGameArgs {
+  id: Scalars['ID'];
 }
 
-export interface UpdateGameInput {
+export interface UpdateGamePrivacyInput {
+  readonly private: Scalars['Boolean'];
+}
+
+export interface UpdateGameStatusInput {
   readonly status: ApiGameStatusChoices;
-}
-
-export interface UpdateGameStatusMutation {
-  readonly __typename?: 'UpdateGameStatusMutation';
-  readonly game?: Maybe<GameNode>;
 }
 
 export interface UserNode extends Node {
@@ -743,7 +794,6 @@ export interface UserNode extends Node {
   readonly playerSet: PlayerNodeConnection;
   readonly socialAuth: SocialNodeConnection;
   readonly updatedAt: Scalars['DateTime'];
-  readonly winners: GameNodeConnection;
 }
 
 export interface UserNodeGameSetArgs {
@@ -758,6 +808,7 @@ export interface UserNodeGameSetArgs {
   numPlayers?: InputMaybe<Scalars['Int']>;
   numSpectators?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+  private?: InputMaybe<Scalars['Boolean']>;
   roundTime?: InputMaybe<Scalars['Int']>;
   rounds?: InputMaybe<Scalars['Int']>;
   status?: InputMaybe<Scalars['String']>;
@@ -791,25 +842,6 @@ export interface UserNodeSocialAuthArgs {
   provider_In?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['String']>>>;
   uid?: InputMaybe<Scalars['String']>;
   uid_In?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['String']>>>;
-}
-
-export interface UserNodeWinnersArgs {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  createdAt?: InputMaybe<Scalars['DateTime']>;
-  creator?: InputMaybe<Scalars['ID']>;
-  first?: InputMaybe<Scalars['Int']>;
-  genres?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
-  joinEndsAt?: InputMaybe<Scalars['DateTime']>;
-  last?: InputMaybe<Scalars['Int']>;
-  numPlayers?: InputMaybe<Scalars['Int']>;
-  numSpectators?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  roundTime?: InputMaybe<Scalars['Int']>;
-  rounds?: InputMaybe<Scalars['Int']>;
-  status?: InputMaybe<Scalars['String']>;
-  updatedAt?: InputMaybe<Scalars['DateTime']>;
-  winner?: InputMaybe<Scalars['ID']>;
 }
 
 export interface UserNodeConnection {
@@ -925,6 +957,7 @@ export type GameNodeKeySpecifier = (
   | 'numPlayers'
   | 'numSpectators'
   | 'playerSet'
+  | 'private'
   | 'roundTime'
   | 'rounds'
   | 'status'
@@ -941,6 +974,7 @@ export type GameNodeFieldPolicy = {
   numPlayers?: FieldPolicy<any> | FieldReadFunction<any>;
   numSpectators?: FieldPolicy<any> | FieldReadFunction<any>;
   playerSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  private?: FieldPolicy<any> | FieldReadFunction<any>;
   roundTime?: FieldPolicy<any> | FieldReadFunction<any>;
   rounds?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -958,6 +992,19 @@ export type GameNodeEdgeKeySpecifier = ('cursor' | 'node' | GameNodeEdgeKeySpeci
 export type GameNodeEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type GamePrivacyMutationKeySpecifier = ('game' | GamePrivacyMutationKeySpecifier)[];
+export type GamePrivacyMutationFieldPolicy = {
+  game?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type GameStatusMutationKeySpecifier = ('game' | GameStatusMutationKeySpecifier)[];
+export type GameStatusMutationFieldPolicy = {
+  game?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type GameSubscriptionKeySpecifier = ('game' | 'room' | GameSubscriptionKeySpecifier)[];
+export type GameSubscriptionFieldPolicy = {
+  game?: FieldPolicy<any> | FieldReadFunction<any>;
+  room?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type GenreNodeKeySpecifier = (
   | 'blackcardSet'
@@ -1019,27 +1066,24 @@ export type JWTPayloadNodeFieldPolicy = {
   sub?: FieldPolicy<any> | FieldReadFunction<any>;
   username?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type JoinGameMutationKeySpecifier = ('game' | 'ok' | JoinGameMutationKeySpecifier)[];
+export type JoinGameMutationKeySpecifier = ('ok' | 'player' | JoinGameMutationKeySpecifier)[];
 export type JoinGameMutationFieldPolicy = {
-  game?: FieldPolicy<any> | FieldReadFunction<any>;
   ok?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type JoinGameSubscriptionKeySpecifier = ('event' | JoinGameSubscriptionKeySpecifier)[];
-export type JoinGameSubscriptionFieldPolicy = {
-  event?: FieldPolicy<any> | FieldReadFunction<any>;
+  player?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MutationKeySpecifier = (
   | 'createGame'
   | 'createNewGame'
   | 'createUser'
   | 'deleteRefreshTokenCookie'
+  | 'gamePrivacy'
+  | 'gameStatus'
   | 'joinGame'
   | 'refreshToken'
   | 'revokeRefreshToken'
   | 'setFullWidth'
   | 'socialAuth'
   | 'tokenAuth'
-  | 'updateGameStatus'
   | MutationKeySpecifier
 )[];
 export type MutationFieldPolicy = {
@@ -1047,13 +1091,14 @@ export type MutationFieldPolicy = {
   createNewGame?: FieldPolicy<any> | FieldReadFunction<any>;
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteRefreshTokenCookie?: FieldPolicy<any> | FieldReadFunction<any>;
+  gamePrivacy?: FieldPolicy<any> | FieldReadFunction<any>;
+  gameStatus?: FieldPolicy<any> | FieldReadFunction<any>;
   joinGame?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeRefreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
   setFullWidth?: FieldPolicy<any> | FieldReadFunction<any>;
   socialAuth?: FieldPolicy<any> | FieldReadFunction<any>;
   tokenAuth?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateGameStatus?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type NewGameNodeKeySpecifier = (
   | 'avatar'
@@ -1114,6 +1159,7 @@ export type PlayerNodeKeySpecifier = (
   | 'spectator'
   | 'updatedAt'
   | 'user'
+  | 'winner'
   | PlayerNodeKeySpecifier
 )[];
 export type PlayerNodeFieldPolicy = {
@@ -1126,6 +1172,7 @@ export type PlayerNodeFieldPolicy = {
   spectator?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
+  winner?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlayerNodeConnectionKeySpecifier = ('edgeCount' | 'edges' | 'pageInfo' | 'totalCount' | PlayerNodeConnectionKeySpecifier)[];
 export type PlayerNodeConnectionFieldPolicy = {
@@ -1143,6 +1190,7 @@ export type QueryKeySpecifier = (
   | 'blackCards'
   | 'fullWidth'
   | 'game'
+  | 'gameInProgress'
   | 'games'
   | 'genres'
   | 'newGame'
@@ -1154,6 +1202,7 @@ export type QueryFieldPolicy = {
   blackCards?: FieldPolicy<any> | FieldReadFunction<any>;
   fullWidth?: FieldPolicy<any> | FieldReadFunction<any>;
   game?: FieldPolicy<any> | FieldReadFunction<any>;
+  gameInProgress?: FieldPolicy<any> | FieldReadFunction<any>;
   games?: FieldPolicy<any> | FieldReadFunction<any>;
   genres?: FieldPolicy<any> | FieldReadFunction<any>;
   newGame?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1210,12 +1259,8 @@ export type SocialNodeEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SubscriptionKeySpecifier = ('joinGame' | SubscriptionKeySpecifier)[];
+export type SubscriptionKeySpecifier = ('game' | SubscriptionKeySpecifier)[];
 export type SubscriptionFieldPolicy = {
-  joinGame?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type UpdateGameStatusMutationKeySpecifier = ('game' | UpdateGameStatusMutationKeySpecifier)[];
-export type UpdateGameStatusMutationFieldPolicy = {
   game?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserNodeKeySpecifier = (
@@ -1229,7 +1274,6 @@ export type UserNodeKeySpecifier = (
   | 'playerSet'
   | 'socialAuth'
   | 'updatedAt'
-  | 'winners'
   | UserNodeKeySpecifier
 )[];
 export type UserNodeFieldPolicy = {
@@ -1243,7 +1287,6 @@ export type UserNodeFieldPolicy = {
   playerSet?: FieldPolicy<any> | FieldReadFunction<any>;
   socialAuth?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
-  winners?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserNodeConnectionKeySpecifier = ('edgeCount' | 'edges' | 'pageInfo' | 'totalCount' | UserNodeConnectionKeySpecifier)[];
 export type UserNodeConnectionFieldPolicy = {
@@ -1325,6 +1368,18 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | GameNodeEdgeKeySpecifier | (() => undefined | GameNodeEdgeKeySpecifier);
     fields?: GameNodeEdgeFieldPolicy;
   };
+  GamePrivacyMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | GamePrivacyMutationKeySpecifier | (() => undefined | GamePrivacyMutationKeySpecifier);
+    fields?: GamePrivacyMutationFieldPolicy;
+  };
+  GameStatusMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | GameStatusMutationKeySpecifier | (() => undefined | GameStatusMutationKeySpecifier);
+    fields?: GameStatusMutationFieldPolicy;
+  };
+  GameSubscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | GameSubscriptionKeySpecifier | (() => undefined | GameSubscriptionKeySpecifier);
+    fields?: GameSubscriptionFieldPolicy;
+  };
   GenreNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GenreNodeKeySpecifier | (() => undefined | GenreNodeKeySpecifier);
     fields?: GenreNodeFieldPolicy;
@@ -1344,10 +1399,6 @@ export type StrictTypedTypePolicies = {
   JoinGameMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | JoinGameMutationKeySpecifier | (() => undefined | JoinGameMutationKeySpecifier);
     fields?: JoinGameMutationFieldPolicy;
-  };
-  JoinGameSubscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | JoinGameSubscriptionKeySpecifier | (() => undefined | JoinGameSubscriptionKeySpecifier);
-    fields?: JoinGameSubscriptionFieldPolicy;
   };
   Mutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier);
@@ -1416,10 +1467,6 @@ export type StrictTypedTypePolicies = {
   Subscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SubscriptionKeySpecifier | (() => undefined | SubscriptionKeySpecifier);
     fields?: SubscriptionFieldPolicy;
-  };
-  UpdateGameStatusMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | UpdateGameStatusMutationKeySpecifier | (() => undefined | UpdateGameStatusMutationKeySpecifier);
-    fields?: UpdateGameStatusMutationFieldPolicy;
   };
   UserNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserNodeKeySpecifier | (() => undefined | UserNodeKeySpecifier);
@@ -1542,6 +1589,7 @@ export type ResolversTypes = ResolversObject<{
   BlackCardNodeEdge: ResolverTypeWrapper<BlackCardNodeEdge>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   CreateGameInput: CreateGameInput;
+  CreateGameInputAddGamePlayerset: CreateGameInputAddGamePlayerset;
   CreateGameMutation: ResolverTypeWrapper<CreateGameMutation>;
   CreateGameMutationInput: CreateGameMutationInput;
   CreateNewGameMutation: ResolverTypeWrapper<CreateNewGameMutation>;
@@ -1554,6 +1602,9 @@ export type ResolversTypes = ResolversObject<{
   GameNode: ResolverTypeWrapper<GameNode>;
   GameNodeConnection: ResolverTypeWrapper<GameNodeConnection>;
   GameNodeEdge: ResolverTypeWrapper<GameNodeEdge>;
+  GamePrivacyMutation: ResolverTypeWrapper<GamePrivacyMutation>;
+  GameStatusMutation: ResolverTypeWrapper<GameStatusMutation>;
+  GameSubscription: ResolverTypeWrapper<GameSubscription>;
   GenreNode: ResolverTypeWrapper<GenreNode>;
   GenreNodeConnection: ResolverTypeWrapper<GenreNodeConnection>;
   GenreNodeEdge: ResolverTypeWrapper<GenreNodeEdge>;
@@ -1562,7 +1613,6 @@ export type ResolversTypes = ResolversObject<{
   JWTPayloadNode: ResolverTypeWrapper<JwtPayloadNode>;
   JoinGameMutation: ResolverTypeWrapper<JoinGameMutation>;
   JoinGameMutationInput: JoinGameMutationInput;
-  JoinGameSubscription: ResolverTypeWrapper<JoinGameSubscription>;
   Mutation: ResolverTypeWrapper<{}>;
   NewGameNode: ResolverTypeWrapper<NewGameNode>;
   Node:
@@ -1594,8 +1644,8 @@ export type ResolversTypes = ResolversObject<{
   SocialNodeEdge: ResolverTypeWrapper<SocialNodeEdge>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Subscription: ResolverTypeWrapper<{}>;
-  UpdateGameInput: UpdateGameInput;
-  UpdateGameStatusMutation: ResolverTypeWrapper<UpdateGameStatusMutation>;
+  UpdateGamePrivacyInput: UpdateGamePrivacyInput;
+  UpdateGameStatusInput: UpdateGameStatusInput;
   UserNode: ResolverTypeWrapper<UserNode>;
   UserNodeConnection: ResolverTypeWrapper<UserNodeConnection>;
   UserNodeEdge: ResolverTypeWrapper<UserNodeEdge>;
@@ -1611,6 +1661,7 @@ export type ResolversParentTypes = ResolversObject<{
   BlackCardNodeEdge: BlackCardNodeEdge;
   Boolean: Scalars['Boolean'];
   CreateGameInput: CreateGameInput;
+  CreateGameInputAddGamePlayerset: CreateGameInputAddGamePlayerset;
   CreateGameMutation: CreateGameMutation;
   CreateGameMutationInput: CreateGameMutationInput;
   CreateNewGameMutation: CreateNewGameMutation;
@@ -1623,6 +1674,9 @@ export type ResolversParentTypes = ResolversObject<{
   GameNode: GameNode;
   GameNodeConnection: GameNodeConnection;
   GameNodeEdge: GameNodeEdge;
+  GamePrivacyMutation: GamePrivacyMutation;
+  GameStatusMutation: GameStatusMutation;
+  GameSubscription: GameSubscription;
   GenreNode: GenreNode;
   GenreNodeConnection: GenreNodeConnection;
   GenreNodeEdge: GenreNodeEdge;
@@ -1631,7 +1685,6 @@ export type ResolversParentTypes = ResolversObject<{
   JWTPayloadNode: JwtPayloadNode;
   JoinGameMutation: JoinGameMutation;
   JoinGameMutationInput: JoinGameMutationInput;
-  JoinGameSubscription: JoinGameSubscription;
   Mutation: {};
   NewGameNode: NewGameNode;
   Node:
@@ -1663,8 +1716,8 @@ export type ResolversParentTypes = ResolversObject<{
   SocialNodeEdge: SocialNodeEdge;
   String: Scalars['String'];
   Subscription: {};
-  UpdateGameInput: UpdateGameInput;
-  UpdateGameStatusMutation: UpdateGameStatusMutation;
+  UpdateGamePrivacyInput: UpdateGamePrivacyInput;
+  UpdateGameStatusInput: UpdateGameStatusInput;
   UserNode: UserNode;
   UserNodeConnection: UserNodeConnection;
   UserNodeEdge: UserNodeEdge;
@@ -1756,11 +1809,12 @@ export type GameNodeResolvers<
   numPlayers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   numSpectators?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   playerSet?: Resolver<ResolversTypes['PlayerNodeConnection'], ParentType, ContextType, RequireFields<GameNodePlayerSetArgs, never>>;
+  private?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   roundTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   rounds?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['ApiGameStatusChoices'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  winner?: Resolver<Maybe<ResolversTypes['UserNode']>, ParentType, ContextType>;
+  winner?: Resolver<Maybe<ResolversTypes['PlayerNode']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -1781,6 +1835,31 @@ export type GameNodeEdgeResolvers<
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type GamePrivacyMutationResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['GamePrivacyMutation'] = ResolversParentTypes['GamePrivacyMutation'],
+> = ResolversObject<{
+  game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type GameStatusMutationResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['GameStatusMutation'] = ResolversParentTypes['GameStatusMutation'],
+> = ResolversObject<{
+  game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type GameSubscriptionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['GameSubscription'] = ResolversParentTypes['GameSubscription'],
+> = ResolversObject<{
+  game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
+  room?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -1851,16 +1930,8 @@ export type JoinGameMutationResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['JoinGameMutation'] = ResolversParentTypes['JoinGameMutation'],
 > = ResolversObject<{
-  game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
   ok?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type JoinGameSubscriptionResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['JoinGameSubscription'] = ResolversParentTypes['JoinGameSubscription'],
-> = ResolversObject<{
-  event?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  player?: Resolver<Maybe<ResolversTypes['PlayerNode']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -1892,6 +1963,18 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationDeleteRefreshTokenCookieArgs, 'input'>
   >;
+  gamePrivacy?: Resolver<
+    Maybe<ResolversTypes['GamePrivacyMutation']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationGamePrivacyArgs, 'id' | 'input'>
+  >;
+  gameStatus?: Resolver<
+    Maybe<ResolversTypes['GameStatusMutation']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationGameStatusArgs, 'id' | 'input'>
+  >;
   joinGame?: Resolver<Maybe<ResolversTypes['JoinGameMutation']>, ParentType, ContextType, RequireFields<MutationJoinGameArgs, 'input'>>;
   refreshToken?: Resolver<
     Maybe<ResolversTypes['RefreshTokenMutationPayload']>,
@@ -1922,12 +2005,6 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationTokenAuthArgs, 'input'>
-  >;
-  updateGameStatus?: Resolver<
-    Maybe<ResolversTypes['UpdateGameStatusMutation']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateGameStatusArgs, 'id' | 'input'>
   >;
 }>;
 
@@ -1995,6 +2072,7 @@ export type PlayerNodeResolvers<
   spectator?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['UserNode'], ParentType, ContextType>;
+  winner?: Resolver<ResolversTypes['GameNodeConnection'], ParentType, ContextType, RequireFields<PlayerNodeWinnerArgs, never>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2030,6 +2108,7 @@ export type QueryResolvers<
   >;
   fullWidth?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType, RequireFields<QueryGameArgs, never>>;
+  gameInProgress?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
   games?: Resolver<Maybe<ResolversTypes['GameNodeConnection']>, ParentType, ContextType, RequireFields<QueryGamesArgs, never>>;
   genres?: Resolver<Maybe<ResolversTypes['GenreNodeConnection']>, ParentType, ContextType, RequireFields<QueryGenresArgs, never>>;
   newGame?: Resolver<Maybe<ResolversTypes['NewGameNode']>, ParentType, ContextType, RequireFields<QueryNewGameArgs, 'id'>>;
@@ -2121,21 +2200,13 @@ export type SubscriptionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription'],
 > = ResolversObject<{
-  joinGame?: SubscriptionResolver<
-    Maybe<ResolversTypes['JoinGameSubscription']>,
-    'joinGame',
+  game?: SubscriptionResolver<
+    Maybe<ResolversTypes['GameSubscription']>,
+    'game',
     ParentType,
     ContextType,
-    RequireFields<SubscriptionJoinGameArgs, never>
+    RequireFields<SubscriptionGameArgs, 'id'>
   >;
-}>;
-
-export type UpdateGameStatusMutationResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['UpdateGameStatusMutation'] = ResolversParentTypes['UpdateGameStatusMutation'],
-> = ResolversObject<{
-  game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type UserNodeResolvers<
@@ -2152,7 +2223,6 @@ export type UserNodeResolvers<
   playerSet?: Resolver<ResolversTypes['PlayerNodeConnection'], ParentType, ContextType, RequireFields<UserNodePlayerSetArgs, never>>;
   socialAuth?: Resolver<ResolversTypes['SocialNodeConnection'], ParentType, ContextType, RequireFields<UserNodeSocialAuthArgs, never>>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  winners?: Resolver<ResolversTypes['GameNodeConnection'], ParentType, ContextType, RequireFields<UserNodeWinnersArgs, never>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2221,12 +2291,14 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   GameNode?: GameNodeResolvers<ContextType>;
   GameNodeConnection?: GameNodeConnectionResolvers<ContextType>;
   GameNodeEdge?: GameNodeEdgeResolvers<ContextType>;
+  GamePrivacyMutation?: GamePrivacyMutationResolvers<ContextType>;
+  GameStatusMutation?: GameStatusMutationResolvers<ContextType>;
+  GameSubscription?: GameSubscriptionResolvers<ContextType>;
   GenreNode?: GenreNodeResolvers<ContextType>;
   GenreNodeConnection?: GenreNodeConnectionResolvers<ContextType>;
   GenreNodeEdge?: GenreNodeEdgeResolvers<ContextType>;
   JWTPayloadNode?: JwtPayloadNodeResolvers<ContextType>;
   JoinGameMutation?: JoinGameMutationResolvers<ContextType>;
-  JoinGameSubscription?: JoinGameSubscriptionResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   NewGameNode?: NewGameNodeResolvers<ContextType>;
   Node?: NodeResolvers<ContextType>;
@@ -2245,7 +2317,6 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   SocialNodeConnection?: SocialNodeConnectionResolvers<ContextType>;
   SocialNodeEdge?: SocialNodeEdgeResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
-  UpdateGameStatusMutation?: UpdateGameStatusMutationResolvers<ContextType>;
   UserNode?: UserNodeResolvers<ContextType>;
   UserNodeConnection?: UserNodeConnectionResolvers<ContextType>;
   UserNodeEdge?: UserNodeEdgeResolvers<ContextType>;

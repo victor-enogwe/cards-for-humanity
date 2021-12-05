@@ -15,9 +15,16 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
+from graphql import GraphQLError
 from graphene.utils.thenables import maybe_thenable
-from graphql.error.base import GraphQLError
-from graphql_jwt.decorators import csrf_rotation, exceptions, on_token_auth_resolve, refresh_expiration, setup_jwt_cookie, signals
+from graphql_jwt.decorators import (
+    csrf_rotation,
+    exceptions,
+    on_token_auth_resolve,
+    refresh_expiration,
+    setup_jwt_cookie,
+    signals,
+)
 from graphql_jwt.settings import jwt_settings
 from graphql_jwt.utils import delete_cookie, get_payload, set_cookie
 
@@ -28,7 +35,7 @@ from config.settings import env
 
 
 def load_data(filepath):
-    data = open(filepath, encoding='utf-8')
+    data = open(filepath, encoding="utf-8")
     items = json.load(data)
     data.close()
     return items
@@ -36,23 +43,23 @@ def load_data(filepath):
 
 def create_superuser(apps, schema_editor):
     try:
-        management.call_command('createsuperusercah', interactive=False)
+        management.call_command("createsuperusercah", interactive=False)
     except Exception as error:
         return print(error)
 
 
 def delete_superuser(apps, schema_editor):
-    email = Provider.objects.get(email=env('SUPERUSER_EMAIL'))
+    email = Provider.objects.get(email=env("SUPERUSER_EMAIL"))
     return get_user_model().objects.get(pk=email.pk).delete()
 
 
 def create_genres(filepath):
     def create(apps, schema_editor):
-        Genre = apps.get_model('api', 'Genre')
-        genres = [Genre.objects.get_or_create(
-            **item) for item in load_data(filepath)]
+        Genre = apps.get_model("api", "Genre")
+        genres = [Genre.objects.get_or_create(**item) for item in load_data(filepath)]
 
         return [item for item, created in genres]
+
     return create
 
 
@@ -65,28 +72,48 @@ def find_genre(description, genres):
 
 def create_blackcards(filepath):
     def cards(apps, schema_editor):
-        BlackCard = apps.get_model('api', 'BlackCard')
-        genres = apps.get_model('api', 'Genre').objects.all()
+        BlackCard = apps.get_model("api", "BlackCard")
+        genres = apps.get_model("api", "Genre").objects.all()
         data = load_data(filepath)
-        return [BlackCard.objects.get_or_create(**{**item, 'genre': find_genre(item['genre'], genres)}) for item in data]
+        return [
+            BlackCard.objects.get_or_create(
+                **{**item, "genre": find_genre(item["genre"], genres)}
+            )
+            for item in data
+        ]
+
     return cards
 
 
 def create_whitecards(filepath):
     def cards(apps, schema_editor):
-        WhiteCard = apps.get_model('api', 'WhiteCard')
-        genres = apps.get_model('api', 'Genre').objects.all()
+        WhiteCard = apps.get_model("api", "WhiteCard")
+        genres = apps.get_model("api", "Genre").objects.all()
         data = load_data(filepath)
-        return [WhiteCard.objects.get_or_create(**{**item, 'genre': find_genre(item['genre'], genres)}) for item in data]
+        return [
+            WhiteCard.objects.get_or_create(
+                **{**item, "genre": find_genre(item["genre"], genres)}
+            )
+            for item in data
+        ]
+
     return cards
 
 
 def filenames(dirpath):
-    return [path.join(dirpath, f) for f in listdir(dirpath) if isfile(join(dirpath, f)) and re.match('^[A-Za-z]', f)]
+    return [
+        path.join(dirpath, f)
+        for f in listdir(dirpath)
+        if isfile(join(dirpath, f)) and re.match("^[A-Za-z]", f)
+    ]
 
 
-def game_name(variation='for'):
-    return 'cards {0} humanity'.format(variation)
+def expiry_date_min():
+    return timezone.now() + timezone.timedelta(minutes=5.5)
+
+
+def game_name(variation="for"):
+    return "cards {0} humanity".format(variation)
 
 
 def join_end_default():
@@ -213,8 +240,7 @@ def get_generic_object_admin_link(obj, id_attr="owner_id", type_attr="owner_type
     url = reverse("admin:{}_change".format(model_path), args=[owner_id])
 
     return mark_safe(
-        "<a href='{}'>{} ({})</a>".format(url,
-                                          owner_model.capitalize(), owner_id)
+        "<a href='{}'>{} ({})</a>".format(url, owner_model.capitalize(), owner_id)
     )
 
 
@@ -229,7 +255,7 @@ def get_generic_parent_admin_link(obj):
 
 def get_user_by_payload(payload):
     username = jwt_settings.JWT_PAYLOAD_GET_USERNAME_HANDLER(payload)
-    user_id = payload.get('sub')
+    user_id = payload.get("sub")
     user = None
 
     if username:
@@ -255,29 +281,29 @@ def jwt_payload(user, context=None):
     provider: Provider = Provider.objects.get(user=user)
     profile: Profile = Profile.objects.get(provider=provider)
     host = os.getenv("HOST", None)
-    claims_url = '{0}/claims'.format(host)
+    claims_url = "{0}/claims".format(host)
     jwt_datetime = datetime.utcnow() + jwt_settings.JWT_EXPIRATION_DELTA
     jwt_expires = int(jwt_datetime.timestamp())
     iat = timegm(datetime.utcnow().utctimetuple())
     payload = {
-        'iss': jwt_settings.JWT_ISSUER,
-        'sub': str(user.id),
-        'aud': jwt_settings.JWT_AUDIENCE,
-        'exp': jwt_expires,
-        'nbf': iat,
-        'iat': iat,
-        'jti': uuid4().hex,
+        "iss": jwt_settings.JWT_ISSUER,
+        "sub": str(user.id),
+        "aud": jwt_settings.JWT_AUDIENCE,
+        "exp": jwt_expires,
+        "nbf": iat,
+        "iat": iat,
+        "jti": uuid4().hex,
         # For library compatibility
-        'username': str(profile.username),
-        'provider': str(profile.id),
-        'name': profile.full_name.title(),
-        'email': provider.email,
-        'email_verified': provider.is_verified,
+        "username": str(profile.username),
+        "provider": str(profile.id),
+        "name": profile.full_name.title(),
+        "email": provider.email,
+        "email_verified": provider.is_verified,
         claims_url: {
-            'x-cah-allowed-roles': [],
-            'x-cah-default-role': None,
-            'x-cah-user-id': str(user.id)
-        }
+            "x-cah-allowed-roles": [],
+            "x-cah-default-role": None,
+            "x-cah-user-id": str(user.id),
+        },
     }
 
     return payload
@@ -291,7 +317,7 @@ def token_auth(f):
     def wrapper(cls, root, info, password, **kwargs):
         context = info.context
         context._jwt_token_auth = True
-        username = kwargs.get('username')
+        username = kwargs.get("username")
         user = authenticate(
             request=context,
             username=username,
@@ -300,7 +326,8 @@ def token_auth(f):
 
         if user is None:
             raise exceptions.JSONWebTokenError(
-                GraphQLErrors.USER_SIGNIN__INVALID_CREDENTIALS)
+                GraphQLErrors.USER_SIGNIN__INVALID_CREDENTIALS
+            )
 
         if hasattr(context, "user"):
             context.user = user

@@ -1,14 +1,14 @@
-<cah-auth-container title="Login" class="flex-fill" *ngIf="isMobile$ |async  as isMobile">
-  <div *ngIf="isMobile === 'true'" class="btn-group d-md-none mb-3" role="group" aria-label="authentication methods">
+<cah-auth-container title="Login" class="flex-fill" *ngIf="{ isMobile: isMobile$ | async }  as data">
+  <div *ngIf="data?.isMobile" class="btn-group d-md-none mb-3" role="group" aria-label="authentication methods">
     <button mat-stroked-button type="button" class="btn" [ngClass]="{ 'btn-secondary': !showSocialAuth, 'btn-light': showSocialAuth}"
       (click)="showSocialAuth=!showSocialAuth">Email</button>
     <button mat-stroked-button type="button" class="btn" [ngClass]="{ 'btn-secondary': showSocialAuth, 'btn-light': !showSocialAuth}"
       (click)="showSocialAuth=!showSocialAuth">Social</button>
   </div>
 
-  <div class="col-md-12 col-lg-6 mb-5 p-md-5 d-md-block flex-fill" [ngClass]="{ 'd-none': (isMobile === 'true') && !showSocialAuth}">
+  <div class="col-md-12 col-lg-6 mb-5 p-md-5 d-md-block flex-fill" [ngClass]="{ 'd-none': (data?.isMobile) && !showSocialAuth}">
     <div class="row px-3 p-md-0">
-      <h6 *ngIf="isMobile === 'false'" class="card-title text-center text-muted mb-3">Social Login</h6>
+      <h6 *ngIf="data?.isMobile" class="card-title text-center text-muted mb-3">Social Login</h6>
       <button mat-raised-button #facebook class="btn btn-lg btn-block btn-primary" cahDebounceClick (debounceClick)="loginSocial($event)"
         [hidden]="google.disabled" [ngClass]="{
         'progress-bar': facebook.disabled,
@@ -25,8 +25,8 @@
     </div>
   </div>
 
-  <div class="col-md-12 col-lg-6 p-md-5 border-or d-md-block" [ngClass]="{ 'd-none': (isMobile === 'true') && showSocialAuth}">
-    <h6 *ngIf="isMobile === 'false'" class="card-title text-center text-muted mb-3">Login With Email</h6>
+  <div class="col-md-12 col-lg-6 p-md-5 border-or d-md-block" [ngClass]="{ 'd-none': (data?.isMobile) && showSocialAuth}">
+    <h6 *ngIf="data?.isMobile" class="card-title text-center text-muted mb-3">Login With Email</h6>
     <form [formGroup]="loginForm">
       <mat-form-field class="form-group d-block pb-3">
         <mat-label [attr.for]="loginForm.controls.username.value.includes('@') ? 'email' : 'username'">username or email</mat-label>

@@ -1,100 +1,98 @@
-<mat-stepper linear aria-label="game options" class="d-flex flex-column flex-fill">
+<mat-stepper *ngIf="{ genres: genres$ | async } as data" linear aria-label="game options" class="d-flex flex-column flex-fill">
 
-  <ng-container *ngIf="genres$ | async as genres">
-    <mat-step [stepControl]="gameOptionsForm" state="videogame_asset" aria-label="choose game options">
-      <ng-template matStepLabel>Select Game Play Options</ng-template>
-      <ng-template matStepContent>
-        <div class="d-flex flex-column flex-grow-1 flex-fill">
-          <div *ngIf="avatar" class="d-flex flex-grow-1 align-items-center justify-content-center w-100 d-none d-lg-block ">
-            <img [src]="avatar.link| safeUrl" class="d-block mx-auto" height="350" alt="{{avatar.name}}" />
-          </div>
-
-          <form [formGroup]="gameOptionsForm" class="d-flex flex-grow-1 mt-4 row rows-col-2 w-100">
-            <mat-form-field class="col-sm-12 col-md-8">
-              <mat-label for="genres">game genres</mat-label>
-              <mat-select formControlName="genres" placeholder="Select Game genre" multiple focused>
-                <cdk-virtual-scroll-viewport [itemSize]="genres?.data?.genres?.totalCount" class="select-genre" autosize #selectGenreCdk
-                  appendOnly>
-                  <mat-option #genreOption *cdkVirtualFor="let genre of genres?.data?.genres?.edges" [value]="genre.node.id"
-                    (onSelectionChange)="toggleGenre(genreOption.selected, genre.node)">
-                    {{ genre.node.description }}
-                  </mat-option>
-                </cdk-virtual-scroll-viewport>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field class="col-sm-12 col-md-4">
-              <mat-label>Choose when game joining period ends</mat-label>
-              <input matInput [ngxMatDatetimePicker]="picker" [min]="defaultJoinPeriod" formControlName="joinEndsAt">
-              <mat-datepicker-toggle matSuffix [for]="$any(picker)"></mat-datepicker-toggle>
-              <ngx-mat-datetime-picker #picker [showSpinners]="true" [showSeconds]="true" [stepHour]="1" [stepMinute]="1" [stepSecond]="1"
-                [touchUi]="true" [enableMeridian]="true" [disableMinute]="false" [hideTime]="false">
-              </ngx-mat-datetime-picker>
-            </mat-form-field>
-
-
-            <mat-form-field class="game-options-stepper col-sm-12 col-md-6">
-              <mat-label for="rounds">number of game rounds</mat-label>
-              <input matInput type="number" min="5" max="10" step="1" formControlName="rounds" class="d-none invisible" />
-              <mat-slider [min]="5" [max]="10" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
-                [value]="gameOptionsForm.controls.rounds.value" (change)="gameOptionsForm.controls.rounds.setValue($event.value)"
-                aria-labelledby="no of game rounds">
-              </mat-slider>
-            </mat-form-field>
-
-            <mat-form-field class="game-options-stepper col-sm-12 col-md-6">
-              <mat-label for="roundTime">time per round(seconds)</mat-label>
-              <input matInput type="number" min="10" max="60" step="5" formControlName="roundTime" class="d-none invisible" />
-              <mat-slider [min]="10" [max]="60" [step]="5" [tickInterval]="5" thumbLabel showTicks class="w-100"
-                [value]="gameOptionsForm.controls.roundTime.value" (change)="gameOptionsForm.controls.roundTime.setValue($event.value)"
-                aria-labelledby="seconds per round">
-              </mat-slider>
-            </mat-form-field>
-
-            <mat-form-field class="game-options-stepper col-sm-12 col-md-6">
-              <mat-label for="numPlayers">
-                number of players
-                <span *ngIf="gameOptionsForm.controls.numPlayers.value === 0" class="badge bg-info">COMPETE AGAINST THE AI</span>
-              </mat-label>
-              <input matInput type="number" min="0" max="9" step="1" formControlName="numPlayers" class="d-none invisible" />
-              <mat-slider [min]="0" [max]="9" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
-                [value]="gameOptionsForm.controls.numPlayers.value" (change)="gameOptionsForm.controls.numPlayers.setValue($event.value)"
-                aria-labelledby="no of players">
-              </mat-slider>
-            </mat-form-field>
-
-            <mat-form-field class="game-options-stepper col-sm-12 col-md-6">
-              <mat-label for="numSpectators">number of spectators</mat-label>
-              <input matInput type="number" min="0" max="10" step="1" formControlName="numSpectators" class="d-none invisible" />
-              <mat-slider #spectators [min]="0" [max]="10" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
-                [value]="gameOptionsForm.controls.numSpectators.value"
-                (change)="gameOptionsForm.controls.numSpectators.setValue($event.value)" aria-labelledby="no of spectators">
-              </mat-slider>
-            </mat-form-field>
-          </form>
+  <mat-step [stepControl]="gameOptionsForm" state="videogame_asset" aria-label="choose game options">
+    <ng-template matStepLabel>Select Game Play Options</ng-template>
+    <ng-template matStepContent>
+      <div class="d-flex flex-column flex-grow-1 flex-fill">
+        <div *ngIf="avatar" class="d-flex flex-grow-1 align-items-center justify-content-center w-100 d-none d-lg-block ">
+          <img [src]="avatar.link| safeUrl" class="d-block mx-auto" height="350" alt="{{avatar.name}}" />
         </div>
 
-        <div class="btn-toolbar" role="toolbar" aria-label="game options navigation buttons">
-          <div class="btn-group btn-group-lg flex-fill" role="group" aria-label="reset button">
-            <button mat-icon-button matTooltip="reset" matTooltipPosition="right" aria-label="reset options" cahDebounceClick
-              (debounceClick)="resetGameOptions()">
-              <mat-icon>settings_backup_restore</mat-icon>
-            </button>
-          </div>
+        <form [formGroup]="gameOptionsForm" class="d-flex flex-grow-1 mt-4 row rows-col-2 w-100">
+          <mat-form-field class="col-sm-12 col-md-8">
+            <mat-label for="genres">game genres</mat-label>
+            <mat-select formControlName="genres" placeholder="Select Game genre" multiple focused>
+              <cdk-virtual-scroll-viewport [itemSize]="data?.genres?.data?.genres?.totalCount" class="select-genre" autosize #selectGenreCdk
+                appendOnly>
+                <mat-option #genreOption *cdkVirtualFor="let genre of data?.genres?.data?.genres?.edges" [value]="genre.node.id"
+                  (onSelectionChange)="toggleGenre(genreOption.selected, genre.node)">
+                  {{ genre.node.description }}
+                </mat-option>
+              </cdk-virtual-scroll-viewport>
+            </mat-select>
+          </mat-form-field>
 
-          <div class="btn-group btn-group-lg flex-fill justify-content-between" role="group" aria-label="next button">
-            <button mat-icon-button flexFill aria-label="previous step" matTooltip="Back" matTooltipPosition="right"
-              [routerLink]="['/play', 'select-avatar']">
-              <mat-icon>arrow_back</mat-icon>
-            </button>
+          <mat-form-field class="col-sm-12 col-md-4">
+            <mat-label>Choose when game joining period ends</mat-label>
+            <input matInput [ngxMatDatetimePicker]="picker" [min]="defaultJoinPeriod" formControlName="joinEndsAt">
+            <mat-datepicker-toggle matSuffix [for]="$any(picker)"></mat-datepicker-toggle>
+            <ngx-mat-datetime-picker #picker [showSpinners]="true" [showSeconds]="true" [stepHour]="1" [stepMinute]="1" [stepSecond]="1"
+              [touchUi]="true" [enableMeridian]="true" [disableMinute]="false" [hideTime]="false">
+            </ngx-mat-datetime-picker>
+          </mat-form-field>
 
-            <button mat-mini-fab flexFill aria-label="start game" matTooltip="Start New Game" matTooltipPosition="left"
-              [disabled]="!gameOptionsForm.valid" color="primary" cahDebounceClick (debounceClick)="createGame(gameOptionsForm.value)">
-              <mat-icon>play_arrow</mat-icon>
-            </button>
-          </div>
+
+          <mat-form-field class="game-options-stepper col-sm-12 col-md-6">
+            <mat-label for="rounds">number of game rounds</mat-label>
+            <input matInput type="number" min="5" max="10" step="1" formControlName="rounds" class="d-none invisible" />
+            <mat-slider [min]="5" [max]="10" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
+              [value]="gameOptionsForm.controls.rounds.value" (change)="gameOptionsForm.controls.rounds.setValue($event.value)"
+              aria-labelledby="no of game rounds">
+            </mat-slider>
+          </mat-form-field>
+
+          <mat-form-field class="game-options-stepper col-sm-12 col-md-6">
+            <mat-label for="roundTime">time per round(seconds)</mat-label>
+            <input matInput type="number" min="10" max="60" step="5" formControlName="roundTime" class="d-none invisible" />
+            <mat-slider [min]="10" [max]="60" [step]="5" [tickInterval]="5" thumbLabel showTicks class="w-100"
+              [value]="gameOptionsForm.controls.roundTime.value" (change)="gameOptionsForm.controls.roundTime.setValue($event.value)"
+              aria-labelledby="seconds per round">
+            </mat-slider>
+          </mat-form-field>
+
+          <mat-form-field class="game-options-stepper col-sm-12 col-md-6">
+            <mat-label for="numPlayers">
+              number of players
+              <span *ngIf="gameOptionsForm.controls.numPlayers.value === 1" class="badge bg-info">COMPETE AGAINST THE AI</span>
+            </mat-label>
+            <input matInput type="number" min="0" max="9" step="1" formControlName="numPlayers" class="d-none invisible" />
+            <mat-slider [min]="1" [max]="9" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
+              [value]="gameOptionsForm.controls.numPlayers.value" (change)="gameOptionsForm.controls.numPlayers.setValue($event.value)"
+              aria-labelledby="no of players">
+            </mat-slider>
+          </mat-form-field>
+
+          <mat-form-field class="game-options-stepper col-sm-12 col-md-6">
+            <mat-label for="numSpectators">number of spectators</mat-label>
+            <input matInput type="number" min="0" max="10" step="1" formControlName="numSpectators" class="d-none invisible" />
+            <mat-slider #spectators [min]="0" [max]="10" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
+              [value]="gameOptionsForm.controls.numSpectators.value"
+              (change)="gameOptionsForm.controls.numSpectators.setValue($event.value)" aria-labelledby="no of spectators">
+            </mat-slider>
+          </mat-form-field>
+        </form>
+      </div>
+
+      <div class="btn-toolbar" role="toolbar" aria-label="game options navigation buttons">
+        <div class="btn-group btn-group-lg flex-fill" role="group" aria-label="reset button">
+          <button mat-icon-button matTooltip="reset" matTooltipPosition="right" aria-label="reset options" cahDebounceClick
+            (debounceClick)="resetGameOptions()">
+            <mat-icon>settings_backup_restore</mat-icon>
+          </button>
         </div>
-      </ng-template>
-    </mat-step>
-  </ng-container>
+
+        <div class="btn-group btn-group-lg flex-fill justify-content-between" role="group" aria-label="next button">
+          <button mat-icon-button flexFill aria-label="previous step" matTooltip="Back" matTooltipPosition="right"
+            [routerLink]="['/play', 'select-avatar']" [state]="{ playType: 'create' }">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+
+          <button mat-mini-fab flexFill aria-label="start game" matTooltip="Start New Game" matTooltipPosition="left"
+            [disabled]="!gameOptionsForm.valid" color="primary" cahDebounceClick (debounceClick)="createGame(gameOptionsForm.value)">
+            <mat-icon>play_arrow</mat-icon>
+          </button>
+        </div>
+      </div>
+    </ng-template>
+  </mat-step>
 </mat-stepper>

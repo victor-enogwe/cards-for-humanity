@@ -3,16 +3,17 @@ from graphene.types.mutation import Mutation
 
 from api.models.player import Player
 from api.graphql.inputs import JoinGameMutationInput
-from api.graphql.nodes import GameNode
+from api.graphql.nodes import GameNode, PlayerNode
 
 
 class JoinGameMutation(Mutation):
     ok = graphene.Boolean()
-    game = graphene.Field(GameNode)
+    player = graphene.Field(PlayerNode)
 
     class Arguments:
         input = JoinGameMutationInput(required=True)
 
     def mutate(root, info, input):
-        player = Player(player=input['player_id'], game=input['game_id'])
-        return JoinGameMutation(ok=True, game=player.game)
+        print(input)
+        player = Player(**input, user=info.context.user)
+        return JoinGameMutation(ok=True, player=player)

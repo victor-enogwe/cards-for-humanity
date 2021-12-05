@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { lastValueFrom, of } from 'rxjs';
-import { finalize, map, mergeMap, tap } from 'rxjs/operators';
+import { finalize, mergeMap, tap } from 'rxjs/operators';
 import { AuthUser } from '../../../@types/global';
 import { AuthService } from '../../../services/auth/auth.service';
 import { FormService } from '../../../services/form/form.service';
@@ -16,7 +16,7 @@ import { UtilsService } from '../../../services/utils/utils.service';
 })
 export class LoginComponent implements OnInit {
   showPassword = false;
-  isMobile$ = this.uiService.isMobile$.pipe(map((value) => (value ? 'true' : 'false')));
+  isMobile$ = this.uiService.isMobile$;
   showSocialAuth = false;
   loginSocial = this.authService.signUpSocial;
   fieldHasError = this.formService.fieldHasError;

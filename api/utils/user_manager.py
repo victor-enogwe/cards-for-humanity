@@ -7,6 +7,7 @@ from api.models.provider import Provider
 
 class UserManager(models.Manager):
     """Django manager for user model."""
+
     use_in_migrations = True
 
     def set_extras(self, is_superuser=False, **extra_fields):

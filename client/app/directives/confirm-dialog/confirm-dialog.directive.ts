@@ -9,6 +9,7 @@ import { ConfirmationDialogComponent } from '../../components/shared/confirmatio
   selector: '[cahConfirmDialog]',
 })
 export class ConfirmDialogDirective {
+  @Input('cahConfirmDialog') useDirective: boolean | undefined | any = false;
   @Input() listen = true;
   @Input() component!: ComponentType<any>;
   @Input() config!: MatDialogConfig;
@@ -26,6 +27,7 @@ export class ConfirmDialogDirective {
   clickEvent(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
+    if (!this.component || !this.useDirective) return;
     const dialogRef = this.dialog.open(this.component ?? ConfirmationDialogComponent, { ...this.defaultConfig, ...this.config });
     if (this.listen) {
       const confirmClick = cloneDeep(this.confirmClick);

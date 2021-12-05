@@ -8,34 +8,22 @@ from api.utils.enums import Avatars, Gender
 
 
 class Profile(TimestampBase):
-    provider = models.ForeignKey('api.Provider', on_delete=models.CASCADE)
+    provider = models.ForeignKey("api.Provider", on_delete=models.CASCADE)
     first_name = models.CharField(help_text="First Name", max_length=50)
     last_name = models.CharField(help_text="Last Name", max_length=50)
     username = models.CharField(
-        _('username'),
+        _("username"),
         max_length=40,
         help_text=_(username_help_text),
         validators=[UnicodeUsernameValidator()],
     )
     avatar = models.CharField(
-        max_length=20,
-        choices=Avatars.choices,
-        default=None,
-        blank=True,
-        null=True
+        max_length=20, choices=Avatars.choices, default=None, blank=True, null=True
     )
     gender = models.CharField(
-        max_length=6,
-        choices=Gender.choices,
-        null=True,
-        blank=True,
-        help_text='Gender'
+        max_length=6, choices=Gender.choices, null=True, blank=True, help_text="Gender"
     )
-    date_of_birth = models.DateField(
-        help_text="Birth Date",
-        blank=True,
-        null=True
-    )
+    date_of_birth = models.DateField(help_text="Birth Date", blank=True, null=True)
 
     @property
     def full_name(self):

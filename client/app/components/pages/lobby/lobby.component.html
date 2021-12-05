@@ -1,8 +1,6 @@
-<div *ngIf="newGame$ | async as newGame">
-  <cah-link-share [game]="newGame" (inviteOnly)="inviteOnly=$event.checked"></cah-link-share>
-  <button mat-mini-fab color="warn" class="position-absolute top-80 end-25 translate-middle-y" aria-label="send invite"
-    matTooltip="invite players" matTooltipPosition="left" cahConfirmDialog [component]="inviteComponent"
-    [config]="{ data: { game: newGame, inviteOnly }, maxHeight: '420px' }" [listen]="false">
-    <mat-icon>person_add</mat-icon>
-  </button>
+<div *ngIf="game$ | async as game">
+  <cah-game-toolbar [game]="game"
+    (inviteOnly)="fab=fabMenu({ game, inviteOnly: $event.checked }); setPrivacy({ game, privacy: $event.checked})"></cah-game-toolbar>
+  <cah-fab-menu [fabButtons]="fab" color="primary" icon="settings_suggest" (ngClick)="fabItemClicked($event)">
+  </cah-fab-menu>
 </div>

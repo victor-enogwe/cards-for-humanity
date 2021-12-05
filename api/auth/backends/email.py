@@ -11,12 +11,14 @@ from api.utils.graphql_errors import GraphQLErrors
 
 
 class EmailModelBackend(ModelBackend):
-    '''This is a ModelBacked that allows authentication with an email address.'''
+    """This is a ModelBacked that allows authentication with an email address."""
 
-    def authenticate(self, request: HttpRequest, username: str = None, password: str = None, **kwargs):
+    def authenticate(
+        self, request: HttpRequest, username: str = None, password: str = None, **kwargs
+    ):
         email = username
         if email is None:
-            email = kwargs.get('email') or kwargs.get('input')['username']
+            email = kwargs.get("email") or kwargs.get("input")["username"]
         if password is None:
             password = kwargs.get(Password.PASSWORD_FIELD)
 
@@ -32,9 +34,7 @@ class EmailModelBackend(ModelBackend):
                 raise GraphQLError(old_password_error_message)
 
             if not check_password(password, auth_password.password):
-                raise GraphQLError(
-                    GraphQLErrors.USER_SIGNIN__INVALID_CREDENTIALS
-                )
+                raise GraphQLError(GraphQLErrors.USER_SIGNIN__INVALID_CREDENTIALS)
 
             if not self.user_can_authenticate(user):
                 raise GraphQLError(GraphQLErrors.USER_SIGNIN__INACTIVE_USER)
@@ -44,8 +44,6 @@ class EmailModelBackend(ModelBackend):
 
             return user
         except (Password.DoesNotExist, User.DoesNotExist, Provider.DoesNotExist):
-            raise GraphQLError(
-                GraphQLErrors.USER_SIGNIN__INVALID_CREDENTIALS
-            )
+            raise GraphQLError(GraphQLErrors.USER_SIGNIN__INVALID_CREDENTIALS)
         except Exception as error:
             raise GraphQLError(error)

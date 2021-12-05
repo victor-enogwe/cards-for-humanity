@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
-import { catchError, map, mergeMap, tap } from 'rxjs/operators';
+import { catchError, mergeMap, tap } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth/auth.service';
 import { FormService } from '../../../services/form/form.service';
 import { UIService } from '../../../services/ui/ui.service';
@@ -16,7 +16,7 @@ export class RegisterComponent {
   signUpSocial = this.authService.signUpSocial;
   showPassword = false;
   showRepeatPassword = false;
-  isMobile$ = this.uiService.isMobile$.pipe(map((value) => (value ? 'true' : 'false')));
+  isMobile$ = this.uiService.isMobile$;
   showSocialAuth = false;
   registerForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],

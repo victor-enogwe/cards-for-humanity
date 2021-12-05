@@ -24,3 +24,27 @@ export const CREATE_GAME_LOCAL_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_GAME_STATUS_MUTATION = gql`
+  ${GAME_NODE_FRAGMENT}
+
+  mutation GameStatus($id: ID!, $input: UpdateGameStatusInput!) {
+    gameStatus(id: $id, input: $input) {
+      game {
+        ...GameNode
+      }
+    }
+  }
+`;
+
+export const UPDATE_GAME_PRIVACY_MUTATION = gql`
+  ${GAME_NODE_FRAGMENT}
+
+  mutation GamePrivacy($id: ID!, $input: UpdateGamePrivacyInput!) {
+    gamePrivacy(id: $id, input: $input) {
+      game {
+        ...GameNode
+      }
+    }
+  }
+`;

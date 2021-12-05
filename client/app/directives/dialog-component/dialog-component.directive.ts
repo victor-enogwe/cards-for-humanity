@@ -10,6 +10,7 @@ import { MainContentRefService } from '../../services/main-content-ref/main-cont
   selector: '[cahDialogComponent]',
 })
 export class DialogComponentDirective {
+  @Input('cahDialogComponent') useDirective: boolean | undefined | any = false;
   @Input() config!: MatDialogConfig;
   @Output() afterOpen: EventEmitter<string> = new EventEmitter();
   @Output() beforeClosed: EventEmitter<string> = new EventEmitter();
@@ -22,7 +23,7 @@ export class DialogComponentDirective {
   async clickEvent(event: MouseEvent): Promise<void> {
     event.preventDefault();
     event.stopPropagation();
-    if (!this.component) return;
+    if (!this.component || !this.useDirective) return;
     const mainContentRefService: MainContentRefService = get(this.component, 'mainContentRefService', this.mainContentRefService);
     const elementRef: ElementRef = get(this.component, 'viewContainerRef', mainContentRefService.ref);
     mainContentRefService.mainContentRef(elementRef);

@@ -167,16 +167,22 @@ export type FabMenuLayout = 'flex-column' | 'flex-column-reverse' | 'flex-row' |
 
 export type FabMenuLayoutDirections = { [key in MatFabMenuDirection]: FabMenuLayout };
 
+export type CahPallette = ThemePalette | 'pending' | 'approved' | 'admin-approved' | 'success' | 'warning' | 'danger' | 'queued' | 'info';
+
 export interface MatFabMenu {
   id: string | number;
   icon?: string; // please use either icon or imgUrl
   iconColor?: ThemePalette;
   tooltip?: string;
   tooltipPosition?: TooltipPosition;
-  color?: ThemePalette | 'success' | 'warning' | 'danger' | 'queued';
+  color?: CahPallette;
   imgUrl?: string;
   directives?: {
-    cahDialogComponent: {
+    cahConfirmDialog?: {
+      component: any;
+      config: MatDialogConfig;
+    };
+    cahDialogComponent?: {
       component: any;
       config: MatDialogConfig;
     };
@@ -187,3 +193,10 @@ export type PlayType = 'create' | 'join';
 
 // TODO: use more specific type if https://github.com/microsoft/TypeScript/issues/41160 lands
 export type RGBAColor = `#${string}`;
+
+export interface Timer {
+  seconds: number;
+  minutes: number;
+  hours: number;
+  days: number;
+}

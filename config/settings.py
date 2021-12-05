@@ -25,35 +25,32 @@ env = environ.Env(DEBUG=(bool, True))
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-environ.Env.read_env(env.str('ENV_PATH', '%s/.env' %
-                     (BASE_DIR)))  # reading .env file
+environ.Env.read_env(env.str("ENV_PATH", "%s/.env" % (BASE_DIR)))  # reading .env file
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env("SECRET_KEY")
 
-ENV = env('ENV')
+ENV = env("ENV")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = env("DEBUG")
 
-ENV_HOSTS = env('ALLOWED_HOSTS').split(',')
+ENV_HOSTS = env("ALLOWED_HOSTS").split(",")
 
-ALLOWED_HOSTS = (['localhost', '127.0.0.1', 'lvh.me']
-                 if DEBUG else []) + ENV_HOSTS
+ALLOWED_HOSTS = (["localhost", "127.0.0.1", "lvh.me"] if DEBUG else []) + ENV_HOSTS
 
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('GOOGLE_OAUTH_CLIENT_ID', default='')
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env("GOOGLE_OAUTH_CLIENT_ID", default="")
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env(
-    'GOOGLE_OAUTH_CLIENT_SECRET', default='')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env("GOOGLE_OAUTH_CLIENT_SECRET", default="")
 
-SOCIAL_AUTH_FACEBOOK_KEY = env('FACEBOOK_APP_ID', default='')
+SOCIAL_AUTH_FACEBOOK_KEY = env("FACEBOOK_APP_ID", default="")
 
-SOCIAL_AUTH_FACEBOOK_SECRET = env('FACEBOOK_APP_SECRET', default='')
+SOCIAL_AUTH_FACEBOOK_SECRET = env("FACEBOOK_APP_SECRET", default="")
 
 AUTH_USER_MODEL = "api.User"
 
@@ -69,12 +66,12 @@ CORS_ALLOW_METHODS = ["GET", "OPTIONS", "POST"]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "apollographql-client-name",
-    "apollographql-client-version"
+    "apollographql-client-version",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
-SECURE_SSL_REDIRECT = env('ENV') == 'production'
+SECURE_SSL_REDIRECT = env("ENV") == "production"
 
 SECURE_BROWSER_XSS_FILTER = SECURE
 
@@ -90,15 +87,15 @@ SESSION_COOKIE_HTTPONLY = SECURE
 
 SESSION_COOKIE_SECURE = SECURE
 
-SESSION_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_SAMESITE = "Strict"
 
-CSRF_COOKIE_SAMESITE = 'Strict'
+CSRF_COOKIE_SAMESITE = "Strict"
 
 SESSION_COOKIE_AGE = 604800
 
-SESSION_COOKIE_NAME = 'cah_session'
+SESSION_COOKIE_NAME = "cah_session"
 
-CSP_DEFAULT_SRC = ("'self'")
+CSP_DEFAULT_SRC = "'self'"
 
 CSP_IMG_SRC = ("'self'",)
 
@@ -106,69 +103,68 @@ CSP_STYLE_SRC = ("'self'", "fonts.googleapis.com")
 
 CSP_STYLE_SRC_ELEM = CSP_STYLE_SRC
 
-CSP_SCRIPT_SRC = ("'self'")
+CSP_SCRIPT_SRC = "'self'"
 
 CSP_SCRIPT_SRC_ELEM = CSP_SCRIPT_SRC
 
 CSP_FONT_SRC = ("'self'", "fonts.googleapis.com", "fonts.gstatic.com")
 
-CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src', 'img-src']
+CSP_INCLUDE_NONCE_IN = ["script-src", "style-src", "img-src"]
 
-DEV_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEV_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-PROD_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+PROD_EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 EMAIL_BACKEND = DEV_EMAIL_BACKEND if DEBUG else PROD_EMAIL_BACKEND
 
 # Application definition
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.admindocs',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django_filters',
-    'pgtrigger',
-    'phonenumber_field',
-    'django_cron',
-    'graphene_django',
-    'channels',
-    'corsheaders',
-    'social_django',
-    'rest_framework',
+    "django.contrib.admin",
+    "django.contrib.admindocs",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django_filters",
+    "pgtrigger",
+    "phonenumber_field",
+    "django_cron",
+    "graphene_django",
+    "channels",
+    "graphene_subscriptions",
+    "corsheaders",
+    "social_django",
+    "rest_framework",
     "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
-    'api',
+    "api",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'csp.middleware.CSPMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "csp.middleware.CSPMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "social_django.middleware.SocialAuthExceptionMiddleware",
+    "django.middleware.cache.UpdateCacheMiddleware",
+    "django.middleware.cache.FetchFromCacheMiddleware",
 ]
 
 # Authentication backends
 AUTHENTICATION_BACKENDS = [
     # "graphql_jwt.backends.JSONWebTokenBackend",
-    'api.auth.backends.jwt.JWTBackend',
-    'api.auth.backends.email.EmailModelBackend',
-    'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.facebook.FacebookOAuth2',
+    "api.auth.backends.jwt.JWTBackend",
+    "api.auth.backends.email.EmailModelBackend",
+    "social_core.backends.google.GoogleOAuth2",
+    "social_core.backends.facebook.FacebookOAuth2",
 ]
 
-CRON_CLASSES = [
-    'api.crons.CleanupCron'
-]
+CRON_CLASSES = ["api.crons.CleanupCron"]
 
 DJANGO_CRON_DELETE_LOGS_OLDER_THAN = 7
 
@@ -179,77 +175,67 @@ SOCIAL_AUTH_PIPELINE = [
     # format to create the user instance later. On some cases the details are
     # already part of the auth response from the provider, but sometimes this
     # could hit a provider API.
-    'social_core.pipeline.social_auth.social_details',
-
+    "social_core.pipeline.social_auth.social_details",
     # Get the social uid from whichever service we're authing thru. The uid is
     # the unique identifier of the given user in the provider.
-    'social_core.pipeline.social_auth.social_uid',
-
+    "social_core.pipeline.social_auth.social_uid",
     # Verifies that the current auth process is valid within the current
     # project, this is where emails and domains whitelists are applied (if
     # defined).
-    'social_core.pipeline.social_auth.auth_allowed',
-
+    "social_core.pipeline.social_auth.auth_allowed",
     # Checks if the current social-account is already associated in the site.
-    'social_core.pipeline.social_auth.social_user',
-
+    "social_core.pipeline.social_auth.social_user",
     # Make up a username for this person, appends a random string at the end if
     # there's any collision.
-    'social_core.pipeline.user.get_username',
-
-    'social_core.pipeline.social_auth.associate_by_email',
-
+    "social_core.pipeline.user.get_username",
+    "social_core.pipeline.social_auth.associate_by_email",
     # Send a validation email to the user to verify its email address.
     # Disabled by default.
     # 'social_core.pipeline.mail.mail_validation',
-
     # Associates the current social details with another user account with
     # a similar email address. Disabled by default.
     # 'social_core.pipeline.social_auth.associate_by_email',
-
     # Create a user account if we haven't found one yet.
-    'social_core.pipeline.user.create_user',
-
+    "social_core.pipeline.user.create_user",
     # Create the record that associates the social account with the user.
-    'social_core.pipeline.social_auth.associate_user',
-
+    "social_core.pipeline.social_auth.associate_user",
     # Populate the extra_data field in the social record with the values
     # specified by settings (and the default ones like access_token, etc).
-    'social_core.pipeline.social_auth.load_extra_data',
-
+    "social_core.pipeline.social_auth.load_extra_data",
     # Update the user record with any changed info from the auth service.
-    'social_core.pipeline.user.user_details',
+    "social_core.pipeline.user.user_details",
 ]
 
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = "config.urls"
 
 GQL_MIDDLEWARE = [
-    'api.graphql.middlewares.gql_depromise_subscription.DepromiseSubscription',
-    'api.graphql.middlewares.gql_auth.AuthorizationMiddleware',
-    'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    # 'api.graphql.middlewares.gql_depromise_subscription.DepromiseSubscription',
+    "api.graphql.middlewares.gql_auth.AuthorizationMiddleware",
+    "graphql_jwt.middleware.JSONWebTokenMiddleware",
 ]
 
 GRAPHENE = {
     # Where your Graphene schema lives
-    'SCHEMA': 'api.graphql.ws_consumer.gql_schema',
-    'SCHEMA_INDENT': 2,
+    "SCHEMA": "api.graphql.ws_consumer.gql_schema",
+    "SCHEMA_INDENT": 2,
     # we can set the 'max_limit' kwarg on your DjangoConnectionField too
-    'RELAY_CONNECTION_MAX_LIMIT': sys.maxsize,
-    'RELAY_CONNECTION_ENFORCE_FIRST_OR_LAST': True,
-    'MIDDLEWARE': (['graphene_django.debug.DjangoDebugMiddleware'] if DEBUG else []) + GQL_MIDDLEWARE,
-    'JWT_VERIFY_EXPIRATION': True,
+    "RELAY_CONNECTION_MAX_LIMIT": sys.maxsize,
+    "RELAY_CONNECTION_ENFORCE_FIRST_OR_LAST": True,
+    "MIDDLEWARE": (["graphene_django.debug.DjangoDebugMiddleware"] if DEBUG else [])
+    + GQL_MIDDLEWARE,
+    "JWT_VERIFY_EXPIRATION": True,
     "DJANGO_CHOICE_FIELD_ENUM_V3_NAMING": True,
-    'GRAPHIQL_HEADER_EDITOR_ENABLED': True,
-    'SUBSCRIPTION_PATH': '/graphql/ws'
+    "GRAPHIQL_HEADER_EDITOR_ENABLED": True,
+    "SUBSCRIPTION_PATH": "/graphql/ws",
 }
 
 GRAPHQL_JWT = {
     "JWT_AUDIENCE": "cah",
     "JWT_COOKIE_NAME": "CAH",
     "JWT_REFRESH_TOKEN_COOKIE_NAME": "CAH_TM",
-    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
-    'JWT_PAYLOAD_HANDLER': 'api.utils.functions.jwt_payload',
-    "JWT_PAYLOAD_GET_USERNAME_HANDLER": (lambda payload: payload.get('email')),
+    "JWT_AUTH_HEADER_PREFIX": "Bearer",
+    "JWT_PAYLOAD_HANDLER": "api.utils.functions.jwt_payload",
+    "JWT_PAYLOAD_GET_USERNAME_HANDLER": (lambda payload: payload.get("email")),
     "JWT_COOKIE_SECURE": True,
     "JWT_COOKIE_SAMESITE": "Strict",
     "JWT_CSRF_ROTATION": True,
@@ -259,42 +245,42 @@ GRAPHQL_JWT = {
     "JWT_VERIFY": True,
     "JWT_VERIFY_EXPIRATION": True,
     "JWT_ALLOW_REFRESH": True,
-    'JWT_SECRET_KEY': SECRET_KEY,
+    "JWT_SECRET_KEY": SECRET_KEY,
     "JWT_EXPIRATION_DELTA": timedelta(minutes=5),
     "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
 }
 
-FIXTURE_DIRS = [os.path.join(BASE_DIR, 'api/fixtures/cah/{path}'.format(
-    path=path)) for path in ['genres', 'blackcards', 'whitecards']]
+FIXTURE_DIRS = [
+    os.path.join(BASE_DIR, "api/fixtures/cah/{path}".format(path=path))
+    for path in ["genres", "blackcards", "whitecards"]
+]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
+MEDIA_ROOT = os.path.join(BASE_DIR, "uploads/")
 
-ANGULAR_STATIC_PATH = os.path.join(BASE_DIR, 'static/browser/')
+ANGULAR_STATIC_PATH = os.path.join(BASE_DIR, "static/browser/")
 
-DJANGO_TEMPLATE_PATH = os.path.join(BASE_DIR, 'config/template/static/')
+DJANGO_TEMPLATE_PATH = os.path.join(BASE_DIR, "config/template/static/")
 
 STATICFILES_DIRS = [ANGULAR_STATIC_PATH]
 
-STATIC_URL = '/static/browser/'
+STATIC_URL = "/static/browser/"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'APP_DIRS': True,
-        'DIRS': [DJANGO_TEMPLATE_PATH],
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'csp.context_processors.nonce',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "APP_DIRS": True,
+        "DIRS": [DJANGO_TEMPLATE_PATH],
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "csp.context_processors.nonce",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
-            'libraries': {
-                'csp': 'csp.templatetags.csp'
-            }
+            "libraries": {"csp": "csp.templatetags.csp"},
         },
     },
 ]
@@ -311,59 +297,52 @@ CHANNEL_LAYERS = {
 }
 
 
-WSGI_APPLICATION = 'config.wsgi.application'
+WSGI_APPLICATION = "config.wsgi.application"
 
-ASGI_APPLICATION = 'config.urls.asgiurlpatterns'
+ASGI_APPLICATION = "config.urls.asgiurlpatterns"
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env.str('DB_NAME'),
-        'HOST': env.str('DB_HOST'),
-        'USER': env.str('DB_USER'),
-        'PORT': env.str('DB_PORT'),
-        'PASSWORD': env.str('DB_PASSWORD'),
-        'TIME_ZONE': 'UTC',
-        'CONN_MAX_AGE': 0,
-        'CHARSET': 'UTF8',
-        'OPTIONS': {},
-        'TEST': {
-            'NAME': 'cah-test-db'
-        }
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env.str("DB_NAME"),
+        "HOST": env.str("DB_HOST"),
+        "USER": env.str("DB_USER"),
+        "PORT": env.str("DB_PORT"),
+        "PASSWORD": env.str("DB_PASSWORD"),
+        "TIME_ZONE": "UTC",
+        "CONN_MAX_AGE": 0,
+        "CHARSET": "UTF8",
+        "OPTIONS": {},
+        "TEST": {"NAME": "cah-test-db"},
     }
 }
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": env('REDIS_HOST'),
+        "LOCATION": env("REDIS_HOST"),
         "OPTIONS": {
-            'DB': env('REDIS_DB'),
-            'PASSWORD': env('REDIS_PASSWORD'),
-            'SOCKET_TIMEOUT': 5,
-            'SOCKET_CONNECT_TIMEOUT': 5,
+            "DB": env("REDIS_DB"),
+            "PASSWORD": env("REDIS_PASSWORD"),
+            "SOCKET_TIMEOUT": 5,
+            "SOCKET_CONNECT_TIMEOUT": 5,
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            'CONNECTION_POOL_CLASS': 'redis.BlockingConnectionPool',
-            'PARSER_CLASS': 'redis.connection.HiredisParser',
-            'SERIALIZER_CLASS': 'redis_cache.serializers.JSONSerializer',
-            'COMPRESSOR_CLASS': 'redis_cache.compressors.ZLibCompressor',
-            'CONNECTION_POOL_CLASS_KWARGS': {
-                'max_connections': 50,
-                'timeout': 20
-            },
-            'COMPRESSOR_CLASS_KWARGS': {
-                'level': 5
-            },
-            'SERIALIZER_CLASS_KWARGS': {}
+            "CONNECTION_POOL_CLASS": "redis.BlockingConnectionPool",
+            "PARSER_CLASS": "redis.connection.HiredisParser",
+            "SERIALIZER_CLASS": "redis_cache.serializers.JSONSerializer",
+            "COMPRESSOR_CLASS": "redis_cache.compressors.ZLibCompressor",
+            "CONNECTION_POOL_CLASS_KWARGS": {"max_connections": 50, "timeout": 20},
+            "COMPRESSOR_CLASS_KWARGS": {"level": 5},
+            "SERIALIZER_CLASS_KWARGS": {},
         },
-        "KEY_PREFIX": "example"
+        "KEY_PREFIX": "example",
     }
 }
 
@@ -372,19 +351,21 @@ CACHES = {
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-    {'NAME': 'api.utils.validators.RegexPasswordValidator'},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+    {"NAME": "api.utils.validators.RegexPasswordValidator"},
 ]
 
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 

@@ -3,6 +3,7 @@ from graphql_jwt.decorators import login_required
 from api.utils.constants import auth_fields
 from api.utils.graphql_errors import GraphQLErrors
 
+
 class AuthorizationMiddleware(object):
     @login_required
     def auth(self, next, root, info, **kwargs):

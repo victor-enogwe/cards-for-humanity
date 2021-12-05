@@ -1,5 +1,9 @@
 from django.contrib.auth import password_validation
-from django.contrib.auth.hashers import check_password, is_password_usable, make_password
+from django.contrib.auth.hashers import (
+    check_password,
+    is_password_usable,
+    make_password,
+)
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django.utils.crypto import get_random_string
@@ -9,29 +13,32 @@ from pgtrigger.core import SoftDelete
 from api.models.timestamp import TimestampBase
 from api.utils.constants import password_allowed_chars, password_error_message
 from api.utils.validators import password_validators
+from config.settings import AUTH_USER_MODEL
 
 
-@register(SoftDelete(name='protect_soft_delete_password', field='is_active', value=False))
-@register(Protect(
-    name="protect_update_password",
-    operation=Update,
-    condition=(
-        Q(old__created_at__df=F('new__created_at')) |
-        Q(old__user_id__df=F('new__user_id')) |
-        Q(old__password__df=F('new__password'))
-    )
-))
+@register(
+    SoftDelete(name="protect_soft_delete_password", field="is_active", value=False),
+    Protect(
+        name="protect_update_password",
+        operation=Update,
+        condition=(
+            Q(old__created_at__df=F("new__created_at"))
+            | Q(old__user_id__df=F("new__user_id"))
+            | Q(old__password__df=F("new__password"))
+        ),
+    ),
+)
 class Password(TimestampBase):
-    PASSWORD_FIELD = 'password'
-    user = models.ForeignKey('api.User', on_delete=models.CASCADE)
+    PASSWORD_FIELD = "password"
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=False)
     password = models.CharField(
         max_length=128,
-        verbose_name='password',
+        verbose_name="password",
         validators=password_validators,
         unique=True,
-        error_messages={'unique': 'You already used this password.'},
-        help_text=password_error_message
+        error_messages={"unique": "You already used this password."},
+        help_text=password_error_message,
     )
     _password = None
     objects = models.Manager()
@@ -59,11 +66,13 @@ class Password(TimestampBase):
         Return a boolean of whether the raw_password was correct. Handles
         hashing formats behind the scenes.
         """
+
         def setter(raw_password):
             self.set_password(raw_password)
             # Password hash upgrades shouldn't be considered password changes.
             self._password = None
             self.save(update_fields=["password"])
+
         return check_password(raw_password, self.password, setter)
 
     def set_unusable_password(self):

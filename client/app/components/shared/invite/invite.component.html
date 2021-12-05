@@ -1,6 +1,11 @@
 <form [formGroup]="inviteForm">
   <div class="d-flex flex-row justify-content-between align-items-center">
-    <div mat-dialog-title [style.margin.px]="0" class="fs-5 flex-grow-1">Invite up to {{data.game.numPlayers}} players</div>
+    <div *ngIf="data.spectator" mat-dialog-title [style.margin.px]="0" class="fs-6 flex-grow-1">
+      Invite up to {{numPlayers}} spectators
+    </div>
+    <div *ngIf="!data.spectator" mat-dialog-title [style.margin.px]="0" class="fs-6 flex-grow-1">
+      Invite up to {{numPlayers}} players
+    </div>
     <button [style.zIndex]="999" color="primary" mat-icon-button mat-dialog-close>
       <mat-icon>close</mat-icon>
     </button>
@@ -9,7 +14,8 @@
   <div>
     <div class="d-flex flex-column justify-content-center align-items-center pb-3">
       <mat-hint class="fs-6 text-small d-flex flex-column">
-        <span class="text-muted">* your invites are given priority.</span>
+        <span class="text-muted" *ngIf="data.inviteOnly">* only invites are allowed.</span>
+        <span class="text-muted" *ngIf="!data.inviteOnly">* your invites are given priority.</span>
         <span class="text-muted" *ngIf="!data.inviteOnly">* guests will be allowed to join <strong>60 seconds</strong> before join period
           elapses.</span>
       </mat-hint>
@@ -29,7 +35,7 @@
         <mat-icon>remove_circle_outline</mat-icon>
       </button>
       <button
-        [disabled]="!inviteForm.valid || !player.valid || playerControl.controls.length > playerIndex + 1 || playerControl.controls.length + 1 > data.game.numPlayers"
+        [disabled]="!inviteForm.valid || !player.valid || playerControl.controls.length > playerIndex + 1 || playerControl.controls.length + 1 > numPlayers"
         matSuffix mat-icon-button color="primary" cahDebounceClick (debounceClick)="addNewPlayerControl()">
         <mat-icon>add_circle_outline</mat-icon>
       </button>

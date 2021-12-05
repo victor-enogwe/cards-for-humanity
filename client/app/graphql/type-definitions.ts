@@ -98,17 +98,26 @@ export const typeDefs = gql`
 
   input CreateGameInput {
     genres: [ID]!
+    inviteSet: [ID]
 
     joinEndsAt: DateTime
 
     numPlayers: Int
 
     numSpectators: Int
-    playerSet: [ID]
+    playerSetAdd: [CreateGameInputAddGamePlayerset]
+    private: Boolean
 
     roundTime: Int
 
     rounds: Int
+  }
+
+  input CreateGameInputAddGamePlayerset {
+    avatar: ApiPlayerAvatarChoices
+    spectator: Boolean
+    user: ID!
+    winner: [ID]
   }
 
   type CreateGameMutation {
@@ -192,13 +201,14 @@ export const typeDefs = gql`
       updatedAt: DateTime
       user: ID
     ): PlayerNodeConnection!
+    private: Boolean!
 
     roundTime: Int!
 
     rounds: Int!
     status: ApiGameStatusChoices!
     updatedAt: DateTime!
-    winner: UserNode
+    winner: PlayerNode
   }
 
   type GameNodeConnection {
@@ -214,6 +224,19 @@ export const typeDefs = gql`
     cursor: String!
 
     node: GameNode
+  }
+
+  type GamePrivacyMutation {
+    game: GameNode
+  }
+
+  type GameStatusMutation {
+    game: GameNode
+  }
+
+  type GameSubscription {
+    game: GameNode
+    room: ID
   }
 
   type GenreNode implements Node {
@@ -246,6 +269,7 @@ export const typeDefs = gql`
       numPlayers: Int
       numSpectators: Int
       offset: Int
+      private: Boolean
       roundTime: Int
       rounds: Int
       status: String
@@ -299,17 +323,14 @@ export const typeDefs = gql`
   }
 
   type JoinGameMutation {
-    game: GameNode
     ok: Boolean
+    player: PlayerNode
   }
 
   input JoinGameMutationInput {
-    gameId: ID!
-    playerId: ID!
-  }
-
-  type JoinGameSubscription {
-    event: String
+    avatar: String!
+    game: ID!
+    spectator: Boolean
   }
 
   type Mutation {
@@ -317,6 +338,8 @@ export const typeDefs = gql`
     createNewGame(input: CreateGameMutationInput!): CreateNewGameMutation
     createUser(input: CreateUserMutationInput!): CreateUserMutation
     deleteRefreshTokenCookie(input: DeleteRefreshTokenCookieInput!): DeleteRefreshTokenCookiePayload
+    gamePrivacy(id: ID!, input: UpdateGamePrivacyInput!): GamePrivacyMutation
+    gameStatus(id: ID!, input: UpdateGameStatusInput!): GameStatusMutation
     joinGame(input: JoinGameMutationInput!): JoinGameMutation
     refreshToken(input: RefreshTokenMutationInput!): RefreshTokenMutationPayload
     revokeRefreshToken(input: RevokeInput!): RevokePayload
@@ -324,7 +347,6 @@ export const typeDefs = gql`
 
     socialAuth(input: SocialAuthJWTInput!): SocialAuthJWTPayload
     tokenAuth(input: ObtainJSONWebTokenMutationInput!): ObtainJSONWebTokenMutationPayload
-    updateGameStatus(id: ID!, input: UpdateGameInput!): UpdateGameStatusMutation
   }
 
   type NewGameNode {
@@ -378,6 +400,25 @@ export const typeDefs = gql`
     spectator: Boolean!
     updatedAt: DateTime!
     user: UserNode!
+    winner(
+      after: String
+      before: String
+      createdAt: DateTime
+      creator: ID
+      first: Int
+      genres: [ID]
+      joinEndsAt: DateTime
+      last: Int
+      numPlayers: Int
+      numSpectators: Int
+      offset: Int
+      private: Boolean
+      roundTime: Int
+      rounds: Int
+      status: String
+      updatedAt: DateTime
+      winner: ID
+    ): GameNodeConnection!
   }
 
   type PlayerNodeConnection {
@@ -412,6 +453,7 @@ export const typeDefs = gql`
 
     fullWidth: Boolean
     game(id: ID): GameNode
+    gameInProgress: GameNode
 
     games(
       after: String
@@ -425,6 +467,7 @@ export const typeDefs = gql`
       numPlayers: Int
       numSpectators: Int
       offset: Int
+      private: Boolean
       roundTime: Int
       rounds: Int
       status: String
@@ -547,15 +590,15 @@ export const typeDefs = gql`
   }
 
   type Subscription {
-    joinGame(gameRoom: String, user: String): JoinGameSubscription
+    game(id: ID!): GameSubscription
   }
 
-  input UpdateGameInput {
+  input UpdateGamePrivacyInput {
+    private: Boolean!
+  }
+
+  input UpdateGameStatusInput {
     status: ApiGameStatusChoices!
-  }
-
-  type UpdateGameStatusMutation {
-    game: GameNode
   }
 
   type UserNode implements Node {
@@ -572,6 +615,7 @@ export const typeDefs = gql`
       numPlayers: Int
       numSpectators: Int
       offset: Int
+      private: Boolean
       roundTime: Int
       rounds: Int
       status: String
@@ -615,24 +659,6 @@ export const typeDefs = gql`
       uid_In: [String]
     ): SocialNodeConnection!
     updatedAt: DateTime!
-    winners(
-      after: String
-      before: String
-      createdAt: DateTime
-      creator: ID
-      first: Int
-      genres: [ID]
-      joinEndsAt: DateTime
-      last: Int
-      numPlayers: Int
-      numSpectators: Int
-      offset: Int
-      roundTime: Int
-      rounds: Int
-      status: String
-      updatedAt: DateTime
-      winner: ID
-    ): GameNodeConnection!
   }
 
   type UserNodeConnection {

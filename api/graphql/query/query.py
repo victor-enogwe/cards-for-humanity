@@ -7,6 +7,9 @@ from api.graphql.query.user import UserQuery
 from api.graphql.query.whitecard import WhiteCardQuery
 
 
-class Query(UserQuery, BlackCardQuery, WhiteCardQuery, GameQuery, GenreQuery, ObjectType):
-    '''Root Query for the cards against humanity api.'''
+class Query(
+    UserQuery, BlackCardQuery, WhiteCardQuery, GameQuery, GenreQuery, ObjectType
+):
+    """Root Query for the cards against humanity api."""
+
     pass

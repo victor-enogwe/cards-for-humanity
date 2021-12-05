@@ -6,4 +6,4 @@ from api.models.genre import Genre
 class GenreSerializer(ModelSerializer):
     class Meta:
         model = Genre
-        fields = '__all__'
+        fields = "__all__"

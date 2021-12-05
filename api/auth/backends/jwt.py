@@ -2,6 +2,7 @@ from graphql_jwt.backends import JSONWebTokenBackend
 from graphql_jwt.utils import get_credentials
 from api.utils.functions import get_user_by_token
 
+
 class JWTBackend(JSONWebTokenBackend):
     def authenticate(self, request=None, **kwargs):
         if request is None or getattr(request, "_jwt_token_auth", False):

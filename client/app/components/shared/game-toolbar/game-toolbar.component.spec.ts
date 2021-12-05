@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LinkShareComponent } from './link-share.component';
+import { GameToolbarComponent } from './game-toolbar.component';
 
-describe('LinkShareComponent', () => {
-  let component: LinkShareComponent;
-  let fixture: ComponentFixture<LinkShareComponent>;
+describe('GameToolbarComponent', () => {
+  let component: GameToolbarComponent;
+  let fixture: ComponentFixture<GameToolbarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [LinkShareComponent],
+      declarations: [GameToolbarComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LinkShareComponent);
+    fixture = TestBed.createComponent(GameToolbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

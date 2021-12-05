@@ -8,13 +8,17 @@ import { PlayComponent } from '../../components/pages/play/play.component';
 import { SelectAvatarComponent } from '../../components/pages/select-avatar/select-avatar.component';
 import { AvailableGamesComponent } from '../../components/shared/available-games/available-games.component';
 import { AvatarComponent } from '../../components/shared/avatar/avatar.component';
+import { CountdownTimerComponent } from '../../components/shared/countdown-timer/countdown-timer.component';
+import { GameToolbarComponent } from '../../components/shared/game-toolbar/game-toolbar.component';
 import { GenreComponent } from '../../components/shared/genre/genre.component';
 import { InviteComponent } from '../../components/shared/invite/invite.component';
-import { LinkShareComponent } from '../../components/shared/link-share/link-share.component';
+import { GameInProgressGuard } from '../../guards/game-in-progress/game-in-progress.guard';
+import { GameNotInProgressGuard } from '../../guards/game-not-in-progress/game-not-in-progress.guard';
 import { LobbyGuard } from '../../guards/lobby/lobby.guard';
 import { PlayGuard } from '../../guards/play/play.guard';
 import { SelectAvatarGuard } from '../../guards/select-avatar/select-avatar.guard';
 import { SharedModule } from '../../modules/shared/shared.module';
+import { GameInProgressResolver } from '../../resolvers/game-in-progress/game-in-progress.resolver';
 import { NewGameResolver } from '../../resolvers/newGame/new-game.resolver';
 import { GameService } from '../../services/game/game.service';
 import { GenreService } from '../../services/genre/genre.service';
@@ -24,11 +28,26 @@ const routes: Routes = [
     path: '',
     component: PlayComponent,
     children: [
-      { path: '', component: PlayTypeComponent },
-      { path: 'select-avatar', component: SelectAvatarComponent, canActivate: [SelectAvatarGuard], resolve: { newGame: NewGameResolver } },
+      { path: '', component: PlayTypeComponent, canActivate: [GameNotInProgressGuard] },
+      {
+        path: 'select-avatar',
+        component: SelectAvatarComponent,
+        canActivate: [GameNotInProgressGuard, SelectAvatarGuard],
+        resolve: { newGame: NewGameResolver },
+      },
+      {
+        path: 'create-game',
+        component: CreateGameComponent,
+        canActivate: [GameNotInProgressGuard, PlayGuard],
+        resolve: { newGame: NewGameResolver },
+      },
       { path: 'join-game', component: JoinGameComponent, canActivate: [PlayGuard] },
-      { path: 'create-game', component: CreateGameComponent, canActivate: [PlayGuard], resolve: { newGame: NewGameResolver } },
-      { path: 'lobby', component: LobbyComponent, resolve: { newGame: NewGameResolver } },
+      {
+        path: 'lobby',
+        component: LobbyComponent,
+        canActivate: [GameInProgressGuard],
+        resolve: { gameInProgress: GameInProgressResolver },
+      },
     ],
   },
 ];
@@ -40,14 +59,26 @@ const routes: Routes = [
     GenreComponent,
     LobbyComponent,
     InviteComponent,
-    LinkShareComponent,
+    GameToolbarComponent,
     AvatarComponent,
     AvailableGamesComponent,
     SelectAvatarComponent,
     CreateGameComponent,
     JoinGameComponent,
+    CountdownTimerComponent,
+    GameToolbarComponent,
   ],
   imports: [RouterModule.forChild(routes), SharedModule],
-  providers: [GenreService, GameService, LobbyGuard, SelectAvatarGuard, PlayGuard, NewGameResolver],
+  providers: [
+    GenreService,
+    GameService,
+    LobbyGuard,
+    SelectAvatarGuard,
+    PlayGuard,
+    GameInProgressGuard,
+    GameNotInProgressGuard,
+    NewGameResolver,
+    GameInProgressResolver,
+  ],
 })
 export class PlayModule {}

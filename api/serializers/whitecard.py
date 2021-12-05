@@ -6,4 +6,4 @@ from api.models.whitecard import WhiteCard
 class WhiteCardSerializer(ModelSerializer):
     class Meta:
         model = WhiteCard
-        fields = '__all__'
+        fields = "__all__"

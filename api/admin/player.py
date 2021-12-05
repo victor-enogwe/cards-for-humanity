@@ -6,7 +6,7 @@ from api.serializers.player import PlayerSerializer
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'game', 'user', 'score')
+    list_display = ("id", "game", "user", "score")
 
     class Meta:
         serializer_class = PlayerSerializer

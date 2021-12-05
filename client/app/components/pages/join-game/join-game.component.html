@@ -18,7 +18,7 @@
 
         <div class="btn-group btn-group-lg flex-fill justify-content-between" role="group" aria-label="next button">
           <button mat-icon-button flexFill aria-label="previous step" matTooltip="Back" matTooltipPosition="right"
-            [routerLink]="['/play', 'select-avatar']">
+            [routerLink]="['/play', 'select-avatar']" [state]="{ playType: 'join' }">
             <mat-icon>arrow_back</mat-icon>
           </button>
 

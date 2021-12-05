@@ -70,4 +70,8 @@ export class UtilsService {
       return null;
     }
   }
+
+  fromRelayID(id: string): string {
+    return atob(id).split(':')[1];
+  }
 }

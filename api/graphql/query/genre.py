@@ -5,7 +5,4 @@ from api.graphql.nodes import GenreNode
 
 
 class GenreQuery(graphene.ObjectType):
-    genres = DjangoFilterConnectionField(
-        GenreNode,
-        description='all cards genre'
-    )
+    genres = DjangoFilterConnectionField(GenreNode, description="all cards genre")

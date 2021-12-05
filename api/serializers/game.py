@@ -6,4 +6,4 @@ from api.models.game import Game
 class GameSerializer(ModelSerializer):
     class Meta:
         model = Game
-        fields = '__all__'
+        fields = "__all__"

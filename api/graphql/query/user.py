@@ -5,4 +5,4 @@ from api.graphql.nodes import UserNode
 
 
 class UserQuery(graphene.ObjectType):
-    users = DjangoFilterConnectionField(UserNode, description='find users')
+    users = DjangoFilterConnectionField(UserNode, description="find users")

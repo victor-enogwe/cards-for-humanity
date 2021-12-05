@@ -17,9 +17,13 @@
       <strong>INVITE URL: </strong><span class="text-muted">{{host + '/' + game.id}}</span>
     </div>
 
-    <div>
-      <mat-slide-toggle color="primary" (change)="inviteOnly.emit($event)" aria-label="toggle if game-play is only by invitation"
-        matTooltip="invitation only" matTooltipPosition="left" class="fs-6">Invite Only</mat-slide-toggle>
+    <div class="d-flex flex-row align-items-center justify-content-center">
+      <cah-countdown-timer [title]="game.status" [date]="game.joinEndsAt" color="info"></cah-countdown-timer>
+      <mat-slide-toggle #toggle color="primary" (change)="inviteOnly.emit($event)" aria-label="toggle if game-play is only by invitation"
+        matTooltip="{{toggle.checked ? 'private game' : 'public game'}}" matTooltipPosition="left" class="fs-6" [checked]="game.private">
+        <mat-icon color="success" *ngIf="toggle.checked">verified_user</mat-icon>
+        <mat-icon color="warning" *ngIf="!toggle.checked">privacy_tip</mat-icon>
+      </mat-slide-toggle>
     </div>
   </mat-toolbar-row>
   <mat-toolbar-row>
