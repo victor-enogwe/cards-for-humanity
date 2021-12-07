@@ -2,47 +2,42 @@ import graphene
 from channels_graphql_ws import Subscription
 
 from api.graphql.nodes import GameNode
+from api.graphql.query.game import GameQuery
 from api.models.game import Game
-from api.serializers.game import GameSerializer
+from api.utils.functions import game_in_progress
 
 
-class GameSubscription(Subscription):
+class GameInProgressSubscription(Subscription):
     notification_queue_limit = 64
-    room = graphene.ID()
-    game = graphene.Field(GameNode)
-
-    class Arguments:
-        id = graphene.ID(required=True)
-
-    class Meta:
-        queryset = None
-        serializer_class = GameSerializer
-        stream = "games"
+    gameInProgress = graphene.Field(GameNode)
 
     @staticmethod
-    def subscribe(root, info, id: graphene.ID):
+    def subscribe(root, info):
         """Called when user subscribes."""
+        game = game_in_progress(user=info.context.user)
 
         # Return the list of subscription group names.
-        return [id] if id is not None else None
+        return [str(game.id)] if game.id is not None else None
 
     @staticmethod
-    def publish(payload, info, id: graphene.ID):
+    def publish(payload, info):
         """Called to notify the client."""
-        game_instance: Game = payload.get("game")
+        gameInProgress: Game = payload.get("gameInProgress")
 
-        assert id is None or id == game_instance.id
+        assert gameInProgress.id is not None
 
         # Here `payload` contains the `payload` from the `broadcast()`
         # invocation (see below). You can return `MySubscription.SKIP`
         # if you wish to suppress the notification to a particular
         # client. For example, this allows to avoid notifications for
         # the actions made by this particular client.
-        return GameSubscription(game=game_instance, room=id)
+        return GameInProgressSubscription(gameInProgress=gameInProgress)
 
     @classmethod
-    def on_game_updated(cls, game: Game):
-        return cls.broadcast_sync(group=str(game.id), payload={"game": game})
+    def on_game_updated(cls, gameInProgress: Game):
+        return cls.broadcast(
+            group=str(gameInProgress.id), payload={"gameInProgress": gameInProgress}
+        )
 
     @classmethod
     def subscription_resolver(cls, root, info, **kwargs):

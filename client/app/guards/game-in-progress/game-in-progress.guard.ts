@@ -12,7 +12,7 @@ export class GameInProgressGuard implements CanActivate {
   canActivate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.gameService.fetchGameInProgress().pipe(
       first(),
-      switchMap(({ data }) => iif(() => Boolean(data.gameInProgress), of(true), of(this.router.parseUrl('/play')))),
+      switchMap(({ data }) => iif(() => Boolean(data?.gameInProgress), of(true), of(this.router.parseUrl('/play')))),
     );
   }
 }

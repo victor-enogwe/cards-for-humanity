@@ -179,8 +179,9 @@ export interface MatFabMenu {
   imgUrl?: string;
   directives?: {
     cahConfirmDialog?: {
-      component: any;
+      component?: any;
       config: MatDialogConfig;
+      confirmClick?: Function;
     };
     cahDialogComponent?: {
       component: any;

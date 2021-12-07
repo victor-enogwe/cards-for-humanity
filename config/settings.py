@@ -132,7 +132,6 @@ INSTALLED_APPS = [
     "django_cron",
     "graphene_django",
     "channels",
-    "graphene_subscriptions",
     "corsheaders",
     "social_django",
     "rest_framework",
@@ -209,7 +208,6 @@ SOCIAL_AUTH_PIPELINE = [
 ROOT_URLCONF = "config.urls"
 
 GQL_MIDDLEWARE = [
-    # 'api.graphql.middlewares.gql_depromise_subscription.DepromiseSubscription',
     "api.graphql.middlewares.gql_auth.AuthorizationMiddleware",
     "graphql_jwt.middleware.JSONWebTokenMiddleware",
 ]

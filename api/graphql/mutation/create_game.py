@@ -6,6 +6,7 @@ from graphql import GraphQLError
 from api.graphql.nodes import GameNode
 from api.graphql.query.game import GameQuery
 from api.models.game import Game
+from api.utils.functions import game_in_progress
 
 
 class CreateGameMutation(DjangoCreateMutation):
@@ -44,7 +45,7 @@ class CreateGameMutation(DjangoCreateMutation):
 
     @classmethod
     def mutate(self, root, info, input):
-        existing_game = GameQuery.resolve_game_in_progress(None, info)
+        existing_game = game_in_progress(user=info.context.user)
         if existing_game:
             raise GraphQLError("you need to end or cancel your previous game")
         return super().mutate(root, info, input)

@@ -1,10 +1,10 @@
 <form [formGroup]="inviteForm">
   <div class="d-flex flex-row justify-content-between align-items-center">
     <div *ngIf="data.spectator" mat-dialog-title [style.margin.px]="0" class="fs-6 flex-grow-1">
-      Invite up to {{numPlayers}} spectators
+      Invite up to {{numPlayers}} spectator(s)
     </div>
     <div *ngIf="!data.spectator" mat-dialog-title [style.margin.px]="0" class="fs-6 flex-grow-1">
-      Invite up to {{numPlayers}} players
+      Invite up to {{numPlayers}} player(s)
     </div>
     <button [style.zIndex]="999" color="primary" mat-icon-button mat-dialog-close>
       <mat-icon>close</mat-icon>
@@ -12,7 +12,7 @@
   </div>
 
   <div>
-    <div class="d-flex flex-column justify-content-center align-items-center pb-3">
+    <div class="d-flex flex-column justify-content-center align-items-start pb-3">
       <mat-hint class="fs-6 text-small d-flex flex-column">
         <span class="text-muted" *ngIf="data.inviteOnly">* only invites are allowed.</span>
         <span class="text-muted" *ngIf="!data.inviteOnly">* your invites are given priority.</span>

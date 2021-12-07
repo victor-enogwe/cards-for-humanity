@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, first, lastValueFrom, map, Observable, tap } from 'rxjs';
+import { first, lastValueFrom, map, Subscription, tap } from 'rxjs';
 import { MatFabMenu } from '../../../@types/global';
 import { GameNode } from '../../../@types/graphql';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -14,19 +14,12 @@ import { InviteComponent } from '../../shared/invite/invite.component';
   styleUrls: ['./lobby.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LobbyComponent {
+export class LobbyComponent implements OnInit, OnDestroy {
   fab: MatFabMenu[] = [];
   inviteOnly = false;
   inviteComponent = InviteComponent;
-  gameId = (this.route.data as BehaviorSubject<{ gameInProgress: GameNode }>).getValue().gameInProgress.id;
-  gameInProgress$ = this.route.data.pipe(map((data) => data.gameInProgress as GameNode)).pipe(first());
-  gameUpdates$ = this.gameService.subscription(this.gameId).pipe(
-    tap(console.log),
-    map(({ data }) => data?.game?.game),
-  );
-  game$: Observable<GameNode> = combineLatest([this.gameInProgress$, this.gameUpdates$]).pipe(
-    map(([game, updates]) => ({ ...game, ...updates })),
-  );
+  gameInProgress$ = this.gameService.watchGameInProgress().valueChanges.pipe(map(({ data }) => data?.gameInProgress));
+  gameInProgressUnsubscribe!: Subscription['unsubscribe'];
 
   constructor(
     private route: ActivatedRoute,
@@ -35,7 +28,19 @@ export class LobbyComponent {
     private utilsService: UtilsService,
   ) {}
 
-  fabMenu({ game, inviteOnly }: { game: GameNode; inviteOnly: boolean }): MatFabMenu[] {
+  ngOnInit(): void {
+    this.route.data
+      .pipe(first())
+      .pipe(tap(({ gameInProgress: game }) => this.fabMenu(game)))
+      .subscribe();
+    this.gameInProgressUnsubscribe = this.gameService.gameInProgressSubscription();
+  }
+
+  ngOnDestroy(): void {
+    this.gameInProgressUnsubscribe();
+  }
+
+  fabMenu(game: GameNode) {
     const menus: MatFabMenu[] = [
       {
         id: 'cancel_game',
@@ -43,6 +48,12 @@ export class LobbyComponent {
         tooltip: 'Cancel Game',
         tooltipPosition: 'left',
         color: 'danger',
+        directives: {
+          cahConfirmDialog: {
+            config: { data: { title: `Cancel Game`, description: game.id } },
+            confirmClick: () => lastValueFrom(this.gameService.updateGameStatus(game.id, { status: 'GAME_ENDED' })),
+          },
+        },
       },
       {
         id: 'invite_spectators',
@@ -53,7 +64,7 @@ export class LobbyComponent {
         directives: {
           cahConfirmDialog: {
             component: InviteComponent,
-            config: { data: { game: game, inviteOnly, spectator: true }, maxHeight: '420px' },
+            config: { data: { game: game, inviteOnly: game.private, spectator: true }, maxHeight: '420px' },
           },
         },
       },
@@ -66,13 +77,13 @@ export class LobbyComponent {
         directives: {
           cahConfirmDialog: {
             component: InviteComponent,
-            config: { data: { game: game, inviteOnly }, maxHeight: '420px' },
+            config: { data: { game: game, inviteOnly: game.private }, maxHeight: '420px' },
           },
         },
       },
     ];
 
-    return menus.filter(({ id }) => {
+    this.fab = menus.filter(({ id }) => {
       switch (true) {
         case id === 'invite_players' && game.numPlayers < 2:
         case id === 'invite_spectators' && game.numSpectators < 1:
@@ -84,9 +95,10 @@ export class LobbyComponent {
     });
   }
 
-  fabItemClicked($event: any) {}
+  fabItemClicked({ id, game }: { id: 'cancel_game' | 'invite_spectators' | 'invite_players'; game: GameNode }) {}
 
   async setPrivacy({ game, privacy }: { game: GameNode; privacy: boolean }) {
+    this.fabMenu({ ...game, private: privacy });
     return lastValueFrom(this.gameService.updateGamePrivacy(game.id, { private: privacy }));
   }
 }

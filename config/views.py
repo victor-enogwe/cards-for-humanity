@@ -10,7 +10,7 @@ from django.utils.encoding import force_text
 from django.views.generic.base import TemplateView
 from graphene_django.views import GraphQLView
 from Naked.toolshed.shell import muterun_js
-from rx.core.observable import observable
+from rx.core.observablebase import Observable
 
 from config.settings import BASE_DIR, CSP_STYLE_SRC
 
@@ -60,7 +60,7 @@ class GraphiQLView(GraphQLView):
             request, data, query, variables, operation_name, show_graphiql
         )
         if execution_result:
-            if isinstance(execution_result, observable.Observable):
+            if isinstance(execution_result, Observable):
                 target = execution_result.subscribe(
                     on_next=lambda value: override_target_result(value)
                 )

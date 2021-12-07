@@ -20,6 +20,7 @@ export const GAME_NODE_FRAGMENT = gql`
     numSpectators
     status
     joinEndsAt
+    private
     creator {
       id
     }

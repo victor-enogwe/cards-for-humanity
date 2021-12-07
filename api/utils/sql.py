@@ -44,7 +44,7 @@ GAME_SUMMARY_SQL = """
 PLAYER_TRIGGER = """
     {game_summary} INTO game_summary;
 
-    IF game_summary.status = {game_ended}
+    IF game_summary.status = '{game_ended}'
     THEN
         RAISE EXCEPTION 'game has ended.';
     END IF;

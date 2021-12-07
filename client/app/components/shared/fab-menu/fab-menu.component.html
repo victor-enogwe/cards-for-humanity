@@ -10,6 +10,7 @@
     <button *ngFor=" let fab of fabButtons" cahDebounceClick (debounceClick)="selectFabMenu(fab)" [color]="fab?.color" [matTooltip]="fab?.tooltip!"
       [matTooltipPosition]="fab?.tooltipPosition!" [ngClass]="{'fullSVG' : fab?.imgUrl, 'my-3': true }" mat-fab
       [cahConfirmDialog]="fab.directives?.cahConfirmDialog" [cahDialogComponent]="fab.directives?.cahDialogComponent"
+      (confirmClick)="fab.directives?.cahConfirmDialog?.confirmClick($event)!"
       [config]="fab.directives?.cahDialogComponent?.config! ?? fab.directives?.cahConfirmDialog?.config!"
       [component]="fab?.directives?.cahDialogComponent?.component ?? fab?.directives?.cahConfirmDialog?.component">
       <mat-icon *ngIf="fab?.icon" [color]="fab?.iconColor">{{fab?.icon}}</mat-icon>

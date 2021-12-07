@@ -8,6 +8,7 @@ from api.graphql.nodes import GameNode
 from api.models.game import Game
 from api.models.player import Player
 from api.utils.enums import GameStatus
+from api.utils.functions import game_in_progress
 
 
 class GameQuery(graphene.ObjectType):
@@ -21,17 +22,4 @@ class GameQuery(graphene.ObjectType):
         return Game.objects.filter(**input).first()
 
     def resolve_game_in_progress(self: None, info):
-        try:
-            player = Player.objects.filter(
-                ~Q(game__status=GameStatus.GE), Q(user=info.context.user)
-            ).first()
-            if player is None:
-                raise Player.DoesNotExist()
-            return player.game
-        except (
-            Player.DoesNotExist,
-            Player.game.RelatedObjectDoesNotExist,
-        ):
-            return Game.objects.filter(
-                ~Q(status=GameStatus.GE), Q(creator=info.context.user)
-            ).first()
+        return game_in_progress(user=info.context.user)

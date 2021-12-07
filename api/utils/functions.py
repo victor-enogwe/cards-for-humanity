@@ -8,15 +8,17 @@ from os import listdir, path
 from os.path import isfile, join
 from uuid import uuid4
 
+from django.apps import apps
 from django.contrib.auth import authenticate, get_user_model
 from django.core import management
+from django.db import models
 from django.http.request import HttpRequest
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
-from graphql import GraphQLError
 from graphene.utils.thenables import maybe_thenable
+from graphql import GraphQLError
 from graphql_jwt.decorators import (
     csrf_rotation,
     exceptions,
@@ -28,8 +30,7 @@ from graphql_jwt.decorators import (
 from graphql_jwt.settings import jwt_settings
 from graphql_jwt.utils import delete_cookie, get_payload, set_cookie
 
-from api.models.profile import Profile
-from api.models.provider import Provider
+from api.utils.enums import GameStatus
 from api.utils.graphql_errors import GraphQLErrors
 from config.settings import env
 
@@ -49,7 +50,8 @@ def create_superuser(apps, schema_editor):
 
 
 def delete_superuser(apps, schema_editor):
-    email = Provider.objects.get(email=env("SUPERUSER_EMAIL"))
+    provider_model = apps.get_model("api.Provider")
+    email = provider_model.objects.get(email=env("SUPERUSER_EMAIL"))
     return get_user_model().objects.get(pk=email.pk).delete()
 
 
@@ -254,12 +256,13 @@ def get_generic_parent_admin_link(obj):
 
 
 def get_user_by_payload(payload):
+    provider_model = apps.get_model("api.Provider")
     username = jwt_settings.JWT_PAYLOAD_GET_USERNAME_HANDLER(payload)
     user_id = payload.get("sub")
     user = None
 
     if username:
-        user = Provider.objects.get(email=username).user
+        user = provider_model.objects.get(email=username).user
 
     if not username and user_id:
         user = jwt_settings.JWT_GET_USER_BY_NATURAL_KEY_HANDLER(user_id)
@@ -278,8 +281,10 @@ def get_user_by_token(token, context=None):
 
 
 def jwt_payload(user, context=None):
-    provider: Provider = Provider.objects.get(user=user)
-    profile: Profile = Profile.objects.get(provider=provider)
+    profile_model = apps.get_model("api.Profile")
+    provider_model = apps.get_model("api.Provider")
+    provider = provider_model.objects.get(user=user)
+    profile = profile_model.objects.get(provider=provider)
     host = os.getenv("HOST", None)
     claims_url = "{0}/claims".format(host)
     jwt_datetime = datetime.utcnow() + jwt_settings.JWT_EXPIRATION_DELTA
@@ -337,3 +342,32 @@ def token_auth(f):
         return maybe_thenable((context, user, result), on_token_auth_resolve)
 
     return wrapper
+
+
+def game_in_progress(user):
+    player_model = apps.get_model("api.Player")
+    game_model = apps.get_model("api.Game")
+
+    try:
+        player = player_model.objects.filter(
+            ~models.Q(game__status=GameStatus.GE), models.Q(user=user)
+        ).first()
+        if player is None:
+            raise player_model.DoesNotExist()
+        return player.game
+    except (
+        player_model.DoesNotExist,
+        player_model.game.RelatedObjectDoesNotExist,
+    ):
+        return game_model.objects.filter(
+            ~models.Q(status=GameStatus.GE), models.Q(creator=user)
+        ).first()
+
+
+def get_ws_authorization(payload):
+    auth = payload.get(jwt_settings.JWT_AUTH_HEADER_NAME, "").split()
+    prefix = jwt_settings.JWT_AUTH_HEADER_PREFIX
+
+    if len(auth) != 2 or auth[0].lower() != prefix.lower():
+        return None
+    return auth[1]

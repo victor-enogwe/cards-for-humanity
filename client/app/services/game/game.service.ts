@@ -9,7 +9,6 @@ import {
   NewGameNode,
   Query,
   Scalars,
-  Subscription,
   UpdateGamePrivacyInput,
   UpdateGameStatusInput,
   UserNode,
@@ -18,7 +17,7 @@ import {
   CREATE_GAME_LOCAL_MUTATION,
   CREATE_GAME_MUTATION,
   GAME_IN_PROGRESS,
-  GAME_SUBSCRIPTION,
+  GAME_IN_PROGRESS_SUBSCRIPTION,
   NEW_GAME_QUERY,
   UPDATE_GAME_PRIVACY_MUTATION,
   UPDATE_GAME_STATUS_MUTATION,
@@ -40,7 +39,11 @@ export class GameService {
   }
 
   fetchGameInProgress() {
-    return this.apollo.query<Pick<Query, 'gameInProgress'>>({ query: GAME_IN_PROGRESS, fetchPolicy: 'network-only' });
+    return this.apollo.query<Pick<Query, 'gameInProgress'>>({ query: GAME_IN_PROGRESS });
+  }
+
+  watchGameInProgress() {
+    return this.apollo.watchQuery<Pick<Query, 'gameInProgress'>>({ query: GAME_IN_PROGRESS });
   }
 
   createNewGame(game: Partial<CreateGameMutationInput>) {
@@ -95,6 +98,11 @@ export class GameService {
           } as GameNode,
         },
       },
+      update: (cache, { data }) =>
+        cache.writeQuery<Pick<Query, 'gameInProgress'>>({
+          query: GAME_IN_PROGRESS,
+          data: { gameInProgress: data?.createGame?.game },
+        }),
     });
   }
 
@@ -102,12 +110,6 @@ export class GameService {
     return this.apollo.mutate<Pick<Mutation, 'gameStatus'>, { id: Scalars['ID']; input: UpdateGameStatusInput }>({
       mutation: UPDATE_GAME_STATUS_MUTATION,
       variables: { id, input },
-      optimisticResponse: {
-        gameStatus: {
-          __typename: 'GameStatusMutation',
-          game: { __typename: 'GameNode', id, ...input } as GameNode,
-        },
-      },
     });
   }
 
@@ -115,19 +117,23 @@ export class GameService {
     return this.apollo.mutate<Pick<Mutation, 'gamePrivacy'>, { id: Scalars['ID']; input: UpdateGamePrivacyInput }>({
       mutation: UPDATE_GAME_PRIVACY_MUTATION,
       variables: { id, input },
-      optimisticResponse: {
-        gamePrivacy: {
-          __typename: 'GamePrivacyMutation',
-          game: { __typename: 'GameNode', id, ...input } as GameNode,
-        },
-      },
     });
   }
 
-  subscription(id: Scalars['ID']) {
-    return this.apollo.subscribe<Pick<Subscription, 'game'>, { id: Scalars['ID'] }>({
-      query: GAME_SUBSCRIPTION,
-      variables: { id },
+  gameInProgressSubscription() {
+    return this.watchGameInProgress().subscribeToMore({
+      document: GAME_IN_PROGRESS_SUBSCRIPTION,
+      updateQuery: (prev, { subscriptionData }) => {
+        const { gameInProgress } = subscriptionData.data;
+        if (!gameInProgress) return prev;
+
+        return {
+          gameInProgress: {
+            ...prev.gameInProgress,
+            ...gameInProgress.gameInProgress,
+          },
+        };
+      },
     });
   }
 

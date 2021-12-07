@@ -1,6 +1,6 @@
-<div *ngIf="game$ | async as game">
-  <cah-game-toolbar [game]="game"
-    (inviteOnly)="fab=fabMenu({ game, inviteOnly: $event.checked }); setPrivacy({ game, privacy: $event.checked})"></cah-game-toolbar>
-  <cah-fab-menu [fabButtons]="fab" color="primary" icon="settings_suggest" (ngClick)="fabItemClicked($event)">
+<div *ngIf="gameInProgress$ | async as game">
+  <cah-game-toolbar [game]="game!" (inviteOnly)="setPrivacy({ game, privacy: $event.checked})">
+  </cah-game-toolbar>
+  <cah-fab-menu [fabButtons]="fab" color="primary" icon="settings_suggest" (ngClick)="fabItemClicked({ id: $any($event), game })">
   </cah-fab-menu>
 </div>

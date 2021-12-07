@@ -15,7 +15,6 @@ Including another URLconf
 """
 from os import environ
 
-from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.conf.urls import include, url
 from django.contrib import admin
@@ -23,6 +22,7 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView
 
+from api.graphql.middlewares.ws_auth import AuthMiddlewareStack
 from api.graphql.ws_consumer import GraphqlWsConsumer
 from api.utils.functions import jwt_cookie
 from config.settings import DEBUG

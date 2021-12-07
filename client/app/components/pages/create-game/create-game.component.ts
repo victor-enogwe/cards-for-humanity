@@ -81,6 +81,6 @@ export class CreateGameComponent implements OnInit, OnDestroy {
         ...omit(game, 'id', 'avatar'),
         playerSetAdd: [{ user: String(this.user?.sub), avatar: game.avatar }],
       }),
-    );
+    ).then(() => this.router.navigate(['/play', 'lobby']));
   }
 }

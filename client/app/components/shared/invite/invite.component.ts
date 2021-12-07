@@ -12,7 +12,7 @@ import { FormService } from '../../../services/form/form.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InviteComponent {
-  numPlayers = this.data.spectator ? this.data.game.numSpectators : this.data.game.numPlayers;
+  numPlayers = this.data.spectator ? this.data.game.numSpectators : this.data.game.numPlayers - 1;
   inviteForm = this.formBuilder.group({
     players: new FormArray([this.createPlayerControl()], [Validators.maxLength(this.numPlayers), this.formService.duplicateValidator]),
   });

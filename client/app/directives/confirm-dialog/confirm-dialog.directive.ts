@@ -27,7 +27,7 @@ export class ConfirmDialogDirective {
   clickEvent(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    if (!this.component || !this.useDirective) return;
+    if (!this.useDirective) return;
     const dialogRef = this.dialog.open(this.component ?? ConfirmationDialogComponent, { ...this.defaultConfig, ...this.config });
     if (this.listen) {
       const confirmClick = cloneDeep(this.confirmClick);

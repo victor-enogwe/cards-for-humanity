@@ -13,7 +13,7 @@ import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } f
 import { APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CahComponent } from '../../components/shared/cah/cah.component';
 import { GlobalErrorInterceptor } from '../../interceptors/global-error/global-error';
@@ -47,9 +47,10 @@ export const AUTH_TOKEN$ = new InjectionToken<BehaviorSubject<string | null>>('a
 const hostFactory = (document: Document) => document.location.origin;
 const staticURLFactory = (host: string, platformId: Object) => `${host}/${isPlatformServer(platformId) ? 'static/browser' : ''}`;
 const seoFactory = (seoService: SeoService) => seoService.start.bind(seoService);
-const cacheFactory = (gqlService: GraphqlService, router: Router) => () => gqlService.initCache().then(() => router.initialNavigation());
 const storageFactory = (config: StorageConfig, pId: Object) => (isPlatformServer(pId) ? new NoopStorage() : new Storage(config));
-const authFactory = (authService: AuthService) => () => authService.refreshTokenFactory();
+const cacheFactory = (gqlService: GraphqlService) => () => gqlService.initCache();
+const authFactory = (auth: AuthService, router: Router) => () => auth.refreshTokenFactory().pipe(tap(() => router.initialNavigation()));
+// const wsConnectionFactory = (apollo: Apollo) => () => apollo.subscribe({ query: CONNECT_SUBSCRIPTION, variables: { room: 'cah' } });
 const cryptrFactory = (host: string) => new Crypt(host);
 
 @NgModule({
@@ -123,9 +124,10 @@ const cryptrFactory = (host: string) => new Crypt(host);
     { provide: APP_ID, useValue: 'cah' },
     { provide: APP_HOST, useFactory: hostFactory, deps: [DOCUMENT] },
     { provide: STATIC_URL, useFactory: staticURLFactory, deps: [APP_HOST, PLATFORM_ID] },
-    { provide: APP_INITIALIZER, useFactory: authFactory, multi: true, deps: [AuthService] },
-    { provide: APP_INITIALIZER, useFactory: cacheFactory, multi: true, deps: [GraphqlService, Router] },
+    { provide: APP_INITIALIZER, useFactory: cacheFactory, multi: true, deps: [GraphqlService] },
+    { provide: APP_INITIALIZER, useFactory: authFactory, multi: true, deps: [AuthService, Router] },
     { provide: APP_INITIALIZER, useFactory: seoFactory, multi: true, deps: [SeoService] },
+    // { provide: APP_INITIALIZER, useFactory: wsConnectionFactory, multi: true, deps: [Apollo] },
     { provide: CRYPT, useFactory: cryptrFactory, deps: [APP_HOST] },
     { provide: AUTH_TOKEN$, useValue: new BehaviorSubject<string | null>(null) },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },

@@ -105,6 +105,12 @@ type BlackCardNodeEdge {
   node: BlackCardNode
 }
 
+type ConnectSubscription {
+  message: String
+  ok: Boolean
+  room: ID
+}
+
 input CreateGameInput {
   genres: [ID]!
   inviteSet: [ID]
@@ -173,6 +179,10 @@ type DeleteRefreshTokenCookiePayload {
   deleted: Boolean!
 }
 
+type GameInProgressSubscription {
+  gameInProgress: GameNode
+}
+
 type GameNode implements Node {
   createdAt: DateTime!
   creator: UserNode!
@@ -219,11 +229,6 @@ type GamePrivacyMutation {
 
 type GameStatusMutation {
   game: GameNode
-}
-
-type GameSubscription {
-  game: GameNode
-  room: ID
 }
 
 type GenreNode implements Node {
@@ -468,7 +473,8 @@ type SocialNodeEdge {
 
 """Root Subscription for the cards against humanity api."""
 type Subscription {
-  game(id: ID!): GameSubscription
+  connect(room: ID!): ConnectSubscription
+  gameInProgress: GameInProgressSubscription
 }
 
 input UpdateGamePrivacyInput {

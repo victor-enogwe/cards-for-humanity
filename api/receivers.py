@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from graphql_jwt.refresh_token.signals import refresh_token_rotated
 
-from api.graphql.subscription.game import GameSubscription
+from api.graphql.subscription.game_in_progress import GameInProgressSubscription
 from api.models.game import Game
 from api.models.profile import Profile
 from api.models.user import User
@@ -31,7 +31,7 @@ def updated_at_timestamp(sender, instance: VerificationCode, **kwargs):
 
 @receiver(post_save, sender=Game)
 def broadcast_game(sender, instance, **kwargs):
-    GameSubscription.on_game_updated(game=instance)
+    GameInProgressSubscription.on_game_updated(gameInProgress=instance)
 
     # @receiver(post_save, sender=User)
     # def create_user_profile(sender, instance, created, **kwargs):
