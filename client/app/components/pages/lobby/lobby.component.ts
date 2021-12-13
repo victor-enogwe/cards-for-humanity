@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { first, lastValueFrom, map, Subscription, tap } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { first, lastValueFrom, map, share, Subscription, tap } from 'rxjs';
 import { MatFabMenu } from '../../../@types/global';
-import { GameNode } from '../../../@types/graphql';
+import { GameNode, Maybe } from '../../../@types/graphql';
 import { AuthService } from '../../../services/auth/auth.service';
 import { GameService } from '../../../services/game/game.service';
 import { UtilsService } from '../../../services/utils/utils.service';
@@ -18,11 +18,16 @@ export class LobbyComponent implements OnInit, OnDestroy {
   fab: MatFabMenu[] = [];
   inviteOnly = false;
   inviteComponent = InviteComponent;
-  gameInProgress$ = this.gameService.watchGameInProgress().valueChanges.pipe(map(({ data }) => data?.gameInProgress));
+  gameInProgress$ = this.gameService.watchGameInProgress().valueChanges.pipe(
+    share(),
+    map(({ data }) => data?.gameInProgress),
+    tap((game) => this.onGameEnd(game)),
+  );
   gameInProgressUnsubscribe!: Subscription['unsubscribe'];
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private authService: AuthService,
     private gameService: GameService,
     private utilsService: UtilsService,
@@ -100,5 +105,10 @@ export class LobbyComponent implements OnInit, OnDestroy {
   async setPrivacy({ game, privacy }: { game: GameNode; privacy: boolean }) {
     this.fabMenu({ ...game, private: privacy });
     return lastValueFrom(this.gameService.updateGamePrivacy(game.id, { private: privacy }));
+  }
+
+  async onGameEnd(game?: Maybe<GameNode>): Promise<boolean> {
+    if (!game || game?.status === 'GAME_ENDED') return this.router.navigate(['/play']);
+    return Promise.resolve(false);
   }
 }

@@ -13,7 +13,7 @@ import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } f
 import { APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject, tap } from 'rxjs';
+import { BehaviorSubject, from, switchMap, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CahComponent } from '../../components/shared/cah/cah.component';
 import { GlobalErrorInterceptor } from '../../interceptors/global-error/global-error';
@@ -21,6 +21,7 @@ import { HttpErrorInterceptor } from '../../interceptors/http-error/http.error.i
 import { CahRoutingModule } from '../../modules/routing/routing.module';
 import { SharedModule } from '../../modules/shared/shared.module';
 import { AuthService } from '../../services/auth/auth.service';
+import { BroadcastService } from '../../services/broadcast/broadcast.service';
 import { CahDialogService } from '../../services/cah-dialog/cah-dialog.service';
 import { DynamicOverlayService } from '../../services/dynamic-overlay/dynamic-overlay.service';
 import { GraphqlService } from '../../services/graphql/graphql.service';
@@ -35,6 +36,7 @@ import { UIService } from '../../services/ui/ui.service';
 import { UtilsService } from '../../services/utils/utils.service';
 import { Crypt } from '../../utils/crypt';
 import { NoopStorage } from '../../utils/noop-storage';
+import { WSSubscriptionClient } from '../../utils/ws';
 
 export const APP_HOST = new InjectionToken<string>('host');
 export const STATIC_URL = new InjectionToken<string>('static_path');
@@ -43,15 +45,19 @@ export const STORAGE_CONFIG_TOKEN = new InjectionToken<StorageConfig>('Storage.c
 export const CSP_NONCE_META = new InjectionToken<string>('cspMetaSelector');
 export const CRYPT = new InjectionToken<Crypt>('crypt');
 export const AUTH_TOKEN$ = new InjectionToken<BehaviorSubject<string | null>>('auth_token$');
+export const WS_CLIENT = new InjectionToken<BehaviorSubject<WSSubscriptionClient>>('ws_client');
 
 const hostFactory = (document: Document) => document.location.origin;
 const staticURLFactory = (host: string, platformId: Object) => `${host}/${isPlatformServer(platformId) ? 'static/browser' : ''}`;
 const seoFactory = (seoService: SeoService) => seoService.start.bind(seoService);
+const wsClientFactory = () => new WSSubscriptionClient(environment.WS_LINK, { reconnect: true, lazy: true });
 const storageFactory = (config: StorageConfig, pId: Object) => (isPlatformServer(pId) ? new NoopStorage() : new Storage(config));
 const cacheFactory = (gqlService: GraphqlService) => () => gqlService.initCache();
-const authFactory = (auth: AuthService, router: Router) => () => auth.refreshTokenFactory().pipe(tap(() => router.initialNavigation()));
-// const wsConnectionFactory = (apollo: Apollo) => () => apollo.subscribe({ query: CONNECT_SUBSCRIPTION, variables: { room: 'cah' } });
+const broadcastChannelFactory = (broadcastService: BroadcastService) => () => broadcastService.createChannel();
+const refreshTokenKeepAliveFactory = (authService: AuthService) => () => authService.refreshToken$.subscribe();
 const cryptrFactory = (host: string) => new Crypt(host);
+const authFactory = (broadcastService: BroadcastService, auth: AuthService, router: Router) => () =>
+  from(broadcastService.electLeader()).pipe(switchMap(() => auth.refreshTokenFactory().pipe(tap(() => router.initialNavigation()))));
 
 @NgModule({
   declarations: [CahComponent],
@@ -88,6 +94,7 @@ const cryptrFactory = (host: string) => new Crypt(host);
     LoggerService,
     UtilsService,
     AuthService,
+    BroadcastService,
     {
       provide: STORAGE_CONFIG_TOKEN,
       useValue: {
@@ -124,10 +131,12 @@ const cryptrFactory = (host: string) => new Crypt(host);
     { provide: APP_ID, useValue: 'cah' },
     { provide: APP_HOST, useFactory: hostFactory, deps: [DOCUMENT] },
     { provide: STATIC_URL, useFactory: staticURLFactory, deps: [APP_HOST, PLATFORM_ID] },
+    { provide: APP_INITIALIZER, useFactory: broadcastChannelFactory, multi: true, deps: [BroadcastService] },
     { provide: APP_INITIALIZER, useFactory: cacheFactory, multi: true, deps: [GraphqlService] },
-    { provide: APP_INITIALIZER, useFactory: authFactory, multi: true, deps: [AuthService, Router] },
+    { provide: APP_INITIALIZER, useFactory: authFactory, multi: true, deps: [BroadcastService, AuthService, Router] },
+    { provide: APP_INITIALIZER, useFactory: refreshTokenKeepAliveFactory, multi: true, deps: [AuthService] },
     { provide: APP_INITIALIZER, useFactory: seoFactory, multi: true, deps: [SeoService] },
-    // { provide: APP_INITIALIZER, useFactory: wsConnectionFactory, multi: true, deps: [Apollo] },
+    { provide: WS_CLIENT, useFactory: wsClientFactory },
     { provide: CRYPT, useFactory: cryptrFactory, deps: [APP_HOST] },
     { provide: AUTH_TOKEN$, useValue: new BehaviorSubject<string | null>(null) },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },

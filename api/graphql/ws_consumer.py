@@ -6,7 +6,6 @@ from api.graphql.middlewares.gql_depromise_subscription import depromise_subscri
 from api.graphql.mutation.mutation import Mutation
 from api.graphql.query.query import Query
 from api.graphql.subscription.subscription import Subscription
-from api.utils.functions import get_ws_authorization
 
 gql_schema = Schema(query=Query, mutation=Mutation, subscription=Subscription)
 

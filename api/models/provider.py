@@ -27,12 +27,11 @@ from config.settings import AUTH_USER_MODEL
 class Provider(TimestampBase):
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
     last_login = models.DateTimeField(_("last login"), blank=True, null=True)
+    last_logout = models.DateTimeField(_("last logout"), blank=True, null=True)
     primary = models.BooleanField(default=False)
     email = models.EmailField(
         unique=True,
         verbose_name="email",
-        blank=True,
-        null=True,
         error_messages={"unique": "A user with that email already exists."},
     )
     phone = PhoneNumberField(
@@ -68,16 +67,7 @@ class Provider(TimestampBase):
     objects = models.Manager()
 
     class Meta:
-        constraints = [
-            models.CheckConstraint(
-                name="api_provider_email_or_phone",
-                check=(
-                    models.Q(email__isnull=False, phone__isnull=True, seed__isnull=True)
-                    | models.Q(phone__isnull=False, email__isnull=True)
-                    | models.Q(seed__isnull=False, email__isnull=True)
-                ),
-            )
-        ]
+        constraints = []
 
     @property
     def date_joined(self):

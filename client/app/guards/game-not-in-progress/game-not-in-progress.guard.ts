@@ -11,7 +11,7 @@ export class GameNotInProgressGuard implements CanActivate {
 
   canActivate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     const playType = this.router.getCurrentNavigation()?.extras.state?.playType;
-    return this.gameService.fetchGameInProgress().pipe(
+    return this.gameService.fetchGameInProgress('network-only').pipe(
       first(),
       switchMap(({ data }) => iif(() => !data.gameInProgress || playType === 'join', of(true), of(this.router.parseUrl('/play/lobby')))),
     );

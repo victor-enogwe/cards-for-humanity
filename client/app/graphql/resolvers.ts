@@ -2,7 +2,7 @@ import { DocumentNode, InMemoryCache } from '@apollo/client/core';
 import { AnyObject } from '../@types/global';
 import { GenreNode, Query, Resolvers } from '../@types/graphql';
 import { GENRE_NODE_FRAGMENT } from './fragments';
-import { FULL_WIDTH_QUERY, NEW_GAME_QUERY } from './queries';
+import { FULL_WIDTH_QUERY, NAV_OPEN_QUERY, NEW_GAME_QUERY } from './queries';
 
 export function defaultResolver<T>(query: DocumentNode) {
   return (_root: AnyObject, args: AnyObject, { cache }: { cache: InMemoryCache; getCacheKey: Function }, info: AnyObject): T | null => {
@@ -58,6 +58,18 @@ export const resolvers: Resolvers = {
       return Promise.resolve({
         __typename: 'SetFullWidthMutation',
         fullWidth: args.input.fullWidth,
+      });
+    },
+    toggleNav(_root, _args, { cache }: { cache: InMemoryCache }) {
+      const navOpen = cache.readQuery<Pick<Query, 'navOpen'>>({ query: NAV_OPEN_QUERY });
+      cache.writeQuery<Pick<Query, 'navOpen'>>({
+        query: NAV_OPEN_QUERY,
+        data: { navOpen: !navOpen?.navOpen },
+      });
+
+      return Promise.resolve({
+        __typename: 'ToggleNavMutation',
+        navOpen: !navOpen?.navOpen,
       });
     },
   },

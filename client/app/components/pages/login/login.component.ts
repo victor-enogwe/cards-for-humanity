@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
         tap(() => form.disable()),
         mergeMap(({ value: { username, password } }) => this.authService.signInManual({ username, password })),
         tap(() => this.authService),
-        tap(({ data }) => this.authService.persistAuth(data?.tokenAuth!)),
+        tap(({ data }) => this.authService.broadcastAuth('login', data?.tokenAuth!)),
         tap(() =>
           this.authService
             .rememberUser(form.value)

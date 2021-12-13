@@ -42,6 +42,7 @@ const routes: Routes = [
         resolve: { newGame: NewGameResolver },
       },
       { path: 'join-game', component: JoinGameComponent, canActivate: [PlayGuard] },
+      { path: 'join-game/:gameId', component: JoinGameComponent, canActivate: [PlayGuard] },
       {
         path: 'lobby',
         component: LobbyComponent,

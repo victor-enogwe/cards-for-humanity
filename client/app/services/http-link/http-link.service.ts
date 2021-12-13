@@ -80,7 +80,7 @@ export class HttpLinkService extends ApolloLink {
     return httpClient.request(req.method, req.url, {
       observe: 'response',
       responseType: 'json',
-      reportProgress: false,
+      reportProgress: true,
       ...bodyOrParams,
       ...req.options,
     });

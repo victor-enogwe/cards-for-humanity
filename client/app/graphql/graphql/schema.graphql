@@ -76,6 +76,13 @@ enum ApiWhiteCardRatingChoices {
   NORMAL
 }
 
+input BatchCreateInviteInput {
+  email: String!
+  game: ID!
+  revoked: Boolean
+  spectator: Boolean
+}
+
 type BlackCardNode implements Node {
   createdAt: DateTime!
   genre: GenreNode!
@@ -105,15 +112,8 @@ type BlackCardNodeEdge {
   node: BlackCardNode
 }
 
-type ConnectSubscription {
-  message: String
-  ok: Boolean
-  room: ID
-}
-
 input CreateGameInput {
   genres: [ID]!
-  inviteSet: [ID]
   """seconds"""
   joinEndsAt: DateTime
   """no of players"""
@@ -183,6 +183,10 @@ type GameInProgressSubscription {
   gameInProgress: GameNode
 }
 
+type GameInviteMutation {
+  invites: [InviteNode]
+}
+
 type GameNode implements Node {
   createdAt: DateTime!
   creator: UserNode!
@@ -235,7 +239,7 @@ type GenreNode implements Node {
   blackcardSet(after: String, before: String, createdAt: DateTime, first: Int, genre: ID, last: Int, offset: Int, pick: String, rating: String, text: String, updatedAt: DateTime): BlackCardNodeConnection!
   """credit creator(url)"""
   credit: String
-  """description allows 2-255 characters(alphabets and -,_,.,',",space)"""
+  """text allows 2-255 characters(alphabets and -,_,.,',",space)"""
   description: String!
   gameSet(after: String, before: String, createdAt: DateTime, creator: ID, first: Int, genres: [ID], joinEndsAt: DateTime, last: Int, numPlayers: Int, numSpectators: Int, offset: Int, private: Boolean, roundTime: Int, rounds: Int, status: String, updatedAt: DateTime, winner: ID): GameNodeConnection!
   """The ID of the object."""
@@ -259,6 +263,34 @@ type GenreNodeEdge {
   cursor: String!
   """The item at the end of the edge"""
   node: GenreNode
+}
+
+type InviteNode implements Node {
+  createdAt: DateTime!
+  email: String!
+  game: GameNode!
+  """The ID of the object."""
+  id: ID!
+  revoked: Boolean!
+  spectator: Boolean!
+  updatedAt: DateTime!
+}
+
+type InviteNodeConnection {
+  edgeCount: Int
+  """Contains the nodes in this connection."""
+  edges: [InviteNodeEdge]!
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+"""A Relay edge containing a `InviteNode` and its cursor."""
+type InviteNodeEdge {
+  """A cursor for use in pagination"""
+  cursor: String!
+  """The item at the end of the edge"""
+  node: InviteNode
 }
 
 type JWTPayloadNode {
@@ -293,6 +325,7 @@ type Mutation {
   createNewGame(input: CreateGameMutationInput!): CreateNewGameMutation
   createUser(input: CreateUserMutationInput!): CreateUserMutation
   deleteRefreshTokenCookie(input: DeleteRefreshTokenCookieInput!): DeleteRefreshTokenCookiePayload
+  gameInvitation(input: [BatchCreateInviteInput]!): GameInviteMutation
   gamePrivacy(id: ID!, input: UpdateGamePrivacyInput!): GamePrivacyMutation
   gameStatus(id: ID!, input: UpdateGameStatusInput!): GameStatusMutation
   joinGame(input: JoinGameMutationInput!): JoinGameMutation
@@ -301,6 +334,7 @@ type Mutation {
   setFullWidth(input: SetFullWidthMutationInput!): SetFullWidthMutation
   """Social Auth for JSON Web Token (JWT)"""
   socialAuth(input: SocialAuthJWTInput!): SocialAuthJWTPayload
+  toggleNav: ToggleNavMutation
   tokenAuth(input: ObtainJSONWebTokenMutationInput!): ObtainJSONWebTokenMutationPayload
 }
 
@@ -320,6 +354,17 @@ type NewGameNode {
 interface Node {
   """The ID of the object."""
   id: ID!
+}
+
+type NotificationNode {
+  """find game invites"""
+  invites(after: String, before: String, createdAt: DateTime, email: String, first: Int, game: ID, last: Int, offset: Int, revoked: Boolean, spectator: Boolean, updatedAt: DateTime): InviteNodeConnection
+}
+
+type NotificationSubscription {
+  message: String
+  room: ID
+  sender: ID
 }
 
 input ObtainJSONWebTokenMutationInput {
@@ -393,7 +438,13 @@ type Query {
   games(after: String, before: String, createdAt: DateTime, creator: ID, first: Int, genres: [ID], joinEndsAt: DateTime, last: Int, numPlayers: Int, numSpectators: Int, offset: Int, private: Boolean, roundTime: Int, rounds: Int, status: String, updatedAt: DateTime, winner: ID): GameNodeConnection
   """all cards genre"""
   genres(after: String, before: String, credit: String, credit_Icontains: String, credit_Istartswith: String, description: String, description_Icontains: String, description_Istartswith: String, first: Int, id: Float, id_Gt: Float, id_Lt: Float, last: Int, offset: Int): GenreNodeConnection
+  """
+  @client
+   navigation sidebar open
+  """
+  navOpen: Boolean
   newGame(id: ID!): NewGameNode
+  notifications: NotificationNode
   """find users"""
   users(after: String, before: String, createdAt: DateTime, first: Int, groups: [ID], isActive: Boolean, isAdmin: Boolean, isStaff: Boolean, isSuperuser: Boolean, last: Int, offset: Int, updatedAt: DateTime, userPermissions: [ID]): UserNodeConnection
   whiteCards(after: String, before: String, first: Int, genre: ID, last: Int, offset: Int, text: String, text_Icontains: String, text_Istartswith: String): WhiteCardNodeConnection
@@ -473,8 +524,12 @@ type SocialNodeEdge {
 
 """Root Subscription for the cards against humanity api."""
 type Subscription {
-  connect(room: ID!): ConnectSubscription
   gameInProgress: GameInProgressSubscription
+  notifications(message: String!, room: ID!, sender: ID!): NotificationSubscription
+}
+
+type ToggleNavMutation {
+  navOpen: Boolean
 }
 
 input UpdateGamePrivacyInput {

@@ -3,12 +3,14 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../components/shared/confirmation-dialog/confirmation-dialog.component';
 import { FabMenuComponent } from '../../components/shared/fab-menu/fab-menu.component';
 import { FabComponent } from '../../components/shared/fab/fab.component';
 import { InstructionsComponent } from '../../components/shared/instructions/instructions.component';
 import { LoadingComponent } from '../../components/shared/loading/loading.component';
 import { NavComponent } from '../../components/shared/nav/nav.component';
+import { NotificationsComponent } from '../../components/shared/notifications/notifications.component';
 import { QRCodeComponent } from '../../components/shared/qr-code/qr-code.component';
 import { ConfirmDialogDirective } from '../../directives/confirm-dialog/confirm-dialog.directive';
 import { DebounceClickDirective } from '../../directives/debounce-click/debounce-click.directive';
@@ -36,6 +38,7 @@ import { MaterialModule } from '../material/material.module';
     LoadingOverlayDirective,
     MatInputFocusDirective,
     QrCodeDirective,
+    NotificationsComponent,
   ],
   providers: [SafeUrlPipe, CahDialogService],
   exports: [
@@ -60,6 +63,6 @@ import { MaterialModule } from '../material/material.module';
     MatInputFocusDirective,
     QrCodeDirective,
   ],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MaterialModule, ScrollingModule, ClipboardModule],
+  imports: [CommonModule, FormsModule, RouterModule, ReactiveFormsModule, MaterialModule, ScrollingModule, ClipboardModule],
 })
 export class SharedModule {}

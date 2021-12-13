@@ -1,7 +1,8 @@
 <ng-container *ngIf="{ timer: timer$ | async } as data">
   <div class="countdown d-flex flex-column justify-content-center align-items-center shadow px-2 mx-3">
     <h6 class="fs-6 fw-bolder lh-sm text-{{color}}"><small>{{title | lowercase}}</small></h6>
-    <div *ngIf="data.timer?.days && data.timer?.hours && data.timer?.minutes && data.timer?.seconds" class="d-flex flex-row pb-1">
+
+    <div *ngIf="data.timer?.days || data.timer?.hours || data.timer?.minutes || data.timer?.seconds" class="d-flex flex-row pb-1">
       <span class="fs-6 lh-1 font-monospace text-dark px-1"><small>{{data.timer?.days ?? '-'}}<sub>d</sub></small></span>
       <span class="fs-6 lh-1 font-monospace text-dark px-1"><small>{{data.timer?.hours ?? '-'}}<sub>h</sub></small></span>
       <span class="fs-6 lh-1 font-monospace text-dark px-1"><small>{{data.timer?.minutes ?? '-'}}<sub>m</sub></small></span>

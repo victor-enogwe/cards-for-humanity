@@ -1,9 +1,10 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostListener, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
-import { BehaviorSubject, first } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { loadingAnimations, navigationAnimations } from '../../../animations';
-import { AUTH_TOKEN$, STATIC_URL } from '../../../modules/cah/cah.module';
+import { STATIC_URL } from '../../../modules/cah/cah.module';
 import { SafeUrlPipe } from '../../../pipes/safe-url/safe-url.pipe';
+import { AuthService } from '../../../services/auth/auth.service';
 import { MainContentRefService } from '../../../services/main-content-ref/main-content-ref.service';
 import { UIService } from '../../../services/ui/ui.service';
 
@@ -15,19 +16,24 @@ import { UIService } from '../../../services/ui/ui.service';
 })
 export class CahComponent implements OnInit, AfterViewInit {
   @ViewChild('mainContent') mainContent!: ElementRef<HTMLBaseElement>;
+  @ViewChild('content') content!: ElementRef<HTMLBaseElement>;
   fullWidth$ = this.uiService.fullWidth$;
+  navOpen$ = this.uiService.navOpen$;
+  isMobile$ = this.uiService.isMobile$;
+  authenticated$ = this.authService.authenticated$;
   svgIcons: { [key: string]: string } = {
     cah_card: 'assets/img/card.svg',
   };
 
   constructor(
     @Inject(STATIC_URL) private staticURL: string,
-    @Inject(AUTH_TOKEN$) private auth_token$: BehaviorSubject<string | null>,
+    // @Inject(AUTH_TOKEN$) private auth_token$: BehaviorSubject<string | null>,
     private matIconRegistry: MatIconRegistry,
     private safeUrlPipe: SafeUrlPipe,
     private mainContentRefService: MainContentRefService,
+    // private ref: ChangeDetectorRef,
     private uiService: UIService,
-    private ref: ChangeDetectorRef,
+    private authService: AuthService,
   ) {
     Object.entries(this.svgIcons).forEach(([name, url]) =>
       this.matIconRegistry.addSvgIcon(name, this.safeUrlPipe.transform(`${this.staticURL}${url}`, 'iframe')),
@@ -35,10 +41,21 @@ export class CahComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.auth_token$.pipe(first()).subscribe(() => this.ref.detectChanges());
+    console.log;
+    // this.auth_token$.pipe(first()).subscribe(() => this.ref.detectChanges());
   }
 
   ngAfterViewInit(): void {
     this.mainContentRefService.mainContentRef(this.mainContent);
+  }
+
+  toggleNav() {
+    return lastValueFrom(this.uiService.toggleNav());
+  }
+
+  @HostListener('click', ['$event.target'])
+  resizeMainContent(event: Event) {
+    console.log(event, this.content);
+    return false;
   }
 }

@@ -15,12 +15,17 @@ export class NavComponent {
   isMobile$ = this.uiService.isMobile$;
 
   constructor(
-    @Inject(AUTH_TOKEN$) private auth_token$: BehaviorSubject<string | null>,
+    @Inject(AUTH_TOKEN$)
+    private auth_token$: BehaviorSubject<string | null>,
     private uiService: UIService,
     private authService: AuthService,
   ) {}
 
   async logout() {
     return lastValueFrom(this.authService.logOut());
+  }
+
+  async toggleNav() {
+    return lastValueFrom(this.uiService.toggleNav());
   }
 }

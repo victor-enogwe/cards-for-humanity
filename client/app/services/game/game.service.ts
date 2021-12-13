@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
+import { FetchPolicy, WatchQueryFetchPolicy } from '@apollo/client/core';
 import { Apollo } from 'apollo-angular';
-import { map, Observable } from 'rxjs';
+import { map, share } from 'rxjs';
 import {
+  BatchCreateInviteInput,
   CreateGameInput,
   CreateGameMutationInput,
   GameNode,
   Mutation,
-  NewGameNode,
   Query,
   Scalars,
   UpdateGamePrivacyInput,
@@ -18,6 +19,7 @@ import {
   CREATE_GAME_MUTATION,
   GAME_IN_PROGRESS,
   GAME_IN_PROGRESS_SUBSCRIPTION,
+  INVITE_GAME_PLAYERS_MUTATION,
   NEW_GAME_QUERY,
   UPDATE_GAME_PRIVACY_MUTATION,
   UPDATE_GAME_STATUS_MUTATION,
@@ -31,39 +33,31 @@ export class GameService {
   constructor(private apollo: Apollo, private authService: AuthService) {}
 
   fetchGameOptions(variables: { id: Scalars['ID'] }) {
-    return this.apollo.watchQuery<{ newGame: NewGameNode }>({
+    return this.apollo.watchQuery<Pick<Query, 'newGame'>>({
       query: NEW_GAME_QUERY,
       variables,
       fetchPolicy: 'cache-only',
     });
   }
 
-  fetchGameInProgress() {
-    return this.apollo.query<Pick<Query, 'gameInProgress'>>({ query: GAME_IN_PROGRESS });
+  fetchGameInProgress(fetchPolicy?: FetchPolicy) {
+    return this.apollo.query<Pick<Query, 'gameInProgress'>>({ query: GAME_IN_PROGRESS, fetchPolicy }).pipe(share());
   }
 
-  watchGameInProgress() {
+  watchGameInProgress(fetchPolicy?: WatchQueryFetchPolicy) {
     return this.apollo.watchQuery<Pick<Query, 'gameInProgress'>>({ query: GAME_IN_PROGRESS });
   }
 
-  createNewGame(game: Partial<CreateGameMutationInput>) {
-    return this.apollo.mutate<Pick<Mutation, 'createNewGame'>, { input: Partial<CreateGameMutationInput> & { id: Scalars['ID'] } }>({
+  createNewGame(game: CreateGameMutationInput) {
+    return this.apollo.mutate<Pick<Mutation, 'createNewGame'>, { input: CreateGameMutationInput }>({
       mutation: CREATE_GAME_LOCAL_MUTATION,
-      variables: { input: { id: 'newGame', ...game } },
+      variables: { input: game },
       optimisticResponse: {
         createNewGame: {
           __typename: 'CreateNewGameMutation',
           newGame: {
             __typename: 'NewGameNode',
-            id: 'newGame',
-            avatar: game.avatar!,
-            genres: game.genres!,
-            joinEndsAt: game.joinEndsAt!,
-            numPlayers: game.numPlayers!,
-            numSpectators: game.numSpectators!,
-            roundTime: game.roundTime!,
-            rounds: game.rounds!,
-            status: game.status!,
+            id: '1',
             ...game,
           },
         },
@@ -87,6 +81,7 @@ export class GameService {
             updatedAt: new Date(),
             playerSet: { __typename: 'PlayerNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
             status: 'AWAITING_PLAYERS',
+            private: false,
             creator: {
               __typename: 'UserNode',
               createdAt: new Date(),
@@ -106,10 +101,18 @@ export class GameService {
     });
   }
 
+  invitePlayers(input: BatchCreateInviteInput[]) {
+    return this.apollo.mutate<Pick<Mutation, 'gameInvitation'>>({
+      mutation: INVITE_GAME_PLAYERS_MUTATION,
+      variables: { input },
+    });
+  }
+
   updateGameStatus(id: Scalars['ID'], input: UpdateGameStatusInput) {
     return this.apollo.mutate<Pick<Mutation, 'gameStatus'>, { id: Scalars['ID']; input: UpdateGameStatusInput }>({
       mutation: UPDATE_GAME_STATUS_MUTATION,
       variables: { id, input },
+      refetchQueries: [{ query: GAME_IN_PROGRESS }],
     });
   }
 
@@ -126,18 +129,22 @@ export class GameService {
       updateQuery: (prev, { subscriptionData }) => {
         const { gameInProgress } = subscriptionData.data;
         if (!gameInProgress) return prev;
-
-        return {
+        const update: { gameInProgress: GameNode } = {
           gameInProgress: {
             ...prev.gameInProgress,
             ...gameInProgress.gameInProgress,
           },
         };
+
+        return update;
       },
     });
   }
 
-  resolve(): Observable<NewGameNode> {
-    return this.fetchGameOptions({ id: 'newGame' }).valueChanges.pipe(map(({ data }) => ({ ...data.newGame, id: 'newGame' })));
+  resolve() {
+    return this.fetchGameOptions({ id: '1' }).valueChanges.pipe(
+      share(),
+      map(({ data }) => data.newGame),
+    );
   }
 }

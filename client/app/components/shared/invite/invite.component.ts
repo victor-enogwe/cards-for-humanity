@@ -1,9 +1,12 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { lastValueFrom, tap } from 'rxjs';
 import { NewGameNode } from '../../../@types/graphql';
 import { APP_HOST } from '../../../modules/cah/cah.module';
 import { FormService } from '../../../services/form/form.service';
+import { GameService } from '../../../services/game/game.service';
+import { NotificationService } from '../../../services/notification/notification.service';
 
 @Component({
   selector: 'cah-invite',
@@ -22,6 +25,8 @@ export class InviteComponent {
     private formService: FormService,
     @Inject(APP_HOST) public host: string,
     @Inject(MAT_DIALOG_DATA) public data: { game: NewGameNode; inviteOnly: boolean; spectator: boolean },
+    private gameService: GameService,
+    private notificationService: NotificationService,
   ) {}
 
   get playerControl(): FormArray {
@@ -29,7 +34,7 @@ export class InviteComponent {
   }
 
   createPlayerControl(): FormControl {
-    return new FormControl('', [Validators.required, this.formService.validateUser]);
+    return new FormControl('', [Validators.required, Validators.email]);
   }
 
   addNewPlayerControl(): void {
@@ -40,7 +45,14 @@ export class InviteComponent {
     this.playerControl.removeAt(position);
   }
 
-  invitePlayers({ players }: { players: string[] }) {}
+  invitePlayers({ players }: { players: string[] }) {
+    console.log(this.data);
+    return lastValueFrom(
+      this.gameService
+        .invitePlayers(players.map((player) => ({ email: player, game: this.data.game.id, spectator: this.data.spectator ?? false })))
+        .pipe(tap(() => this.notificationService.notify('invites', 'sent!'))),
+    );
+  }
 
   hasDuplicate(items: unknown[], value: unknown) {
     return items.filter((item) => item === value).length > 1;

@@ -1,5 +1,17 @@
 import { gql } from '../../utils/gql';
 
+export const LOGIN_SOCIAL_MUTATION = gql`
+  mutation SocialAuth($input: SocialAuthJWTInput!) {
+    socialAuth(input: $input) {
+      token
+      social {
+        id
+        provider
+      }
+    }
+  }
+`;
+
 export const LOGIN_MANUAL_MUTATION = gql`
   mutation TokenAuth($input: ObtainJSONWebTokenMutationInput!) {
     tokenAuth(input: $input) {

@@ -16,7 +16,7 @@ export class CountdownTimerComponent {
   @Input() color: CahPallette = 'admin-approved';
   timer$ = interval(1000).pipe(
     map(() => this.timeDifferenceInSeconds()),
-    takeWhile((time) => Object.values(time).some((interval) => interval > 0)),
+    takeWhile((time) => Object.values(time).some((interval) => interval >= 0)),
   );
 
   private timeDifferenceInSeconds(): Timer {

@@ -33,6 +33,10 @@ type SetFullWidthMutation {
   fullWidth: Boolean
 }
 
+type ToggleNavMutation {
+  navOpen: Boolean
+}
+
 extend type Query {
   newGame(id: ID!): NewGameNode
   """
@@ -40,11 +44,17 @@ extend type Query {
    page is full width
   """
   fullWidth: Boolean
+  """
+  @client
+   navigation sidebar open
+  """
+  navOpen: Boolean
 }
 
 extend type Mutation {
   createNewGame(input: CreateGameMutationInput!): CreateNewGameMutation
   setFullWidth(input: SetFullWidthMutationInput!): SetFullWidthMutation
+  toggleNav: ToggleNavMutation
 }
 
 extend type GenreNode {

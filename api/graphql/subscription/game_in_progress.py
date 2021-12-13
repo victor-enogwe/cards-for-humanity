@@ -11,17 +11,19 @@ class GameInProgressSubscription(Subscription):
     notification_queue_limit = 64
     gameInProgress = graphene.Field(GameNode)
 
-    @staticmethod
-    def subscribe(root, info):
+    @classmethod
+    def subscribe(cls, root, info, **kwargs):
         """Called when user subscribes."""
+
         game = game_in_progress(user=info.context.user)
 
         # Return the list of subscription group names.
-        return [str(game.id)] if game.id is not None else None
+        return [str(game.id)] if game is not None else None
 
-    @staticmethod
-    def publish(payload, info):
+    @classmethod
+    def publish(cls, payload, info, *args, **kwargs):
         """Called to notify the client."""
+
         gameInProgress: Game = payload.get("gameInProgress")
 
         assert gameInProgress.id is not None
@@ -38,8 +40,3 @@ class GameInProgressSubscription(Subscription):
         return cls.broadcast(
             group=str(gameInProgress.id), payload={"gameInProgress": gameInProgress}
         )
-
-    @classmethod
-    def subscription_resolver(cls, root, info, **kwargs):
-        result = super().subscription_resolver(root, info, **kwargs)
-        return result

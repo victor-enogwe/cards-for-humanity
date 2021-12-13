@@ -2,10 +2,12 @@ import graphene
 from django.contrib.auth import get_user_model
 from graphene import relay
 from graphene_django import DjangoObjectType
+from graphene_django.filter.fields import DjangoFilterConnectionField
 
 from api.models.blackcard import BlackCard
 from api.models.game import Game
 from api.models.genre import Genre
+from api.models.invite import Invite
 from api.models.player import Player
 from api.models.profile import Profile
 from api.models.whitecard import WhiteCard
@@ -36,6 +38,7 @@ class GameNode(DjangoObjectType):
     class Meta:
         model = Game
         filter_fields = "__all__"
+        exclude_fields = ["invite_set"]
         interfaces = (relay.Node,)
         connection_class = ExtendedConnection
 
@@ -92,3 +95,15 @@ class ProfileNode(DjangoObjectType):
         interfaces = (relay.Node,)
         filter_fields = "__all__"
         connection_class = ExtendedConnection
+
+
+class InviteNode(DjangoObjectType):
+    class Meta:
+        model = Invite
+        interfaces = (relay.Node,)
+        filter_fields = "__all__"
+        connection_class = ExtendedConnection
+
+
+class NotificationNode(graphene.ObjectType):
+    invites = DjangoFilterConnectionField(InviteNode, description="find game invites")

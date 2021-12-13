@@ -12,7 +12,12 @@ from api.utils.functions import get_user_by_token
 
 class WSAuthMiddleware(BaseMiddleware):
     async def populate_scope(self, scope):
-        token = scope.get("subprotocols")[1]
+        protocols = scope.get("subprotocols")
+
+        if len(protocols) < 2:
+            raise ValueError("WSAuthMiddleware cannot find authorization in scope. ")
+
+        token = protocols[1]
         user = None
 
         if token is None:

@@ -5,3 +5,9 @@ export const FULL_WIDTH_QUERY = gql`
     fullWidth @client
   }
 `;
+
+export const NAV_OPEN_QUERY = gql`
+  query NavOpen {
+    navOpen @client
+  }
+`;

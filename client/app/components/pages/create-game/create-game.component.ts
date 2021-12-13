@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import omit from 'lodash.omit';
-import { lastValueFrom, Subscription, switchMap } from 'rxjs';
+import { lastValueFrom, share, Subscription, switchMap } from 'rxjs';
 import { Avatar, Genre, PlayType } from '../../../@types/global';
-import { CreateGameMutationInput, NewGameNode } from '../../../@types/graphql';
+import { CreateGameMutationInput } from '../../../@types/graphql';
 import { AuthService } from '../../../services/auth/auth.service';
 import { GameService } from '../../../services/game/game.service';
 import { GenreService } from '../../../services/genre/genre.service';
@@ -23,9 +23,8 @@ export class CreateGameComponent implements OnInit, OnDestroy {
   avatar?: Avatar = this.uiService.avatars.find(({ name }) => name === this.router.getCurrentNavigation()?.extras.state?.avatar);
   defaultJoinPeriod = new Date(new Date(Date.now()).getTime() + 600000);
   private genreQuery$ = this.genreService.fetchGenres({ first: this.pageSize });
-  genres$ = this.genreQuery$.valueChanges;
-  newGameDefaultOptions: Omit<NewGameNode, 'status'> = {
-    id: 'newGame',
+  genres$ = this.genreQuery$.valueChanges.pipe(share());
+  newGameDefaultOptions: Omit<CreateGameMutationInput, 'status'> = {
     numPlayers: 1,
     roundTime: 10,
     rounds: 5,
@@ -36,7 +35,6 @@ export class CreateGameComponent implements OnInit, OnDestroy {
     avatar: this.avatar?.name!,
   };
   gameOptionsForm = this.formBuilder.group({
-    id: new FormControl(this.newGameDefaultOptions.id),
     genres: new FormControl(this.newGameDefaultOptions.genres, [Validators.required, Validators.maxLength(5)]),
     rounds: new FormControl(this.newGameDefaultOptions.rounds, [Validators.required, Validators.min(5), Validators.max(50)]),
     roundTime: new FormControl(this.newGameDefaultOptions.roundTime, [Validators.required, Validators.min(10), Validators.max(60)]),

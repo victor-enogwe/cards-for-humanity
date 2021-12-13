@@ -10,7 +10,7 @@ export class GameInProgressGuard implements CanActivate {
   constructor(private router: Router, private gameService: GameService) {}
 
   canActivate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.gameService.fetchGameInProgress().pipe(
+    return this.gameService.fetchGameInProgress('network-only').pipe(
       first(),
       switchMap(({ data }) => iif(() => Boolean(data?.gameInProgress), of(true), of(this.router.parseUrl('/play')))),
     );

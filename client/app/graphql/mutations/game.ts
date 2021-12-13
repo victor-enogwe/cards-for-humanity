@@ -48,3 +48,14 @@ export const UPDATE_GAME_PRIVACY_MUTATION = gql`
     }
   }
 `;
+
+export const INVITE_GAME_PLAYERS_MUTATION = gql`
+  mutation GameInvitation($input: [BatchCreateInviteInput]!) {
+    gameInvitation(input: $input) {
+      invites {
+        id
+        spectator
+      }
+    }
+  }
+`;

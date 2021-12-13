@@ -1,3 +1,10 @@
+from django.contrib.auth import (
+    authenticate,
+    get_user_model,
+    user_logged_in,
+    user_logged_out,
+    user_login_failed,
+)
 from django.contrib.auth.signals import user_logged_in
 from django.db.models.base import Model
 from django.db.models.signals import post_save, pre_save
@@ -39,9 +46,10 @@ def broadcast_game(sender, instance, **kwargs):
     # if created:
     #     Profile.objects.create(user=instance)
 
-    # @receiver(user_logged_in)
-    # def after_user_logged_in(sender, user, request, **kwargs):
-    ...
+
+@receiver(user_logged_in)
+def after_user_logged_in(sender, user, request, **kwargs):
+    print(user, "last login")
     # user.last_login = timezone.now()
     # user.save()
 

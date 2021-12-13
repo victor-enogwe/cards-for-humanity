@@ -12,6 +12,13 @@ export const typePolicies: TypedTypePolicies = {
     fields: {
       newGame: defaultResolvers,
       fullWidth: defaultResolvers,
+      navOpen: {
+        read: defaultResolvers.read,
+        merge: (_, inc) => {
+          console.log(_, inc);
+          return inc;
+        },
+      },
     },
   },
   GenreNode: {

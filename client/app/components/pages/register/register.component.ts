@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import omit from 'lodash.omit';
 import { of } from 'rxjs';
 import { catchError, mergeMap, tap } from 'rxjs/operators';
+import { CreateUserMutationInput } from '../../../@types/graphql';
 import { AuthService } from '../../../services/auth/auth.service';
 import { FormService } from '../../../services/form/form.service';
 import { UIService } from '../../../services/ui/ui.service';
@@ -36,26 +38,21 @@ export class RegisterComponent {
   });
 
   constructor(
+    private router: Router,
     private formBuilder: FormBuilder,
     private formService: FormService,
     private authService: AuthService,
-    private router: Router,
     private uiService: UIService,
   ) {}
 
   signUpManual(event: any, form: FormGroup) {
-    const user = form.value;
+    const user: CreateUserMutationInput = form.value;
     return of(event)
       .pipe(
         tap((e) => (e.target.disabled = true)),
         tap(() => form.disable()),
-        mergeMap(() => this.authService.signUpManual(user)),
-        tap(({ data }) => this.authService.setCookie({ name: 'token', value: data?.tokenAuth.token ?? '', expiry: 7 })),
-        tap(() => {
-          event.target.disabled = false;
-          return form.enable();
-        }),
-        tap(() => this.router.navigate(['/play'])),
+        mergeMap(() => this.authService.signUpManual(omit(user, 'repeatPassword'))),
+        tap(() => this.router.navigate(['/auth', 'login'])),
         catchError((error) => {
           event.target.disabled = false;
           form.enable();

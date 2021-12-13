@@ -22,12 +22,11 @@ import { IonicStorageWrapper, persistCache } from 'apollo3-cache-persist';
 import { sha256 } from 'crypto-hash';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject } from 'rxjs';
-import { OperationOptions } from 'subscriptions-transport-ws';
 import { environment } from '../../../environments/environment';
 import { AnyObject, Definition } from '../../@types/global';
 import { IntrospectionLink, resolvers, typeDefs, typePolicies } from '../../graphql';
 import possibleTypes from '../../graphql/possible-types';
-import { AUTH_TOKEN$ } from '../../modules/cah/cah.module';
+import { AUTH_TOKEN$, WS_CLIENT } from '../../modules/cah/cah.module';
 import { WSSubscriptionClient } from '../../utils/ws';
 import { HttpLinkService } from '../http-link/http-link.service';
 
@@ -48,8 +47,7 @@ export class GraphqlService {
   headersLink = setContext(this.httpHeaders.bind(this));
   errorLink = onError(this.handleErrors.bind(this));
   persistedQueryLink = createPersistedQueryLink({ sha256 });
-  wsClient = new WSSubscriptionClient(environment.WS_LINK, { reconnect: true, lazy: true });
-  wsLink = this.ssr ? new ApolloLink() : new WebSocketLink(this.wsClient.use([{ applyMiddleware: this.wsHeaders.bind(this) }]));
+  wsLink = this.ssr ? new ApolloLink() : new WebSocketLink(this.wsClient);
   link = from([
     this.introspectionLink,
     this.persistedQueryLink,
@@ -87,6 +85,7 @@ export class GraphqlService {
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(AUTH_TOKEN$) private auth_token$: BehaviorSubject<string | null>,
+    @Inject(WS_CLIENT) private wsClient: WSSubscriptionClient,
     private readonly storage: Storage,
     private httpLink: HttpLinkService,
     private cookieService: CookieService,
@@ -127,17 +126,13 @@ export class GraphqlService {
     });
 
     switch (operationName) {
+      case 'CreateUser':
       case 'TokenAuth':
       case 'RefreshToken':
         return { headers };
       default:
         return { headers: headers.set('Authorization', `Bearer ${this.auth_token$.getValue()}`) };
     }
-  }
-
-  wsHeaders(_options: OperationOptions, next: Function): void {
-    this.wsClient.protocols.next(['graphql-ws', String(this.auth_token$.getValue())]);
-    return next();
   }
 
   handleErrors({ graphQLErrors, networkError }: ErrorResponse): Observable<FetchResult> | void {

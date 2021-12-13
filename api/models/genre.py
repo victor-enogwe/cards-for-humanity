@@ -1,12 +1,7 @@
-from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 from pgtrigger import Delete, Protect, Update, register
 
-text_error_message = (
-    "description allows 2-255 characters(alphabets and -,_,.,',\",space)"
-)
-text_regex = RegexValidator(r"^[A-Za-z]([\w+|-|\s|\'|\"|\.|!]?)+", text_error_message)
-text_validators = [MinLengthValidator(5, text_error_message), text_regex]
+from api.utils.constants import text_error_message, text_validators
 
 
 @register(

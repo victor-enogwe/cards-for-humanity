@@ -1,5 +1,6 @@
 from graphene.types.objecttype import ObjectType
 
+from api.graphql.query.__pycache__.notification import NotificationQuery
 from api.graphql.query.blackcard import BlackCardQuery
 from api.graphql.query.game import GameQuery
 from api.graphql.query.genre import GenreQuery
@@ -8,7 +9,13 @@ from api.graphql.query.whitecard import WhiteCardQuery
 
 
 class Query(
-    UserQuery, BlackCardQuery, WhiteCardQuery, GameQuery, GenreQuery, ObjectType
+    UserQuery,
+    BlackCardQuery,
+    WhiteCardQuery,
+    GameQuery,
+    GenreQuery,
+    NotificationQuery,
+    ObjectType,
 ):
     """Root Query for the cards against humanity api."""
 

@@ -4,7 +4,6 @@ from graphql import GraphQLError
 
 # has to be registered as a field before the mutation is instantiated don not remove
 from api.graphql.nodes import GameNode
-from api.graphql.query.game import GameQuery
 from api.models.game import Game
 from api.utils.functions import game_in_progress
 
@@ -21,6 +20,7 @@ class CreateGameMutation(DjangoCreateMutation):
             "created_at",
             "updated_at",
             "player_set",
+            "invite_set",
         )
         auto_context_fields = {
             "creator": "user",

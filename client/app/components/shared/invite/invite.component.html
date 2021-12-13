@@ -23,11 +23,10 @@
 
     <mat-form-field appearance="outline" *ngFor=" let player of playerControl.controls; let playerIndex=index" formArrayName="players"
       class="d-flex flex-column flex-grow-1 mb-2">
-      <mat-label [attr.for]="playerIndex">username or email</mat-label>
-      <input matInput [type]="player.value.includes('@') ? 'email' : 'text'" [formControlName]="playerIndex"
-        [id]="'player-' + playerIndex" />
+      <mat-label [attr.for]="playerIndex">email</mat-label>
+      <input matInput type="email" [formControlName]="playerIndex" [id]="'player-' + playerIndex" />
       <mat-hint class="form-text text-muted d-flex flex-column">
-        <span>enter player {{playerIndex + 1}} email or username.</span>
+        <span>enter player {{playerIndex + 1}} email.</span>
         <span *ngIf="hasDuplicate(playerControl.value, player.value)" [ngClass]="{ 'text-danger': true}">duplicate entry</span>
       </mat-hint>
       <button matPrefix mat-icon-button color="primary" [disabled]="playerControl.controls.length === 1" cahDebounceClick

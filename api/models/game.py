@@ -46,7 +46,7 @@ class Game(TimestampBase):
         related_name="game_set",
         editable=False,
     )
-    private = models.BooleanField(default=False)
+    private = models.BooleanField(default=True)
     genres = models.ManyToManyField("api.Genre")
     join_ends_at = models.DateTimeField(
         default=join_end_default,

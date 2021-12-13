@@ -24,10 +24,10 @@ export interface Avatar {
   link: string;
 }
 
-export interface BroadCast extends AnyObject {
-  event: 'login' | 'logout' | 'tab-leader-election';
+export interface BroadCast<T = any> extends AnyObject {
+  event: 'refresh_token' | 'login' | 'logout' | 'tab-leader-election';
   message?: string;
-  data?: AnyObject | null;
+  data?: T;
 }
 
 interface ApolloCahClient<TCache> extends Omit<ApolloClient<TCache>, 'devToolsHookCb'> {

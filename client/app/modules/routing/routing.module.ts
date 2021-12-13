@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../guards/auth/auth.guard';
 import { NoAuthGuard } from '../../guards/no-auth/no-auth.guard';
+import { CahRouteReuseStrategy } from '../../utils/route-reuse-strategy';
 
 const routes: Routes = [
   {
@@ -15,7 +16,6 @@ const routes: Routes = [
     loadChildren: () => import('../play/play.module').then((m) => m.PlayModule),
     canActivate: [AuthGuard],
     canActivateChild: [AuthGuard],
-    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
   },
   { path: 'shop', loadChildren: () => import('../shop/shop.module').then((m) => m.ShopModule) },
   { path: '404', loadChildren: () => import('../notfound/notfound.module').then((m) => m.NotFoundModule) },
@@ -29,9 +29,10 @@ const routes: Routes = [
       relativeLinkResolution: 'legacy',
       initialNavigation: 'disabled',
       canceledNavigationResolution: 'computed',
+      onSameUrlNavigation: 'reload',
     }),
   ],
   exports: [RouterModule],
-  providers: [NoAuthGuard, AuthGuard],
+  providers: [NoAuthGuard, AuthGuard, { provide: RouteReuseStrategy, useClass: CahRouteReuseStrategy }],
 })
 export class CahRoutingModule {}

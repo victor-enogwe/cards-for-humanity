@@ -1,8 +1,8 @@
 <mat-toolbar class="bg-white">
   <mat-toolbar-row class="justify-content-between">
     <div matSuffix class="d-flex flex-row align-items-center justify-content-center">
-      <button mat-icon-button color="primary" cahConfirmDialog [component]="qrCodeComponent"
-        [config]="{ data: { title: 'Invite QrCode', value: host + '/' + game.id, darkColor: '#e5001f'  } }" [listen]="false"
+      <button mat-icon-button color="primary" [cahConfirmDialog]="true" [component]="qrCodeComponent"
+        [config]="{ data: { title: 'Invite QrCode', value: host + '/play/join-game/' + game.id, darkColor: '#e5001f'  } }" [listen]="false"
         aria-label="invite QR code" matTooltip="invite qr code" matTooltipPosition="right">
         <mat-icon>qr_code_2</mat-icon>
       </button>
@@ -13,8 +13,8 @@
       </button>
     </div>
 
-    <div class="d-none d-md-block text-break text-muted bg-info px-3 fs-6">
-      <strong>INVITE URL: </strong><span class="text-muted">{{host + '/' + game.id}}</span>
+    <div class="d-none d-lg-block text-break text-muted bg-info px-3 fs-6">
+      <strong>INVITE URL: </strong><span class="text-muted">{{host + '/play/join-game/' + game.id}}</span>
     </div>
 
     <div class="d-flex flex-row align-items-center justify-content-center">

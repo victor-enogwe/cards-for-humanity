@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { FetchResult } from '@apollo/client/core';
 import {
   FacebookLoginProvider,
   GoogleLoginProvider,
@@ -10,11 +9,12 @@ import {
 } from 'angularx-social-login';
 import { Apollo } from 'apollo-angular';
 import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject, lastValueFrom, Observable, of } from 'rxjs';
+import { BehaviorSubject, iif, lastValueFrom, of, timer, zip } from 'rxjs';
 import { tap } from 'rxjs/internal/operators/tap';
 import { catchError, first, map, mergeMap, switchMap } from 'rxjs/operators';
-import { AuthUser, SignUpData } from '../../@types/global';
+import { AuthUser, BroadCast } from '../../@types/global';
 import {
+  CreateUserMutationInput,
   DeleteRefreshTokenCookieInput,
   Mutation,
   ObtainJsonWebTokenMutationInput,
@@ -22,10 +22,20 @@ import {
   RefreshTokenMutationInput,
   RefreshTokenMutationPayload,
   RevokeInput,
+  SocialAuthJwtInput,
 } from '../../@types/graphql';
-import { DELETE_REFRESH_TOKEN_COOKIE, LOGIN_MANUAL_MUTATION, REFRESH_TOKEN, REVOKE_REFRESH_TOKEN } from '../../graphql';
-import { APP_HOST, AUTH_TOKEN$, SOCIAL_AUTH_CONFIG } from '../../modules/cah/cah.module';
-import { gql } from '../../utils/gql';
+import {
+  CREATE_USER_MUTATION,
+  DELETE_REFRESH_TOKEN_COOKIE,
+  LOGIN_MANUAL_MUTATION,
+  LOGIN_SOCIAL_MUTATION,
+  REFRESH_TOKEN,
+  REVOKE_REFRESH_TOKEN,
+} from '../../graphql';
+import { APP_HOST, AUTH_TOKEN$, SOCIAL_AUTH_CONFIG, WS_CLIENT } from '../../modules/cah/cah.module';
+import { WSSubscriptionClient } from '../../utils/ws';
+import { BroadcastService } from '../broadcast/broadcast.service';
+import { NotificationService } from '../notification/notification.service';
 import { UtilsService } from '../utils/utils.service';
 
 @Injectable({
@@ -34,7 +44,12 @@ import { UtilsService } from '../utils/utils.service';
 })
 export class AuthService extends Service {
   rememberCookieName = 'CAH_RM';
+  REFRESH_TOKEN_INTERVAL = 299995;
+  refreshTokenTimer$ = timer(this.REFRESH_TOKEN_INTERVAL, this.REFRESH_TOKEN_INTERVAL);
+  refreshTokenBroadcast$ = this.refreshTokenTimer$.pipe(switchMap(() => this.refreshTokenFactory()));
+  refreshToken$ = this.auth_token$.pipe(switchMap((token) => iif(() => Boolean(token), this.refreshTokenBroadcast$, of())));
   profile$ = new BehaviorSubject<ObtainJsonWebTokenMutationPayload['payload'] | null>(null);
+  authenticated$ = zip(this.profile$, this.auth_token$.asObservable()).pipe(map((data) => data.every((data) => data)));
   cookie$ = new BehaviorSubject<string | null>(null);
   username$ = this.profile$.pipe(
     first(),
@@ -42,18 +57,28 @@ export class AuthService extends Service {
   );
   authProviders = { GOOGLE: 'google-oauth2', facebook: 'facebook' };
   user!: SocialUser;
+  authUrls: { [key in BroadCast['event']]?: string[] } = {
+    login: ['/play'],
+    logout: ['/auth', 'login'],
+  };
 
   constructor(
     @Inject(SOCIAL_AUTH_CONFIG) config: SocialAuthServiceConfig | Promise<SocialAuthServiceConfig>,
     @Inject(APP_HOST) private readonly host: string,
     @Inject(AUTH_TOKEN$) private readonly auth_token$: BehaviorSubject<string | null>,
+    @Inject(WS_CLIENT) private readonly wsClient: WSSubscriptionClient,
     private apollo: Apollo,
     private router: Router,
-    public cookieService: CookieService,
+    private cookieService: CookieService,
     private utilsService: UtilsService,
+    private notificationService: NotificationService,
+    private broadcastService: BroadcastService,
   ) {
     super(config);
     this.authState.pipe(tap((user) => (this.user = user))).subscribe();
+    this.broadcastService.addEventsListener('login', ({ data }) => this.persistAuth('login').call(this, data as any));
+    this.broadcastService.addEventsListener('refresh_token', ({ data }) => this.persistAuth('refresh_token').call(this, data as any));
+    this.broadcastService.addEventsListener('logout', ({ data }) => this.persistAuth('logout').call(this, data as any));
   }
 
   signInWithGoogle() {
@@ -64,27 +89,17 @@ export class AuthService extends Service {
     return this.signIn(FacebookLoginProvider.PROVIDER_ID);
   }
 
-  socialAuth(user: SocialUser & { provider: 'GOOGLE' | 'facebook' }): Observable<FetchResult<SocialUser>> {
-    return this.apollo.mutate({
-      mutation: gql`
-        mutation ($input: SocialAuthJWTInput!) {
-          socialAuth(input: $input) {
-            token
-          }
-        }
-      `,
-      variables: { input: { accessToken: user.authToken, provider: this.authProviders[user.provider] } },
-    });
+  socialAuth(input: SocialAuthJwtInput) {
+    return this.apollo.mutate<Pick<Mutation, 'socialAuth'>>({ mutation: LOGIN_SOCIAL_MUTATION, variables: { input: input } });
   }
 
   signUpSocial(event: any) {
     return lastValueFrom(
       of(event).pipe(
         tap((e) => (e.target.disabled = true)),
-        mergeMap(() => (event.target.textContent.includes('Facebook') ? this.signInWithFB() : this.signInWithGoogle())),
-        tap(console.log),
-        mergeMap((user: SocialUser & { provider: 'GOOGLE' | 'facebook' }) => this.socialAuth(user)),
-        tap((user) => this.setCookie({ name: 'token', value: user.data?.authToken ?? '', expiry: 7 })),
+        mergeMap(() => iif(() => event.target.textContent.includes('Facebook'), this.signInWithFB(), this.signInWithGoogle())),
+        mergeMap((user: SocialUser) => this.socialAuth({ accessToken: user.authToken, provider: user.provider })),
+        tap((user) => this.setCookie({ name: 'token', value: user.data?.socialAuth?.token ?? '', expiry: 7 })),
         tap(() => (event.target.disabled = false)),
         tap(() => this.router.navigate(['/play'])),
         catchError((error) => {
@@ -95,38 +110,25 @@ export class AuthService extends Service {
     );
   }
 
-  signUpManual(user: SocialUser) {
-    return this.apollo.mutate<SignUpData>({
-      mutation: gql`
-        fragment CreateUserSuccess on CreateUserSuccess {
-          token
-        }
-
-        fragment CreateUserFailEmailExists on CreateUserFailEmailExists {
-          errorMessage
-        }
-
-        fragment CreateUserFailOthers on CreateUserFailOthers {
-          errorMessage
-        }
-
-        mutation createUser($email: String!, $password: String!) {
-          createUser(email: $email, password: $password) {
-            ...CreateUserSuccess
-            ...CreateUserFailEmailExists
-            ...CreateUserFailOthers
-          }
-        }
-      `,
-      variables: user,
-    });
+  signUpManual(input: CreateUserMutationInput) {
+    return this.apollo
+      .mutate<Pick<Mutation, 'createUser'>>({
+        mutation: CREATE_USER_MUTATION,
+        variables: { input },
+        fetchPolicy: 'no-cache',
+      })
+      .pipe(
+        tap(({ data }) =>
+          this.notificationService.notify('user successfully created. A verification email was sent.', String(data?.createUser?.ok)),
+        ),
+      );
   }
 
   signInManual(input: ObtainJsonWebTokenMutationInput) {
     return this.apollo.mutate<Pick<Mutation, 'tokenAuth'>>({
       mutation: LOGIN_MANUAL_MUTATION,
       variables: { input },
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'no-cache',
     });
   }
 
@@ -189,20 +191,30 @@ export class AuthService extends Service {
       .pipe(switchMap(() => this.deleteRefreshTokenCookie({})))
       .pipe(switchMap(() => (Boolean(this.user?.authToken) ? this.signOut(true) : of(null))))
       .pipe(
-        tap(() => this.auth_token$.next(null)),
-        tap(() => this.profile$.next(null)),
+        tap(() => this.broadcastAuth('logout', { token: undefined, payload: undefined })),
+        tap(() => this.wsClient.close(true, true)),
         tap(() => this.router.navigate(['/'], { replaceUrl: true })),
       );
   }
 
-  persistAuth({ payload, token }: ObtainJsonWebTokenMutationPayload | RefreshTokenMutationPayload) {
-    this.auth_token$.next(token);
-    this.profile$.next(payload);
+  broadcastAuth(event: BroadCast['event'], data: Partial<ObtainJsonWebTokenMutationPayload | RefreshTokenMutationPayload>) {
+    this.persistAuth(event)(data);
+    return this.broadcastService.channel.postMessage({ data, event });
+  }
+
+  persistAuth(event: BroadCast['event']) {
+    return ({ payload, token }: Partial<ObtainJsonWebTokenMutationPayload | RefreshTokenMutationPayload>) => {
+      this.auth_token$.next(token!);
+      this.profile$.next(payload);
+      this.wsClient.protocols.next(['graphql-ws', String(token)]);
+      const url = this.authUrls[event];
+      if (url) this.router.navigate(url);
+    };
   }
 
   refreshTokenFactory() {
     return this.refreshToken({}).pipe(
-      tap(({ data }) => this.persistAuth(data?.refreshToken!)),
+      tap(({ data }) => this.broadcastAuth('refresh_token', data?.refreshToken!)),
       catchError(() => of(null)),
     );
   }

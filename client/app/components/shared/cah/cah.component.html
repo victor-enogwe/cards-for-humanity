@@ -1,6 +1,18 @@
 <header>
   <cah-nav></cah-nav>
 </header>
-<main #mainContent role="main" [ngClass]="{ container: !(fullWidth$ | async), 'container-fluid': (fullWidth$ | async) }">
-  <router-outlet @navigationAnimations></router-outlet>
+<main
+  *ngIf="{ fullWidth: fullWidth$ | async, navOpen: navOpen$ | async, isMobile: isMobile$ | async, authenticated: authenticated$ | async } as container"
+  #mainContent role="main"
+  [ngClass]="{ container: !container.navOpen && !container.fullWidth, 'container-fluid': container.navOpen || container.fullWidth }">
+  <mat-sidenav-container class="d-flex flex-grow-1 flex-fill" [hasBackdrop]="container.isMobile" (backdropClick)="toggleNav()">
+    <mat-sidenav *ngIf="container.authenticated" [mode]="container.isMobile ? 'push' : 'side'" [fixedInViewport]="false" position="end"
+      class="p-3" color="primary" [opened]="container.navOpen" class="d-flex flxe-column row" [style.maxWidth.px]="576">
+      lorem ipsum side notices {{container |json}}
+    </mat-sidenav>
+
+    <mat-sidenav-content #content cahOverlayLoading class="d-flex flex-column flex-fill flex-grow-1">
+      <router-outlet @navigationAnimations></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </main>

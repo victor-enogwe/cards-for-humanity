@@ -1,3 +1,4 @@
+from django.core.validators import MinLengthValidator, RegexValidator
 from django.utils.translation import gettext_lazy as _
 
 auth_fields = [
@@ -27,6 +28,10 @@ password_allowed_chars = _(
 
 
 text_error_message = _("text allows 2-255 characters(alphabets and -,_,.,',\",space)")
+
+text_regex = RegexValidator(r"^[A-Za-z]([\w+|-|\s|\'|\"|\.|!]?)+", text_error_message)
+
+text_validators = [MinLengthValidator(5, text_error_message), text_regex]
 
 username_help_text = _(
     "Required. 40 characters or fewer. Letters, digits and @/./+/-/_ only."

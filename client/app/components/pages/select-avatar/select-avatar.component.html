@@ -1,6 +1,6 @@
 <mat-stepper linear aria-label="game avatars" class="d-flex flex-column flex-fill">
   <mat-step state="smart_toy" aria-label="select an avatar">
-    <ng-template matStepLabel>Select Your Avatar {{route.snapshot.data?.newGame.avatar}}</ng-template>
+    <ng-template matStepLabel>Select Your Avatar</ng-template>
     <ng-template matStepContent>
       <cah-avatar (onAvatarSelect)="selectAvatar($event)" [selected]="avatar"></cah-avatar>
 

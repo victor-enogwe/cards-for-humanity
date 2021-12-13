@@ -6,6 +6,7 @@ from django.db import IntegrityError
 from graphql import GraphQLError
 
 from api.graphql.inputs import CreateUserMutationInput
+from api.utils.graphql_errors import GraphQLErrors
 
 
 class CreateUserMutation(graphene.Mutation):
@@ -18,8 +19,8 @@ class CreateUserMutation(graphene.Mutation):
         try:
             user_model = get_user_model()
             user_model._default_manager.create_user(**input, **kwargs)
-            return {"ok": True}
+            return CreateUserMutation(ok=True)
         except IntegrityError as error:
-            return GraphQLError("user already exists!")
+            raise GraphQLError(GraphQLErrors.USER_SIGNUP__DUPLICATE_ACCOUNT)
         except Exception as error:
-            return GraphQLError(error)
+            raise GraphQLError(error)

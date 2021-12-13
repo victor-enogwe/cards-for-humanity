@@ -1,6 +1,6 @@
 <mat-toolbar class="bg-white">
   <mat-toolbar-row class="justify-content-between">
-    <a class="navbar-brand text-dark" href="#">
+    <a class="navbar-brand text-dark btn" [routerLink]="['/']">
       <svg height="24" width="30px" fill="#000000" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
         version="1.1" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
         <path fill="#000000"
@@ -11,9 +11,15 @@
     </a>
 
     <ng-container *ngIf="authenticated$ | async as authenticated">
-      <button mat-icon-button matTooltip="logout" matTooltipPosition="left" (click)="logout()">
-        <mat-icon *ngIf="authenticated === 'yes'">logout</mat-icon>
-      </button>
+      <div class="d-flex flex-row">
+        <button mat-icon-button matTooltip="notifications" matTooltipPosition="left" class="mx-3" cahDebounceClick
+          (debounceClick)="toggleNav()">
+          <mat-icon *ngIf="authenticated === 'yes'" matBadge="15" matBadgeColor="accent">notifications</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="logout" matTooltipPosition="left" cahDebounceClick (debounceClick)="logout()">
+          <mat-icon *ngIf="authenticated === 'yes'">logout</mat-icon>
+        </button>
+      </div>
     </ng-container>
   </mat-toolbar-row>
 </mat-toolbar>

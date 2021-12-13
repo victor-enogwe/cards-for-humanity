@@ -9,7 +9,13 @@ from os.path import isfile, join
 from uuid import uuid4
 
 from django.apps import apps
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import (
+    authenticate,
+    get_user_model,
+    user_logged_in,
+    user_logged_out,
+    user_login_failed,
+)
 from django.core import management
 from django.db import models
 from django.http.request import HttpRequest
@@ -339,6 +345,12 @@ def token_auth(f):
 
         result = f(cls, root, info, **kwargs)
         signals.token_issued.send(sender=cls, request=context, user=user)
+        user_logged_in.send(
+            sender=apps.get_model("api.User"),
+            user=user,
+            request=context,
+            email=username,
+        )
         return maybe_thenable((context, user, result), on_token_auth_resolve)
 
     return wrapper
