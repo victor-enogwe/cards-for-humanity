@@ -2,6 +2,7 @@ import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerMod
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { NgModule } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -52,6 +53,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
     NgxMatNativeDateModule,
+    MatBottomSheetModule,
   ],
   exports: [
     MatCommonModule,
@@ -77,6 +79,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatExpansionModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatBottomSheetModule,
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
     NgxMatNativeDateModule,

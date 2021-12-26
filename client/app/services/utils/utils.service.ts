@@ -24,6 +24,11 @@ export class UtilsService {
       }, []);
   }
 
+  splitArray<T>(sides: number) {
+    const accumulator: T[][] = [];
+    return (array: T[]): T[][] => [...array].reduce((accumulated, _, __, arr) => [...accumulated, arr.splice(0, sides)], accumulator);
+  }
+
   rollingCounter({
     min = 0,
     max,

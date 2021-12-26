@@ -208,7 +208,7 @@ SOCIAL_AUTH_PIPELINE = [
 ROOT_URLCONF = "config.urls"
 
 GQL_MIDDLEWARE = [
-    "api.graphql.middlewares.gql_auth.AuthorizationMiddleware",
+    # "api.graphql.middlewares.gql_auth.AuthorizationMiddleware",
     "graphql_jwt.middleware.JSONWebTokenMiddleware",
 ]
 

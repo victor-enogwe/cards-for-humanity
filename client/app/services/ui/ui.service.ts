@@ -11,8 +11,10 @@ import { STATIC_URL } from '../../modules/cah/cah.module';
   providedIn: 'root',
 })
 export class UIService {
-  breakpoint$ = this.breakpointObserver.observe('(max-width: 576px)');
-  isMobile$ = this.breakpoint$.pipe(map(({ matches }) => matches));
+  breakpointMobile$ = this.breakpointObserver.observe('(max-width: 576px)');
+  breakpointTablet$ = this.breakpointObserver.observe('(min-width: 577px) and (max-width: 992px)');
+  isMobile$ = this.breakpointMobile$.pipe(map(({ matches }) => matches));
+  isTablet$ = this.breakpointTablet$.pipe(map(({ matches }) => matches));
   fullWidth$ = this.getFulWidth().valueChanges.pipe(map(({ data: { fullWidth } }) => fullWidth));
   navOpen$ = this.navOpen().valueChanges.pipe(map(({ data: { navOpen } }) => navOpen));
   avatarNames: Avatar['name'][] = [
@@ -34,6 +36,8 @@ export class UIService {
     'SHIN',
   ];
   avatars: Avatar[] = this.avatarNames.map((name) => ({ name, link: `${this.staticURL}assets/img/avatars/${name.toLowerCase()}.gif` }));
+  avatarMemo: { [key in Avatar['name']]: Avatar } = this.avatars.reduce((acc, avatar) => ({ ...acc, [avatar.name]: avatar }), {} as any);
+  invitedAvatar = `${this.staticURL}assets/img/player-invited.png`;
 
   constructor(private breakpointObserver: BreakpointObserver, private apollo: Apollo, @Inject(STATIC_URL) private staticURL: string) {}
 
@@ -52,12 +56,4 @@ export class UIService {
   private navOpen() {
     return this.apollo.watchQuery<Pick<Query, 'navOpen'>>({ query: NAV_OPEN_QUERY, fetchPolicy: 'cache-only' });
   }
-
-  // resizeObserver(element: any, options: ResizeObserverOptions) {
-  //   const obs = new Subject()
-  //   const watch = new ResizeObserver((entries, observer) => {
-  //     obs.subscribe()
-  //   }).observe(element, options)
-
-  // }
 }

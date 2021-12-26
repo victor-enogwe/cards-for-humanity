@@ -1,31 +1,36 @@
-<mat-toolbar class="bg-white">
+<mat-toolbar class="bg-white" *ngIf="{ canJoin: canJoin(game) } as data">
   <mat-toolbar-row class="justify-content-between">
-    <div matSuffix class="d-flex flex-row align-items-center justify-content-center">
+    <div class="d-flex flex-row align-items-center justify-content-center">
       <button mat-icon-button color="primary" [cahConfirmDialog]="true" [component]="qrCodeComponent"
         [config]="{ data: { title: 'Invite QrCode', value: host + '/play/join-game/' + game.id, darkColor: '#e5001f'  } }" [listen]="false"
         aria-label="invite QR code" matTooltip="invite qr code" matTooltipPosition="right">
         <mat-icon>qr_code_2</mat-icon>
       </button>
 
-      <button mat-icon-button color="primary" cahDebounceClick (debounceClick)="copied()" [cdkCopyToClipboard]="host + '/' + game.id"
-        aria-label="copy invite link" matTooltip="copy invite link" matTooltipPosition="right">
+      <button mat-icon-button color="primary" cahDebounceClick (debounceClick)="copied()"
+        [cdkCopyToClipboard]="host + '/play/join-game/' + game.id" aria-label="copy invite link" matTooltip="copy invite link"
+        matTooltipPosition="right">
         <mat-icon>content_copy</mat-icon>
       </button>
     </div>
 
-    <div class="d-none d-lg-block text-break text-muted bg-info px-3 fs-6">
+    <div *ngIf="!(navOpen$ | async)" class="d-none d-lg-block text-break text-muted border px-3 fs-6">
       <strong>INVITE URL: </strong><span class="text-muted">{{host + '/play/join-game/' + game.id}}</span>
     </div>
 
-    <div class="d-flex flex-row align-items-center justify-content-center">
-      <cah-countdown-timer [title]="game.status" [date]="game.joinEndsAt" color="info"></cah-countdown-timer>
-      <mat-slide-toggle #toggle color="primary" (change)="inviteOnly.emit($event)" aria-label="toggle if game-play is only by invitation"
-        matTooltip="{{toggle.checked ? 'private game' : 'public game'}}" matTooltipPosition="left" class="fs-6" [checked]="game.private">
+    <div class="d-flex flex-row align-items-center justify-content-between">
+      <cah-countdown-timer [title]="game.status.replace('_', ' ') | uppercase" [date]="game.joinEndsAt" color="primary">
+      </cah-countdown-timer>
+
+      <cah-countdown-timer *ngIf="!['AWAITING_PLAYERS', 'GAME_ENDED'].includes(game.status)" title="" icon="timer" [date]="game.joinEndsAt"
+        color="primary">
+      </cah-countdown-timer>
+      <mat-slide-toggle *ngIf="data.canJoin" #toggle color="primary" (change)="inviteOnly.emit($event)"
+        aria-label="toggle if game-play is only by invitation" matTooltip="{{toggle.checked ? 'private game' : 'public game'}}"
+        matTooltipPosition="left" class="fs-6" [checked]="game.private">
         <mat-icon color="success" *ngIf="toggle.checked">verified_user</mat-icon>
         <mat-icon color="warning" *ngIf="!toggle.checked">privacy_tip</mat-icon>
       </mat-slide-toggle>
     </div>
-  </mat-toolbar-row>
-  <mat-toolbar-row>
   </mat-toolbar-row>
 </mat-toolbar>

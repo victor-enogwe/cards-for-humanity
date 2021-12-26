@@ -25,7 +25,7 @@
   <div class="carousel-indicators position-relative">
     <button *ngFor="let color of colors; let index=index" type="button" class="bg-{{color}}" data-bs-target="#instructions"
       [attr.data-bs-slide-to]="index" aria-current="true" [attr.aria-label]="'Slide ' + index"
-      [ngClass]="{ active: activeIndex === index, 'bg-gradient bg-dark': activeIndex === index}"></button>
+      [ngClass]="{ active: activeIndex === index, 'bg-gradient bg-dark': activeIndex === index}">{{''}}</button>
   </div>
 
   <cah-fab *ngIf="data?.showDialogClose" [style.bottom.px]="-50" color="primary" label="go back" mat-dialog-close icon="close"></cah-fab>

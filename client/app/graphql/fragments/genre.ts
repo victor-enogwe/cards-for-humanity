@@ -6,5 +6,36 @@ export const GENRE_NODE_FRAGMENT = gql`
     description
     credit
     selected @client
+    blackcardSet(first: 100) {
+      edges {
+        node {
+          id
+          rating
+          text
+          # pick
+          genre {
+            description
+            credit
+          }
+        }
+      }
+      totalCount
+      edgeCount
+    }
+    whitecardSet(first: 100) {
+      edges {
+        node {
+          id
+          rating
+          text
+          genre {
+            description
+            credit
+          }
+        }
+      }
+      totalCount
+      edgeCount
+    }
   }
 `;

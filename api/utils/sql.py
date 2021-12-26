@@ -13,7 +13,7 @@ GAME_SUMMARY_SQL = """
         players_stats.num_spectators_joined,
         players_stats.num_players_joined,
         CASE WHEN NEW.user_id = api_game.creator_id THEN TRUE ELSE FALSE END AS is_creator,
-        CASE invite.game_id WHEN NULL THEN TRUE ELSE FALSE END AS invited
+        CASE WHEN COALESCE(invite.email, '') = '' THEN FALSE ELSE TRUE END AS invited
     FROM api_game
     LEFT JOIN(
         SELECT
@@ -28,11 +28,16 @@ GAME_SUMMARY_SQL = """
     ON api_game.id = players_stats.game_id
     LEFT JOIN(
         SELECT
-            api_invite.game_id
-        FROM api_invite
-        WHERE api_invite.user_id = NEW.user_id AND api_invite.game_id = NEW.game_id
+		    api_invite.email, api_invite.game_id
+		FROM api_invite
+		WHERE api_invite.email IN (
+			SELECT
+		        api_provider.email
+		    FROM api_provider
+		    WHERE api_provider.user_id = NEW.user_id
+		)
     ) invite
-    ON api_game.id = invite.game_id
+    ON invite.game_id = api_game.id
     WHERE api_game.id = NEW.game_id
 """
 
@@ -96,12 +101,13 @@ INVITE_TRIGGER = """
     LEFT JOIN(
         SELECT
             api_invite.game_id,
+            api_invite.revoked,
             COUNT(*) as total_invites_sent,
             COUNT(CASE api_invite.spectator WHEN TRUE THEN 1 ELSE NULL END) AS num_spectators_invited,
             COUNT(CASE api_invite.spectator WHEN FALSE THEN 1 ELSE NULL END) AS num_players_invited
         FROM api_invite
-        WHERE api_invite.game_id = NEW.game_id
-        GROUP BY api_invite.game_id
+        WHERE api_invite.game_id = NEW.game_id AND api_invite.revoked = FALSE
+        GROUP BY api_invite.game_id, api_invite.revoked
     ) AS invite_stats
     ON api_game.id = invite_stats.game_id
     WHERE api_game.id = NEW.game_id
@@ -125,11 +131,6 @@ INVITE_TRIGGER = """
     IF game_summary.join_ends_at >= NOW()
     THEN
         RAISE EXCEPTION 'cannot invite players. game join period ended.';
-    END IF;
-
-    IF game_summary.num_players_invited >= game_summary.num_players
-    THEN
-        RAISE EXCEPTION 'maximum player invites for this game reached. remove someone.';
     END IF;
 
     IF game_summary.num_spectators > 0 AND game_summary.num_spectators_invited >= game_summary.num_spectators

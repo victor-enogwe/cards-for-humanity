@@ -65,6 +65,68 @@ export const typeDefs = gql`
     SHIN
   }
 
+  enum ApiProfileAvatarChoices {
+    ABBY
+
+    ALFRED
+
+    ANDINA
+
+    ASTRO
+
+    CAMILE
+
+    DOROTHY
+
+    DUDAI
+
+    EDUARDO
+
+    GENERAL
+
+    GRACE
+
+    IRANIR
+
+    JENNIFER
+
+    LABRAT
+
+    LUTHER
+
+    RAINBOWNESS
+
+    SHIN
+  }
+
+  enum ApiProfileGenderChoices {
+    FEMALE
+
+    MALE
+
+    OTHER
+  }
+
+  enum ApiProviderConversionModeChoices {
+    CREATED
+
+    INVITED
+
+    SUPERUSER
+  }
+
+  enum ApiProviderProviderChoices {
+    EMAIL
+
+    FACEBOOK
+
+    GOOGLE
+
+    INSTAGRAM
+
+    TWITTER
+  }
+
   enum ApiWhiteCardRatingChoices {
     NORMAL
   }
@@ -114,6 +176,8 @@ export const typeDefs = gql`
     playerSetAdd: [CreateGameInputAddGamePlayerset]
     private: Boolean
 
+    round: Int
+
     roundTime: Int
 
     rounds: Int
@@ -153,6 +217,8 @@ export const typeDefs = gql`
     email: String!
     password: String!
   }
+
+  scalar Date
 
   scalar DateTime
 
@@ -194,6 +260,19 @@ export const typeDefs = gql`
     ): GenreNodeConnection!
 
     id: ID!
+    inviteSet(
+      after: String
+      before: String
+      createdAt: DateTime
+      email: String
+      first: Int
+      game: ID
+      last: Int
+      offset: Int
+      revoked: Boolean
+      spectator: Boolean
+      updatedAt: DateTime
+    ): InviteNodeConnection!
 
     joinEndsAt: DateTime!
 
@@ -216,6 +295,8 @@ export const typeDefs = gql`
       user: ID
     ): PlayerNodeConnection!
     private: Boolean!
+
+    round: Int!
 
     roundTime: Int!
 
@@ -279,6 +360,7 @@ export const typeDefs = gql`
       numSpectators: Int
       offset: Int
       private: Boolean
+      round: Int
       roundTime: Int
       rounds: Int
       status: String
@@ -342,8 +424,14 @@ export const typeDefs = gql`
     node: InviteNode
   }
 
+  input InvitedGameInput {
+    email: String!
+    id: ID!
+  }
+
   type JWTPayloadNode {
     aud: String
+    avatar: String
     email: String
     emailVerified: Boolean
     exp: Int
@@ -353,13 +441,13 @@ export const typeDefs = gql`
     name: String
     nbf: Int
     provider: String
-    sub: Int
+    sub: String
     username: String
   }
 
   type JoinGameMutation {
+    game: GameNode
     ok: Boolean
-    player: PlayerNode
   }
 
   input JoinGameMutationInput {
@@ -403,19 +491,7 @@ export const typeDefs = gql`
   }
 
   type NotificationNode {
-    invites(
-      after: String
-      before: String
-      createdAt: DateTime
-      email: String
-      first: Int
-      game: ID
-      last: Int
-      offset: Int
-      revoked: Boolean
-      spectator: Boolean
-      updatedAt: DateTime
-    ): InviteNodeConnection
+    invites(after: String, before: String, email: String, first: Int, last: Int, offset: Int, revoked: Boolean): InviteNodeConnection
   }
 
   type NotificationSubscription {
@@ -472,6 +548,7 @@ export const typeDefs = gql`
       numSpectators: Int
       offset: Int
       private: Boolean
+      round: Int
       roundTime: Int
       rounds: Int
       status: String
@@ -495,6 +572,60 @@ export const typeDefs = gql`
     node: PlayerNode
   }
 
+  type ProfileNode implements Node {
+    avatar: ApiProfileAvatarChoices
+    createdAt: DateTime!
+
+    dateOfBirth: Date
+
+    firstName: String!
+
+    gender: ApiProfileGenderChoices
+
+    id: ID!
+
+    lastName: String!
+    provider: ProviderNode!
+    updatedAt: DateTime!
+
+    username: String!
+  }
+
+  type ProviderNode implements Node {
+    conversionMode: ApiProviderConversionModeChoices!
+    createdAt: DateTime!
+    email: String!
+
+    id: ID!
+    lastLogin: DateTime
+    lastLogout: DateTime
+    phone: String
+    primary: Boolean!
+    profile: ProfileNode
+
+    provider: ApiProviderProviderChoices!
+    seed: String
+    updatedAt: DateTime!
+    user: UserNode!
+
+    verifiedAt: DateTime
+  }
+
+  type ProviderNodeConnection {
+    edgeCount: Int
+
+    edges: [ProviderNodeEdge]!
+
+    pageInfo: PageInfo!
+    totalCount: Int
+  }
+
+  type ProviderNodeEdge {
+    cursor: String!
+
+    node: ProviderNode
+  }
+
   type Query {
     blackCards(
       after: String
@@ -511,7 +642,6 @@ export const typeDefs = gql`
     ): BlackCardNodeConnection
 
     fullWidth: Boolean
-    game(id: ID): GameNode
     gameInProgress: GameNode
 
     games(
@@ -527,6 +657,7 @@ export const typeDefs = gql`
       numSpectators: Int
       offset: Int
       private: Boolean
+      round: Int
       roundTime: Int
       rounds: Int
       status: String
@@ -550,6 +681,7 @@ export const typeDefs = gql`
       last: Int
       offset: Int
     ): GenreNodeConnection
+    invitedGame(input: InvitedGameInput!): GameNode
 
     navOpen: Boolean
     newGame(id: ID!): NewGameNode
@@ -683,6 +815,7 @@ export const typeDefs = gql`
       numSpectators: Int
       offset: Int
       private: Boolean
+      round: Int
       roundTime: Int
       rounds: Int
       status: String
@@ -714,6 +847,25 @@ export const typeDefs = gql`
       updatedAt: DateTime
       user: ID
     ): PlayerNodeConnection!
+    providerSet(
+      after: String
+      before: String
+      conversionMode: String
+      createdAt: DateTime
+      email: String
+      first: Int
+      last: Int
+      lastLogin: DateTime
+      lastLogout: DateTime
+      offset: Int
+      phone: String
+      primary: Boolean
+      provider: String
+      seed: String
+      updatedAt: DateTime
+      user: ID
+      verifiedAt: DateTime
+    ): ProviderNodeConnection!
     socialAuth(
       after: String
       before: String

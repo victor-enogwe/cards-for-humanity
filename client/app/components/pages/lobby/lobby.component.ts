@@ -5,7 +5,6 @@ import { MatFabMenu } from '../../../@types/global';
 import { GameNode, Maybe } from '../../../@types/graphql';
 import { AuthService } from '../../../services/auth/auth.service';
 import { GameService } from '../../../services/game/game.service';
-import { UtilsService } from '../../../services/utils/utils.service';
 import { InviteComponent } from '../../shared/invite/invite.component';
 
 @Component({
@@ -25,24 +24,22 @@ export class LobbyComponent implements OnInit, OnDestroy {
   );
   gameInProgressUnsubscribe!: Subscription['unsubscribe'];
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private authService: AuthService,
-    private gameService: GameService,
-    private utilsService: UtilsService,
-  ) {}
+  constructor(private route: ActivatedRoute, private router: Router, private authService: AuthService, private gameService: GameService) {}
 
   ngOnInit(): void {
     this.route.data
       .pipe(first())
       .pipe(tap(({ gameInProgress: game }) => this.fabMenu(game)))
       .subscribe();
-    this.gameInProgressUnsubscribe = this.gameService.gameInProgressSubscription();
+    this.gameInProgressUnsubscribe = this.gameService.gameInProgressSubscription(this.fabMenu.bind(this));
   }
 
   ngOnDestroy(): void {
     this.gameInProgressUnsubscribe();
+  }
+
+  isCreator(game: Maybe<GameNode>) {
+    return this.gameService.isCreator(game);
   }
 
   fabMenu(game: GameNode) {
@@ -61,13 +58,26 @@ export class LobbyComponent implements OnInit, OnDestroy {
         },
       },
       {
+        id: 'start_game',
+        icon: 'play_arrow',
+        tooltip: 'Start Game',
+        tooltipPosition: 'left',
+        color: 'success',
+        directives: {
+          cahConfirmDialog: {
+            config: { data: { title: `Start Game`, description: game.id } },
+            confirmClick: () => lastValueFrom(this.gameService.updateGameStatus(game.id, { status: 'GAME_STARTED' })),
+          },
+        },
+      },
+      {
         id: 'invite_spectators',
         icon: 'rsvp',
         tooltip: 'invite spectators',
         tooltipPosition: 'left',
         color: 'queued',
         directives: {
-          cahConfirmDialog: {
+          cahDialogComponent: {
             component: InviteComponent,
             config: { data: { game: game, inviteOnly: game.private, spectator: true }, maxHeight: '420px' },
           },
@@ -80,20 +90,34 @@ export class LobbyComponent implements OnInit, OnDestroy {
         tooltipPosition: 'left',
         color: 'warn',
         directives: {
-          cahConfirmDialog: {
+          cahDialogComponent: {
             component: InviteComponent,
             config: { data: { game: game, inviteOnly: game.private }, maxHeight: '420px' },
           },
         },
       },
+      {
+        id: 'chat',
+        icon: 'chat',
+        tooltip: 'chat',
+        tooltipPosition: 'left',
+        color: 'accent',
+        directives: {},
+      },
     ];
 
+    const canJoin = new Date(game.joinEndsAt).getTime() > new Date(Date.now()).getTime();
+
     this.fab = menus.filter(({ id }) => {
-      switch (true) {
-        case id === 'invite_players' && game.numPlayers < 2:
-        case id === 'invite_spectators' && game.numSpectators < 1:
-        case id === 'cancel_game' && Number(this.authService.profile$.getValue()?.sub) !== +this.utilsService.fromRelayID(game.creator.id):
-          return false;
+      switch (id) {
+        case 'invite_players':
+          return game.numPlayers < 2 && canJoin;
+        case 'invite_spectators':
+          return game.numSpectators < 1 && canJoin;
+        case 'cancel_game':
+          return this.authService.profile$.getValue()?.sub !== game.creator.id;
+        case 'start_game':
+          return !canJoin;
         default:
           return true;
       }

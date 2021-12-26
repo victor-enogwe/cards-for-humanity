@@ -14,6 +14,12 @@ export interface Scalars {
   Int: number;
   Float: number;
   /**
+   * The `Date` scalar type represents a Date
+   * value as specified by
+   * [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+   */
+  Date: any;
+  /**
    * The `DateTime` scalar type represents a DateTime
    * value as specified by
    * [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
@@ -24,9 +30,9 @@ export interface Scalars {
 
 /** An enumeration. */
 export type ApiBlackCardPickChoices =
-  /** pick1 */
+  /** PICK 1 */
   | 'A_1'
-  /** pick2 */
+  /** PICK 2 */
   | 'A_2';
 
 /** An enumeration. */
@@ -85,6 +91,72 @@ export type ApiPlayerAvatarChoices =
   | 'SHIN';
 
 /** An enumeration. */
+export type ApiProfileAvatarChoices =
+  /** Abby */
+  | 'ABBY'
+  /** Alfred */
+  | 'ALFRED'
+  /** Andina */
+  | 'ANDINA'
+  /** Astro */
+  | 'ASTRO'
+  /** Camile */
+  | 'CAMILE'
+  /** Dorothy */
+  | 'DOROTHY'
+  /** Dudai */
+  | 'DUDAI'
+  /** Eduardo */
+  | 'EDUARDO'
+  /** General */
+  | 'GENERAL'
+  /** Grace */
+  | 'GRACE'
+  /** Iranir */
+  | 'IRANIR'
+  /** Jennifer */
+  | 'JENNIFER'
+  /** Labrat */
+  | 'LABRAT'
+  /** Luther */
+  | 'LUTHER'
+  /** Rainbowness */
+  | 'RAINBOWNESS'
+  /** Shin */
+  | 'SHIN';
+
+/** An enumeration. */
+export type ApiProfileGenderChoices =
+  /** Female */
+  | 'FEMALE'
+  /** Male */
+  | 'MALE'
+  /** Other */
+  | 'OTHER';
+
+/** An enumeration. */
+export type ApiProviderConversionModeChoices =
+  /** Created */
+  | 'CREATED'
+  /** Invited */
+  | 'INVITED'
+  /** Superuser */
+  | 'SUPERUSER';
+
+/** An enumeration. */
+export type ApiProviderProviderChoices =
+  /** Email */
+  | 'EMAIL'
+  /** Facebook */
+  | 'FACEBOOK'
+  /** Google */
+  | 'GOOGLE'
+  /** Instagram */
+  | 'INSTAGRAM'
+  /** Twitter */
+  | 'TWITTER';
+
+/** An enumeration. */
 export type ApiWhiteCardRatingChoices =
   /** Normal */
   'NORMAL';
@@ -138,6 +210,8 @@ export interface CreateGameInput {
   readonly numSpectators?: InputMaybe<Scalars['Int']>;
   readonly playerSetAdd?: InputMaybe<ReadonlyArray<InputMaybe<CreateGameInputAddGamePlayerset>>>;
   readonly private?: InputMaybe<Scalars['Boolean']>;
+  /** game round */
+  readonly round?: InputMaybe<Scalars['Int']>;
   /** seconds */
   readonly roundTime?: InputMaybe<Scalars['Int']>;
   /** no of game rounds */
@@ -209,6 +283,7 @@ export interface GameNode extends Node {
   readonly genres: GenreNodeConnection;
   /** The ID of the object. */
   readonly id: Scalars['ID'];
+  readonly inviteSet: InviteNodeConnection;
   /** seconds */
   readonly joinEndsAt: Scalars['DateTime'];
   /** no of players */
@@ -217,6 +292,8 @@ export interface GameNode extends Node {
   readonly numSpectators: Scalars['Int'];
   readonly playerSet: PlayerNodeConnection;
   readonly private: Scalars['Boolean'];
+  /** game round */
+  readonly round: Scalars['Int'];
   /** seconds */
   readonly roundTime: Scalars['Int'];
   /** no of game rounds */
@@ -241,6 +318,20 @@ export interface GameNodeGenresArgs {
   id_Lt?: InputMaybe<Scalars['Float']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+}
+
+export interface GameNodeInviteSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  email?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  game?: InputMaybe<Scalars['ID']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  revoked?: InputMaybe<Scalars['Boolean']>;
+  spectator?: InputMaybe<Scalars['Boolean']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
 }
 
 export interface GameNodePlayerSetArgs {
@@ -329,6 +420,7 @@ export interface GenreNodeGameSetArgs {
   numSpectators?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   private?: InputMaybe<Scalars['Boolean']>;
+  round?: InputMaybe<Scalars['Int']>;
   roundTime?: InputMaybe<Scalars['Int']>;
   rounds?: InputMaybe<Scalars['Int']>;
   status?: InputMaybe<Scalars['String']>;
@@ -398,9 +490,15 @@ export interface InviteNodeEdge {
   readonly node?: Maybe<InviteNode>;
 }
 
+export interface InvitedGameInput {
+  readonly email: Scalars['String'];
+  readonly id: Scalars['ID'];
+}
+
 export interface JwtPayloadNode {
   readonly __typename?: 'JWTPayloadNode';
   readonly aud?: Maybe<Scalars['String']>;
+  readonly avatar?: Maybe<Scalars['String']>;
   readonly email?: Maybe<Scalars['String']>;
   readonly emailVerified?: Maybe<Scalars['Boolean']>;
   readonly exp?: Maybe<Scalars['Int']>;
@@ -410,14 +508,14 @@ export interface JwtPayloadNode {
   readonly name?: Maybe<Scalars['String']>;
   readonly nbf?: Maybe<Scalars['Int']>;
   readonly provider?: Maybe<Scalars['String']>;
-  readonly sub?: Maybe<Scalars['Int']>;
+  readonly sub?: Maybe<Scalars['String']>;
   readonly username?: Maybe<Scalars['String']>;
 }
 
 export interface JoinGameMutation {
   readonly __typename?: 'JoinGameMutation';
+  readonly game?: Maybe<GameNode>;
   readonly ok?: Maybe<Scalars['Boolean']>;
-  readonly player?: Maybe<PlayerNode>;
 }
 
 export interface JoinGameMutationInput {
@@ -541,15 +639,11 @@ export interface NotificationNode {
 export interface NotificationNodeInvitesArgs {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
-  createdAt?: InputMaybe<Scalars['DateTime']>;
   email?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
-  game?: InputMaybe<Scalars['ID']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   revoked?: InputMaybe<Scalars['Boolean']>;
-  spectator?: InputMaybe<Scalars['Boolean']>;
-  updatedAt?: InputMaybe<Scalars['DateTime']>;
 }
 
 export interface NotificationSubscription {
@@ -615,6 +709,7 @@ export interface PlayerNodeWinnerArgs {
   numSpectators?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   private?: InputMaybe<Scalars['Boolean']>;
+  round?: InputMaybe<Scalars['Int']>;
   roundTime?: InputMaybe<Scalars['Int']>;
   rounds?: InputMaybe<Scalars['Int']>;
   status?: InputMaybe<Scalars['String']>;
@@ -641,6 +736,67 @@ export interface PlayerNodeEdge {
   readonly node?: Maybe<PlayerNode>;
 }
 
+export interface ProfileNode extends Node {
+  readonly __typename?: 'ProfileNode';
+  readonly avatar?: Maybe<ApiProfileAvatarChoices>;
+  readonly createdAt: Scalars['DateTime'];
+  /** Birth Date */
+  readonly dateOfBirth?: Maybe<Scalars['Date']>;
+  /** First Name */
+  readonly firstName: Scalars['String'];
+  /** Gender */
+  readonly gender?: Maybe<ApiProfileGenderChoices>;
+  /** The ID of the object. */
+  readonly id: Scalars['ID'];
+  /** Last Name */
+  readonly lastName: Scalars['String'];
+  readonly provider: ProviderNode;
+  readonly updatedAt: Scalars['DateTime'];
+  /** Required. 40 characters or fewer. Letters, digits and @/./+/-/_ only. */
+  readonly username: Scalars['String'];
+}
+
+export interface ProviderNode extends Node {
+  readonly __typename?: 'ProviderNode';
+  /** Account Type */
+  readonly conversionMode: ApiProviderConversionModeChoices;
+  readonly createdAt: Scalars['DateTime'];
+  readonly email: Scalars['String'];
+  /** The ID of the object. */
+  readonly id: Scalars['ID'];
+  readonly lastLogin?: Maybe<Scalars['DateTime']>;
+  readonly lastLogout?: Maybe<Scalars['DateTime']>;
+  readonly phone?: Maybe<Scalars['String']>;
+  readonly primary: Scalars['Boolean'];
+  readonly profile?: Maybe<ProfileNode>;
+  /** Account Type */
+  readonly provider: ApiProviderProviderChoices;
+  readonly seed?: Maybe<Scalars['String']>;
+  readonly updatedAt: Scalars['DateTime'];
+  readonly user: UserNode;
+  /** Date Verified */
+  readonly verifiedAt?: Maybe<Scalars['DateTime']>;
+}
+
+export interface ProviderNodeConnection {
+  readonly __typename?: 'ProviderNodeConnection';
+  readonly edgeCount?: Maybe<Scalars['Int']>;
+  /** Contains the nodes in this connection. */
+  readonly edges: ReadonlyArray<Maybe<ProviderNodeEdge>>;
+  /** Pagination data for this connection. */
+  readonly pageInfo: PageInfo;
+  readonly totalCount?: Maybe<Scalars['Int']>;
+}
+
+/** A Relay edge containing a `ProviderNode` and its cursor. */
+export interface ProviderNodeEdge {
+  readonly __typename?: 'ProviderNodeEdge';
+  /** A cursor for use in pagination */
+  readonly cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  readonly node?: Maybe<ProviderNode>;
+}
+
 /** Root Query for the cards against humanity api. */
 export interface Query {
   readonly __typename?: 'Query';
@@ -650,12 +806,12 @@ export interface Query {
    *  page is full width
    */
   readonly fullWidth?: Maybe<Scalars['Boolean']>;
-  readonly game?: Maybe<GameNode>;
   readonly gameInProgress?: Maybe<GameNode>;
   /** find games */
   readonly games?: Maybe<GameNodeConnection>;
   /** all cards genre */
   readonly genres?: Maybe<GenreNodeConnection>;
+  readonly invitedGame?: Maybe<GameNode>;
   /**
    * @client
    *  navigation sidebar open
@@ -684,11 +840,6 @@ export interface QueryBlackCardsArgs {
 }
 
 /** Root Query for the cards against humanity api. */
-export interface QueryGameArgs {
-  id?: InputMaybe<Scalars['ID']>;
-}
-
-/** Root Query for the cards against humanity api. */
 export interface QueryGamesArgs {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -702,6 +853,7 @@ export interface QueryGamesArgs {
   numSpectators?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   private?: InputMaybe<Scalars['Boolean']>;
+  round?: InputMaybe<Scalars['Int']>;
   roundTime?: InputMaybe<Scalars['Int']>;
   rounds?: InputMaybe<Scalars['Int']>;
   status?: InputMaybe<Scalars['String']>;
@@ -725,6 +877,11 @@ export interface QueryGenresArgs {
   id_Lt?: InputMaybe<Scalars['Float']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+}
+
+/** Root Query for the cards against humanity api. */
+export interface QueryInvitedGameArgs {
+  input: InvitedGameInput;
 }
 
 /** Root Query for the cards against humanity api. */
@@ -881,6 +1038,7 @@ export interface UserNode extends Node {
   /** Is Superuser */
   readonly isSuperuser: Scalars['Boolean'];
   readonly playerSet: PlayerNodeConnection;
+  readonly providerSet: ProviderNodeConnection;
   readonly socialAuth: SocialNodeConnection;
   readonly updatedAt: Scalars['DateTime'];
 }
@@ -898,6 +1056,7 @@ export interface UserNodeGameSetArgs {
   numSpectators?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   private?: InputMaybe<Scalars['Boolean']>;
+  round?: InputMaybe<Scalars['Int']>;
   roundTime?: InputMaybe<Scalars['Int']>;
   rounds?: InputMaybe<Scalars['Int']>;
   status?: InputMaybe<Scalars['String']>;
@@ -919,6 +1078,26 @@ export interface UserNodePlayerSetArgs {
   spectator?: InputMaybe<Scalars['Boolean']>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
   user?: InputMaybe<Scalars['ID']>;
+}
+
+export interface UserNodeProviderSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  conversionMode?: InputMaybe<Scalars['String']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  email?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  lastLogin?: InputMaybe<Scalars['DateTime']>;
+  lastLogout?: InputMaybe<Scalars['DateTime']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  phone?: InputMaybe<Scalars['String']>;
+  primary?: InputMaybe<Scalars['Boolean']>;
+  provider?: InputMaybe<Scalars['String']>;
+  seed?: InputMaybe<Scalars['String']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
+  user?: InputMaybe<Scalars['ID']>;
+  verifiedAt?: InputMaybe<Scalars['DateTime']>;
 }
 
 export interface UserNodeSocialAuthArgs {
@@ -1050,11 +1229,13 @@ export type GameNodeKeySpecifier = (
   | 'creator'
   | 'genres'
   | 'id'
+  | 'inviteSet'
   | 'joinEndsAt'
   | 'numPlayers'
   | 'numSpectators'
   | 'playerSet'
   | 'private'
+  | 'round'
   | 'roundTime'
   | 'rounds'
   | 'status'
@@ -1067,11 +1248,13 @@ export type GameNodeFieldPolicy = {
   creator?: FieldPolicy<any> | FieldReadFunction<any>;
   genres?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  inviteSet?: FieldPolicy<any> | FieldReadFunction<any>;
   joinEndsAt?: FieldPolicy<any> | FieldReadFunction<any>;
   numPlayers?: FieldPolicy<any> | FieldReadFunction<any>;
   numSpectators?: FieldPolicy<any> | FieldReadFunction<any>;
   playerSet?: FieldPolicy<any> | FieldReadFunction<any>;
   private?: FieldPolicy<any> | FieldReadFunction<any>;
+  round?: FieldPolicy<any> | FieldReadFunction<any>;
   roundTime?: FieldPolicy<any> | FieldReadFunction<any>;
   rounds?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1162,6 +1345,7 @@ export type InviteNodeEdgeFieldPolicy = {
 };
 export type JWTPayloadNodeKeySpecifier = (
   | 'aud'
+  | 'avatar'
   | 'email'
   | 'emailVerified'
   | 'exp'
@@ -1177,6 +1361,7 @@ export type JWTPayloadNodeKeySpecifier = (
 )[];
 export type JWTPayloadNodeFieldPolicy = {
   aud?: FieldPolicy<any> | FieldReadFunction<any>;
+  avatar?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
   emailVerified?: FieldPolicy<any> | FieldReadFunction<any>;
   exp?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1189,10 +1374,10 @@ export type JWTPayloadNodeFieldPolicy = {
   sub?: FieldPolicy<any> | FieldReadFunction<any>;
   username?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type JoinGameMutationKeySpecifier = ('ok' | 'player' | JoinGameMutationKeySpecifier)[];
+export type JoinGameMutationKeySpecifier = ('game' | 'ok' | JoinGameMutationKeySpecifier)[];
 export type JoinGameMutationFieldPolicy = {
+  game?: FieldPolicy<any> | FieldReadFunction<any>;
   ok?: FieldPolicy<any> | FieldReadFunction<any>;
-  player?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MutationKeySpecifier = (
   | 'createGame'
@@ -1323,13 +1508,83 @@ export type PlayerNodeEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ProfileNodeKeySpecifier = (
+  | 'avatar'
+  | 'createdAt'
+  | 'dateOfBirth'
+  | 'firstName'
+  | 'gender'
+  | 'id'
+  | 'lastName'
+  | 'provider'
+  | 'updatedAt'
+  | 'username'
+  | ProfileNodeKeySpecifier
+)[];
+export type ProfileNodeFieldPolicy = {
+  avatar?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  dateOfBirth?: FieldPolicy<any> | FieldReadFunction<any>;
+  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
+  gender?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
+  provider?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  username?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ProviderNodeKeySpecifier = (
+  | 'conversionMode'
+  | 'createdAt'
+  | 'email'
+  | 'id'
+  | 'lastLogin'
+  | 'lastLogout'
+  | 'phone'
+  | 'primary'
+  | 'profile'
+  | 'provider'
+  | 'seed'
+  | 'updatedAt'
+  | 'user'
+  | 'verifiedAt'
+  | ProviderNodeKeySpecifier
+)[];
+export type ProviderNodeFieldPolicy = {
+  conversionMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  email?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastLogin?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastLogout?: FieldPolicy<any> | FieldReadFunction<any>;
+  phone?: FieldPolicy<any> | FieldReadFunction<any>;
+  primary?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  provider?: FieldPolicy<any> | FieldReadFunction<any>;
+  seed?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
+  verifiedAt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ProviderNodeConnectionKeySpecifier = ('edgeCount' | 'edges' | 'pageInfo' | 'totalCount' | ProviderNodeConnectionKeySpecifier)[];
+export type ProviderNodeConnectionFieldPolicy = {
+  edgeCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ProviderNodeEdgeKeySpecifier = ('cursor' | 'node' | ProviderNodeEdgeKeySpecifier)[];
+export type ProviderNodeEdgeFieldPolicy = {
+  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type QueryKeySpecifier = (
   | 'blackCards'
   | 'fullWidth'
-  | 'game'
   | 'gameInProgress'
   | 'games'
   | 'genres'
+  | 'invitedGame'
   | 'navOpen'
   | 'newGame'
   | 'notifications'
@@ -1340,10 +1595,10 @@ export type QueryKeySpecifier = (
 export type QueryFieldPolicy = {
   blackCards?: FieldPolicy<any> | FieldReadFunction<any>;
   fullWidth?: FieldPolicy<any> | FieldReadFunction<any>;
-  game?: FieldPolicy<any> | FieldReadFunction<any>;
   gameInProgress?: FieldPolicy<any> | FieldReadFunction<any>;
   games?: FieldPolicy<any> | FieldReadFunction<any>;
   genres?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitedGame?: FieldPolicy<any> | FieldReadFunction<any>;
   navOpen?: FieldPolicy<any> | FieldReadFunction<any>;
   newGame?: FieldPolicy<any> | FieldReadFunction<any>;
   notifications?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1418,6 +1673,7 @@ export type UserNodeKeySpecifier = (
   | 'isStaff'
   | 'isSuperuser'
   | 'playerSet'
+  | 'providerSet'
   | 'socialAuth'
   | 'updatedAt'
   | UserNodeKeySpecifier
@@ -1431,6 +1687,7 @@ export type UserNodeFieldPolicy = {
   isStaff?: FieldPolicy<any> | FieldReadFunction<any>;
   isSuperuser?: FieldPolicy<any> | FieldReadFunction<any>;
   playerSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  providerSet?: FieldPolicy<any> | FieldReadFunction<any>;
   socialAuth?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1602,6 +1859,22 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | PlayerNodeEdgeKeySpecifier | (() => undefined | PlayerNodeEdgeKeySpecifier);
     fields?: PlayerNodeEdgeFieldPolicy;
   };
+  ProfileNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ProfileNodeKeySpecifier | (() => undefined | ProfileNodeKeySpecifier);
+    fields?: ProfileNodeFieldPolicy;
+  };
+  ProviderNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ProviderNodeKeySpecifier | (() => undefined | ProviderNodeKeySpecifier);
+    fields?: ProviderNodeFieldPolicy;
+  };
+  ProviderNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ProviderNodeConnectionKeySpecifier | (() => undefined | ProviderNodeConnectionKeySpecifier);
+    fields?: ProviderNodeConnectionFieldPolicy;
+  };
+  ProviderNodeEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ProviderNodeEdgeKeySpecifier | (() => undefined | ProviderNodeEdgeKeySpecifier);
+    fields?: ProviderNodeEdgeFieldPolicy;
+  };
   Query?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier);
     fields?: QueryFieldPolicy;
@@ -1757,6 +2030,10 @@ export type ResolversTypes = ResolversObject<{
   ApiBlackCardRatingChoices: ApiBlackCardRatingChoices;
   ApiGameStatusChoices: ApiGameStatusChoices;
   ApiPlayerAvatarChoices: ApiPlayerAvatarChoices;
+  ApiProfileAvatarChoices: ApiProfileAvatarChoices;
+  ApiProfileGenderChoices: ApiProfileGenderChoices;
+  ApiProviderConversionModeChoices: ApiProviderConversionModeChoices;
+  ApiProviderProviderChoices: ApiProviderProviderChoices;
   ApiWhiteCardRatingChoices: ApiWhiteCardRatingChoices;
   BatchCreateInviteInput: BatchCreateInviteInput;
   BlackCardNode: ResolverTypeWrapper<BlackCardNode>;
@@ -1770,6 +2047,7 @@ export type ResolversTypes = ResolversObject<{
   CreateNewGameMutation: ResolverTypeWrapper<CreateNewGameMutation>;
   CreateUserMutation: ResolverTypeWrapper<CreateUserMutation>;
   CreateUserMutationInput: CreateUserMutationInput;
+  Date: ResolverTypeWrapper<Scalars['Date']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   DeleteRefreshTokenCookieInput: DeleteRefreshTokenCookieInput;
   DeleteRefreshTokenCookiePayload: ResolverTypeWrapper<DeleteRefreshTokenCookiePayload>;
@@ -1789,6 +2067,7 @@ export type ResolversTypes = ResolversObject<{
   InviteNode: ResolverTypeWrapper<InviteNode>;
   InviteNodeConnection: ResolverTypeWrapper<InviteNodeConnection>;
   InviteNodeEdge: ResolverTypeWrapper<InviteNodeEdge>;
+  InvitedGameInput: InvitedGameInput;
   JWTPayloadNode: ResolverTypeWrapper<JwtPayloadNode>;
   JoinGameMutation: ResolverTypeWrapper<JoinGameMutation>;
   JoinGameMutationInput: JoinGameMutationInput;
@@ -1800,6 +2079,8 @@ export type ResolversTypes = ResolversObject<{
     | ResolversTypes['GenreNode']
     | ResolversTypes['InviteNode']
     | ResolversTypes['PlayerNode']
+    | ResolversTypes['ProfileNode']
+    | ResolversTypes['ProviderNode']
     | ResolversTypes['SocialNode']
     | ResolversTypes['UserNode']
     | ResolversTypes['WhiteCardNode'];
@@ -1811,6 +2092,10 @@ export type ResolversTypes = ResolversObject<{
   PlayerNode: ResolverTypeWrapper<PlayerNode>;
   PlayerNodeConnection: ResolverTypeWrapper<PlayerNodeConnection>;
   PlayerNodeEdge: ResolverTypeWrapper<PlayerNodeEdge>;
+  ProfileNode: ResolverTypeWrapper<ProfileNode>;
+  ProviderNode: ResolverTypeWrapper<ProviderNode>;
+  ProviderNodeConnection: ResolverTypeWrapper<ProviderNodeConnection>;
+  ProviderNodeEdge: ResolverTypeWrapper<ProviderNodeEdge>;
   Query: ResolverTypeWrapper<{}>;
   RefreshTokenMutationInput: RefreshTokenMutationInput;
   RefreshTokenMutationPayload: ResolverTypeWrapper<RefreshTokenMutationPayload>;
@@ -1851,6 +2136,7 @@ export type ResolversParentTypes = ResolversObject<{
   CreateNewGameMutation: CreateNewGameMutation;
   CreateUserMutation: CreateUserMutation;
   CreateUserMutationInput: CreateUserMutationInput;
+  Date: Scalars['Date'];
   DateTime: Scalars['DateTime'];
   DeleteRefreshTokenCookieInput: DeleteRefreshTokenCookieInput;
   DeleteRefreshTokenCookiePayload: DeleteRefreshTokenCookiePayload;
@@ -1870,6 +2156,7 @@ export type ResolversParentTypes = ResolversObject<{
   InviteNode: InviteNode;
   InviteNodeConnection: InviteNodeConnection;
   InviteNodeEdge: InviteNodeEdge;
+  InvitedGameInput: InvitedGameInput;
   JWTPayloadNode: JwtPayloadNode;
   JoinGameMutation: JoinGameMutation;
   JoinGameMutationInput: JoinGameMutationInput;
@@ -1881,6 +2168,8 @@ export type ResolversParentTypes = ResolversObject<{
     | ResolversParentTypes['GenreNode']
     | ResolversParentTypes['InviteNode']
     | ResolversParentTypes['PlayerNode']
+    | ResolversParentTypes['ProfileNode']
+    | ResolversParentTypes['ProviderNode']
     | ResolversParentTypes['SocialNode']
     | ResolversParentTypes['UserNode']
     | ResolversParentTypes['WhiteCardNode'];
@@ -1892,6 +2181,10 @@ export type ResolversParentTypes = ResolversObject<{
   PlayerNode: PlayerNode;
   PlayerNodeConnection: PlayerNodeConnection;
   PlayerNodeEdge: PlayerNodeEdge;
+  ProfileNode: ProfileNode;
+  ProviderNode: ProviderNode;
+  ProviderNodeConnection: ProviderNodeConnection;
+  ProviderNodeEdge: ProviderNodeEdge;
   Query: {};
   RefreshTokenMutationInput: RefreshTokenMutationInput;
   RefreshTokenMutationPayload: RefreshTokenMutationPayload;
@@ -1976,6 +2269,10 @@ export type CreateUserMutationResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
+  name: 'Date';
+}
+
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
@@ -2013,11 +2310,13 @@ export type GameNodeResolvers<
   creator?: Resolver<ResolversTypes['UserNode'], ParentType, ContextType>;
   genres?: Resolver<ResolversTypes['GenreNodeConnection'], ParentType, ContextType, RequireFields<GameNodeGenresArgs, never>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  inviteSet?: Resolver<ResolversTypes['InviteNodeConnection'], ParentType, ContextType, RequireFields<GameNodeInviteSetArgs, never>>;
   joinEndsAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   numPlayers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   numSpectators?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   playerSet?: Resolver<ResolversTypes['PlayerNodeConnection'], ParentType, ContextType, RequireFields<GameNodePlayerSetArgs, never>>;
   private?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  round?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   roundTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   rounds?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['ApiGameStatusChoices'], ParentType, ContextType>;
@@ -2145,6 +2444,7 @@ export type JwtPayloadNodeResolvers<
   ParentType extends ResolversParentTypes['JWTPayloadNode'] = ResolversParentTypes['JWTPayloadNode'],
 > = ResolversObject<{
   aud?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  avatar?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   emailVerified?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   exp?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -2154,7 +2454,7 @@ export type JwtPayloadNodeResolvers<
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   nbf?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   provider?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  sub?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  sub?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -2163,8 +2463,8 @@ export type JoinGameMutationResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['JoinGameMutation'] = ResolversParentTypes['JoinGameMutation'],
 > = ResolversObject<{
+  game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
   ok?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  player?: Resolver<Maybe<ResolversTypes['PlayerNode']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2269,7 +2569,16 @@ export type NodeResolvers<
   ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node'],
 > = ResolversObject<{
   __resolveType: TypeResolveFn<
-    'BlackCardNode' | 'GameNode' | 'GenreNode' | 'InviteNode' | 'PlayerNode' | 'SocialNode' | 'UserNode' | 'WhiteCardNode',
+    | 'BlackCardNode'
+    | 'GameNode'
+    | 'GenreNode'
+    | 'InviteNode'
+    | 'PlayerNode'
+    | 'ProfileNode'
+    | 'ProviderNode'
+    | 'SocialNode'
+    | 'UserNode'
+    | 'WhiteCardNode',
     ParentType,
     ContextType
   >;
@@ -2359,6 +2668,64 @@ export type PlayerNodeEdgeResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type ProfileNodeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['ProfileNode'] = ResolversParentTypes['ProfileNode'],
+> = ResolversObject<{
+  avatar?: Resolver<Maybe<ResolversTypes['ApiProfileAvatarChoices']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  dateOfBirth?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
+  firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  gender?: Resolver<Maybe<ResolversTypes['ApiProfileGenderChoices']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  provider?: Resolver<ResolversTypes['ProviderNode'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ProviderNodeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['ProviderNode'] = ResolversParentTypes['ProviderNode'],
+> = ResolversObject<{
+  conversionMode?: Resolver<ResolversTypes['ApiProviderConversionModeChoices'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  lastLogin?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  lastLogout?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  primary?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  profile?: Resolver<Maybe<ResolversTypes['ProfileNode']>, ParentType, ContextType>;
+  provider?: Resolver<ResolversTypes['ApiProviderProviderChoices'], ParentType, ContextType>;
+  seed?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['UserNode'], ParentType, ContextType>;
+  verifiedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ProviderNodeConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['ProviderNodeConnection'] = ResolversParentTypes['ProviderNodeConnection'],
+> = ResolversObject<{
+  edgeCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  edges?: Resolver<ReadonlyArray<Maybe<ResolversTypes['ProviderNodeEdge']>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ProviderNodeEdgeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['ProviderNodeEdge'] = ResolversParentTypes['ProviderNodeEdge'],
+> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['ProviderNode']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type QueryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query'],
@@ -2370,10 +2737,10 @@ export type QueryResolvers<
     RequireFields<QueryBlackCardsArgs, never>
   >;
   fullWidth?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  game?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType, RequireFields<QueryGameArgs, never>>;
   gameInProgress?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType>;
   games?: Resolver<Maybe<ResolversTypes['GameNodeConnection']>, ParentType, ContextType, RequireFields<QueryGamesArgs, never>>;
   genres?: Resolver<Maybe<ResolversTypes['GenreNodeConnection']>, ParentType, ContextType, RequireFields<QueryGenresArgs, never>>;
+  invitedGame?: Resolver<Maybe<ResolversTypes['GameNode']>, ParentType, ContextType, RequireFields<QueryInvitedGameArgs, 'input'>>;
   navOpen?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   newGame?: Resolver<Maybe<ResolversTypes['NewGameNode']>, ParentType, ContextType, RequireFields<QueryNewGameArgs, 'id'>>;
   notifications?: Resolver<Maybe<ResolversTypes['NotificationNode']>, ParentType, ContextType>;
@@ -2495,6 +2862,7 @@ export type UserNodeResolvers<
   isStaff?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isSuperuser?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   playerSet?: Resolver<ResolversTypes['PlayerNodeConnection'], ParentType, ContextType, RequireFields<UserNodePlayerSetArgs, never>>;
+  providerSet?: Resolver<ResolversTypes['ProviderNodeConnection'], ParentType, ContextType, RequireFields<UserNodeProviderSetArgs, never>>;
   socialAuth?: Resolver<ResolversTypes['SocialNodeConnection'], ParentType, ContextType, RequireFields<UserNodeSocialAuthArgs, never>>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -2560,6 +2928,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   CreateGameMutation?: CreateGameMutationResolvers<ContextType>;
   CreateNewGameMutation?: CreateNewGameMutationResolvers<ContextType>;
   CreateUserMutation?: CreateUserMutationResolvers<ContextType>;
+  Date?: GraphQLScalarType;
   DateTime?: GraphQLScalarType;
   DeleteRefreshTokenCookiePayload?: DeleteRefreshTokenCookiePayloadResolvers<ContextType>;
   GameInProgressSubscription?: GameInProgressSubscriptionResolvers<ContextType>;
@@ -2587,6 +2956,10 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   PlayerNode?: PlayerNodeResolvers<ContextType>;
   PlayerNodeConnection?: PlayerNodeConnectionResolvers<ContextType>;
   PlayerNodeEdge?: PlayerNodeEdgeResolvers<ContextType>;
+  ProfileNode?: ProfileNodeResolvers<ContextType>;
+  ProviderNode?: ProviderNodeResolvers<ContextType>;
+  ProviderNodeConnection?: ProviderNodeConnectionResolvers<ContextType>;
+  ProviderNodeEdge?: ProviderNodeEdgeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   RefreshTokenMutationPayload?: RefreshTokenMutationPayloadResolvers<ContextType>;
   RevokePayload?: RevokePayloadResolvers<ContextType>;

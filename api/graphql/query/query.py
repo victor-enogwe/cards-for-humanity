@@ -1,6 +1,6 @@
 from graphene.types.objecttype import ObjectType
 
-from api.graphql.query.__pycache__.notification import NotificationQuery
+from api.graphql.query.notification import NotificationQuery
 from api.graphql.query.blackcard import BlackCardQuery
 from api.graphql.query.game import GameQuery
 from api.graphql.query.genre import GenreQuery

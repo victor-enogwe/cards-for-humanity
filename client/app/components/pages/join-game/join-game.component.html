@@ -1,13 +1,8 @@
 <mat-stepper linear aria-label="available games" class="d-flex flex-column flex-fill">
   <mat-step step="videogame_asset" aria-label="choose game to join">
-    <ng-template matStepLabel>Join A Game</ng-template>
+    <ng-template matStepLabel>Select An Avatar</ng-template>
     <ng-template matStepContent>
-      <div *ngIf="avatar" class="d-flex flex-grow-1 justify-content-center d-none d-lg-block" matTooltip="{{avatar.name | uppercase}}"
-        matTooltipPosition="above">
-        <img [src]="avatar.link | safeUrl" class="d-block mx-auto" height="350" alt="{{avatar.name}}" />
-      </div>
-
-      <cah-available-games class="flex-grow-1"></cah-available-games>
+      <cah-avatar [taken]="taken$ | async" [selected]="avatar?.name" (onAvatarSelect)="avatarSelected($event)"></cah-avatar>
 
       <div class="btn-toolbar pt-3" role="toolbar" aria-label="game options navigation buttons">
         <div class="btn-group btn-group-lg flex-fill" role="group" aria-label="reset button">
@@ -16,14 +11,9 @@
           </button>
         </div>
 
-        <div class="btn-group btn-group-lg flex-fill justify-content-between" role="group" aria-label="next button">
-          <button mat-icon-button flexFill aria-label="previous step" matTooltip="Back" matTooltipPosition="right"
-            [routerLink]="['/play', 'select-avatar']" [state]="{ playType: 'join' }">
-            <mat-icon>arrow_back</mat-icon>
-          </button>
-
+        <div class="btn-group btn-group-lg flex-fill justify-content-end" role="group" aria-label="next button">
           <button mat-mini-fab flexFill aria-label="start game" matTooltip="Join Game" matTooltipPosition="left" color="primary"
-            cahDebounceClick (debounceClick)="joinGame()">
+            cahDebounceClick (debounceClick)="joinGame()" [disabled]="!avatar?.name">
             <mat-icon>play_arrow</mat-icon>
           </button>
         </div>

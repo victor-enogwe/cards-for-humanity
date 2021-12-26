@@ -14,6 +14,7 @@ export class CountdownTimerComponent {
   @Input() status = 'countdown ended';
   @Input() date!: Date;
   @Input() color: CahPallette = 'admin-approved';
+  @Input() icon!: string;
   timer$ = interval(1000).pipe(
     map(() => this.timeDifferenceInSeconds()),
     takeWhile((time) => Object.values(time).some((interval) => interval >= 0)),

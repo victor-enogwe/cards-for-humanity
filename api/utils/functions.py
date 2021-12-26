@@ -1,6 +1,7 @@
 import json
 import os
 import re
+from base64 import b64encode
 from calendar import timegm
 from datetime import datetime
 from functools import wraps
@@ -9,13 +10,7 @@ from os.path import isfile, join
 from uuid import uuid4
 
 from django.apps import apps
-from django.contrib.auth import (
-    authenticate,
-    get_user_model,
-    user_logged_in,
-    user_logged_out,
-    user_login_failed,
-)
+from django.contrib.auth import authenticate, get_user_model, user_logged_in
 from django.core import management
 from django.db import models
 from django.http.request import HttpRequest
@@ -286,10 +281,17 @@ def get_user_by_token(token, context=None):
     return get_user_by_payload(payload)
 
 
-def jwt_payload(user, context=None):
+def jwt_payload(user, context):
     profile_model = apps.get_model("api.Profile")
     provider_model = apps.get_model("api.Provider")
-    provider = provider_model.objects.get(user=user)
+    email = context.email if hasattr(context, "email") else None
+    provider = (
+        provider_model.objects.get(user=user, email=email)
+        if email
+        else provider_model.objects.filter(
+            user=user
+        ).first()  # figure out primary email feature
+    )
     profile = profile_model.objects.get(provider=provider)
     host = os.getenv("HOST", None)
     claims_url = "{0}/claims".format(host)
@@ -298,7 +300,9 @@ def jwt_payload(user, context=None):
     iat = timegm(datetime.utcnow().utctimetuple())
     payload = {
         "iss": jwt_settings.JWT_ISSUER,
-        "sub": str(user.id),
+        "sub": b64encode("UserNode:{sub}".format(sub=user.id).encode("utf-8")).decode(
+            "utf-8"
+        ),
         "aud": jwt_settings.JWT_AUDIENCE,
         "exp": jwt_expires,
         "nbf": iat,
@@ -308,6 +312,7 @@ def jwt_payload(user, context=None):
         "username": str(profile.username),
         "provider": str(profile.id),
         "name": profile.full_name.title(),
+        "avatar": profile.avatar,
         "email": provider.email,
         "email_verified": provider.is_verified,
         claims_url: {
@@ -342,6 +347,7 @@ def token_auth(f):
 
         if hasattr(context, "user"):
             context.user = user
+            context.email = username
 
         result = f(cls, root, info, **kwargs)
         signals.token_issued.send(sender=cls, request=context, user=user)

@@ -8,7 +8,7 @@ from api.utils.enums import Avatars, Gender
 
 
 class Profile(TimestampBase):
-    provider = models.ForeignKey("api.Provider", on_delete=models.CASCADE)
+    provider = models.OneToOneField("api.Provider", on_delete=models.CASCADE)
     first_name = models.CharField(help_text="First Name", max_length=50)
     last_name = models.CharField(help_text="Last Name", max_length=50)
     username = models.CharField(

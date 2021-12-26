@@ -1,0 +1,30 @@
+<div *ngIf="{ profile: profile$ | async } as auth"
+  class="d-flex flex-grow-1 flex-fill justify-content-center align-items-center row row-cols-1 row-cols-md-3 row-cols-lg-6 g-2 g-lg-3 pt-2 px-4">
+
+  <div *ngFor="let memo of playerMemo | mapToIterable; let index=index"
+    class="player-box d-flex flex-column flex-grow-1 flex-fill col position-relative justify-content-between align-items-center bg-light m-2 p-3"
+    [ngClass]="{ 'rounded-start': true }">
+    <ng-container *ngIf="{ email: memo[0], player: memo[1] } as data">
+      <mat-icon *ngIf="data.player.avatar" color="success" class="position-absolute top-0 end-0">radio_button_checked</mat-icon>
+      <mat-icon *ngIf="!data.player.avatar" class="position-absolute top-0 end-0">radio_button_unchecked</mat-icon>
+      <img [src]="$any(avatars)[data.player?.avatar!]?.link ?? invitedAvatar | safeUrl" class="rounded-circle border"
+        alt="{{data.player?.avatar!}}" width="90">
+      <h5 class="card-title fw-bolder">
+        {{(data.player?.profile?.username?.length ? data.player?.profile?.username : data.player.avatar) ?? data.email.split('@')[0] | uppercase}}
+      </h5>
+      <ng-container *ngIf="game.creator.id === auth.profile?.sub">
+        <button *ngIf="data.player.avatar && (game.creator.id !== data.player.user.id)" mat-button class="btn btn-danger rounded-0"
+          [cahConfirmDialog]="true" [config]="{ data: { title: 'Remove Player', description: data.player.id } }"
+          (confirmClick)="removePlayer(data.player)">
+          Remove Player <mat-icon color="warn">close</mat-icon>
+        </button>
+
+        <button *ngIf="!data.player.avatar && (game.creator.id !== data.player.user.id)" mat-button class="btn btn-danger rounded-0"
+          [cahConfirmDialog]="true" [config]="{ data: { title: 'Rescind Invite', description: data.player.email } }"
+          (confirmClick)="rescindInvite(data.player)">
+          Rescind Invite <mat-icon color="warn">close</mat-icon>
+        </button>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

@@ -9,19 +9,26 @@ import { SelectAvatarComponent } from '../../components/pages/select-avatar/sele
 import { AvailableGamesComponent } from '../../components/shared/available-games/available-games.component';
 import { AvatarComponent } from '../../components/shared/avatar/avatar.component';
 import { CountdownTimerComponent } from '../../components/shared/countdown-timer/countdown-timer.component';
+import { GameScreenComponent } from '../../components/shared/game-screen/game-screen.component';
 import { GameToolbarComponent } from '../../components/shared/game-toolbar/game-toolbar.component';
 import { GenreComponent } from '../../components/shared/genre/genre.component';
 import { InviteComponent } from '../../components/shared/invite/invite.component';
+import { PlayersComponent } from '../../components/shared/players/players.component';
 import { GameInProgressGuard } from '../../guards/game-in-progress/game-in-progress.guard';
 import { GameNotInProgressGuard } from '../../guards/game-not-in-progress/game-not-in-progress.guard';
+import { GameStartedGuard } from '../../guards/game-started/game-started.guard';
+import { InvitedGuard } from '../../guards/invited/invited.guard';
 import { LobbyGuard } from '../../guards/lobby/lobby.guard';
 import { PlayGuard } from '../../guards/play/play.guard';
 import { SelectAvatarGuard } from '../../guards/select-avatar/select-avatar.guard';
 import { SharedModule } from '../../modules/shared/shared.module';
 import { GameInProgressResolver } from '../../resolvers/game-in-progress/game-in-progress.resolver';
+import { GameResolver } from '../../resolvers/game/game.resolver';
 import { NewGameResolver } from '../../resolvers/newGame/new-game.resolver';
 import { GameService } from '../../services/game/game.service';
 import { GenreService } from '../../services/genre/genre.service';
+import { PlayersSmallComponent } from '../../components/shared/players-small/players-small.component';
+import { CardDeckComponent } from '../../components/shared/card-deck/card-deck.component';
 
 const routes: Routes = [
   {
@@ -42,7 +49,12 @@ const routes: Routes = [
         resolve: { newGame: NewGameResolver },
       },
       { path: 'join-game', component: JoinGameComponent, canActivate: [PlayGuard] },
-      { path: 'join-game/:gameId', component: JoinGameComponent, canActivate: [PlayGuard] },
+      {
+        path: 'join-game/:gameId',
+        component: JoinGameComponent,
+        canActivate: [InvitedGuard, GameStartedGuard],
+        resolve: { game: GameResolver },
+      },
       {
         path: 'lobby',
         component: LobbyComponent,
@@ -68,6 +80,10 @@ const routes: Routes = [
     JoinGameComponent,
     CountdownTimerComponent,
     GameToolbarComponent,
+    PlayersComponent,
+    GameScreenComponent,
+    PlayersSmallComponent,
+    CardDeckComponent,
   ],
   imports: [RouterModule.forChild(routes), SharedModule],
   providers: [
@@ -78,7 +94,10 @@ const routes: Routes = [
     PlayGuard,
     GameInProgressGuard,
     GameNotInProgressGuard,
+    InvitedGuard,
+    GameStartedGuard,
     NewGameResolver,
+    GameResolver,
     GameInProgressResolver,
   ],
 })

@@ -13,6 +13,7 @@ import { UIService } from '../../../services/ui/ui.service';
 export class NavComponent {
   authenticated$ = this.auth_token$.pipe(map((auth) => (auth ? 'yes' : 'no')));
   isMobile$ = this.uiService.isMobile$;
+  navOpen$ = this.uiService.navOpen$;
 
   constructor(
     @Inject(AUTH_TOKEN$)

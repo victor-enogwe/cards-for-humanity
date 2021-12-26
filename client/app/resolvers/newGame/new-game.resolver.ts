@@ -11,6 +11,6 @@ export class NewGameResolver implements Resolve<Maybe<NewGameNode> | undefined> 
   constructor(private gameService: GameService) {}
 
   resolve(): Observable<Maybe<NewGameNode> | undefined> {
-    return this.gameService.resolve().pipe(first());
+    return this.gameService.resolveNewGame().pipe(first());
   }
 }

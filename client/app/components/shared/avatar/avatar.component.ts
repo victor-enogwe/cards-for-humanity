@@ -28,9 +28,10 @@ export class AvatarComponent implements OnInit, OnDestroy, OnChanges, AfterConte
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
   @Output() onAvatarSelect = new EventEmitter<Avatar | null | undefined>();
   @Input() selected?: Avatar['name'];
+  @Input() taken?: Avatar['name'][];
   @ViewChildren('avatarDiv') images!: QueryList<HTMLImageElement & Highlightable>;
-  avatar$ = new BehaviorSubject<Avatar | null | undefined>(null);
   avatars = this.uiService.avatars;
+  avatar$ = new BehaviorSubject<Avatar | null | undefined>(null);
   avatarSubscription!: Subscription;
   private keyBoardEventsManager!: ActiveDescendantKeyManager<HTMLImageElement>;
 
@@ -42,8 +43,12 @@ export class AvatarComponent implements OnInit, OnDestroy, OnChanges, AfterConte
 
   ngOnChanges(changes: SimpleChanges): void {
     const selected = changes?.selected;
+    const taken = changes?.taken;
     if (selected) {
       this.avatar$.next(this.avatars.find(({ name }) => name === selected.currentValue));
+    }
+    if (taken) {
+      this.avatars = this.avatars.filter((avatar) => !taken.currentValue?.includes(avatar.name));
     }
   }
 

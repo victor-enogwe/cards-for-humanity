@@ -1,4 +1,4 @@
-<mat-toolbar class="bg-white">
+<mat-toolbar class="bg-white" [class.border-bottom]="navOpen$ | async">
   <mat-toolbar-row class="justify-content-between">
     <a class="navbar-brand text-dark btn" [routerLink]="['/']">
       <svg height="24" width="30px" fill="#000000" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -16,6 +16,7 @@
           (debounceClick)="toggleNav()">
           <mat-icon *ngIf="authenticated === 'yes'" matBadge="15" matBadgeColor="accent">notifications</mat-icon>
         </button>
+
         <button mat-icon-button matTooltip="logout" matTooltipPosition="left" cahDebounceClick (debounceClick)="logout()">
           <mat-icon *ngIf="authenticated === 'yes'">logout</mat-icon>
         </button>

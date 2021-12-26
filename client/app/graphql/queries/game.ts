@@ -11,7 +11,16 @@ export const NEW_GAME_QUERY = gql`
   }
 `;
 
-export const GAME_IN_PROGRESS = gql`
+export const INVITED_GAME_QUERY = gql`
+  ${GAME_NODE_FRAGMENT}
+  query Game($input: InvitedGameInput!) {
+    invitedGame(input: $input) {
+      ...GameNode
+    }
+  }
+`;
+
+export const GAME_IN_PROGRESS_QUERY = gql`
   ${GAME_NODE_FRAGMENT}
   query GameInProgress {
     gameInProgress {

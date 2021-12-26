@@ -59,3 +59,15 @@ export const INVITE_GAME_PLAYERS_MUTATION = gql`
     }
   }
 `;
+
+export const JOIN_GAME_MUTATION = gql`
+  ${GAME_NODE_FRAGMENT}
+
+  mutation JoinGame($input: JoinGameMutationInput!) {
+    joinGame(input: $input) {
+      game {
+        ...GameNode
+      }
+    }
+  }
+`;

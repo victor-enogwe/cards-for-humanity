@@ -19,6 +19,7 @@ export const LOGIN_MANUAL_MUTATION = gql`
       payload {
         username
         sub
+        email
         name
         exp
       }
@@ -33,6 +34,7 @@ export const REFRESH_TOKEN = gql`
       payload {
         username
         sub
+        email
         name
         exp
       }

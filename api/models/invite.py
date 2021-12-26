@@ -36,7 +36,7 @@ class Invite(TimestampBase):
     game = models.ForeignKey("api.Game", on_delete=models.CASCADE)
     spectator = models.BooleanField(default=False)
     revoked = models.BooleanField(default=False)
-    email = models.EmailField(unique=True, verbose_name="email")
+    email = models.EmailField(verbose_name="email")
 
     objects = models.Manager()
 

@@ -22,6 +22,16 @@ from config.settings import AUTH_USER_MODEL
             | Q(old__rounds__df=F("new__rounds"))
             | Q(old__num_players__df=F("new__num_players"))
             | Q(old__num_spectators__df=F("new__num_spectators"))
+            | Q(
+                old__private__df=F("new__private"),
+                old__status__in=[
+                    GameStatus.GS,
+                    GameStatus.GC,
+                    GameStatus.GAC,
+                    GameStatus.GAA,
+                    GameStatus.GE,
+                ],
+            )
             | Q(old__winner_id__isnull=False)
             | Q(old__status=GameStatus.GE)
         ),
@@ -60,6 +70,12 @@ class Game(TimestampBase):
         default=5,
         validators=min_max_validator(5, 50),
         help_text="no of game rounds",
+        editable=False,
+    )
+    round = models.SmallIntegerField(
+        default=0,
+        validators=min_max_validator(1, 50),
+        help_text="game round",
         editable=False,
     )
     num_players = models.PositiveSmallIntegerField(

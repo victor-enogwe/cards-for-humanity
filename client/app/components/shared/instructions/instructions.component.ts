@@ -13,7 +13,7 @@ import { UtilsService } from '../../../services/utils/utils.service';
 })
 export class InstructionsComponent {
   instructions = [
-    'Each player begins with, and will always have, 10 white answer cards.',
+    'Each player begins with, and will always have, 12 white answer cards.',
     'For each round, one player is randomly chosen as the Card Czar.',
     'Everyone else answers the black question card, clicks on the answer card they want.',
     'The Card Czar picks a favorite answer, and whoever played that answer wins the round.',

@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'sentencecase',
+  pure: true,
 })
 export class SentenceCasePipe implements PipeTransform {
   transform(sentence: string): string {

@@ -1,4 +1,4 @@
-from django.db.models import TextChoices
+from django.db.models import IntegerChoices, TextChoices
 
 
 class GameStatus(TextChoices):
@@ -57,3 +57,8 @@ class EmailType(TextChoices):
 
 class CardRating(TextChoices):
     NORMAL = "Normal"
+
+
+class BlackCardPickChoices(IntegerChoices):
+    PICK_ONE = 1, "PICK 1"
+    PICK_TWO = 2, "PICK 2"

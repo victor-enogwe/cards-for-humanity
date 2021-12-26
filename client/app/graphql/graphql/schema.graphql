@@ -6,9 +6,9 @@ schema {
 
 """An enumeration."""
 enum ApiBlackCardPickChoices {
-  """pick1"""
+  """PICK 1"""
   A_1
-  """pick2"""
+  """PICK 2"""
   A_2
 }
 
@@ -71,6 +71,76 @@ enum ApiPlayerAvatarChoices {
 }
 
 """An enumeration."""
+enum ApiProfileAvatarChoices {
+  """Abby"""
+  ABBY
+  """Alfred"""
+  ALFRED
+  """Andina"""
+  ANDINA
+  """Astro"""
+  ASTRO
+  """Camile"""
+  CAMILE
+  """Dorothy"""
+  DOROTHY
+  """Dudai"""
+  DUDAI
+  """Eduardo"""
+  EDUARDO
+  """General"""
+  GENERAL
+  """Grace"""
+  GRACE
+  """Iranir"""
+  IRANIR
+  """Jennifer"""
+  JENNIFER
+  """Labrat"""
+  LABRAT
+  """Luther"""
+  LUTHER
+  """Rainbowness"""
+  RAINBOWNESS
+  """Shin"""
+  SHIN
+}
+
+"""An enumeration."""
+enum ApiProfileGenderChoices {
+  """Female"""
+  FEMALE
+  """Male"""
+  MALE
+  """Other"""
+  OTHER
+}
+
+"""An enumeration."""
+enum ApiProviderConversionModeChoices {
+  """Created"""
+  CREATED
+  """Invited"""
+  INVITED
+  """Superuser"""
+  SUPERUSER
+}
+
+"""An enumeration."""
+enum ApiProviderProviderChoices {
+  """Email"""
+  EMAIL
+  """Facebook"""
+  FACEBOOK
+  """Google"""
+  GOOGLE
+  """Instagram"""
+  INSTAGRAM
+  """Twitter"""
+  TWITTER
+}
+
+"""An enumeration."""
 enum ApiWhiteCardRatingChoices {
   """Normal"""
   NORMAL
@@ -122,6 +192,8 @@ input CreateGameInput {
   numSpectators: Int
   playerSetAdd: [CreateGameInputAddGamePlayerset]
   private: Boolean
+  """game round"""
+  round: Int
   """seconds"""
   roundTime: Int
   """no of game rounds"""
@@ -164,6 +236,13 @@ input CreateUserMutationInput {
 }
 
 """
+The `Date` scalar type represents a Date
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar Date
+
+"""
 The `DateTime` scalar type represents a DateTime
 value as specified by
 [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
@@ -193,6 +272,7 @@ type GameNode implements Node {
   genres(after: String, before: String, credit: String, credit_Icontains: String, credit_Istartswith: String, description: String, description_Icontains: String, description_Istartswith: String, first: Int, id: Float, id_Gt: Float, id_Lt: Float, last: Int, offset: Int): GenreNodeConnection!
   """The ID of the object."""
   id: ID!
+  inviteSet(after: String, before: String, createdAt: DateTime, email: String, first: Int, game: ID, last: Int, offset: Int, revoked: Boolean, spectator: Boolean, updatedAt: DateTime): InviteNodeConnection!
   """seconds"""
   joinEndsAt: DateTime!
   """no of players"""
@@ -201,6 +281,8 @@ type GameNode implements Node {
   numSpectators: Int!
   playerSet(after: String, avatar: String, before: String, createdAt: DateTime, czar: Boolean, first: Int, game: ID, last: Int, offset: Int, score: Int, spectator: Boolean, updatedAt: DateTime, user: ID): PlayerNodeConnection!
   private: Boolean!
+  """game round"""
+  round: Int!
   """seconds"""
   roundTime: Int!
   """no of game rounds"""
@@ -241,7 +323,7 @@ type GenreNode implements Node {
   credit: String
   """text allows 2-255 characters(alphabets and -,_,.,',",space)"""
   description: String!
-  gameSet(after: String, before: String, createdAt: DateTime, creator: ID, first: Int, genres: [ID], joinEndsAt: DateTime, last: Int, numPlayers: Int, numSpectators: Int, offset: Int, private: Boolean, roundTime: Int, rounds: Int, status: String, updatedAt: DateTime, winner: ID): GameNodeConnection!
+  gameSet(after: String, before: String, createdAt: DateTime, creator: ID, first: Int, genres: [ID], joinEndsAt: DateTime, last: Int, numPlayers: Int, numSpectators: Int, offset: Int, private: Boolean, round: Int, roundTime: Int, rounds: Int, status: String, updatedAt: DateTime, winner: ID): GameNodeConnection!
   """The ID of the object."""
   id: ID!
   selected: Boolean
@@ -293,8 +375,14 @@ type InviteNodeEdge {
   node: InviteNode
 }
 
+input InvitedGameInput {
+  email: String!
+  id: ID!
+}
+
 type JWTPayloadNode {
   aud: String
+  avatar: String
   email: String
   emailVerified: Boolean
   exp: Int
@@ -304,13 +392,13 @@ type JWTPayloadNode {
   name: String
   nbf: Int
   provider: String
-  sub: Int
+  sub: String
   username: String
 }
 
 type JoinGameMutation {
+  game: GameNode
   ok: Boolean
-  player: PlayerNode
 }
 
 input JoinGameMutationInput {
@@ -358,7 +446,7 @@ interface Node {
 
 type NotificationNode {
   """find game invites"""
-  invites(after: String, before: String, createdAt: DateTime, email: String, first: Int, game: ID, last: Int, offset: Int, revoked: Boolean, spectator: Boolean, updatedAt: DateTime): InviteNodeConnection
+  invites(after: String, before: String, email: String, first: Int, last: Int, offset: Int, revoked: Boolean): InviteNodeConnection
 }
 
 type NotificationSubscription {
@@ -404,7 +492,7 @@ type PlayerNode implements Node {
   spectator: Boolean!
   updatedAt: DateTime!
   user: UserNode!
-  winner(after: String, before: String, createdAt: DateTime, creator: ID, first: Int, genres: [ID], joinEndsAt: DateTime, last: Int, numPlayers: Int, numSpectators: Int, offset: Int, private: Boolean, roundTime: Int, rounds: Int, status: String, updatedAt: DateTime, winner: ID): GameNodeConnection!
+  winner(after: String, before: String, createdAt: DateTime, creator: ID, first: Int, genres: [ID], joinEndsAt: DateTime, last: Int, numPlayers: Int, numSpectators: Int, offset: Int, private: Boolean, round: Int, roundTime: Int, rounds: Int, status: String, updatedAt: DateTime, winner: ID): GameNodeConnection!
 }
 
 type PlayerNodeConnection {
@@ -424,6 +512,63 @@ type PlayerNodeEdge {
   node: PlayerNode
 }
 
+type ProfileNode implements Node {
+  avatar: ApiProfileAvatarChoices
+  createdAt: DateTime!
+  """Birth Date"""
+  dateOfBirth: Date
+  """First Name"""
+  firstName: String!
+  """Gender"""
+  gender: ApiProfileGenderChoices
+  """The ID of the object."""
+  id: ID!
+  """Last Name"""
+  lastName: String!
+  provider: ProviderNode!
+  updatedAt: DateTime!
+  """Required. 40 characters or fewer. Letters, digits and @/./+/-/_ only."""
+  username: String!
+}
+
+type ProviderNode implements Node {
+  """Account Type"""
+  conversionMode: ApiProviderConversionModeChoices!
+  createdAt: DateTime!
+  email: String!
+  """The ID of the object."""
+  id: ID!
+  lastLogin: DateTime
+  lastLogout: DateTime
+  phone: String
+  primary: Boolean!
+  profile: ProfileNode
+  """Account Type"""
+  provider: ApiProviderProviderChoices!
+  seed: String
+  updatedAt: DateTime!
+  user: UserNode!
+  """Date Verified"""
+  verifiedAt: DateTime
+}
+
+type ProviderNodeConnection {
+  edgeCount: Int
+  """Contains the nodes in this connection."""
+  edges: [ProviderNodeEdge]!
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+"""A Relay edge containing a `ProviderNode` and its cursor."""
+type ProviderNodeEdge {
+  """A cursor for use in pagination"""
+  cursor: String!
+  """The item at the end of the edge"""
+  node: ProviderNode
+}
+
 """Root Query for the cards against humanity api."""
 type Query {
   blackCards(after: String, before: String, createdAt: DateTime, first: Int, genre: ID, last: Int, offset: Int, pick: String, rating: String, text: String, updatedAt: DateTime): BlackCardNodeConnection
@@ -432,12 +577,12 @@ type Query {
    page is full width
   """
   fullWidth: Boolean
-  game(id: ID): GameNode
   gameInProgress: GameNode
   """find games"""
-  games(after: String, before: String, createdAt: DateTime, creator: ID, first: Int, genres: [ID], joinEndsAt: DateTime, last: Int, numPlayers: Int, numSpectators: Int, offset: Int, private: Boolean, roundTime: Int, rounds: Int, status: String, updatedAt: DateTime, winner: ID): GameNodeConnection
+  games(after: String, before: String, createdAt: DateTime, creator: ID, first: Int, genres: [ID], joinEndsAt: DateTime, last: Int, numPlayers: Int, numSpectators: Int, offset: Int, private: Boolean, round: Int, roundTime: Int, rounds: Int, status: String, updatedAt: DateTime, winner: ID): GameNodeConnection
   """all cards genre"""
   genres(after: String, before: String, credit: String, credit_Icontains: String, credit_Istartswith: String, description: String, description_Icontains: String, description_Istartswith: String, first: Int, id: Float, id_Gt: Float, id_Lt: Float, last: Int, offset: Int): GenreNodeConnection
+  invitedGame(input: InvitedGameInput!): GameNode
   """
   @client
    navigation sidebar open
@@ -542,7 +687,7 @@ input UpdateGameStatusInput {
 
 type UserNode implements Node {
   createdAt: DateTime!
-  gameSet(after: String, before: String, createdAt: DateTime, creator: ID, first: Int, genres: [ID], joinEndsAt: DateTime, last: Int, numPlayers: Int, numSpectators: Int, offset: Int, private: Boolean, roundTime: Int, rounds: Int, status: String, updatedAt: DateTime, winner: ID): GameNodeConnection!
+  gameSet(after: String, before: String, createdAt: DateTime, creator: ID, first: Int, genres: [ID], joinEndsAt: DateTime, last: Int, numPlayers: Int, numSpectators: Int, offset: Int, private: Boolean, round: Int, roundTime: Int, rounds: Int, status: String, updatedAt: DateTime, winner: ID): GameNodeConnection!
   """The ID of the object."""
   id: ID!
   """Active"""
@@ -554,6 +699,7 @@ type UserNode implements Node {
   """Is Superuser"""
   isSuperuser: Boolean!
   playerSet(after: String, avatar: String, before: String, createdAt: DateTime, czar: Boolean, first: Int, game: ID, last: Int, offset: Int, score: Int, spectator: Boolean, updatedAt: DateTime, user: ID): PlayerNodeConnection!
+  providerSet(after: String, before: String, conversionMode: String, createdAt: DateTime, email: String, first: Int, last: Int, lastLogin: DateTime, lastLogout: DateTime, offset: Int, phone: String, primary: Boolean, provider: String, seed: String, updatedAt: DateTime, user: ID, verifiedAt: DateTime): ProviderNodeConnection!
   socialAuth(after: String, before: String, first: Int, last: Int, offset: Int, provider: String, provider_In: [String], uid: String, uid_In: [String]): SocialNodeConnection!
   updatedAt: DateTime!
 }

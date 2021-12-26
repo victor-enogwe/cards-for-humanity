@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { Drivers, Storage, StorageConfig } from '@ionic/storage';
 import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } from 'angularx-social-login';
-import { APOLLO_OPTIONS } from 'apollo-angular';
+import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject, from, switchMap, tap } from 'rxjs';
@@ -80,6 +80,7 @@ const authFactory = (broadcastService: BroadcastService, auth: AuthService, rout
     }),
   ],
   providers: [
+    { provide: 'apollo', useFactory: (apollo: Apollo) => console.log(apollo), deps: [Apollo] },
     SeoService,
     HttpLink,
     HttpLinkService,

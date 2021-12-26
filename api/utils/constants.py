@@ -1,15 +1,12 @@
 from django.core.validators import MinLengthValidator, RegexValidator
 from django.utils.translation import gettext_lazy as _
 
-auth_fields = [
-    "genres",
-    "game",
-    "whiteCards",
-    "blackCards",
-    "whoami",
-    "users",
-    "createGame",
-    "joinGame",
+no_auth_fields = [
+    "createUser",
+    "tokenAuth",
+    "refreshToken",
+    "revokeToken",
+    "socialAuth",
 ]
 
 password_error_message = _(

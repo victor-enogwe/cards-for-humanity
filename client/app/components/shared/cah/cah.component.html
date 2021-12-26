@@ -7,11 +7,11 @@
   [ngClass]="{ container: !container.navOpen && !container.fullWidth, 'container-fluid': container.navOpen || container.fullWidth }">
   <mat-sidenav-container class="d-flex flex-grow-1 flex-fill" [hasBackdrop]="container.isMobile" (backdropClick)="toggleNav()">
     <mat-sidenav *ngIf="container.authenticated" [mode]="container.isMobile ? 'push' : 'side'" [fixedInViewport]="false" position="end"
-      class="p-3" color="primary" [opened]="container.navOpen" class="d-flex flxe-column row" [style.maxWidth.px]="576">
-      lorem ipsum side notices {{container |json}}
+      color="primary" [opened]="container.navOpen" class="d-flex flex-column px-5 py-3" [style.width.px]="480">
+      <cah-notifications></cah-notifications>
     </mat-sidenav>
 
-    <mat-sidenav-content #content cahOverlayLoading class="d-flex flex-column flex-fill flex-grow-1">
+    <mat-sidenav-content #content class="d-flex flex-column flex-fill flex-grow-1">
       <router-outlet @navigationAnimations></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>

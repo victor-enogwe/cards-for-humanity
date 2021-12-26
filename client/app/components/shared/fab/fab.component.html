@@ -1,4 +1,5 @@
 <button [ngClass]="class" mat-mini-fab [color]="color" [attr.aria-label]="label" (click)="ngClick.emit($event)" [matTooltip]="label"
   [matTooltipPosition]="tooltipPosition">
-  <mat-icon>{{icon}}</mat-icon>
+  <mat-icon *ngIf="!badge">{{icon}}</mat-icon>
+  <mat-icon *ngIf="badge" [matBadge]="badge" [matBadgeColor]="color">{{icon}}</mat-icon>
 </button>

@@ -1,1 +1,25 @@
-<p>notifications works!</p>
+<ng-container *ngIf="{ notifications: notifications$ | async } as data">
+  <div *ngIf="data.notifications as notifications" class="toast-container d-flex justify-content-center align-items-center w-100">
+    <div *ngFor="let notice of notifications.invites?.edges" class="toast text-white bg-primary d-block" role="alert" aria-live="assertive"
+      aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto"> Game Invite</strong>
+        <small class="me-auto">{{notice?.node?.game?.createdAt | cahTimeAgo}}</small>
+        <button mat-raised-button color="primary" [routerLink]="['/play', 'join-game', notice?.node?.game?.id]"
+          [state]="{ playType: 'join' }">
+          <mat-icon>videogame_asset</mat-icon>
+        </button>
+      </div>
+      <div class="toast-body">
+        You have been invited as a <span *ngIf="notice?.node?.spectator" class="badge bg-secondary me-auto">spectator</span>
+        <span *ngIf="!notice?.node?.spectator" class="badge bg-accent me-auto">player</span> to a game
+      </div>
+    </div>
+  </div>
+
+  <mat-nav-list *ngIf="!data.notifications">
+    <mat-list-item>
+      No notification available
+    </mat-list-item>
+  </mat-nav-list>
+</ng-container>

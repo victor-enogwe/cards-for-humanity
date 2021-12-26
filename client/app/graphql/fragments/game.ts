@@ -23,10 +23,22 @@ export const GAME_NODE_FRAGMENT = gql`
     private
     creator {
       id
+      providerSet(first: 10) {
+        edges {
+          node {
+            profile {
+              firstName
+              lastName
+              avatar
+              username
+            }
+          }
+        }
+      }
     }
     createdAt
     updatedAt
-    playerSet(first: 20) {
+    playerSet(first: 9) {
       edges {
         node {
           id
@@ -36,7 +48,32 @@ export const GAME_NODE_FRAGMENT = gql`
           score
           user {
             id
+            providerSet(first: 10) {
+              edges {
+                node {
+                  user {
+                    id
+                  }
+                  email
+                  profile {
+                    username
+                  }
+                }
+                cursor
+              }
+            }
           }
+        }
+        cursor
+      }
+    }
+    inviteSet(first: 10) {
+      edges {
+        node {
+          id
+          spectator
+          revoked
+          email
         }
         cursor
       }

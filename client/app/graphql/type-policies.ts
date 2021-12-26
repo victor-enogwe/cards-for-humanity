@@ -3,7 +3,7 @@ import { TypedTypePolicies } from '../@types/graphql';
 
 const defaultResolvers: FieldPolicy<any, any, any> | FieldReadFunction<any, any> | undefined = {
   read: (value) => value,
-  merge: (_, incoming) => incoming,
+  merge: (_prev, incoming) => incoming,
 };
 
 export const typePolicies: TypedTypePolicies = {
@@ -12,13 +12,7 @@ export const typePolicies: TypedTypePolicies = {
     fields: {
       newGame: defaultResolvers,
       fullWidth: defaultResolvers,
-      navOpen: {
-        read: defaultResolvers.read,
-        merge: (_, inc) => {
-          console.log(_, inc);
-          return inc;
-        },
-      },
+      navOpen: defaultResolvers,
     },
   },
   GenreNode: {

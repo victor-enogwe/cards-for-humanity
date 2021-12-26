@@ -80,6 +80,7 @@ $cah: map-get($bootstrap-theme, cah);
 @import "~bootstrap/scss/badge";
 @import "~bootstrap/scss/alert";
 @import "~bootstrap/scss/carousel";
+@import "~bootstrap/scss/toasts";
 // Helpers
 @import "~bootstrap/scss/helpers";
 // Utilities
@@ -114,6 +115,11 @@ a {
       color: currentColor
     }
   }
+}
+
+.mat-drawer-container {
+  background-color: inherit !important;
+  color: inherit !important;
 }
 
 .icon-big {
@@ -202,6 +208,18 @@ mat-form-field[hidden] {
   }
 }
 
+.deck-question {
+  height: 48%
+}
+
+.deck-answer {
+  height: 48%
+}
+
+.upside-down {
+  transform: scaleX(-1)
+}
+
 .border-or {
   @include media-breakpoint-up(md) {
     border-left: 1px solid
@@ -254,13 +272,6 @@ mat-form-field[hidden] {
   @include media-breakpoint-down(sm) {
     width: 150%;
   }
-}
-
-.cah-content {
-  height: calc(100vh - 180px);
-  max-height: calc(100vh - 180px);
-  overflow: hidden;
-  overflow-y: scroll;
 }
 
 .mat-step-label {

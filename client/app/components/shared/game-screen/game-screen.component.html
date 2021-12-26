@@ -1,0 +1,7 @@
+<div class="d-flex flex-column flex-grow-1 flex-fill justify-content-between px-4 pb-4 game-screen overflow-hidden">
+  <div class="d-flex flex-column flex-grow-1 flex-fill justify-content-around h-100 game-deck overflow-hidden">
+    <cah-card-deck [czar]="player?.node?.czar" [game]="game" [deck]="decks?.whitecardSet" [player]="player" type="question"></cah-card-deck>
+    <cah-card-deck [czar]="player?.node?.czar" [game]="game" [deck]="decks?.blackcardSet" [player]="player" type="answer"></cah-card-deck>
+  </div>
+  <cah-players-small [players]="game?.playerSet?.edges"></cah-players-small>
+</div>

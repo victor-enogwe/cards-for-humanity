@@ -1,8 +1,8 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostListener, Inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
-import { lastValueFrom } from 'rxjs';
+import { BehaviorSubject, first, lastValueFrom } from 'rxjs';
 import { loadingAnimations, navigationAnimations } from '../../../animations';
-import { STATIC_URL } from '../../../modules/cah/cah.module';
+import { AUTH_TOKEN$, STATIC_URL } from '../../../modules/cah/cah.module';
 import { SafeUrlPipe } from '../../../pipes/safe-url/safe-url.pipe';
 import { AuthService } from '../../../services/auth/auth.service';
 import { MainContentRefService } from '../../../services/main-content-ref/main-content-ref.service';
@@ -27,11 +27,11 @@ export class CahComponent implements OnInit, AfterViewInit {
 
   constructor(
     @Inject(STATIC_URL) private staticURL: string,
-    // @Inject(AUTH_TOKEN$) private auth_token$: BehaviorSubject<string | null>,
+    @Inject(AUTH_TOKEN$) private auth_token$: BehaviorSubject<string | null>,
     private matIconRegistry: MatIconRegistry,
     private safeUrlPipe: SafeUrlPipe,
     private mainContentRefService: MainContentRefService,
-    // private ref: ChangeDetectorRef,
+    private ref: ChangeDetectorRef,
     private uiService: UIService,
     private authService: AuthService,
   ) {
@@ -41,8 +41,7 @@ export class CahComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    console.log;
-    // this.auth_token$.pipe(first()).subscribe(() => this.ref.detectChanges());
+    this.auth_token$.pipe(first()).subscribe(() => this.ref.detectChanges()); // @TODO why is this here
   }
 
   ngAfterViewInit(): void {
@@ -51,11 +50,5 @@ export class CahComponent implements OnInit, AfterViewInit {
 
   toggleNav() {
     return lastValueFrom(this.uiService.toggleNav());
-  }
-
-  @HostListener('click', ['$event.target'])
-  resizeMainContent(event: Event) {
-    console.log(event, this.content);
-    return false;
   }
 }
