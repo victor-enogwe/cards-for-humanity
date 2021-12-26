@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 import { ThemePalette } from '@angular/material/core';
 import { TooltipPosition } from '@angular/material/tooltip';
 
@@ -9,6 +9,7 @@ import { TooltipPosition } from '@angular/material/tooltip';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FabComponent {
+  @HostBinding('class') hostCLass = 'position-absolute end-25';
   @Input() tooltipPosition: TooltipPosition = 'above';
   @Input() icon = 'add';
   @Input() label = 'add';

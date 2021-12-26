@@ -7,7 +7,7 @@
     "ng": "ng",
     "start": "ng serve",
     "start:ssr": "ng run cards-against-humanity:serve-ssr:production",
-    "start:server": "yarn activate && python manage.py runserver",
+    "start:server": "python backend/manage.py runserver",
     "start:tunnel": "ngrok http 8000 -host-header=\"localhost:8000\"",
     "prerender": "ng run cards-against-humanity:prerender",
     "start:dev": "concurrently 'yarn start' 'yarn start:server' 'yarn build:gql'",
@@ -29,7 +29,8 @@
     "migrate:reinstall": "pip install --upgrade --force-reinstall  Django",
     "migrate:create": "python manage.py makemigrations",
     "migrate:run": "python manage.py migrate",
-    "migrate:load": "python manage.py loaddata *.json"
+    "migrate:load": "python manage.py loaddata *.json",
+    "celery-beat": "celery -A backend beat -l info"
   },
   "repository": {
     "type": "git",
@@ -165,6 +166,8 @@
     "typescript": "4.4.2"
   },
   "resolutions": {
+    "ansi-regex": "^5.0.1",
+    "json-schema": "^0.4.0",
     "rxjs": "7.4.0"
   }
 }

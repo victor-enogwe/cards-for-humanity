@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, HostBinding, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { combineLatest, map } from 'rxjs';
-import { BlackCardNodeEdge, GameNode, Maybe, PlayerNodeEdge, WhiteCardNodeEdge } from '../../../@types/graphql';
+import { BlackCardNodeEdge, Maybe, PlayerNodeEdge, WhiteCardNodeEdge } from '../../../@types/graphql';
 import { NotificationService } from '../../../services/notification/notification.service';
 import { UIService } from '../../../services/ui/ui.service';
 import { UtilsService } from '../../../services/utils/utils.service';
@@ -12,16 +12,18 @@ import { UtilsService } from '../../../services/utils/utils.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardDeckComponent implements OnChanges {
+  // eslint-disable-next-line @angular-eslint/no-output-on-prefix
+  @Output() onCardSelect = new EventEmitter<Maybe<BlackCardNodeEdge | WhiteCardNodeEdge>>();
   @HostBinding('class') class!: string;
-  @Input() game!: GameNode;
   @Input() czar? = false;
   @Input() type: 'question' | 'answer' = 'question';
   @Input() deck?: Maybe<BlackCardNodeEdge | WhiteCardNodeEdge>[];
   @Input() player?: Maybe<PlayerNodeEdge>;
+  @Input() show = false;
   activeIndex = 0;
   cards: Maybe<BlackCardNodeEdge | WhiteCardNodeEdge>[] = [];
   displaySize$ = [this.uiService.isMobile$, this.uiService.isTablet$];
-  deckLength$ = combineLatest(this.displaySize$).pipe(map(([mobile, tablet]) => (mobile ? 1 : tablet ? 3 : 4)));
+  deckLength$ = combineLatest(this.displaySize$).pipe(map(([mobile, tablet]) => (mobile ? 1 : tablet ? 2 : 4)));
 
   constructor(private utilsService: UtilsService, private uiService: UIService, private notificationService: NotificationService) {}
 
@@ -59,5 +61,9 @@ export class CardDeckComponent implements OnChanges {
         start: this.activeIndex,
       })();
     };
+  }
+
+  onSelect(card: Maybe<BlackCardNodeEdge | WhiteCardNodeEdge>) {
+    return this.onCardSelect.emit(card);
   }
 }

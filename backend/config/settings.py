@@ -18,14 +18,14 @@ import environ
 from corsheaders.defaults import default_headers
 from django.contrib.auth.password_validation import get_default_password_validators
 
-# source environment variables
-root = environ.Path(__file__) - 3  # get root of the project
 env = environ.Env(DEBUG=(bool, True))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = environ.Path(__file__) - 2
 
-environ.Env.read_env(env.str("ENV_PATH", "%s/.env" % (BASE_DIR)))  # reading .env file
+environ.Env.read_env(
+    env.str("ENV_PATH", "%s/.env" % (BASE_DIR - 1))
+)  # reading .env file
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -340,10 +340,23 @@ CACHES = {
             "COMPRESSOR_CLASS_KWARGS": {"level": 5},
             "SERIALIZER_CLASS_KWARGS": {},
         },
-        "KEY_PREFIX": "example",
+        "KEY_PREFIX": "cah",
     }
 }
 
+CELERY_BROKER_URL = ""
+
+CELERY_TASK_TIME_LIMIT = (30 * 60,)
+
+CELERY_TASK_TRACK_STARTED = (True,)
+
+CELERY_ACCEPT_CONTENT = (["application/json"],)  # Ignore other content
+
+CELERY_TASK_SERIALIZER = ("json",)
+
+CELERY_RESULT_SERIALIZER = ("json",)
+
+CELERY_ENABLE_UTC = (True,)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators

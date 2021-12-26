@@ -13,7 +13,7 @@ keywords = ["cards", "cards against humanity"]
 python = "^3.9"
 channels = "^3.0.4"
 channels-redis = "^3.3.1"
-Django = "^3.2.9"
+Django = "3.2.10"
 django-channels-graphql-ws = "^0.9.0"
 django-cors-headers = "^3.10.1"
 django-cron = "^0.5.1"
@@ -38,6 +38,7 @@ python-environ = "^0.4.54"
 social-auth-app-django = "^5.0.0"
 social-auth-core = "^4.1.0"
 Rx = "Rx-1.6.1-py2.py3-none-any.whl"
+celery = "^5.2.2"
 
 [tool.poetry.dev-dependencies]
 black = { version = "*", allow-prereleases = true }
