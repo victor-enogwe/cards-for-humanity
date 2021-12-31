@@ -1,11 +1,10 @@
-from django.db import models
-from pgtrigger import F, Insert, Protect, Q, Update, register
-from pgtrigger.core import Before, Trigger
-
 from api.models.timestamp import TimestampBase
 from api.utils.enums import Avatars
 from api.utils.sql import PLAYER_TRIGGER
 from config.settings import AUTH_USER_MODEL
+from django.db import models
+from pgtrigger import F, Insert, Protect, Q, Update, register
+from pgtrigger.core import Before, Trigger
 
 
 @register(
@@ -39,7 +38,7 @@ class Player(TimestampBase):
     czar = models.BooleanField(default=False)
     spectator = models.BooleanField(default=False)
     avatar = models.CharField(
-        max_length=20, choices=Avatars.choices, default=Avatars.DOROTHY
+        max_length=20, choices=Avatars.choices(), default=Avatars.DOROTHY
     )
     objects = models.Manager()
 

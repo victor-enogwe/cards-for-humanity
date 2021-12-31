@@ -127,6 +127,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_filters",
+    "django_celery_beat",
     "pgtrigger",
     "phonenumber_field",
     "django_cron",
@@ -322,10 +323,22 @@ DATABASES = {
     }
 }
 
+REDIS_USERNAME = env("REDIS_USERNAME")
+
+REDIS_PASSWORD = env("REDIS_PASSWORD")
+
+REDIS_HOST = env("REDIS_HOST")
+
+REDIS_PORT = env("REDIS_PORT")
+
+REDIS_DB = env("REDIS_DB")
+
+REDIS_URL = f"redis://{REDIS_USERNAME}{':' if REDIS_PASSWORD else ''}{REDIS_PASSWORD}{'@' if REDIS_USERNAME or REDIS_PASSWORD else ''}{REDIS_HOST}:{REDIS_PORT}{'/' if REDIS_DB else ''}{REDIS_DB}"
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": env("REDIS_HOST"),
+        "LOCATION": f"redis://{REDIS_USERNAME}{'@' if REDIS_USERNAME else ''}{REDIS_HOST}:{REDIS_PORT}{'/' if REDIS_DB else ''}{REDIS_DB}",
         "OPTIONS": {
             "DB": env("REDIS_DB"),
             "PASSWORD": env("REDIS_PASSWORD"),
@@ -344,19 +357,23 @@ CACHES = {
     }
 }
 
-CELERY_BROKER_URL = ""
+# CELERY_ACKS_LATE = True
 
-CELERY_TASK_TIME_LIMIT = (30 * 60,)
+CELERY_BROKER_URL = REDIS_URL
 
-CELERY_TASK_TRACK_STARTED = (True,)
+CELERY_TASK_TIME_LIMIT = 60
 
-CELERY_ACCEPT_CONTENT = (["application/json"],)  # Ignore other content
+CELERY_TASK_TRACK_STARTED = True
 
-CELERY_TASK_SERIALIZER = ("json",)
+CELERY_ACCEPT_CONTENT = ["application/json"]  # Ignore other content
 
-CELERY_RESULT_SERIALIZER = ("json",)
+CELERY_TASK_SERIALIZER = "json"
 
-CELERY_ENABLE_UTC = (True,)
+CELERY_RESULT_SERIALIZER = "json"
+
+CELERY_ENABLE_UTC = True
+
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators

@@ -50,13 +50,13 @@ class Provider(TimestampBase):
     )
     provider = models.CharField(
         help_text="Account Type",
-        choices=ProviderEnum.choices,
+        choices=ProviderEnum.choices(),
         default=ProviderEnum.EMAIL,
         max_length=10,
     )
     conversion_mode = models.CharField(
         help_text="Account Type",
-        choices=Conversion.choices,
+        choices=Conversion.choices(),
         default=Conversion.CREATED,
         max_length=10,
         editable=False,

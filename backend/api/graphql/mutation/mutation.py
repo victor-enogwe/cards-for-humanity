@@ -13,6 +13,7 @@ from api.graphql.mutation.game_status import GameStatusMutation
 from api.graphql.mutation.join_game import JoinGameMutation
 from api.graphql.mutation.obtain_jwt import ObtainJSONWebTokenMutation
 from api.graphql.mutation.refresh_token import RefreshTokenMutation
+from api.graphql.mutation.round_question import RoundQuestionMutation
 
 
 class Mutation(ObjectType):
@@ -24,6 +25,7 @@ class Mutation(ObjectType):
     game_privacy = GamePrivacyMutation.Field()
     game_invitation = GameInviteMutation.Field()
     join_game = JoinGameMutation.Field()
+    round_question = RoundQuestionMutation.Field()
     social_auth = SocialAuthJWTMutation.Field()
     token_auth = ObtainJSONWebTokenMutation.Field()
     refresh_token = RefreshTokenMutation.Field()

@@ -61,7 +61,7 @@ PLAYER_TRIGGER = """
             RAISE EXCEPTION 'this game is private.';
         END IF;
 
-        IF game_summary.join_ends_at >= NOW()
+        IF game_summary.join_ends_at <= NOW()
         THEN
             RAISE EXCEPTION 'game join period ended.';
         END IF;
@@ -128,7 +128,7 @@ INVITE_TRIGGER = """
         RAISE EXCEPTION 'duplicate game creator invite.';
     END IF;
 
-    IF game_summary.join_ends_at >= NOW()
+    IF game_summary.join_ends_at <= NOW()
     THEN
         RAISE EXCEPTION 'cannot invite players. game join period ended.';
     END IF;

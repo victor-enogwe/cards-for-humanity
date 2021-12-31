@@ -9,6 +9,9 @@ from os import listdir, path
 from os.path import isfile, join
 from uuid import uuid4
 
+from api.utils.enums import GameStatus
+from api.utils.graphql_errors import GraphQLErrors
+from config.settings import env
 from django.apps import apps
 from django.contrib.auth import authenticate, get_user_model, user_logged_in
 from django.core import management
@@ -30,10 +33,6 @@ from graphql_jwt.decorators import (
 )
 from graphql_jwt.settings import jwt_settings
 from graphql_jwt.utils import delete_cookie, get_payload, set_cookie
-
-from api.utils.enums import GameStatus
-from api.utils.graphql_errors import GraphQLErrors
-from config.settings import env
 
 
 def load_data(filepath):

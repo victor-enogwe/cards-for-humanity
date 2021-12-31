@@ -1,15 +1,16 @@
+from api.graphql.subscription.game_in_progress import GameInProgressSubscription
+from api.models.game import Game
+from api.models.invite import Invite
+from api.models.player import Player
+from api.models.provider import Provider
+from api.models.verification_code import VerificationCode
 from django.contrib.auth import user_logged_in
 from django.contrib.auth.signals import user_logged_in
 from django.db.models.base import Model
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from graphql_jwt.refresh_token.signals import refresh_token_rotated
-
-from api.graphql.subscription.game_in_progress import GameInProgressSubscription
-from api.models.game import Game
-from api.models.provider import Provider
-from api.models.verification_code import VerificationCode
 
 
 # one time use refresh token
@@ -31,8 +32,19 @@ def updated_at_timestamp(sender, instance: VerificationCode, **kwargs):
 
 
 @receiver(post_save, sender=Game)
-def broadcast_game(sender, instance, **kwargs):
+def broadcast_game(sender, instance, created, **kwargs):
+    # @TODO add ai to game if single player
     GameInProgressSubscription.on_game_updated(gameInProgress=instance)
+
+
+@receiver([post_save, post_delete], sender=Invite)
+def broadcast_game(sender, instance, **kwargs):
+    GameInProgressSubscription.on_game_updated(gameInProgress=instance.game)
+
+
+@receiver([post_save, post_delete], sender=Player)
+def broadcast_game(sender, instance, **kwargs):
+    GameInProgressSubscription.on_game_updated(gameInProgress=instance.game)
 
 
 @receiver(user_logged_in)

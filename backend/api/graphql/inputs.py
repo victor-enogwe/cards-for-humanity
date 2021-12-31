@@ -1,3 +1,4 @@
+from api.utils.enums import CardRating
 from graphene.types import InputObjectType
 from graphene.types.scalars import ID, Boolean, Int, String
 
@@ -33,3 +34,11 @@ class InvitedGameInput(InputObjectType):
 
 class NotificationsInput(InputObjectType):
     invite_input = InviteFilertInput(required=True)
+
+
+class RoundQuestionMutationInput(InputObjectType):
+    player = ID(required=True)
+    game = ID(required=True)
+    card = ID(required=True)
+    round = Int(required=True)
+    rating = CardRating(required=True)

@@ -7,5 +7,6 @@ class ApiConfig(AppConfig):
     def ready(self) -> None:
         import api.celery
         import api.receivers
+        import api.tasks
 
         return super().ready()

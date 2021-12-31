@@ -1,7 +1,17 @@
-from django.db.models import IntegerChoices, TextChoices
+from inspect import getmembers, isroutine
+
+from graphene import Enum
 
 
-class GameStatus(TextChoices):
+class EnumChoices:
+    @classmethod
+    def choices(self):
+        attributes = getmembers(self, lambda a: not (isroutine(a)))
+        values = [(a[0], a[1]._value_) for a in attributes if hasattr(a[1], "_value_")]
+        return values
+
+
+class GameStatus(EnumChoices, Enum):
     GAP = "Awaiting Players"
     GS = "Game Started"
     GC = "Game Canceled"
@@ -10,19 +20,19 @@ class GameStatus(TextChoices):
     GE = "Game Ended"
 
 
-class Gender(TextChoices):
+class Gender(EnumChoices, Enum):
     MALE = "Male"
     FEMALE = "Female"
     OTHER = "Other"
 
 
-class Conversion(TextChoices):
+class Conversion(EnumChoices, Enum):
     INVITED = "Invited"
     CREATED = "Created"
     SUPERUSER = "Superuser"
 
 
-class Provider(TextChoices):
+class Provider(EnumChoices, Enum):
     TWITTER = "Twitter"
     GOOGLE = "Google"
     INSTAGRAM = "Instagram"
@@ -30,7 +40,7 @@ class Provider(TextChoices):
     EMAIL = "Email"
 
 
-class Avatars(TextChoices):
+class Avatars(EnumChoices, Enum):
     ABBY = "abby"
     ALFRED = "alfred"
     ANDINA = "andina"
@@ -49,16 +59,21 @@ class Avatars(TextChoices):
     SHIN = "shin"
 
 
-class EmailType(TextChoices):
+class EmailType(EnumChoices, Enum):
     PLAY_INVITATION = "Account Invitation"
     EMAIL_VERIFICATION = "Email Verification"
     PASSWORD_RESET = "Password Reset"
 
 
-class CardRating(TextChoices):
+class CardRating(EnumChoices, Enum):
+    BAD = "Bad"
+    MEH = "Meh"
     NORMAL = "Normal"
+    LIKE = "Like"
+    LOVE = "Love"
 
 
-class BlackCardPickChoices(IntegerChoices):
-    PICK_ONE = 1, "PICK 1"
-    PICK_TWO = 2, "PICK 2"
+class BlackCardPickChoices(EnumChoices, Enum):
+    PICK_ONE = "Pick One"
+    PICK_TWO = "Pick Two"
+    PICK_THREE = "Pick Three"

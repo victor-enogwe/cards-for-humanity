@@ -1,8 +1,5 @@
-import graphene
-from graphene_django_cud.mutations.batch_create import DjangoBatchCreateMutation
-
-from api.graphql.nodes import InviteNode
 from api.models.invite import Invite
+from graphene_django_cud.mutations.batch_create import DjangoBatchCreateMutation
 
 
 class GameInviteMutation(DjangoBatchCreateMutation):
