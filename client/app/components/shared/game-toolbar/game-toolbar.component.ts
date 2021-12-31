@@ -17,7 +17,7 @@ export class GameToolbarComponent {
   qrCodeComponent = QRCodeComponent;
   navOpen$ = this.uiService.navOpen$;
   timers: { [key in ApiGameStatusChoices]?: number } = {
-    AWAITING_CZAR: 10,
+    GAC: 10,
   };
 
   constructor(@Inject(APP_HOST) public host: string, private notificationService: NotificationService, private uiService: UIService) {}

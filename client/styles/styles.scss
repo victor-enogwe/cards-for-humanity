@@ -208,6 +208,14 @@ mat-form-field[hidden] {
   }
 }
 
+.card-group {
+  height: 320px;
+
+  @include media-breakpoint-down(md) {
+    height: 230px;
+  }
+}
+
 .deck-question {
   height: 48%
 }

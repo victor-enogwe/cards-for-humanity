@@ -19,8 +19,48 @@ export const GAME_NODE_FRAGMENT = gql`
     numPlayers
     numSpectators
     status
-    joinEndsAt
     private
+    joinEndsAt
+    createdAt
+    updatedAt
+    availableQuestions {
+      id
+      rating
+      text
+      pick
+      genre {
+        description
+        credit
+      }
+    }
+    availableAnswers {
+      id
+      rating
+      text
+      genre {
+        description
+        credit
+      }
+    }
+    question {
+      id
+      rating
+      text
+      pick
+      genre {
+        description
+        credit
+      }
+    }
+    answers {
+      id
+      rating
+      text
+      genre {
+        description
+        credit
+      }
+    }
     creator {
       id
       providerSet(first: 10) {
@@ -36,8 +76,6 @@ export const GAME_NODE_FRAGMENT = gql`
         }
       }
     }
-    createdAt
-    updatedAt
     playerSet(first: 9) {
       edges {
         node {

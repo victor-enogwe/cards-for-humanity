@@ -1,6 +1,9 @@
 export type PossibleTypesResultData = {
   possibleTypes: {
     Node: [
+      'AnswerNode',
+      'AvailableAnswerNode',
+      'AvailableQuestionNode',
       'BlackCardNode',
       'GameNode',
       'GenreNode',
@@ -8,6 +11,7 @@ export type PossibleTypesResultData = {
       'PlayerNode',
       'ProfileNode',
       'ProviderNode',
+      'QuestionNode',
       'SocialNode',
       'UserNode',
       'WhiteCardNode',
@@ -17,6 +21,9 @@ export type PossibleTypesResultData = {
 const result: PossibleTypesResultData = {
   possibleTypes: {
     Node: [
+      'AnswerNode',
+      'AvailableAnswerNode',
+      'AvailableQuestionNode',
       'BlackCardNode',
       'GameNode',
       'GenreNode',
@@ -24,6 +31,7 @@ const result: PossibleTypesResultData = {
       'PlayerNode',
       'ProfileNode',
       'ProviderNode',
+      'QuestionNode',
       'SocialNode',
       'UserNode',
       'WhiteCardNode',

@@ -23,14 +23,14 @@
     "format": "prettier --ignore-path .gitignore \"client/**/*.+(ts|js|tsx)\" --write",
     "e2e": "ng e2e",
     "migrate:fixtures": "./plugins/fixtures.js -d",
-    "migrate:clear:admin": "find . -path '*/migrations/*.pyc'  -delete",
-    "migrate:clear:cah": "find . -path '*/migrations/*.py' -not -name '__init__.py' -not -name '0002_cah.py' -delete",
+    "migrate:clear:admin": "find . -path '*/backend/migrations/*.pyc'  -delete",
+    "migrate:clear:cah": "find . -path '*/backend/migrations/*.py' -not -name '__init__.py' -not -name '0002_cah.py' -delete",
     "migrate:clear": "yarn migrate:clear:admin && yarn migrate:clear:cah",
     "migrate:reinstall": "pip install --upgrade --force-reinstall  Django",
-    "migrate:create": "python manage.py makemigrations",
-    "migrate:run": "python manage.py migrate",
-    "migrate:load": "python manage.py loaddata *.json",
-    "celery-beat": "celery -A backend beat -l info"
+    "migrate:create": "python backend/manage.py makemigrations",
+    "migrate:run": "python backend/manage.py migrate",
+    "migrate:load": "python backend/manage.py loaddata *.json",
+    "celery-beat": "celery -A api beat -l info --without-heartbeat --without-gossip --without-mingle"
   },
   "repository": {
     "type": "git",

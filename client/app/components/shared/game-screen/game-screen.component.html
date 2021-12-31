@@ -1,9 +1,13 @@
 <div class="d-flex flex-column flex-grow-1 flex-fill justify-content-between px-4 pb-4 game-screen">
   <div class="d-flex flex-column flex-grow-1 flex-fill justify-content-around h-100 game-deck overflow-hidden">
-    <cah-card-deck [czar]="player?.node?.czar" [show]="game.status === 'AWAITING_CZAR' && player?.node?.czar === true"
-      [deck]="decks?.blackcardSet" [player]="player" type="answer" (onCardSelect)="onCardSelect($event)"></cah-card-deck>
-    <cah-card-deck [czar]="player?.node?.czar" [show]="game.status === 'AWAITING_ANSWERS' && !player?.node?.czar"
-      [deck]="decks?.whitecardSet" [player]="player" type="question" (onCardSelect)="onCardSelect($event)"></cah-card-deck>
+    <cah-card-deck [czar]="player?.node?.czar" [show]="game.status === 'GAC'"
+      [deck]="game.availableQuestions" [player]="player" type="question" (onCardSelect)="onCardSelect($event)">
+    </cah-card-deck>
+
+
+    <!-- <cah-card-deck [czar]="player?.node?.czar" [show]="game.status === 'GAA'"
+      [deck]="answers" [player]="player" type="answer" (onCardSelect)="onCardSelect($event)">
+    </cah-card-deck> -->
   </div>
   <cah-players-small [players]="game?.playerSet?.edges"></cah-players-small>
 </div>

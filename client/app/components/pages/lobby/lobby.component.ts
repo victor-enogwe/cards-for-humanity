@@ -53,7 +53,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
         directives: {
           cahConfirmDialog: {
             config: { data: { title: `Cancel Game`, description: game.id } },
-            confirmClick: () => lastValueFrom(this.gameService.updateGameStatus(game.id, { status: 'GAME_ENDED' })),
+            confirmClick: () => lastValueFrom(this.gameService.updateGameStatus(game.id, { status: 'GE' })),
           },
         },
       },
@@ -66,7 +66,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
         directives: {
           cahConfirmDialog: {
             config: { data: { title: `Start Game`, description: game.id } },
-            confirmClick: () => lastValueFrom(this.gameService.updateGameStatus(game.id, { status: 'GAME_STARTED' })),
+            confirmClick: () => lastValueFrom(this.gameService.updateGameStatus(game.id, { status: 'GS' })),
           },
         },
       },
@@ -107,15 +107,17 @@ export class LobbyComponent implements OnInit, OnDestroy {
     ];
 
     const canJoin = new Date(game.joinEndsAt).getTime() > new Date(Date.now()).getTime();
+    const players = game.inviteSet.edges.filter((player) => !player?.node?.spectator);
+    const spectators = game.inviteSet.edges.filter((player) => player?.node?.spectator);
 
     this.fab = menus.filter(({ id }) => {
       switch (id) {
         case 'invite_players':
-          return game.numPlayers < 2 && canJoin;
+          return players.length < game.numPlayers - 1 && canJoin;
         case 'invite_spectators':
-          return game.numSpectators < 1 && canJoin;
+          return spectators.length < game.numSpectators && canJoin;
         case 'cancel_game':
-          return this.authService.profile$.getValue()?.sub !== game.creator.id;
+          return this.authService.profile$.getValue()?.sub === game.creator.id;
         case 'start_game':
           return !canJoin;
         default:
@@ -132,7 +134,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
   }
 
   async onGameEnd(game?: Maybe<GameNode>): Promise<boolean> {
-    if (!game || game?.status === 'GAME_ENDED') return this.router.navigate(['/play']);
+    if (!game || game?.status === 'GE') return this.router.navigate(['/play']);
     return Promise.resolve(false);
   }
 }

@@ -1,47 +1,20 @@
 <div class="row overflow-hidden overflow-y-scroll g-3">
-  <mat-accordion class="col" *ngFor="let game of games; let index=index">
-    <mat-expansion-panel [expanded]="index === expanded" (opened)="expanded = index">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Genre
-        </mat-panel-title>
-        <mat-panel-description class="justify-content-between align-items-center">
-          <span>Creator</span>
-          <span>Creator</span>
-          <mat-icon>signal_wifi_statusbar_4_bar</mat-icon>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-
-
-    </mat-expansion-panel>
-
-    <mat-expansion-panel [expanded]="index === expanded" (opened)="expanded = index">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Genre
-        </mat-panel-title>
-        <mat-panel-description class="justify-content-between align-items-center">
-          <span>Creator</span>
-          <span>Creator</span>
-          <mat-icon>signal_wifi_statusbar_4_bar</mat-icon>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-
-
-    </mat-expansion-panel>
-    <mat-expansion-panel [expanded]="index === expanded" (opened)="expanded = index">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Genre
-        </mat-panel-title>
-        <mat-panel-description class="justify-content-between align-items-center">
-          <span>Creator</span>
-          <span>Creator</span>
-          <mat-icon>signal_wifi_statusbar_4_bar</mat-icon>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-
-
-    </mat-expansion-panel>
-  </mat-accordion>
+  <cdk-accordion class="example-accordion">
+    <cdk-accordion-item *ngFor="let item of games; let index = index;" #accordionItem="cdkAccordionItem" class="example-accordion-item"
+      role="button" tabindex="0" [attr.id]="'accordion-header-' + index" [attr.aria-expanded]="accordionItem.expanded"
+      [attr.aria-controls]="'accordion-body-' + index">
+      <div class="example-accordion-item-header" (click)="accordionItem.toggle()">
+        {{ item |json }}
+        <span class="example-accordion-item-description">
+          Click to {{ accordionItem.expanded ? 'close' : 'open' }}
+        </span>
+      </div>
+      <div class="example-accordion-item-body" role="region" [style.display]="accordionItem.expanded ? '' : 'none'"
+        [attr.id]="'accordion-body-' + index" [attr.aria-labelledby]="'accordion-header-' + index">
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perferendis
+        excepturi incidunt ipsum deleniti labore, tempore non nam doloribus blanditiis
+        veritatis illo autem iure aliquid ullam rem tenetur deserunt velit culpa?
+      </div>
+    </cdk-accordion-item>
+  </cdk-accordion>
 </div>

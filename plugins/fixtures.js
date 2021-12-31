@@ -20739,7 +20739,7 @@ function makeCardFixtures(base) {
           text: card.text,
           genre: `JSON Against Humanity - ${base}`
       }, (card.numAnswers ? {
-          pick: card.numAnswers
+          pick: { 1: 'Pick One', 2: 'Pick Two', 3: 'Pick 3' }[card.numAnswers]
       } : {}))
     })))
 }

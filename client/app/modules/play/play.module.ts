@@ -8,11 +8,13 @@ import { PlayComponent } from '../../components/pages/play/play.component';
 import { SelectAvatarComponent } from '../../components/pages/select-avatar/select-avatar.component';
 import { AvailableGamesComponent } from '../../components/shared/available-games/available-games.component';
 import { AvatarComponent } from '../../components/shared/avatar/avatar.component';
+import { CardDeckComponent } from '../../components/shared/card-deck/card-deck.component';
 import { CountdownTimerComponent } from '../../components/shared/countdown-timer/countdown-timer.component';
 import { GameScreenComponent } from '../../components/shared/game-screen/game-screen.component';
 import { GameToolbarComponent } from '../../components/shared/game-toolbar/game-toolbar.component';
 import { GenreComponent } from '../../components/shared/genre/genre.component';
 import { InviteComponent } from '../../components/shared/invite/invite.component';
+import { PlayersSmallComponent } from '../../components/shared/players-small/players-small.component';
 import { PlayersComponent } from '../../components/shared/players/players.component';
 import { GameInProgressGuard } from '../../guards/game-in-progress/game-in-progress.guard';
 import { GameNotInProgressGuard } from '../../guards/game-not-in-progress/game-not-in-progress.guard';
@@ -27,8 +29,6 @@ import { GameResolver } from '../../resolvers/game/game.resolver';
 import { NewGameResolver } from '../../resolvers/newGame/new-game.resolver';
 import { GameService } from '../../services/game/game.service';
 import { GenreService } from '../../services/genre/genre.service';
-import { PlayersSmallComponent } from '../../components/shared/players-small/players-small.component';
-import { CardDeckComponent } from '../../components/shared/card-deck/card-deck.component';
 
 const routes: Routes = [
   {
@@ -48,7 +48,7 @@ const routes: Routes = [
         canActivate: [GameNotInProgressGuard, PlayGuard],
         resolve: { newGame: NewGameResolver },
       },
-      { path: 'join-game', component: JoinGameComponent, canActivate: [PlayGuard] },
+      { path: 'join-game', component: AvailableGamesComponent, canActivate: [PlayGuard] },
       {
         path: 'join-game/:gameId',
         component: JoinGameComponent,

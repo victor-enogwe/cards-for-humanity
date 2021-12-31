@@ -22,6 +22,7 @@ export class LoggerService {
     // Use external logging service
     if (!environment.production) {
       if (error.stack) {
+        console.log(error.message);
         console.log(error.stack);
       }
     }

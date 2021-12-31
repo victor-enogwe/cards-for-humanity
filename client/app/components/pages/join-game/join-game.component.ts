@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { lastValueFrom, map, switchMap, tap } from 'rxjs';
 import { Avatar } from '../../../@types/global';
 import { PlayerNodeEdge } from '../../../@types/graphql';
@@ -20,7 +20,7 @@ export class JoinGameComponent {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    // private router: Router,
+    private router: Router,
     private uiService: UIService,
     private authService: AuthService,
     private gameService: GameService,
@@ -41,7 +41,7 @@ export class JoinGameComponent {
             spectator: false,
           }),
         ),
-        tap(console.log),
+        tap(() => this.router.navigate(['/play', 'lobby'])),
       ),
     );
   }

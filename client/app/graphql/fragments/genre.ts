@@ -12,7 +12,7 @@ export const GENRE_NODE_FRAGMENT = gql`
           id
           rating
           text
-          # pick
+          pick
           genre {
             description
             credit

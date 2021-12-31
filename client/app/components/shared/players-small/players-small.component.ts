@@ -13,6 +13,7 @@ export class PlayersSmallComponent {
   @Input() players?: readonly Maybe<PlayerNodeEdge>[];
   avatars = this.uiService.avatarMemo;
   userId = this.authService.profile$.getValue()?.sub;
+  isMobile$ = this.uiService.isMobile$;
 
   constructor(private uiService: UIService, private authService: AuthService) {}
 }

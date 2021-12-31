@@ -16,7 +16,6 @@ import {
   Scalars,
   UpdateGamePrivacyInput,
   UpdateGameStatusInput,
-  UserNode,
   WhiteCardNodeEdge,
 } from '../../@types/graphql';
 import {
@@ -99,34 +98,43 @@ export class GameService {
   }
 
   createGame(game: CreateGameInput) {
-    const { sub } = this.authService.profile$.getValue()!;
+    // const { sub } = this.authService.profile$.getValue()!;
     return this.apollo.mutate<Pick<Mutation, 'createGame'>, { input: CreateGameInput }>({
       mutation: CREATE_GAME_MUTATION,
       variables: { input: game },
-      optimisticResponse: {
-        createGame: {
-          __typename: 'CreateGameMutation',
-          game: {
-            __typename: 'GameNode',
-            id: 'optimistic',
-            joinEndsAt: game.joinEndsAt!,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            playerSet: { __typename: 'PlayerNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
-            inviteSet: { __typename: 'InviteNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
-            status: 'AWAITING_PLAYERS',
-            private: false,
-            creator: {
-              __typename: 'UserNode',
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              id: String(sub!),
-            } as UserNode,
-            ...game,
-            genres: { __typename: 'GenreNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
-          } as GameNode,
-        },
-      },
+      // optimisticResponse: {
+      //   createGame: {
+      //     __typename: 'CreateGameMutation',
+      //     game: {
+      //       __typename: 'GameNode',
+      //       id: 'optimistic',
+      //       joinEndsAt: game.joinEndsAt!,
+      //       createdAt: new Date(),
+      //       updatedAt: new Date(),
+      //       providerSet: { __typename: 'ProviderNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
+      //       playerSet: { __typename: 'PlayerNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
+      //       inviteSet: { __typename: 'InviteNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
+      //       status: 'AWAITING_PLAYERS',
+      //       private: false,
+      //       question: {
+      //         answerSet: { __typename: 'AnswerNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
+      //       },
+      //       answer: undefined,
+      //       answers: { __typename: 'AnswerNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
+      //       creator: {
+      //         __typename: 'UserNode',
+      //         createdAt: new Date(),
+      //         updatedAt: new Date(),
+      //         id: String(sub!),
+      //         providerSet: { __typename: 'ProviderNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
+      //         playerSet: { __typename: 'PlayerNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
+      //         gameSet: { __typename: 'GameNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
+      //       } as unknown as UserNode,
+      //       ...game,
+      //       genres: { __typename: 'GenreNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
+      //     } as GameNode,
+      //   },
+      // },
       update: (cache, { data }) =>
         cache.writeQuery<Pick<Query, 'gameInProgress'>>({
           query: GAME_IN_PROGRESS_QUERY,

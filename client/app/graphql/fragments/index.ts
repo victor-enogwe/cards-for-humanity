@@ -1,3 +1,4 @@
+export * from './card';
 export * from './game';
 export * from './genre';
 export * from './page-info';

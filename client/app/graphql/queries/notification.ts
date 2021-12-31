@@ -6,6 +6,7 @@ export const NOTIFICATIONS_QUERY = gql`
 
   query Notifications($email: String!) {
     notifications {
+      id
       invites(first: 10, email: $email, revoked: false) {
         pageInfo {
           startCursor

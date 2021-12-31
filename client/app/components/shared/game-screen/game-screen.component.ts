@@ -1,6 +1,14 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { BlackCardNodeEdge, GameNode, Maybe, PlayerNodeEdge, WhiteCardNodeEdge } from '../../../@types/graphql';
+import {
+  BlackCardNode,
+  BlackCardNodeEdge,
+  GameNode,
+  Maybe,
+  PlayerNodeEdge,
+  WhiteCardNode,
+  WhiteCardNodeEdge,
+} from '../../../@types/graphql';
 import { AuthService } from '../../../services/auth/auth.service';
 import { GameService } from '../../../services/game/game.service';
 
@@ -15,8 +23,8 @@ export class GameScreenComponent implements OnChanges {
   @Input() game!: GameNode;
   player?: Maybe<PlayerNodeEdge>;
   decks?: { blackcardSet: Maybe<BlackCardNodeEdge>[]; whitecardSet: Maybe<WhiteCardNodeEdge>[] };
-  selectedBlackCard$ = new BehaviorSubject<BlackCardNodeEdge | undefined>(undefined);
-  selectedWhiteCards$ = new BehaviorSubject<WhiteCardNodeEdge[]>([]);
+  selectedBlackCard$ = new BehaviorSubject<BlackCardNode | undefined>(undefined);
+  selectedWhiteCards$ = new BehaviorSubject<WhiteCardNode[]>([]);
 
   constructor(private authService: AuthService, private gameService: GameService) {
     this.selectedWhiteCards$.subscribe(console.log);
@@ -30,12 +38,13 @@ export class GameScreenComponent implements OnChanges {
     }
   }
 
-  onCardSelect(card: Maybe<BlackCardNodeEdge | WhiteCardNodeEdge>) {
-    switch (card?.node?.__typename) {
+  onCardSelect(card: Maybe<BlackCardNode | WhiteCardNode>) {
+    console.log(card);
+    switch (card?.__typename) {
       case 'BlackCardNode':
-        return this.selectedBlackCard$.next(card as BlackCardNodeEdge);
+        return this.selectedBlackCard$.next(card);
       default:
-        return this.selectedWhiteCards$.next([...this.selectedWhiteCards$.getValue().slice(2), card as WhiteCardNodeEdge]);
+        return this.selectedWhiteCards$.next([...this.selectedWhiteCards$.getValue().slice(2), card as WhiteCardNode]);
     }
   }
 }

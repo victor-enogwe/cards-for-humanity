@@ -28,101 +28,145 @@ export interface Scalars {
   SocialCamelJSON: any;
 }
 
-/** An enumeration. */
-export type ApiBlackCardPickChoices =
-  /** PICK 1 */
-  | 'A_1'
-  /** PICK 2 */
-  | 'A_2';
+export interface AnswerNode extends Node {
+  readonly __typename?: 'AnswerNode';
+  readonly card: WhiteCardNode;
+  readonly createdAt: Scalars['DateTime'];
+  readonly game: GameNode;
+  /** The ID of the object. */
+  readonly id: Scalars['ID'];
+  readonly player: PlayerNode;
+  readonly question: QuestionNode;
+  readonly rating: ApiAnswerRatingChoices;
+  /** game round */
+  readonly round: Scalars['Int'];
+  readonly updatedAt: Scalars['DateTime'];
+}
+
+export interface AnswerNodeConnection {
+  readonly __typename?: 'AnswerNodeConnection';
+  readonly edgeCount?: Maybe<Scalars['Int']>;
+  /** Contains the nodes in this connection. */
+  readonly edges: ReadonlyArray<Maybe<AnswerNodeEdge>>;
+  /** Pagination data for this connection. */
+  readonly pageInfo: PageInfo;
+  readonly totalCount?: Maybe<Scalars['Int']>;
+}
+
+/** A Relay edge containing a `AnswerNode` and its cursor. */
+export interface AnswerNodeEdge {
+  readonly __typename?: 'AnswerNodeEdge';
+  /** A cursor for use in pagination */
+  readonly cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  readonly node?: Maybe<AnswerNode>;
+}
 
 /** An enumeration. */
-export type ApiBlackCardRatingChoices =
+export type ApiAnswerRatingChoices =
+  /** Bad */
+  | 'BAD'
+  /** Like */
+  | 'LIKE'
+  /** Love */
+  | 'LOVE'
+  /** Meh */
+  | 'MEH'
   /** Normal */
-  'NORMAL';
+  | 'NORMAL';
+
+/** An enumeration. */
+export type ApiBlackCardPickChoices =
+  /** Pick One */
+  | 'PICK_ONE'
+  /** Pick Three */
+  | 'PICK_THREE'
+  /** Pick Two */
+  | 'PICK_TWO';
 
 /** An enumeration. */
 export type ApiGameStatusChoices =
-  /** Gaa */
-  | 'AWAITING_ANSWERS'
-  /** Gac */
-  | 'AWAITING_CZAR'
-  /** Gap */
-  | 'AWAITING_PLAYERS'
-  /** Gc */
-  | 'GAME_CANCELED'
-  /** Ge */
-  | 'GAME_ENDED'
-  /** Gs */
-  | 'GAME_STARTED';
+  /** Awaiting Answers */
+  | 'GAA'
+  /** Awaiting Czar */
+  | 'GAC'
+  /** Awaiting Players */
+  | 'GAP'
+  /** Game Canceled */
+  | 'GC'
+  /** Game Ended */
+  | 'GE'
+  /** Game Started */
+  | 'GS';
 
 /** An enumeration. */
 export type ApiPlayerAvatarChoices =
-  /** Abby */
+  /** abby */
   | 'ABBY'
-  /** Alfred */
+  /** alfred */
   | 'ALFRED'
-  /** Andina */
+  /** andina */
   | 'ANDINA'
-  /** Astro */
+  /** astro */
   | 'ASTRO'
-  /** Camile */
+  /** camile */
   | 'CAMILE'
-  /** Dorothy */
+  /** dorothy */
   | 'DOROTHY'
-  /** Dudai */
+  /** dudai */
   | 'DUDAI'
-  /** Eduardo */
+  /** eduardo */
   | 'EDUARDO'
-  /** General */
+  /** general */
   | 'GENERAL'
-  /** Grace */
+  /** grace */
   | 'GRACE'
-  /** Iranir */
+  /** iranir */
   | 'IRANIR'
-  /** Jennifer */
+  /** jennifer */
   | 'JENNIFER'
-  /** Labrat */
+  /** labrat */
   | 'LABRAT'
-  /** Luther */
+  /** luther */
   | 'LUTHER'
-  /** Rainbowness */
+  /** rainbowness */
   | 'RAINBOWNESS'
-  /** Shin */
+  /** shin */
   | 'SHIN';
 
 /** An enumeration. */
 export type ApiProfileAvatarChoices =
-  /** Abby */
+  /** abby */
   | 'ABBY'
-  /** Alfred */
+  /** alfred */
   | 'ALFRED'
-  /** Andina */
+  /** andina */
   | 'ANDINA'
-  /** Astro */
+  /** astro */
   | 'ASTRO'
-  /** Camile */
+  /** camile */
   | 'CAMILE'
-  /** Dorothy */
+  /** dorothy */
   | 'DOROTHY'
-  /** Dudai */
+  /** dudai */
   | 'DUDAI'
-  /** Eduardo */
+  /** eduardo */
   | 'EDUARDO'
-  /** General */
+  /** general */
   | 'GENERAL'
-  /** Grace */
+  /** grace */
   | 'GRACE'
-  /** Iranir */
+  /** iranir */
   | 'IRANIR'
-  /** Jennifer */
+  /** jennifer */
   | 'JENNIFER'
-  /** Labrat */
+  /** labrat */
   | 'LABRAT'
-  /** Luther */
+  /** luther */
   | 'LUTHER'
-  /** Rainbowness */
+  /** rainbowness */
   | 'RAINBOWNESS'
-  /** Shin */
+  /** shin */
   | 'SHIN';
 
 /** An enumeration. */
@@ -157,9 +201,79 @@ export type ApiProviderProviderChoices =
   | 'TWITTER';
 
 /** An enumeration. */
-export type ApiWhiteCardRatingChoices =
+export type ApiQuestionRatingChoices =
+  /** Bad */
+  | 'BAD'
+  /** Like */
+  | 'LIKE'
+  /** Love */
+  | 'LOVE'
+  /** Meh */
+  | 'MEH'
   /** Normal */
-  'NORMAL';
+  | 'NORMAL';
+
+export interface AvailableAnswerNode extends Node {
+  readonly __typename?: 'AvailableAnswerNode';
+  readonly card: WhiteCardNode;
+  readonly createdAt: Scalars['DateTime'];
+  readonly game: GameNode;
+  /** The ID of the object. */
+  readonly id: Scalars['ID'];
+  /** game round */
+  readonly round: Scalars['Int'];
+  readonly updatedAt: Scalars['DateTime'];
+}
+
+export interface AvailableAnswerNodeConnection {
+  readonly __typename?: 'AvailableAnswerNodeConnection';
+  readonly edgeCount?: Maybe<Scalars['Int']>;
+  /** Contains the nodes in this connection. */
+  readonly edges: ReadonlyArray<Maybe<AvailableAnswerNodeEdge>>;
+  /** Pagination data for this connection. */
+  readonly pageInfo: PageInfo;
+  readonly totalCount?: Maybe<Scalars['Int']>;
+}
+
+/** A Relay edge containing a `AvailableAnswerNode` and its cursor. */
+export interface AvailableAnswerNodeEdge {
+  readonly __typename?: 'AvailableAnswerNodeEdge';
+  /** A cursor for use in pagination */
+  readonly cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  readonly node?: Maybe<AvailableAnswerNode>;
+}
+
+export interface AvailableQuestionNode extends Node {
+  readonly __typename?: 'AvailableQuestionNode';
+  readonly card: BlackCardNode;
+  readonly createdAt: Scalars['DateTime'];
+  readonly game: GameNode;
+  /** The ID of the object. */
+  readonly id: Scalars['ID'];
+  /** game round */
+  readonly round: Scalars['Int'];
+  readonly updatedAt: Scalars['DateTime'];
+}
+
+export interface AvailableQuestionNodeConnection {
+  readonly __typename?: 'AvailableQuestionNodeConnection';
+  readonly edgeCount?: Maybe<Scalars['Int']>;
+  /** Contains the nodes in this connection. */
+  readonly edges: ReadonlyArray<Maybe<AvailableQuestionNodeEdge>>;
+  /** Pagination data for this connection. */
+  readonly pageInfo: PageInfo;
+  readonly totalCount?: Maybe<Scalars['Int']>;
+}
+
+/** A Relay edge containing a `AvailableQuestionNode` and its cursor. */
+export interface AvailableQuestionNodeEdge {
+  readonly __typename?: 'AvailableQuestionNodeEdge';
+  /** A cursor for use in pagination */
+  readonly cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  readonly node?: Maybe<AvailableQuestionNode>;
+}
 
 export interface BatchCreateInviteInput {
   readonly email: Scalars['String'];
@@ -170,15 +284,45 @@ export interface BatchCreateInviteInput {
 
 export interface BlackCardNode extends Node {
   readonly __typename?: 'BlackCardNode';
+  readonly availablequestionSet: AvailableQuestionNodeConnection;
   readonly createdAt: Scalars['DateTime'];
   readonly genre: GenreNode;
   /** The ID of the object. */
   readonly id: Scalars['ID'];
   readonly pick: ApiBlackCardPickChoices;
-  readonly rating: ApiBlackCardRatingChoices;
+  readonly questionSet: QuestionNodeConnection;
+  readonly rating?: Maybe<CardRating>;
   /** text allows 2-255 characters(alphabets and -,_,.,',",space) */
   readonly text: Scalars['String'];
   readonly updatedAt: Scalars['DateTime'];
+}
+
+export interface BlackCardNodeAvailablequestionSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  card?: InputMaybe<Scalars['ID']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  first?: InputMaybe<Scalars['Int']>;
+  game?: InputMaybe<Scalars['ID']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  round?: InputMaybe<Scalars['Int']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
+}
+
+export interface BlackCardNodeQuestionSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  card?: InputMaybe<Scalars['ID']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  first?: InputMaybe<Scalars['Int']>;
+  game?: InputMaybe<Scalars['ID']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  player?: InputMaybe<Scalars['ID']>;
+  rating?: InputMaybe<Scalars['String']>;
+  round?: InputMaybe<Scalars['Int']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
 }
 
 export interface BlackCardNodeConnection {
@@ -200,7 +344,12 @@ export interface BlackCardNodeEdge {
   readonly node?: Maybe<BlackCardNode>;
 }
 
+export type CardRating = 'BAD' | 'LIKE' | 'LOVE' | 'MEH' | 'NORMAL';
+
 export interface CreateGameInput {
+  readonly answerSet?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
+  readonly availableanswerSet?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
+  readonly availablequestionSet?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
   readonly genres: ReadonlyArray<InputMaybe<Scalars['ID']>>;
   /** seconds */
   readonly joinEndsAt?: InputMaybe<Scalars['DateTime']>;
@@ -210,16 +359,20 @@ export interface CreateGameInput {
   readonly numSpectators?: InputMaybe<Scalars['Int']>;
   readonly playerSetAdd?: InputMaybe<ReadonlyArray<InputMaybe<CreateGameInputAddGamePlayerset>>>;
   readonly private?: InputMaybe<Scalars['Boolean']>;
+  readonly questionSet?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
   /** game round */
   readonly round?: InputMaybe<Scalars['Int']>;
   /** seconds */
   readonly roundTime?: InputMaybe<Scalars['Int']>;
   /** no of game rounds */
   readonly rounds?: InputMaybe<Scalars['Int']>;
+  readonly task?: InputMaybe<Scalars['ID']>;
 }
 
 export interface CreateGameInputAddGamePlayerset {
+  readonly answerSet?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
   readonly avatar?: InputMaybe<ApiPlayerAvatarChoices>;
+  readonly questionSet?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
   readonly spectator?: InputMaybe<Scalars['Boolean']>;
   readonly user: Scalars['ID'];
   readonly winner?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
@@ -278,6 +431,9 @@ export interface GameInviteMutation {
 
 export interface GameNode extends Node {
   readonly __typename?: 'GameNode';
+  readonly answers?: Maybe<ReadonlyArray<Maybe<WhiteCardNode>>>;
+  readonly availableAnswers?: Maybe<ReadonlyArray<Maybe<WhiteCardNode>>>;
+  readonly availableQuestions?: Maybe<ReadonlyArray<Maybe<BlackCardNode>>>;
   readonly createdAt: Scalars['DateTime'];
   readonly creator: UserNode;
   readonly genres: GenreNodeConnection;
@@ -292,6 +448,7 @@ export interface GameNode extends Node {
   readonly numSpectators: Scalars['Int'];
   readonly playerSet: PlayerNodeConnection;
   readonly private: Scalars['Boolean'];
+  readonly question?: Maybe<BlackCardNode>;
   /** game round */
   readonly round: Scalars['Int'];
   /** seconds */
@@ -402,7 +559,6 @@ export interface GenreNodeBlackcardSetArgs {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   pick?: InputMaybe<Scalars['String']>;
-  rating?: InputMaybe<Scalars['String']>;
   text?: InputMaybe<Scalars['String']>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
 }
@@ -424,6 +580,7 @@ export interface GenreNodeGameSetArgs {
   roundTime?: InputMaybe<Scalars['Int']>;
   rounds?: InputMaybe<Scalars['Int']>;
   status?: InputMaybe<Scalars['String']>;
+  task?: InputMaybe<Scalars['ID']>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
   winner?: InputMaybe<Scalars['ID']>;
 }
@@ -537,6 +694,7 @@ export interface Mutation {
   readonly joinGame?: Maybe<JoinGameMutation>;
   readonly refreshToken?: Maybe<RefreshTokenMutationPayload>;
   readonly revokeRefreshToken?: Maybe<RevokePayload>;
+  readonly roundQuestion?: Maybe<RoundQuestionMutation>;
   readonly setFullWidth?: Maybe<SetFullWidthMutation>;
   /** Social Auth for JSON Web Token (JWT) */
   readonly socialAuth?: Maybe<SocialAuthJwtPayload>;
@@ -597,6 +755,11 @@ export interface MutationRevokeRefreshTokenArgs {
 }
 
 /** Root Mutation for the cards against humanity api. */
+export interface MutationRoundQuestionArgs {
+  input: RoundQuestionMutationInput;
+}
+
+/** Root Mutation for the cards against humanity api. */
 export interface MutationSetFullWidthArgs {
   input: SetFullWidthMutationInput;
 }
@@ -632,6 +795,7 @@ export interface Node {
 
 export interface NotificationNode {
   readonly __typename?: 'NotificationNode';
+  readonly id: Scalars['ID'];
   /** find game invites */
   readonly invites?: Maybe<InviteNodeConnection>;
 }
@@ -683,17 +847,50 @@ export interface PageInfo {
 
 export interface PlayerNode extends Node {
   readonly __typename?: 'PlayerNode';
+  readonly answerSet: AnswerNodeConnection;
   readonly avatar: ApiPlayerAvatarChoices;
   readonly createdAt: Scalars['DateTime'];
   readonly czar: Scalars['Boolean'];
   readonly game: GameNode;
   /** The ID of the object. */
   readonly id: Scalars['ID'];
+  readonly questionSet: QuestionNodeConnection;
   readonly score: Scalars['Int'];
   readonly spectator: Scalars['Boolean'];
   readonly updatedAt: Scalars['DateTime'];
   readonly user: UserNode;
   readonly winner: GameNodeConnection;
+}
+
+export interface PlayerNodeAnswerSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  card?: InputMaybe<Scalars['ID']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  first?: InputMaybe<Scalars['Int']>;
+  game?: InputMaybe<Scalars['ID']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  player?: InputMaybe<Scalars['ID']>;
+  question?: InputMaybe<Scalars['ID']>;
+  rating?: InputMaybe<Scalars['String']>;
+  round?: InputMaybe<Scalars['Int']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
+}
+
+export interface PlayerNodeQuestionSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  card?: InputMaybe<Scalars['ID']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  first?: InputMaybe<Scalars['Int']>;
+  game?: InputMaybe<Scalars['ID']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  player?: InputMaybe<Scalars['ID']>;
+  rating?: InputMaybe<Scalars['String']>;
+  round?: InputMaybe<Scalars['Int']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
 }
 
 export interface PlayerNodeWinnerArgs {
@@ -713,6 +910,7 @@ export interface PlayerNodeWinnerArgs {
   roundTime?: InputMaybe<Scalars['Int']>;
   rounds?: InputMaybe<Scalars['Int']>;
   status?: InputMaybe<Scalars['String']>;
+  task?: InputMaybe<Scalars['ID']>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
   winner?: InputMaybe<Scalars['ID']>;
 }
@@ -834,7 +1032,6 @@ export interface QueryBlackCardsArgs {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   pick?: InputMaybe<Scalars['String']>;
-  rating?: InputMaybe<Scalars['String']>;
   text?: InputMaybe<Scalars['String']>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
 }
@@ -857,6 +1054,7 @@ export interface QueryGamesArgs {
   roundTime?: InputMaybe<Scalars['Int']>;
   rounds?: InputMaybe<Scalars['Int']>;
   status?: InputMaybe<Scalars['String']>;
+  task?: InputMaybe<Scalars['ID']>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
   winner?: InputMaybe<Scalars['ID']>;
 }
@@ -919,6 +1117,56 @@ export interface QueryWhiteCardsArgs {
   text_Istartswith?: InputMaybe<Scalars['String']>;
 }
 
+export interface QuestionNode extends Node {
+  readonly __typename?: 'QuestionNode';
+  readonly answerSet: AnswerNodeConnection;
+  readonly card: BlackCardNode;
+  readonly createdAt: Scalars['DateTime'];
+  readonly game: GameNode;
+  /** The ID of the object. */
+  readonly id: Scalars['ID'];
+  readonly player: PlayerNode;
+  readonly rating: ApiQuestionRatingChoices;
+  /** game round */
+  readonly round: Scalars['Int'];
+  readonly updatedAt: Scalars['DateTime'];
+}
+
+export interface QuestionNodeAnswerSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  card?: InputMaybe<Scalars['ID']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  first?: InputMaybe<Scalars['Int']>;
+  game?: InputMaybe<Scalars['ID']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  player?: InputMaybe<Scalars['ID']>;
+  question?: InputMaybe<Scalars['ID']>;
+  rating?: InputMaybe<Scalars['String']>;
+  round?: InputMaybe<Scalars['Int']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
+}
+
+export interface QuestionNodeConnection {
+  readonly __typename?: 'QuestionNodeConnection';
+  readonly edgeCount?: Maybe<Scalars['Int']>;
+  /** Contains the nodes in this connection. */
+  readonly edges: ReadonlyArray<Maybe<QuestionNodeEdge>>;
+  /** Pagination data for this connection. */
+  readonly pageInfo: PageInfo;
+  readonly totalCount?: Maybe<Scalars['Int']>;
+}
+
+/** A Relay edge containing a `QuestionNode` and its cursor. */
+export interface QuestionNodeEdge {
+  readonly __typename?: 'QuestionNodeEdge';
+  /** A cursor for use in pagination */
+  readonly cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  readonly node?: Maybe<QuestionNode>;
+}
+
 export interface RefreshTokenMutationInput {
   readonly clientMutationId?: InputMaybe<Scalars['String']>;
   readonly refreshToken?: InputMaybe<Scalars['String']>;
@@ -942,6 +1190,19 @@ export interface RevokePayload {
   readonly __typename?: 'RevokePayload';
   readonly clientMutationId?: Maybe<Scalars['String']>;
   readonly revoked: Scalars['Int'];
+}
+
+export interface RoundQuestionMutation {
+  readonly __typename?: 'RoundQuestionMutation';
+  readonly ok?: Maybe<Scalars['Boolean']>;
+}
+
+export interface RoundQuestionMutationInput {
+  readonly card: Scalars['ID'];
+  readonly game: Scalars['ID'];
+  readonly player: Scalars['ID'];
+  readonly rating: CardRating;
+  readonly round: Scalars['Int'];
 }
 
 export interface SetFullWidthMutation {
@@ -1060,6 +1321,7 @@ export interface UserNodeGameSetArgs {
   roundTime?: InputMaybe<Scalars['Int']>;
   rounds?: InputMaybe<Scalars['Int']>;
   status?: InputMaybe<Scalars['String']>;
+  task?: InputMaybe<Scalars['ID']>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
   winner?: InputMaybe<Scalars['ID']>;
 }
@@ -1133,14 +1395,45 @@ export interface UserNodeEdge {
 
 export interface WhiteCardNode extends Node {
   readonly __typename?: 'WhiteCardNode';
+  readonly answerSet: AnswerNodeConnection;
+  readonly availableanswerSet: AvailableAnswerNodeConnection;
   readonly createdAt: Scalars['DateTime'];
   readonly genre: GenreNode;
   /** The ID of the object. */
   readonly id: Scalars['ID'];
-  readonly rating: ApiWhiteCardRatingChoices;
+  readonly rating?: Maybe<CardRating>;
   /** text allows 2-255 characters(alphabets and -,_,.,',",space) */
   readonly text: Scalars['String'];
   readonly updatedAt: Scalars['DateTime'];
+}
+
+export interface WhiteCardNodeAnswerSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  card?: InputMaybe<Scalars['ID']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  first?: InputMaybe<Scalars['Int']>;
+  game?: InputMaybe<Scalars['ID']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  player?: InputMaybe<Scalars['ID']>;
+  question?: InputMaybe<Scalars['ID']>;
+  rating?: InputMaybe<Scalars['String']>;
+  round?: InputMaybe<Scalars['Int']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
+}
+
+export interface WhiteCardNodeAvailableanswerSetArgs {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  card?: InputMaybe<Scalars['ID']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  first?: InputMaybe<Scalars['Int']>;
+  game?: InputMaybe<Scalars['ID']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  round?: InputMaybe<Scalars['Int']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
 }
 
 export interface WhiteCardNodeConnection {
@@ -1162,21 +1455,130 @@ export interface WhiteCardNodeEdge {
   readonly node?: Maybe<WhiteCardNode>;
 }
 
+export type AnswerNodeKeySpecifier = (
+  | 'card'
+  | 'createdAt'
+  | 'game'
+  | 'id'
+  | 'player'
+  | 'question'
+  | 'rating'
+  | 'round'
+  | 'updatedAt'
+  | AnswerNodeKeySpecifier
+)[];
+export type AnswerNodeFieldPolicy = {
+  card?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  game?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  player?: FieldPolicy<any> | FieldReadFunction<any>;
+  question?: FieldPolicy<any> | FieldReadFunction<any>;
+  rating?: FieldPolicy<any> | FieldReadFunction<any>;
+  round?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AnswerNodeConnectionKeySpecifier = ('edgeCount' | 'edges' | 'pageInfo' | 'totalCount' | AnswerNodeConnectionKeySpecifier)[];
+export type AnswerNodeConnectionFieldPolicy = {
+  edgeCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AnswerNodeEdgeKeySpecifier = ('cursor' | 'node' | AnswerNodeEdgeKeySpecifier)[];
+export type AnswerNodeEdgeFieldPolicy = {
+  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AvailableAnswerNodeKeySpecifier = (
+  | 'card'
+  | 'createdAt'
+  | 'game'
+  | 'id'
+  | 'round'
+  | 'updatedAt'
+  | AvailableAnswerNodeKeySpecifier
+)[];
+export type AvailableAnswerNodeFieldPolicy = {
+  card?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  game?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  round?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AvailableAnswerNodeConnectionKeySpecifier = (
+  | 'edgeCount'
+  | 'edges'
+  | 'pageInfo'
+  | 'totalCount'
+  | AvailableAnswerNodeConnectionKeySpecifier
+)[];
+export type AvailableAnswerNodeConnectionFieldPolicy = {
+  edgeCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AvailableAnswerNodeEdgeKeySpecifier = ('cursor' | 'node' | AvailableAnswerNodeEdgeKeySpecifier)[];
+export type AvailableAnswerNodeEdgeFieldPolicy = {
+  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AvailableQuestionNodeKeySpecifier = (
+  | 'card'
+  | 'createdAt'
+  | 'game'
+  | 'id'
+  | 'round'
+  | 'updatedAt'
+  | AvailableQuestionNodeKeySpecifier
+)[];
+export type AvailableQuestionNodeFieldPolicy = {
+  card?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  game?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  round?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AvailableQuestionNodeConnectionKeySpecifier = (
+  | 'edgeCount'
+  | 'edges'
+  | 'pageInfo'
+  | 'totalCount'
+  | AvailableQuestionNodeConnectionKeySpecifier
+)[];
+export type AvailableQuestionNodeConnectionFieldPolicy = {
+  edgeCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AvailableQuestionNodeEdgeKeySpecifier = ('cursor' | 'node' | AvailableQuestionNodeEdgeKeySpecifier)[];
+export type AvailableQuestionNodeEdgeFieldPolicy = {
+  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type BlackCardNodeKeySpecifier = (
+  | 'availablequestionSet'
   | 'createdAt'
   | 'genre'
   | 'id'
   | 'pick'
+  | 'questionSet'
   | 'rating'
   | 'text'
   | 'updatedAt'
   | BlackCardNodeKeySpecifier
 )[];
 export type BlackCardNodeFieldPolicy = {
+  availablequestionSet?: FieldPolicy<any> | FieldReadFunction<any>;
   createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
   genre?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   pick?: FieldPolicy<any> | FieldReadFunction<any>;
+  questionSet?: FieldPolicy<any> | FieldReadFunction<any>;
   rating?: FieldPolicy<any> | FieldReadFunction<any>;
   text?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1225,6 +1627,9 @@ export type GameInviteMutationFieldPolicy = {
   invites?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type GameNodeKeySpecifier = (
+  | 'answers'
+  | 'availableAnswers'
+  | 'availableQuestions'
   | 'createdAt'
   | 'creator'
   | 'genres'
@@ -1235,6 +1640,7 @@ export type GameNodeKeySpecifier = (
   | 'numSpectators'
   | 'playerSet'
   | 'private'
+  | 'question'
   | 'round'
   | 'roundTime'
   | 'rounds'
@@ -1244,6 +1650,9 @@ export type GameNodeKeySpecifier = (
   | GameNodeKeySpecifier
 )[];
 export type GameNodeFieldPolicy = {
+  answers?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableAnswers?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableQuestions?: FieldPolicy<any> | FieldReadFunction<any>;
   createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
   creator?: FieldPolicy<any> | FieldReadFunction<any>;
   genres?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1254,6 +1663,7 @@ export type GameNodeFieldPolicy = {
   numSpectators?: FieldPolicy<any> | FieldReadFunction<any>;
   playerSet?: FieldPolicy<any> | FieldReadFunction<any>;
   private?: FieldPolicy<any> | FieldReadFunction<any>;
+  question?: FieldPolicy<any> | FieldReadFunction<any>;
   round?: FieldPolicy<any> | FieldReadFunction<any>;
   roundTime?: FieldPolicy<any> | FieldReadFunction<any>;
   rounds?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1390,6 +1800,7 @@ export type MutationKeySpecifier = (
   | 'joinGame'
   | 'refreshToken'
   | 'revokeRefreshToken'
+  | 'roundQuestion'
   | 'setFullWidth'
   | 'socialAuth'
   | 'toggleNav'
@@ -1407,6 +1818,7 @@ export type MutationFieldPolicy = {
   joinGame?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeRefreshToken?: FieldPolicy<any> | FieldReadFunction<any>;
+  roundQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   setFullWidth?: FieldPolicy<any> | FieldReadFunction<any>;
   socialAuth?: FieldPolicy<any> | FieldReadFunction<any>;
   toggleNav?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1439,8 +1851,9 @@ export type NodeKeySpecifier = ('id' | NodeKeySpecifier)[];
 export type NodeFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type NotificationNodeKeySpecifier = ('invites' | NotificationNodeKeySpecifier)[];
+export type NotificationNodeKeySpecifier = ('id' | 'invites' | NotificationNodeKeySpecifier)[];
 export type NotificationNodeFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
   invites?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type NotificationSubscriptionKeySpecifier = ('message' | 'room' | 'sender' | NotificationSubscriptionKeySpecifier)[];
@@ -1472,11 +1885,13 @@ export type PageInfoFieldPolicy = {
   startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlayerNodeKeySpecifier = (
+  | 'answerSet'
   | 'avatar'
   | 'createdAt'
   | 'czar'
   | 'game'
   | 'id'
+  | 'questionSet'
   | 'score'
   | 'spectator'
   | 'updatedAt'
@@ -1485,11 +1900,13 @@ export type PlayerNodeKeySpecifier = (
   | PlayerNodeKeySpecifier
 )[];
 export type PlayerNodeFieldPolicy = {
+  answerSet?: FieldPolicy<any> | FieldReadFunction<any>;
   avatar?: FieldPolicy<any> | FieldReadFunction<any>;
   createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
   czar?: FieldPolicy<any> | FieldReadFunction<any>;
   game?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  questionSet?: FieldPolicy<any> | FieldReadFunction<any>;
   score?: FieldPolicy<any> | FieldReadFunction<any>;
   spectator?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1605,6 +2022,41 @@ export type QueryFieldPolicy = {
   users?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteCards?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type QuestionNodeKeySpecifier = (
+  | 'answerSet'
+  | 'card'
+  | 'createdAt'
+  | 'game'
+  | 'id'
+  | 'player'
+  | 'rating'
+  | 'round'
+  | 'updatedAt'
+  | QuestionNodeKeySpecifier
+)[];
+export type QuestionNodeFieldPolicy = {
+  answerSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  card?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  game?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  player?: FieldPolicy<any> | FieldReadFunction<any>;
+  rating?: FieldPolicy<any> | FieldReadFunction<any>;
+  round?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type QuestionNodeConnectionKeySpecifier = ('edgeCount' | 'edges' | 'pageInfo' | 'totalCount' | QuestionNodeConnectionKeySpecifier)[];
+export type QuestionNodeConnectionFieldPolicy = {
+  edgeCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type QuestionNodeEdgeKeySpecifier = ('cursor' | 'node' | QuestionNodeEdgeKeySpecifier)[];
+export type QuestionNodeEdgeFieldPolicy = {
+  cursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type RefreshTokenMutationPayloadKeySpecifier = (
   | 'clientMutationId'
   | 'payload'
@@ -1624,6 +2076,10 @@ export type RevokePayloadKeySpecifier = ('clientMutationId' | 'revoked' | Revoke
 export type RevokePayloadFieldPolicy = {
   clientMutationId?: FieldPolicy<any> | FieldReadFunction<any>;
   revoked?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RoundQuestionMutationKeySpecifier = ('ok' | RoundQuestionMutationKeySpecifier)[];
+export type RoundQuestionMutationFieldPolicy = {
+  ok?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SetFullWidthMutationKeySpecifier = ('fullWidth' | SetFullWidthMutationKeySpecifier)[];
 export type SetFullWidthMutationFieldPolicy = {
@@ -1703,8 +2159,20 @@ export type UserNodeEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type WhiteCardNodeKeySpecifier = ('createdAt' | 'genre' | 'id' | 'rating' | 'text' | 'updatedAt' | WhiteCardNodeKeySpecifier)[];
+export type WhiteCardNodeKeySpecifier = (
+  | 'answerSet'
+  | 'availableanswerSet'
+  | 'createdAt'
+  | 'genre'
+  | 'id'
+  | 'rating'
+  | 'text'
+  | 'updatedAt'
+  | WhiteCardNodeKeySpecifier
+)[];
 export type WhiteCardNodeFieldPolicy = {
+  answerSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableanswerSet?: FieldPolicy<any> | FieldReadFunction<any>;
   createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
   genre?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1731,6 +2199,42 @@ export type WhiteCardNodeEdgeFieldPolicy = {
   node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StrictTypedTypePolicies = {
+  AnswerNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AnswerNodeKeySpecifier | (() => undefined | AnswerNodeKeySpecifier);
+    fields?: AnswerNodeFieldPolicy;
+  };
+  AnswerNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AnswerNodeConnectionKeySpecifier | (() => undefined | AnswerNodeConnectionKeySpecifier);
+    fields?: AnswerNodeConnectionFieldPolicy;
+  };
+  AnswerNodeEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AnswerNodeEdgeKeySpecifier | (() => undefined | AnswerNodeEdgeKeySpecifier);
+    fields?: AnswerNodeEdgeFieldPolicy;
+  };
+  AvailableAnswerNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AvailableAnswerNodeKeySpecifier | (() => undefined | AvailableAnswerNodeKeySpecifier);
+    fields?: AvailableAnswerNodeFieldPolicy;
+  };
+  AvailableAnswerNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AvailableAnswerNodeConnectionKeySpecifier | (() => undefined | AvailableAnswerNodeConnectionKeySpecifier);
+    fields?: AvailableAnswerNodeConnectionFieldPolicy;
+  };
+  AvailableAnswerNodeEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AvailableAnswerNodeEdgeKeySpecifier | (() => undefined | AvailableAnswerNodeEdgeKeySpecifier);
+    fields?: AvailableAnswerNodeEdgeFieldPolicy;
+  };
+  AvailableQuestionNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AvailableQuestionNodeKeySpecifier | (() => undefined | AvailableQuestionNodeKeySpecifier);
+    fields?: AvailableQuestionNodeFieldPolicy;
+  };
+  AvailableQuestionNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AvailableQuestionNodeConnectionKeySpecifier | (() => undefined | AvailableQuestionNodeConnectionKeySpecifier);
+    fields?: AvailableQuestionNodeConnectionFieldPolicy;
+  };
+  AvailableQuestionNodeEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AvailableQuestionNodeEdgeKeySpecifier | (() => undefined | AvailableQuestionNodeEdgeKeySpecifier);
+    fields?: AvailableQuestionNodeEdgeFieldPolicy;
+  };
   BlackCardNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | BlackCardNodeKeySpecifier | (() => undefined | BlackCardNodeKeySpecifier);
     fields?: BlackCardNodeFieldPolicy;
@@ -1879,6 +2383,18 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier);
     fields?: QueryFieldPolicy;
   };
+  QuestionNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | QuestionNodeKeySpecifier | (() => undefined | QuestionNodeKeySpecifier);
+    fields?: QuestionNodeFieldPolicy;
+  };
+  QuestionNodeConnection?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | QuestionNodeConnectionKeySpecifier | (() => undefined | QuestionNodeConnectionKeySpecifier);
+    fields?: QuestionNodeConnectionFieldPolicy;
+  };
+  QuestionNodeEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | QuestionNodeEdgeKeySpecifier | (() => undefined | QuestionNodeEdgeKeySpecifier);
+    fields?: QuestionNodeEdgeFieldPolicy;
+  };
   RefreshTokenMutationPayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RefreshTokenMutationPayloadKeySpecifier | (() => undefined | RefreshTokenMutationPayloadKeySpecifier);
     fields?: RefreshTokenMutationPayloadFieldPolicy;
@@ -1886,6 +2402,10 @@ export type StrictTypedTypePolicies = {
   RevokePayload?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RevokePayloadKeySpecifier | (() => undefined | RevokePayloadKeySpecifier);
     fields?: RevokePayloadFieldPolicy;
+  };
+  RoundQuestionMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | RoundQuestionMutationKeySpecifier | (() => undefined | RoundQuestionMutationKeySpecifier);
+    fields?: RoundQuestionMutationFieldPolicy;
   };
   SetFullWidthMutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SetFullWidthMutationKeySpecifier | (() => undefined | SetFullWidthMutationKeySpecifier);
@@ -2026,20 +2546,30 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
+  AnswerNode: ResolverTypeWrapper<AnswerNode>;
+  AnswerNodeConnection: ResolverTypeWrapper<AnswerNodeConnection>;
+  AnswerNodeEdge: ResolverTypeWrapper<AnswerNodeEdge>;
+  ApiAnswerRatingChoices: ApiAnswerRatingChoices;
   ApiBlackCardPickChoices: ApiBlackCardPickChoices;
-  ApiBlackCardRatingChoices: ApiBlackCardRatingChoices;
   ApiGameStatusChoices: ApiGameStatusChoices;
   ApiPlayerAvatarChoices: ApiPlayerAvatarChoices;
   ApiProfileAvatarChoices: ApiProfileAvatarChoices;
   ApiProfileGenderChoices: ApiProfileGenderChoices;
   ApiProviderConversionModeChoices: ApiProviderConversionModeChoices;
   ApiProviderProviderChoices: ApiProviderProviderChoices;
-  ApiWhiteCardRatingChoices: ApiWhiteCardRatingChoices;
+  ApiQuestionRatingChoices: ApiQuestionRatingChoices;
+  AvailableAnswerNode: ResolverTypeWrapper<AvailableAnswerNode>;
+  AvailableAnswerNodeConnection: ResolverTypeWrapper<AvailableAnswerNodeConnection>;
+  AvailableAnswerNodeEdge: ResolverTypeWrapper<AvailableAnswerNodeEdge>;
+  AvailableQuestionNode: ResolverTypeWrapper<AvailableQuestionNode>;
+  AvailableQuestionNodeConnection: ResolverTypeWrapper<AvailableQuestionNodeConnection>;
+  AvailableQuestionNodeEdge: ResolverTypeWrapper<AvailableQuestionNodeEdge>;
   BatchCreateInviteInput: BatchCreateInviteInput;
   BlackCardNode: ResolverTypeWrapper<BlackCardNode>;
   BlackCardNodeConnection: ResolverTypeWrapper<BlackCardNodeConnection>;
   BlackCardNodeEdge: ResolverTypeWrapper<BlackCardNodeEdge>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  CardRating: CardRating;
   CreateGameInput: CreateGameInput;
   CreateGameInputAddGamePlayerset: CreateGameInputAddGamePlayerset;
   CreateGameMutation: ResolverTypeWrapper<CreateGameMutation>;
@@ -2074,6 +2604,9 @@ export type ResolversTypes = ResolversObject<{
   Mutation: ResolverTypeWrapper<{}>;
   NewGameNode: ResolverTypeWrapper<NewGameNode>;
   Node:
+    | ResolversTypes['AnswerNode']
+    | ResolversTypes['AvailableAnswerNode']
+    | ResolversTypes['AvailableQuestionNode']
     | ResolversTypes['BlackCardNode']
     | ResolversTypes['GameNode']
     | ResolversTypes['GenreNode']
@@ -2081,6 +2614,7 @@ export type ResolversTypes = ResolversObject<{
     | ResolversTypes['PlayerNode']
     | ResolversTypes['ProfileNode']
     | ResolversTypes['ProviderNode']
+    | ResolversTypes['QuestionNode']
     | ResolversTypes['SocialNode']
     | ResolversTypes['UserNode']
     | ResolversTypes['WhiteCardNode'];
@@ -2097,10 +2631,15 @@ export type ResolversTypes = ResolversObject<{
   ProviderNodeConnection: ResolverTypeWrapper<ProviderNodeConnection>;
   ProviderNodeEdge: ResolverTypeWrapper<ProviderNodeEdge>;
   Query: ResolverTypeWrapper<{}>;
+  QuestionNode: ResolverTypeWrapper<QuestionNode>;
+  QuestionNodeConnection: ResolverTypeWrapper<QuestionNodeConnection>;
+  QuestionNodeEdge: ResolverTypeWrapper<QuestionNodeEdge>;
   RefreshTokenMutationInput: RefreshTokenMutationInput;
   RefreshTokenMutationPayload: ResolverTypeWrapper<RefreshTokenMutationPayload>;
   RevokeInput: RevokeInput;
   RevokePayload: ResolverTypeWrapper<RevokePayload>;
+  RoundQuestionMutation: ResolverTypeWrapper<RoundQuestionMutation>;
+  RoundQuestionMutationInput: RoundQuestionMutationInput;
   SetFullWidthMutation: ResolverTypeWrapper<SetFullWidthMutation>;
   SetFullWidthMutationInput: SetFullWidthMutationInput;
   SocialAuthJWTInput: SocialAuthJwtInput;
@@ -2124,6 +2663,15 @@ export type ResolversTypes = ResolversObject<{
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
+  AnswerNode: AnswerNode;
+  AnswerNodeConnection: AnswerNodeConnection;
+  AnswerNodeEdge: AnswerNodeEdge;
+  AvailableAnswerNode: AvailableAnswerNode;
+  AvailableAnswerNodeConnection: AvailableAnswerNodeConnection;
+  AvailableAnswerNodeEdge: AvailableAnswerNodeEdge;
+  AvailableQuestionNode: AvailableQuestionNode;
+  AvailableQuestionNodeConnection: AvailableQuestionNodeConnection;
+  AvailableQuestionNodeEdge: AvailableQuestionNodeEdge;
   BatchCreateInviteInput: BatchCreateInviteInput;
   BlackCardNode: BlackCardNode;
   BlackCardNodeConnection: BlackCardNodeConnection;
@@ -2163,6 +2711,9 @@ export type ResolversParentTypes = ResolversObject<{
   Mutation: {};
   NewGameNode: NewGameNode;
   Node:
+    | ResolversParentTypes['AnswerNode']
+    | ResolversParentTypes['AvailableAnswerNode']
+    | ResolversParentTypes['AvailableQuestionNode']
     | ResolversParentTypes['BlackCardNode']
     | ResolversParentTypes['GameNode']
     | ResolversParentTypes['GenreNode']
@@ -2170,6 +2721,7 @@ export type ResolversParentTypes = ResolversObject<{
     | ResolversParentTypes['PlayerNode']
     | ResolversParentTypes['ProfileNode']
     | ResolversParentTypes['ProviderNode']
+    | ResolversParentTypes['QuestionNode']
     | ResolversParentTypes['SocialNode']
     | ResolversParentTypes['UserNode']
     | ResolversParentTypes['WhiteCardNode'];
@@ -2186,10 +2738,15 @@ export type ResolversParentTypes = ResolversObject<{
   ProviderNodeConnection: ProviderNodeConnection;
   ProviderNodeEdge: ProviderNodeEdge;
   Query: {};
+  QuestionNode: QuestionNode;
+  QuestionNodeConnection: QuestionNodeConnection;
+  QuestionNodeEdge: QuestionNodeEdge;
   RefreshTokenMutationInput: RefreshTokenMutationInput;
   RefreshTokenMutationPayload: RefreshTokenMutationPayload;
   RevokeInput: RevokeInput;
   RevokePayload: RevokePayload;
+  RoundQuestionMutation: RoundQuestionMutation;
+  RoundQuestionMutationInput: RoundQuestionMutationInput;
   SetFullWidthMutation: SetFullWidthMutation;
   SetFullWidthMutationInput: SetFullWidthMutationInput;
   SocialAuthJWTInput: SocialAuthJwtInput;
@@ -2211,15 +2768,129 @@ export type ResolversParentTypes = ResolversObject<{
   WhiteCardNodeEdge: WhiteCardNodeEdge;
 }>;
 
+export type AnswerNodeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AnswerNode'] = ResolversParentTypes['AnswerNode'],
+> = ResolversObject<{
+  card?: Resolver<ResolversTypes['WhiteCardNode'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  game?: Resolver<ResolversTypes['GameNode'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  player?: Resolver<ResolversTypes['PlayerNode'], ParentType, ContextType>;
+  question?: Resolver<ResolversTypes['QuestionNode'], ParentType, ContextType>;
+  rating?: Resolver<ResolversTypes['ApiAnswerRatingChoices'], ParentType, ContextType>;
+  round?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type AnswerNodeConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AnswerNodeConnection'] = ResolversParentTypes['AnswerNodeConnection'],
+> = ResolversObject<{
+  edgeCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  edges?: Resolver<ReadonlyArray<Maybe<ResolversTypes['AnswerNodeEdge']>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type AnswerNodeEdgeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AnswerNodeEdge'] = ResolversParentTypes['AnswerNodeEdge'],
+> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['AnswerNode']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type AvailableAnswerNodeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AvailableAnswerNode'] = ResolversParentTypes['AvailableAnswerNode'],
+> = ResolversObject<{
+  card?: Resolver<ResolversTypes['WhiteCardNode'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  game?: Resolver<ResolversTypes['GameNode'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  round?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type AvailableAnswerNodeConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AvailableAnswerNodeConnection'] = ResolversParentTypes['AvailableAnswerNodeConnection'],
+> = ResolversObject<{
+  edgeCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  edges?: Resolver<ReadonlyArray<Maybe<ResolversTypes['AvailableAnswerNodeEdge']>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type AvailableAnswerNodeEdgeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AvailableAnswerNodeEdge'] = ResolversParentTypes['AvailableAnswerNodeEdge'],
+> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['AvailableAnswerNode']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type AvailableQuestionNodeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AvailableQuestionNode'] = ResolversParentTypes['AvailableQuestionNode'],
+> = ResolversObject<{
+  card?: Resolver<ResolversTypes['BlackCardNode'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  game?: Resolver<ResolversTypes['GameNode'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  round?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type AvailableQuestionNodeConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AvailableQuestionNodeConnection'] = ResolversParentTypes['AvailableQuestionNodeConnection'],
+> = ResolversObject<{
+  edgeCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  edges?: Resolver<ReadonlyArray<Maybe<ResolversTypes['AvailableQuestionNodeEdge']>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type AvailableQuestionNodeEdgeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AvailableQuestionNodeEdge'] = ResolversParentTypes['AvailableQuestionNodeEdge'],
+> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['AvailableQuestionNode']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type BlackCardNodeResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['BlackCardNode'] = ResolversParentTypes['BlackCardNode'],
 > = ResolversObject<{
+  availablequestionSet?: Resolver<
+    ResolversTypes['AvailableQuestionNodeConnection'],
+    ParentType,
+    ContextType,
+    RequireFields<BlackCardNodeAvailablequestionSetArgs, never>
+  >;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   genre?: Resolver<ResolversTypes['GenreNode'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   pick?: Resolver<ResolversTypes['ApiBlackCardPickChoices'], ParentType, ContextType>;
-  rating?: Resolver<ResolversTypes['ApiBlackCardRatingChoices'], ParentType, ContextType>;
+  questionSet?: Resolver<
+    ResolversTypes['QuestionNodeConnection'],
+    ParentType,
+    ContextType,
+    RequireFields<BlackCardNodeQuestionSetArgs, never>
+  >;
+  rating?: Resolver<Maybe<ResolversTypes['CardRating']>, ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -2306,6 +2977,9 @@ export type GameNodeResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['GameNode'] = ResolversParentTypes['GameNode'],
 > = ResolversObject<{
+  answers?: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes['WhiteCardNode']>>>, ParentType, ContextType>;
+  availableAnswers?: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes['WhiteCardNode']>>>, ParentType, ContextType>;
+  availableQuestions?: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes['BlackCardNode']>>>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   creator?: Resolver<ResolversTypes['UserNode'], ParentType, ContextType>;
   genres?: Resolver<ResolversTypes['GenreNodeConnection'], ParentType, ContextType, RequireFields<GameNodeGenresArgs, never>>;
@@ -2316,6 +2990,7 @@ export type GameNodeResolvers<
   numSpectators?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   playerSet?: Resolver<ResolversTypes['PlayerNodeConnection'], ParentType, ContextType, RequireFields<GameNodePlayerSetArgs, never>>;
   private?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  question?: Resolver<Maybe<ResolversTypes['BlackCardNode']>, ParentType, ContextType>;
   round?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   roundTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   rounds?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -2527,6 +3202,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationRevokeRefreshTokenArgs, 'input'>
   >;
+  roundQuestion?: Resolver<
+    Maybe<ResolversTypes['RoundQuestionMutation']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationRoundQuestionArgs, 'input'>
+  >;
   setFullWidth?: Resolver<
     Maybe<ResolversTypes['SetFullWidthMutation']>,
     ParentType,
@@ -2569,6 +3250,9 @@ export type NodeResolvers<
   ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node'],
 > = ResolversObject<{
   __resolveType: TypeResolveFn<
+    | 'AnswerNode'
+    | 'AvailableAnswerNode'
+    | 'AvailableQuestionNode'
     | 'BlackCardNode'
     | 'GameNode'
     | 'GenreNode'
@@ -2576,6 +3260,7 @@ export type NodeResolvers<
     | 'PlayerNode'
     | 'ProfileNode'
     | 'ProviderNode'
+    | 'QuestionNode'
     | 'SocialNode'
     | 'UserNode'
     | 'WhiteCardNode',
@@ -2589,6 +3274,7 @@ export type NotificationNodeResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['NotificationNode'] = ResolversParentTypes['NotificationNode'],
 > = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   invites?: Resolver<
     Maybe<ResolversTypes['InviteNodeConnection']>,
     ParentType,
@@ -2635,11 +3321,18 @@ export type PlayerNodeResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['PlayerNode'] = ResolversParentTypes['PlayerNode'],
 > = ResolversObject<{
+  answerSet?: Resolver<ResolversTypes['AnswerNodeConnection'], ParentType, ContextType, RequireFields<PlayerNodeAnswerSetArgs, never>>;
   avatar?: Resolver<ResolversTypes['ApiPlayerAvatarChoices'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   czar?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   game?: Resolver<ResolversTypes['GameNode'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  questionSet?: Resolver<
+    ResolversTypes['QuestionNodeConnection'],
+    ParentType,
+    ContextType,
+    RequireFields<PlayerNodeQuestionSetArgs, never>
+  >;
   score?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   spectator?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -2753,6 +3446,42 @@ export type QueryResolvers<
   >;
 }>;
 
+export type QuestionNodeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['QuestionNode'] = ResolversParentTypes['QuestionNode'],
+> = ResolversObject<{
+  answerSet?: Resolver<ResolversTypes['AnswerNodeConnection'], ParentType, ContextType, RequireFields<QuestionNodeAnswerSetArgs, never>>;
+  card?: Resolver<ResolversTypes['BlackCardNode'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  game?: Resolver<ResolversTypes['GameNode'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  player?: Resolver<ResolversTypes['PlayerNode'], ParentType, ContextType>;
+  rating?: Resolver<ResolversTypes['ApiQuestionRatingChoices'], ParentType, ContextType>;
+  round?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QuestionNodeConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['QuestionNodeConnection'] = ResolversParentTypes['QuestionNodeConnection'],
+> = ResolversObject<{
+  edgeCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  edges?: Resolver<ReadonlyArray<Maybe<ResolversTypes['QuestionNodeEdge']>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QuestionNodeEdgeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['QuestionNodeEdge'] = ResolversParentTypes['QuestionNodeEdge'],
+> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['QuestionNode']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type RefreshTokenMutationPayloadResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['RefreshTokenMutationPayload'] = ResolversParentTypes['RefreshTokenMutationPayload'],
@@ -2771,6 +3500,14 @@ export type RevokePayloadResolvers<
 > = ResolversObject<{
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   revoked?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type RoundQuestionMutationResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['RoundQuestionMutation'] = ResolversParentTypes['RoundQuestionMutation'],
+> = ResolversObject<{
+  ok?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2892,10 +3629,17 @@ export type WhiteCardNodeResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['WhiteCardNode'] = ResolversParentTypes['WhiteCardNode'],
 > = ResolversObject<{
+  answerSet?: Resolver<ResolversTypes['AnswerNodeConnection'], ParentType, ContextType, RequireFields<WhiteCardNodeAnswerSetArgs, never>>;
+  availableanswerSet?: Resolver<
+    ResolversTypes['AvailableAnswerNodeConnection'],
+    ParentType,
+    ContextType,
+    RequireFields<WhiteCardNodeAvailableanswerSetArgs, never>
+  >;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   genre?: Resolver<ResolversTypes['GenreNode'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  rating?: Resolver<ResolversTypes['ApiWhiteCardRatingChoices'], ParentType, ContextType>;
+  rating?: Resolver<Maybe<ResolversTypes['CardRating']>, ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -2922,6 +3666,15 @@ export type WhiteCardNodeEdgeResolvers<
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
+  AnswerNode?: AnswerNodeResolvers<ContextType>;
+  AnswerNodeConnection?: AnswerNodeConnectionResolvers<ContextType>;
+  AnswerNodeEdge?: AnswerNodeEdgeResolvers<ContextType>;
+  AvailableAnswerNode?: AvailableAnswerNodeResolvers<ContextType>;
+  AvailableAnswerNodeConnection?: AvailableAnswerNodeConnectionResolvers<ContextType>;
+  AvailableAnswerNodeEdge?: AvailableAnswerNodeEdgeResolvers<ContextType>;
+  AvailableQuestionNode?: AvailableQuestionNodeResolvers<ContextType>;
+  AvailableQuestionNodeConnection?: AvailableQuestionNodeConnectionResolvers<ContextType>;
+  AvailableQuestionNodeEdge?: AvailableQuestionNodeEdgeResolvers<ContextType>;
   BlackCardNode?: BlackCardNodeResolvers<ContextType>;
   BlackCardNodeConnection?: BlackCardNodeConnectionResolvers<ContextType>;
   BlackCardNodeEdge?: BlackCardNodeEdgeResolvers<ContextType>;
@@ -2961,8 +3714,12 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   ProviderNodeConnection?: ProviderNodeConnectionResolvers<ContextType>;
   ProviderNodeEdge?: ProviderNodeEdgeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  QuestionNode?: QuestionNodeResolvers<ContextType>;
+  QuestionNodeConnection?: QuestionNodeConnectionResolvers<ContextType>;
+  QuestionNodeEdge?: QuestionNodeEdgeResolvers<ContextType>;
   RefreshTokenMutationPayload?: RefreshTokenMutationPayloadResolvers<ContextType>;
   RevokePayload?: RevokePayloadResolvers<ContextType>;
+  RoundQuestionMutation?: RoundQuestionMutationResolvers<ContextType>;
   SetFullWidthMutation?: SetFullWidthMutationResolvers<ContextType>;
   SocialAuthJWTPayload?: SocialAuthJwtPayloadResolvers<ContextType>;
   SocialCamelJSON?: GraphQLScalarType;

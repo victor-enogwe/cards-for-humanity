@@ -7,28 +7,67 @@ export const typeDefs = gql`
     subscription: Subscription
   }
 
-  enum ApiBlackCardPickChoices {
-    A_1
+  type AnswerNode implements Node {
+    card: WhiteCardNode!
+    createdAt: DateTime!
+    game: GameNode!
 
-    A_2
+    id: ID!
+    player: PlayerNode!
+    question: QuestionNode!
+    rating: ApiAnswerRatingChoices!
+
+    round: Int!
+    updatedAt: DateTime!
   }
 
-  enum ApiBlackCardRatingChoices {
+  type AnswerNodeConnection {
+    edgeCount: Int
+
+    edges: [AnswerNodeEdge]!
+
+    pageInfo: PageInfo!
+    totalCount: Int
+  }
+
+  type AnswerNodeEdge {
+    cursor: String!
+
+    node: AnswerNode
+  }
+
+  enum ApiAnswerRatingChoices {
+    BAD
+
+    LIKE
+
+    LOVE
+
+    MEH
+
     NORMAL
   }
 
+  enum ApiBlackCardPickChoices {
+    PICK_ONE
+
+    PICK_THREE
+
+    PICK_TWO
+  }
+
   enum ApiGameStatusChoices {
-    AWAITING_ANSWERS
+    GAA
 
-    AWAITING_CZAR
+    GAC
 
-    AWAITING_PLAYERS
+    GAP
 
-    GAME_CANCELED
+    GC
 
-    GAME_ENDED
+    GE
 
-    GAME_STARTED
+    GS
   }
 
   enum ApiPlayerAvatarChoices {
@@ -127,8 +166,68 @@ export const typeDefs = gql`
     TWITTER
   }
 
-  enum ApiWhiteCardRatingChoices {
+  enum ApiQuestionRatingChoices {
+    BAD
+
+    LIKE
+
+    LOVE
+
+    MEH
+
     NORMAL
+  }
+
+  type AvailableAnswerNode implements Node {
+    card: WhiteCardNode!
+    createdAt: DateTime!
+    game: GameNode!
+
+    id: ID!
+
+    round: Int!
+    updatedAt: DateTime!
+  }
+
+  type AvailableAnswerNodeConnection {
+    edgeCount: Int
+
+    edges: [AvailableAnswerNodeEdge]!
+
+    pageInfo: PageInfo!
+    totalCount: Int
+  }
+
+  type AvailableAnswerNodeEdge {
+    cursor: String!
+
+    node: AvailableAnswerNode
+  }
+
+  type AvailableQuestionNode implements Node {
+    card: BlackCardNode!
+    createdAt: DateTime!
+    game: GameNode!
+
+    id: ID!
+
+    round: Int!
+    updatedAt: DateTime!
+  }
+
+  type AvailableQuestionNodeConnection {
+    edgeCount: Int
+
+    edges: [AvailableQuestionNodeEdge]!
+
+    pageInfo: PageInfo!
+    totalCount: Int
+  }
+
+  type AvailableQuestionNodeEdge {
+    cursor: String!
+
+    node: AvailableQuestionNode
   }
 
   input BatchCreateInviteInput {
@@ -139,12 +238,38 @@ export const typeDefs = gql`
   }
 
   type BlackCardNode implements Node {
+    availablequestionSet(
+      after: String
+      before: String
+      card: ID
+      createdAt: DateTime
+      first: Int
+      game: ID
+      last: Int
+      offset: Int
+      round: Int
+      updatedAt: DateTime
+    ): AvailableQuestionNodeConnection!
     createdAt: DateTime!
     genre: GenreNode!
 
     id: ID!
     pick: ApiBlackCardPickChoices!
-    rating: ApiBlackCardRatingChoices!
+    questionSet(
+      after: String
+      before: String
+      card: ID
+      createdAt: DateTime
+      first: Int
+      game: ID
+      last: Int
+      offset: Int
+      player: ID
+      rating: String
+      round: Int
+      updatedAt: DateTime
+    ): QuestionNodeConnection!
+    rating: CardRating
 
     text: String!
     updatedAt: DateTime!
@@ -165,7 +290,18 @@ export const typeDefs = gql`
     node: BlackCardNode
   }
 
+  enum CardRating {
+    BAD
+    LIKE
+    LOVE
+    MEH
+    NORMAL
+  }
+
   input CreateGameInput {
+    answerSet: [ID]
+    availableanswerSet: [ID]
+    availablequestionSet: [ID]
     genres: [ID]!
 
     joinEndsAt: DateTime
@@ -175,16 +311,20 @@ export const typeDefs = gql`
     numSpectators: Int
     playerSetAdd: [CreateGameInputAddGamePlayerset]
     private: Boolean
+    questionSet: [ID]
 
     round: Int
 
     roundTime: Int
 
     rounds: Int
+    task: ID
   }
 
   input CreateGameInputAddGamePlayerset {
+    answerSet: [ID]
     avatar: ApiPlayerAvatarChoices
+    questionSet: [ID]
     spectator: Boolean
     user: ID!
     winner: [ID]
@@ -240,6 +380,9 @@ export const typeDefs = gql`
   }
 
   type GameNode implements Node {
+    answers: [WhiteCardNode]
+    availableAnswers: [WhiteCardNode]
+    availableQuestions: [BlackCardNode]
     createdAt: DateTime!
     creator: UserNode!
     genres(
@@ -295,6 +438,7 @@ export const typeDefs = gql`
       user: ID
     ): PlayerNodeConnection!
     private: Boolean!
+    question: BlackCardNode
 
     round: Int!
 
@@ -339,7 +483,6 @@ export const typeDefs = gql`
       last: Int
       offset: Int
       pick: String
-      rating: String
       text: String
       updatedAt: DateTime
     ): BlackCardNodeConnection!
@@ -364,6 +507,7 @@ export const typeDefs = gql`
       roundTime: Int
       rounds: Int
       status: String
+      task: ID
       updatedAt: DateTime
       winner: ID
     ): GameNodeConnection!
@@ -467,6 +611,7 @@ export const typeDefs = gql`
     joinGame(input: JoinGameMutationInput!): JoinGameMutation
     refreshToken(input: RefreshTokenMutationInput!): RefreshTokenMutationPayload
     revokeRefreshToken(input: RevokeInput!): RevokePayload
+    roundQuestion(input: RoundQuestionMutationInput!): RoundQuestionMutation
     setFullWidth(input: SetFullWidthMutationInput!): SetFullWidthMutation
 
     socialAuth(input: SocialAuthJWTInput!): SocialAuthJWTPayload
@@ -491,6 +636,8 @@ export const typeDefs = gql`
   }
 
   type NotificationNode {
+    id: ID!
+
     invites(after: String, before: String, email: String, first: Int, last: Int, offset: Int, revoked: Boolean): InviteNodeConnection
   }
 
@@ -525,12 +672,41 @@ export const typeDefs = gql`
   }
 
   type PlayerNode implements Node {
+    answerSet(
+      after: String
+      before: String
+      card: ID
+      createdAt: DateTime
+      first: Int
+      game: ID
+      last: Int
+      offset: Int
+      player: ID
+      question: ID
+      rating: String
+      round: Int
+      updatedAt: DateTime
+    ): AnswerNodeConnection!
     avatar: ApiPlayerAvatarChoices!
     createdAt: DateTime!
     czar: Boolean!
     game: GameNode!
 
     id: ID!
+    questionSet(
+      after: String
+      before: String
+      card: ID
+      createdAt: DateTime
+      first: Int
+      game: ID
+      last: Int
+      offset: Int
+      player: ID
+      rating: String
+      round: Int
+      updatedAt: DateTime
+    ): QuestionNodeConnection!
     score: Int!
     spectator: Boolean!
     updatedAt: DateTime!
@@ -552,6 +728,7 @@ export const typeDefs = gql`
       roundTime: Int
       rounds: Int
       status: String
+      task: ID
       updatedAt: DateTime
       winner: ID
     ): GameNodeConnection!
@@ -636,7 +813,6 @@ export const typeDefs = gql`
       last: Int
       offset: Int
       pick: String
-      rating: String
       text: String
       updatedAt: DateTime
     ): BlackCardNodeConnection
@@ -661,6 +837,7 @@ export const typeDefs = gql`
       roundTime: Int
       rounds: Int
       status: String
+      task: ID
       updatedAt: DateTime
       winner: ID
     ): GameNodeConnection
@@ -715,6 +892,49 @@ export const typeDefs = gql`
     ): WhiteCardNodeConnection
   }
 
+  type QuestionNode implements Node {
+    answerSet(
+      after: String
+      before: String
+      card: ID
+      createdAt: DateTime
+      first: Int
+      game: ID
+      last: Int
+      offset: Int
+      player: ID
+      question: ID
+      rating: String
+      round: Int
+      updatedAt: DateTime
+    ): AnswerNodeConnection!
+    card: BlackCardNode!
+    createdAt: DateTime!
+    game: GameNode!
+
+    id: ID!
+    player: PlayerNode!
+    rating: ApiQuestionRatingChoices!
+
+    round: Int!
+    updatedAt: DateTime!
+  }
+
+  type QuestionNodeConnection {
+    edgeCount: Int
+
+    edges: [QuestionNodeEdge]!
+
+    pageInfo: PageInfo!
+    totalCount: Int
+  }
+
+  type QuestionNodeEdge {
+    cursor: String!
+
+    node: QuestionNode
+  }
+
   input RefreshTokenMutationInput {
     clientMutationId: String
     refreshToken: String
@@ -736,6 +956,18 @@ export const typeDefs = gql`
   type RevokePayload {
     clientMutationId: String
     revoked: Int!
+  }
+
+  type RoundQuestionMutation {
+    ok: Boolean
+  }
+
+  input RoundQuestionMutationInput {
+    card: ID!
+    game: ID!
+    player: ID!
+    rating: CardRating!
+    round: Int!
   }
 
   type SetFullWidthMutation {
@@ -819,6 +1051,7 @@ export const typeDefs = gql`
       roundTime: Int
       rounds: Int
       status: String
+      task: ID
       updatedAt: DateTime
       winner: ID
     ): GameNodeConnection!
@@ -896,11 +1129,38 @@ export const typeDefs = gql`
   }
 
   type WhiteCardNode implements Node {
+    answerSet(
+      after: String
+      before: String
+      card: ID
+      createdAt: DateTime
+      first: Int
+      game: ID
+      last: Int
+      offset: Int
+      player: ID
+      question: ID
+      rating: String
+      round: Int
+      updatedAt: DateTime
+    ): AnswerNodeConnection!
+    availableanswerSet(
+      after: String
+      before: String
+      card: ID
+      createdAt: DateTime
+      first: Int
+      game: ID
+      last: Int
+      offset: Int
+      round: Int
+      updatedAt: DateTime
+    ): AvailableAnswerNodeConnection!
     createdAt: DateTime!
     genre: GenreNode!
 
     id: ID!
-    rating: ApiWhiteCardRatingChoices!
+    rating: CardRating
 
     text: String!
     updatedAt: DateTime!

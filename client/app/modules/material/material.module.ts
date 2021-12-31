@@ -1,4 +1,5 @@
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { CdkAccordionModule } from '@angular/cdk/accordion';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { NgModule } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -9,7 +10,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCommonModule, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
@@ -47,13 +47,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatToolbarModule,
     MatSlideToggleModule,
     MatGridListModule,
-    MatExpansionModule,
     MatDatepickerModule,
     MatNativeDateModule,
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
     NgxMatNativeDateModule,
     MatBottomSheetModule,
+    CdkAccordionModule,
   ],
   exports: [
     MatCommonModule,
@@ -76,13 +76,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatToolbarModule,
     MatSlideToggleModule,
     MatGridListModule,
-    MatExpansionModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatBottomSheetModule,
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
     NgxMatNativeDateModule,
+    CdkAccordionModule,
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },

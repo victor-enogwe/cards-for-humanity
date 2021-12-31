@@ -15,7 +15,11 @@ export class NotificationService {
   }
 
   fetchNotifications(email: string) {
-    return this.apollo.watchQuery<Pick<Query, 'notifications'>>({ query: NOTIFICATIONS_QUERY, variables: { email } });
+    return this.apollo.watchQuery<Pick<Query, 'notifications'>>({
+      query: NOTIFICATIONS_QUERY,
+      variables: { email },
+      fetchPolicy: 'network-only',
+    });
   }
 
   // fetchNotificationsSubscription(email: string) {

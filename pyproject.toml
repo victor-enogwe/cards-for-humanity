@@ -39,6 +39,7 @@ social-auth-app-django = "^5.0.0"
 social-auth-core = "^4.1.0"
 Rx = "Rx-1.6.1-py2.py3-none-any.whl"
 celery = "^5.2.2"
+django-celery-beat = "^2.2.1"
 
 [tool.poetry.dev-dependencies]
 black = { version = "*", allow-prereleases = true }
