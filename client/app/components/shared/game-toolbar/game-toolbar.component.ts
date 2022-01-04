@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { ApiGameStatusChoices, GameNode } from '../../../@types/graphql';
+import { GameNode } from '../../../@types/graphql';
 import { APP_HOST } from '../../../modules/cah/cah.module';
 import { NotificationService } from '../../../services/notification/notification.service';
 import { UIService } from '../../../services/ui/ui.service';
@@ -16,9 +16,6 @@ export class GameToolbarComponent {
   @Output() inviteOnly: EventEmitter<MatSlideToggleChange> = new EventEmitter<MatSlideToggleChange>();
   qrCodeComponent = QRCodeComponent;
   navOpen$ = this.uiService.navOpen$;
-  timers: { [key in ApiGameStatusChoices]?: number } = {
-    GAC: 10,
-  };
 
   constructor(@Inject(APP_HOST) public host: string, private notificationService: NotificationService, private uiService: UIService) {}
 
@@ -32,5 +29,10 @@ export class GameToolbarComponent {
 
   genresToString(game: GameNode) {
     return game.genres.edges.map((genre) => genre?.node?.description).join(', ');
+  }
+
+  timer(game: GameNode) {
+    const start = new Date(game.updatedAt);
+    return new Date(start.setMilliseconds(start.getMilliseconds() + game.roundTime + 5));
   }
 }

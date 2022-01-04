@@ -1,59 +1,78 @@
-<div class="d-flex flex-column flex-grow-1 flex-fill justify-content-center align-items-center h-100 position-relative" [ngSwitch]="type">
-  <ng-container *ngIf="!show">
-    <div *ngSwitchCase="'question'">
-      <p class="mb-0" *ngIf="!czar">Waiting for <strong class="badge bg-primary">CZAR</strong> Card...</p>
-      <p class="mb-0" *ngIf="czar">Choose Your Card</p>
-    </div>
-
-    <div *ngSwitchDefault>
-      <p class="mb-0" *ngIf="!czar">Waiting for <strong class="badge bg-primary">CZAR</strong> Input...</p>
-      <p class="mb-0" *ngIf="czar">Choose Your Answer</p>
-    </div>
-  </ng-container>
-
-  <ng-container *ngIf="show">
-    <ng-container *ngIf="{ deckLength: deckLength$ | async } as deckData">
-      <div *ngIf="{ cards: getCards($any(deckData.deckLength))(deck!) } as data" class="d-flex flex-fill flex-grow-1 carousel slide w-100">
-        <div class="carousel-inner d-flex flex-column justify-content-center">
+<div class="d-flex flex-column flex-grow-1 flex-fill justify-content-center align-items-center h-100 position-relative">
+  <ng-container>
+    <ng-container *ngIf="{ deckLength: deckLength$ | async, selected: selectionChanges$ | async } as deckData">
+      <div *ngIf="{ cards: getCards($any(deckData.deckLength), deckData.selected!)(deck!) } as data"
+        class="d-flex flex-fill flex-grow-1 carousel slide w-100">
+        <div [@slideAnimation]="activeIndex" (@slideAnimation.done)="animated($event)"
+          class="carousel-inner d-flex flex-column justify-content-center">
           <div *ngFor="let cardDecks of data.cards; let index=index"
             class="carousel-item d-flex flex-column flex-fill flex-grow-1 justify-content-center"
             [ngClass]="{ active: activeIndex === index, 'd-none': activeIndex !== index}">
             <div class="card-group d-flex justify-content-center px-4 pb-0 g-2">
-              <mat-card *ngFor="let card of cardDecks" class="card d-flex flex-fill flex-column justify-content-between align-items-center m-4"
-                cahDebounceClick (debounceClick)="onSelect(card)">
-                <span class="selection"></span>
-                <div class="d-flex flex-row flex-fill flex-grow-1 w-100 justify-content-between align-items-start">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="30" viewBox="0 0 100 125">
-                    <path
-                      d="M94.021 11.858a1.823 1.823 0 00-1.222-.689l-49.98-6.022a1.836 1.836 0 00-2.04 1.602l-1.017 8.439L7.081 27.119c-.46.168-.827.505-1.033.95a1.824 1.824 0 00-.061 1.402l23.482 64.323a1.84 1.84 0 002.352 1.094l37.895-13.835 14.455 1.741a1.836 1.836 0 002.04-1.602l8.191-67.985a1.82 1.82 0 00-.381-1.349zM31.214 93.117L7.722 28.877l31.793-11.633-6.926 57.49a1.836 1.836 0 001.601 2.04l31.422 3.785-34.398 12.558z" />
-                  </svg>
-
-                  <span class="small text-muted"><small>rating: {{card?.rating | lowercase}}</small></span>
+              <mat-card *ngFor="let card of cardDecks"
+                class="card d-flex flex-fill flex-column justify-content-between align-items-center m-4 rounded" cahDebounceClick
+                (debounceClick)="$any(card)?.selected ? false : onSelect(card!)"
+                [ngClass]="{ 'card-selected bg-dark text-white': deckData.selected?.includes(card!) || disabled || $any(card)?.selected }">
+                <div class="d-flex flex-fill flex-column justify-content-between align-items-center back d-none">
+                  <ng-container *ngIf="{ player: $any(card)?.player, avatar: $any(card)?.player?.avatar } as playerData">
+                    <img *ngIf="$any(avatars)[playerData.avatar] as avatar" [src]="avatar.link| safeUrl" class="avatar"
+                      alt="{{avatar.name}}" class="img-fluid img-thumbnail border rounded-circle" width="25"
+                      [ngClass]="{ 'border-5 border-success': $any(card)?.selected, 'border-3 border-warning': playerData.player?.user?.id === profile?.sub}" />
+                    <svg *ngIf="!playerData.avatar" xmlns="http://www.w3.org/2000/svg" width="24" height="30" viewBox="0 0 100 125">
+                      <path
+                        d="M94.021 11.858a1.823 1.823 0 00-1.222-.689l-49.98-6.022a1.836 1.836 0 00-2.04 1.602l-1.017 8.439L7.081 27.119c-.46.168-.827.505-1.033.95a1.824 1.824 0 00-.061 1.402l23.482 64.323a1.84 1.84 0 002.352 1.094l37.895-13.835 14.455 1.741a1.836 1.836 0 002.04-1.602l8.191-67.985a1.82 1.82 0 00-.381-1.349zM31.214 93.117L7.722 28.877l31.793-11.633-6.926 57.49a1.836 1.836 0 001.601 2.04l31.422 3.785-34.398 12.558z" />
+                    </svg>
+                  </ng-container>
                 </div>
-                <p [ngClass]="{ small: deckData.deckLength === 1 }">{{card?.text}}</p>
-                <div class="d-flex flex-row flex-fill flex-grow-1 w-100 justify-content-between align-items-end">
-                  <a [href]="card?.genre?.credit"
-                    class="text-decoration-none text-muted small"><small>{{card?.genre?.description | lowercase}}</small></a>
+                <div class="d-flex flex-fill flex-column justify-content-between align-items-center front">
+                  <span matTooltip="selected" class="selection text-dark bg-white">
+                    <mat-icon>check_circle</mat-icon>
+                  </span>
+                  <div class="d-flex flex-row flex-fill flex-grow-1 w-100 justify-content-between align-items-start">
+                    <ng-container *ngIf="{ player: $any(card)?.player, avatar: $any(card)?.player?.avatar } as playerData">
+                      <img *ngIf="$any(avatars)[playerData.avatar] as avatar" [src]="avatar.link| safeUrl" class="avatar"
+                        alt="{{avatar.name}}" class="img-fluid img-thumbnail border rounded-circle" width="25"
+                        [ngClass]="{ 'border-5 border-success': $any(card)?.selected, 'border-3 border-warning': playerData.player?.user?.id === profile?.sub}" />
+                      <svg *ngIf="!playerData.avatar" xmlns="http://www.w3.org/2000/svg" width="24" height="30" viewBox="0 0 100 125">
+                        <path
+                          d="M94.021 11.858a1.823 1.823 0 00-1.222-.689l-49.98-6.022a1.836 1.836 0 00-2.04 1.602l-1.017 8.439L7.081 27.119c-.46.168-.827.505-1.033.95a1.824 1.824 0 00-.061 1.402l23.482 64.323a1.84 1.84 0 002.352 1.094l37.895-13.835 14.455 1.741a1.836 1.836 0 002.04-1.602l8.191-67.985a1.82 1.82 0 00-.381-1.349zM31.214 93.117L7.722 28.877l31.793-11.633-6.926 57.49a1.836 1.836 0 001.601 2.04l31.422 3.785-34.398 12.558z" />
+                      </svg>
+                    </ng-container>
 
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="30" viewBox="0 0 100 125" class="upside-down">
-                    <path
-                      d="M94.021 11.858a1.823 1.823 0 00-1.222-.689l-49.98-6.022a1.836 1.836 0 00-2.04 1.602l-1.017 8.439L7.081 27.119c-.46.168-.827.505-1.033.95a1.824 1.824 0 00-.061 1.402l23.482 64.323a1.84 1.84 0 002.352 1.094l37.895-13.835 14.455 1.741a1.836 1.836 0 002.04-1.602l8.191-67.985a1.82 1.82 0 00-.381-1.349zM31.214 93.117L7.722 28.877l31.793-11.633-6.926 57.49a1.836 1.836 0 001.601 2.04l31.422 3.785-34.398 12.558z" />
-                  </svg>
+                    <span class="small text-muted"><small>rating: {{card?.card?.rating | lowercase}}</small></span>
+                  </div>
+                  <p [ngClass]="{ small: deckData.deckLength === 1 }">{{card?.card?.text}}</p>
+                  <div class="d-flex flex-row flex-fill flex-grow-1 w-100 justify-content-between align-items-end">
+                    <a [href]="card?.card?.genre?.credit"
+                      class="text-decoration-none text-muted small"><small>{{card?.card?.genre?.description | lowercase}}</small></a>
+
+                    <ng-container *ngIf="{ player: $any(card)?.player, avatar: $any(card)?.player?.avatar } as playerData">
+                      <img *ngIf="$any(avatars)[playerData.avatar] as avatar" [src]="avatar.link| safeUrl" class="avatar"
+                        alt="{{avatar.name}}" class="img-fluid img-thumbnail border rounded-circle" width="25"
+                        [ngClass]="{ 'border-5 border-success': $any(card)?.selected, 'border-3 border-warning': playerData.player?.user?.id === profile?.sub}" />
+                      <svg *ngIf="!playerData.avatar" xmlns="http://www.w3.org/2000/svg" width="24" height="30" viewBox="0 0 100 125">
+                        <path
+                          d="M94.021 11.858a1.823 1.823 0 00-1.222-.689l-49.98-6.022a1.836 1.836 0 00-2.04 1.602l-1.017 8.439L7.081 27.119c-.46.168-.827.505-1.033.95a1.824 1.824 0 00-.061 1.402l23.482 64.323a1.84 1.84 0 002.352 1.094l37.895-13.835 14.455 1.741a1.836 1.836 0 002.04-1.602l8.191-67.985a1.82 1.82 0 00-.381-1.349zM31.214 93.117L7.722 28.877l31.793-11.633-6.926 57.49a1.836 1.836 0 001.601 2.04l31.422 3.785-34.398 12.558z" />
+                      </svg>
+                    </ng-container>
+                  </div>
                 </div>
               </mat-card>
             </div>
           </div>
         </div>
 
-        <button class="carousel-control-prev" type="button" data-bs-target="#instructions" data-bs-slide="prev" matTooltip="prev"
-          matTooltipPosition="right" (click)="navigate(data.cards.length)('backward')">
-          <mat-icon color="primary">arrow_back_ios</mat-icon>
-        </button>
+        <ng-container>
+          <button class="carousel-control-prev" type="button" data-bs-target="#instructions" data-bs-slide="prev" matTooltip="prev"
+            matTooltipPosition="right" (click)="navigate(data.cards.length)('backward')" [disabled]="deckData.selected?.length! >= pick">
+            <mat-icon color="primary">arrow_back_ios</mat-icon>
+          </button>
 
-        <button class="carousel-control-next" type="button" data-bs-target="#instructions" data-bs-slide="next" matTooltip="next"
-          matTooltipPosition="left" (click)="navigate(data.cards.length)('forward')">
-          <mat-icon color="primary">arrow_forward_ios</mat-icon>
-        </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#instructions" data-bs-slide="next" matTooltip="next"
+            matTooltipPosition="left" (click)="navigate(data.cards.length)('forward')" [disabled]="deckData.selected?.length! >= pick">
+            <mat-icon color="primary">arrow_forward_ios</mat-icon>
+          </button>
+        </ng-container>
       </div>
     </ng-container>
   </ng-container>

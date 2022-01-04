@@ -18,7 +18,9 @@ import { DialogComponentDirective } from '../../directives/dialog-component/dial
 import { LoadingOverlayDirective } from '../../directives/loading-overlay/loading-overlay.directive';
 import { MatInputFocusDirective } from '../../directives/mat-input-focus/mat-input-focus.directive';
 import { QrCodeDirective } from '../../directives/qr-code/qr-code.directive';
+import { BoolPipe } from '../../pipes/bool/bool.pipe';
 import { MapToIterablePipe } from '../../pipes/map-to-iterable/map-to-iterable.pipe';
+import { MapToKeyPipe } from '../../pipes/map-to-key/map-to-key.pipe';
 import { SafeUrlPipe } from '../../pipes/safe-url/safe-url.pipe';
 import { TimeAgoPipe } from '../../pipes/time-ago/time-ago.pipe';
 import { CahDialogService } from '../../services/cah-dialog/cah-dialog.service';
@@ -43,8 +45,10 @@ import { MaterialModule } from '../material/material.module';
     SafeUrlPipe,
     MapToIterablePipe,
     TimeAgoPipe,
+    BoolPipe,
+    MapToKeyPipe,
   ],
-  providers: [SafeUrlPipe, MapToIterablePipe, CahDialogService],
+  providers: [SafeUrlPipe, MapToIterablePipe, TimeAgoPipe, BoolPipe, MapToKeyPipe, CahDialogService],
   exports: [
     CommonModule,
     FormsModule,
@@ -63,6 +67,8 @@ import { MaterialModule } from '../material/material.module';
     SafeUrlPipe,
     MapToIterablePipe,
     TimeAgoPipe,
+    BoolPipe,
+    MapToKeyPipe,
     ConfirmDialogDirective,
     DebounceClickDirective,
     DialogComponentDirective,

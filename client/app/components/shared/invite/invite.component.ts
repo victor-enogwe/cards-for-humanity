@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { lastValueFrom, tap } from 'rxjs';
+import { ConfirmDialogData } from '../../../@types/global';
 import { NewGameNode } from '../../../@types/graphql';
 import { APP_HOST } from '../../../modules/cah/cah.module';
 import { FormService } from '../../../services/form/form.service';
@@ -24,7 +25,8 @@ export class InviteComponent {
     private formBuilder: FormBuilder,
     private formService: FormService,
     @Inject(APP_HOST) public host: string,
-    @Inject(MAT_DIALOG_DATA) public data: { game: NewGameNode; inviteOnly: boolean; spectator: boolean },
+    public dialogRef: MatDialogRef<InviteComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { game: NewGameNode; inviteOnly: boolean; spectator: boolean } & ConfirmDialogData,
     private gameService: GameService,
     private notificationService: NotificationService,
   ) {}
@@ -46,11 +48,10 @@ export class InviteComponent {
   }
 
   invitePlayers({ players }: { players: string[] }) {
-    console.log(this.data);
     return lastValueFrom(
       this.gameService
         .invitePlayers(players.map((player) => ({ email: player, game: this.data.game.id, spectator: this.data.spectator ?? false })))
-        .pipe(tap(() => this.notificationService.notify('invites', 'sent!'))),
+        .pipe(tap(() => [this.notificationService.notify('invites', 'sent!'), this.dialogRef.close()])),
     );
   }
 

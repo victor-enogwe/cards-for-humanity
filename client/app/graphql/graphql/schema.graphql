@@ -11,10 +11,11 @@ type AnswerNode implements Node {
   """The ID of the object."""
   id: ID!
   player: PlayerNode!
-  question: QuestionNode!
+  question: BlackCardNode!
   rating: ApiAnswerRatingChoices!
   """game round"""
   round: Int!
+  selected: Boolean!
   updatedAt: DateTime!
 }
 
@@ -37,161 +38,165 @@ type AnswerNodeEdge {
 
 """An enumeration."""
 enum ApiAnswerRatingChoices {
-  """Bad"""
+  """BAD"""
   BAD
-  """Like"""
+  """LIKE"""
   LIKE
-  """Love"""
+  """LOVE"""
   LOVE
-  """Meh"""
+  """MEH"""
   MEH
-  """Normal"""
+  """NORMAL"""
   NORMAL
 }
 
 """An enumeration."""
 enum ApiBlackCardPickChoices {
-  """Pick One"""
+  """PICK_ONE"""
   PICK_ONE
-  """Pick Three"""
+  """PICK_THREE"""
   PICK_THREE
-  """Pick Two"""
+  """PICK_TWO"""
   PICK_TWO
 }
 
 """An enumeration."""
 enum ApiGameStatusChoices {
-  """Awaiting Answers"""
-  GAA
-  """Awaiting Czar"""
-  GAC
-  """Awaiting Players"""
-  GAP
-  """Game Canceled"""
-  GC
-  """Game Ended"""
-  GE
-  """Game Started"""
-  GS
+  """GACA"""
+  AWAITING_CZAR_ANSWERS
+  """GACQ"""
+  AWAITING_CZAR_QUESTION
+  """GAP"""
+  AWAITING_PLAYERS
+  """GAPA"""
+  AWAITING_PLAYER_ANSWERS
+  """GC"""
+  GAME_CANCELED
+  """GE"""
+  GAME_ENDED
+  """GS"""
+  GAME_STARTED
+  """GSRR"""
+  SHOW_ROUND_RESULT
 }
 
 """An enumeration."""
 enum ApiPlayerAvatarChoices {
-  """abby"""
+  """ABBY"""
   ABBY
-  """alfred"""
+  """ALFRED"""
   ALFRED
-  """andina"""
+  """ANDINA"""
   ANDINA
-  """astro"""
+  """ASTRO"""
   ASTRO
-  """camile"""
+  """CAMILE"""
   CAMILE
-  """dorothy"""
+  """DOROTHY"""
   DOROTHY
-  """dudai"""
+  """DUDAI"""
   DUDAI
-  """eduardo"""
+  """EDUARDO"""
   EDUARDO
-  """general"""
+  """GENERAL"""
   GENERAL
-  """grace"""
+  """GRACE"""
   GRACE
-  """iranir"""
+  """IRANIR"""
   IRANIR
-  """jennifer"""
+  """JENNIFER"""
   JENNIFER
-  """labrat"""
+  """LABRAT"""
   LABRAT
-  """luther"""
+  """LUTHER"""
   LUTHER
-  """rainbowness"""
+  """RAINBOWNESS"""
   RAINBOWNESS
-  """shin"""
+  """SHIN"""
   SHIN
 }
 
 """An enumeration."""
 enum ApiProfileAvatarChoices {
-  """abby"""
+  """ABBY"""
   ABBY
-  """alfred"""
+  """ALFRED"""
   ALFRED
-  """andina"""
+  """ANDINA"""
   ANDINA
-  """astro"""
+  """ASTRO"""
   ASTRO
-  """camile"""
+  """CAMILE"""
   CAMILE
-  """dorothy"""
+  """DOROTHY"""
   DOROTHY
-  """dudai"""
+  """DUDAI"""
   DUDAI
-  """eduardo"""
+  """EDUARDO"""
   EDUARDO
-  """general"""
+  """GENERAL"""
   GENERAL
-  """grace"""
+  """GRACE"""
   GRACE
-  """iranir"""
+  """IRANIR"""
   IRANIR
-  """jennifer"""
+  """JENNIFER"""
   JENNIFER
-  """labrat"""
+  """LABRAT"""
   LABRAT
-  """luther"""
+  """LUTHER"""
   LUTHER
-  """rainbowness"""
+  """RAINBOWNESS"""
   RAINBOWNESS
-  """shin"""
+  """SHIN"""
   SHIN
 }
 
 """An enumeration."""
 enum ApiProfileGenderChoices {
-  """Female"""
+  """FEMALE"""
   FEMALE
-  """Male"""
+  """MALE"""
   MALE
-  """Other"""
+  """OTHER"""
   OTHER
 }
 
 """An enumeration."""
 enum ApiProviderConversionModeChoices {
-  """Created"""
+  """CREATED"""
   CREATED
-  """Invited"""
+  """INVITED"""
   INVITED
-  """Superuser"""
+  """SUPERUSER"""
   SUPERUSER
 }
 
 """An enumeration."""
 enum ApiProviderProviderChoices {
-  """Email"""
+  """EMAIL"""
   EMAIL
-  """Facebook"""
+  """FACEBOOK"""
   FACEBOOK
-  """Google"""
+  """GOOGLE"""
   GOOGLE
-  """Instagram"""
+  """INSTAGRAM"""
   INSTAGRAM
-  """Twitter"""
+  """TWITTER"""
   TWITTER
 }
 
 """An enumeration."""
 enum ApiQuestionRatingChoices {
-  """Bad"""
+  """BAD"""
   BAD
-  """Like"""
+  """LIKE"""
   LIKE
-  """Love"""
+  """LOVE"""
   LOVE
-  """Meh"""
+  """MEH"""
   MEH
-  """Normal"""
+  """NORMAL"""
   NORMAL
 }
 
@@ -259,6 +264,7 @@ input BatchCreateInviteInput {
 }
 
 type BlackCardNode implements Node {
+  answerSet(after: String, before: String, card: ID, createdAt: DateTime, first: Int, game: ID, last: Int, offset: Int, player: ID, question: ID, rating: String, round: Int, selected: Boolean, updatedAt: DateTime): AnswerNodeConnection!
   availablequestionSet(after: String, before: String, card: ID, createdAt: DateTime, first: Int, game: ID, last: Int, offset: Int, round: Int, updatedAt: DateTime): AvailableQuestionNodeConnection!
   createdAt: DateTime!
   genre: GenreNode!
@@ -295,6 +301,23 @@ enum CardRating {
   LOVE
   MEH
   NORMAL
+}
+
+input ChatInput {
+  message: String!
+  room: ID!
+  sender: ID!
+}
+
+type ChatNode {
+  message: String!
+  room: ID!
+  sender: ID!
+}
+
+"""chat room subscriptions"""
+type ChatSubscription {
+  chat(input: ChatInput!): ChatNode
 }
 
 input CreateGameInput {
@@ -380,6 +403,7 @@ type DeleteRefreshTokenCookiePayload {
   deleted: Boolean!
 }
 
+"""join game in progress"""
 type GameInProgressSubscription {
   gameInProgress: GameNode
 }
@@ -389,11 +413,12 @@ type GameInviteMutation {
 }
 
 type GameNode implements Node {
-  answers: [WhiteCardNode]
-  availableAnswers: [WhiteCardNode]
-  availableQuestions: [BlackCardNode]
+  answers: [AnswerNode]
+  availableAnswers: [AvailableAnswerNode]
+  availableQuestions: [AvailableQuestionNode]
   createdAt: DateTime!
   creator: UserNode!
+  czarAnswers: [AnswerNode]
   genres(after: String, before: String, credit: String, credit_Icontains: String, credit_Istartswith: String, description: String, description_Icontains: String, description_Istartswith: String, first: Int, id: Float, id_Gt: Float, id_Lt: Float, last: Int, offset: Int): GenreNodeConnection!
   """The ID of the object."""
   id: ID!
@@ -406,7 +431,7 @@ type GameNode implements Node {
   numSpectators: Int!
   playerSet(after: String, avatar: String, before: String, createdAt: DateTime, czar: Boolean, first: Int, game: ID, last: Int, offset: Int, score: Int, spectator: Boolean, updatedAt: DateTime, user: ID): PlayerNodeConnection!
   private: Boolean!
-  question: BlackCardNode
+  question: QuestionNode
   """game round"""
   round: Int!
   """seconds"""
@@ -415,6 +440,7 @@ type GameNode implements Node {
   rounds: Int!
   status: ApiGameStatusChoices!
   updatedAt: DateTime!
+  userAnswers: [AnswerNode]
   winner: PlayerNode
 }
 
@@ -545,6 +571,8 @@ type Mutation {
   joinGame(input: JoinGameMutationInput!): JoinGameMutation
   refreshToken(input: RefreshTokenMutationInput!): RefreshTokenMutationPayload
   revokeRefreshToken(input: RevokeInput!): RevokePayload
+  roundCzarAnswers(input: RoundCzarAnswersMutationInput!): RoundCzarAnswersMutation
+  roundPlayerAnswers(input: RoundPlayerAnswersMutationInput!): RoundPlayerAnswersMutation
   roundQuestion(input: RoundQuestionMutationInput!): RoundQuestionMutation
   setFullWidth(input: SetFullWidthMutationInput!): SetFullWidthMutation
   """Social Auth for JSON Web Token (JWT)"""
@@ -577,10 +605,9 @@ type NotificationNode {
   invites(after: String, before: String, email: String, first: Int, last: Int, offset: Int, revoked: Boolean): InviteNodeConnection
 }
 
+"""notifications subscription"""
 type NotificationSubscription {
-  message: String
-  room: ID
-  sender: ID
+  notifications: NotificationNode
 }
 
 input ObtainJSONWebTokenMutationInput {
@@ -610,7 +637,7 @@ type PageInfo {
 }
 
 type PlayerNode implements Node {
-  answerSet(after: String, before: String, card: ID, createdAt: DateTime, first: Int, game: ID, last: Int, offset: Int, player: ID, question: ID, rating: String, round: Int, updatedAt: DateTime): AnswerNodeConnection!
+  answerSet(after: String, before: String, card: ID, createdAt: DateTime, first: Int, game: ID, last: Int, offset: Int, player: ID, question: ID, rating: String, round: Int, selected: Boolean, updatedAt: DateTime): AnswerNodeConnection!
   avatar: ApiPlayerAvatarChoices!
   createdAt: DateTime!
   czar: Boolean!
@@ -726,7 +753,6 @@ type Query {
 }
 
 type QuestionNode implements Node {
-  answerSet(after: String, before: String, card: ID, createdAt: DateTime, first: Int, game: ID, last: Int, offset: Int, player: ID, question: ID, rating: String, round: Int, updatedAt: DateTime): AnswerNodeConnection!
   card: BlackCardNode!
   createdAt: DateTime!
   game: GameNode!
@@ -777,6 +803,31 @@ input RevokeInput {
 type RevokePayload {
   clientMutationId: String
   revoked: Int!
+}
+
+input RoundCardInput {
+  id: ID!
+  rating: CardRating!
+}
+
+type RoundCzarAnswersMutation {
+  ok: Boolean
+}
+
+input RoundCzarAnswersMutationInput {
+  cards: [RoundCardInput]!
+}
+
+type RoundPlayerAnswersMutation {
+  ok: Boolean
+}
+
+input RoundPlayerAnswersMutationInput {
+  cards: [RoundCardInput]!
+  game: ID!
+  player: ID!
+  question: ID!
+  round: Int!
 }
 
 type RoundQuestionMutation {
@@ -842,8 +893,9 @@ type SocialNodeEdge {
 
 """Root Subscription for the cards against humanity api."""
 type Subscription {
+  chat: ChatSubscription
   gameInProgress: GameInProgressSubscription
-  notifications(message: String!, room: ID!, sender: ID!): NotificationSubscription
+  notifications: NotificationSubscription
 }
 
 type ToggleNavMutation {
@@ -895,7 +947,7 @@ type UserNodeEdge {
 }
 
 type WhiteCardNode implements Node {
-  answerSet(after: String, before: String, card: ID, createdAt: DateTime, first: Int, game: ID, last: Int, offset: Int, player: ID, question: ID, rating: String, round: Int, updatedAt: DateTime): AnswerNodeConnection!
+  answerSet(after: String, before: String, card: ID, createdAt: DateTime, first: Int, game: ID, last: Int, offset: Int, player: ID, question: ID, rating: String, round: Int, selected: Boolean, updatedAt: DateTime): AnswerNodeConnection!
   availableanswerSet(after: String, before: String, card: ID, createdAt: DateTime, first: Int, game: ID, last: Int, offset: Int, round: Int, updatedAt: DateTime): AvailableAnswerNodeConnection!
   createdAt: DateTime!
   genre: GenreNode!

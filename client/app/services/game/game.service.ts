@@ -4,7 +4,6 @@ import { Apollo } from 'apollo-angular';
 import { map, share } from 'rxjs';
 import {
   BatchCreateInviteInput,
-  BlackCardNodeEdge,
   CreateGameInput,
   CreateGameMutationInput,
   GameNode,
@@ -13,10 +12,12 @@ import {
   Maybe,
   Mutation,
   Query,
+  RoundCzarAnswersMutationInput,
+  RoundPlayerAnswersMutationInput,
+  RoundQuestionMutationInput,
   Scalars,
   UpdateGamePrivacyInput,
   UpdateGameStatusInput,
-  WhiteCardNodeEdge,
 } from '../../@types/graphql';
 import {
   CREATE_GAME_LOCAL_MUTATION,
@@ -27,6 +28,9 @@ import {
   INVITE_GAME_PLAYERS_MUTATION,
   JOIN_GAME_MUTATION,
   NEW_GAME_QUERY,
+  ROUND_CZAR_ANSWERS_MUTATION,
+  ROUND_PLAYER_ANSWERS_MUTATION,
+  ROUND_QUESTION_MUTATION,
   UPDATE_GAME_PRIVACY_MUTATION,
   UPDATE_GAME_STATUS_MUTATION,
 } from '../../graphql';
@@ -49,17 +53,6 @@ export class GameService {
     return Boolean(userPlayer?.length);
   }
 
-  cardDeck(game?: Maybe<GameNode>): { blackcardSet: Maybe<BlackCardNodeEdge>[]; whitecardSet: Maybe<WhiteCardNodeEdge>[] } {
-    let blackcardSet: Maybe<BlackCardNodeEdge>[] = [];
-    let whitecardSet: Maybe<WhiteCardNodeEdge>[] = [];
-    game?.genres.edges.forEach((edge) => {
-      blackcardSet = blackcardSet.concat(edge?.node?.blackcardSet.edges!);
-      whitecardSet = whitecardSet.concat(edge?.node?.whitecardSet.edges!);
-    });
-
-    return { whitecardSet, blackcardSet };
-  }
-
   fetchGameOptions(variables: { id: Scalars['ID'] }) {
     return this.apollo.watchQuery<Pick<Query, 'newGame'>>({
       query: NEW_GAME_QUERY,
@@ -77,7 +70,7 @@ export class GameService {
   }
 
   watchGameInProgress(fetchPolicy?: WatchQueryFetchPolicy) {
-    return this.apollo.watchQuery<Pick<Query, 'gameInProgress'>>({ query: GAME_IN_PROGRESS_QUERY });
+    return this.apollo.watchQuery<Pick<Query, 'gameInProgress'>>({ query: GAME_IN_PROGRESS_QUERY, fetchPolicy });
   }
 
   createNewGame(game: CreateGameMutationInput) {
@@ -98,43 +91,9 @@ export class GameService {
   }
 
   createGame(game: CreateGameInput) {
-    // const { sub } = this.authService.profile$.getValue()!;
     return this.apollo.mutate<Pick<Mutation, 'createGame'>, { input: CreateGameInput }>({
       mutation: CREATE_GAME_MUTATION,
       variables: { input: game },
-      // optimisticResponse: {
-      //   createGame: {
-      //     __typename: 'CreateGameMutation',
-      //     game: {
-      //       __typename: 'GameNode',
-      //       id: 'optimistic',
-      //       joinEndsAt: game.joinEndsAt!,
-      //       createdAt: new Date(),
-      //       updatedAt: new Date(),
-      //       providerSet: { __typename: 'ProviderNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
-      //       playerSet: { __typename: 'PlayerNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
-      //       inviteSet: { __typename: 'InviteNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
-      //       status: 'AWAITING_PLAYERS',
-      //       private: false,
-      //       question: {
-      //         answerSet: { __typename: 'AnswerNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
-      //       },
-      //       answer: undefined,
-      //       answers: { __typename: 'AnswerNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
-      //       creator: {
-      //         __typename: 'UserNode',
-      //         createdAt: new Date(),
-      //         updatedAt: new Date(),
-      //         id: String(sub!),
-      //         providerSet: { __typename: 'ProviderNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
-      //         playerSet: { __typename: 'PlayerNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
-      //         gameSet: { __typename: 'GameNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
-      //       } as unknown as UserNode,
-      //       ...game,
-      //       genres: { __typename: 'GenreNodeConnection', edges: [], pageInfo: { hasNextPage: false, hasPreviousPage: false } },
-      //     } as GameNode,
-      //   },
-      // },
       update: (cache, { data }) =>
         cache.writeQuery<Pick<Query, 'gameInProgress'>>({
           query: GAME_IN_PROGRESS_QUERY,
@@ -172,6 +131,27 @@ export class GameService {
     });
   }
 
+  selectRoundQuestion(input: RoundQuestionMutationInput) {
+    return this.apollo.mutate<Pick<Mutation, 'roundQuestion'>>({
+      mutation: ROUND_QUESTION_MUTATION,
+      variables: { input },
+    });
+  }
+
+  selectPlayerRoundAnswers(input: RoundPlayerAnswersMutationInput) {
+    return this.apollo.mutate<Pick<Mutation, 'roundPlayerAnswers'>>({
+      mutation: ROUND_PLAYER_ANSWERS_MUTATION,
+      variables: { input },
+    });
+  }
+
+  selectCzarRoundAnswers(input: RoundCzarAnswersMutationInput) {
+    return this.apollo.mutate<Pick<Mutation, 'roundCzarAnswers'>>({
+      mutation: ROUND_CZAR_ANSWERS_MUTATION,
+      variables: { input },
+    });
+  }
+
   gameInProgressSubscription(callback?: (game: GameNode) => any) {
     return this.watchGameInProgress().subscribeToMore({
       document: GAME_IN_PROGRESS_SUBSCRIPTION,
@@ -181,7 +161,7 @@ export class GameService {
         const update: { gameInProgress: GameNode } = {
           gameInProgress: {
             ...prev.gameInProgress,
-            ...gameInProgress.gameInProgress,
+            ...gameInProgress?.gameInProgress,
           },
         };
 

@@ -14,10 +14,11 @@ export const typeDefs = gql`
 
     id: ID!
     player: PlayerNode!
-    question: QuestionNode!
+    question: BlackCardNode!
     rating: ApiAnswerRatingChoices!
 
     round: Int!
+    selected: Boolean!
     updatedAt: DateTime!
   }
 
@@ -57,17 +58,21 @@ export const typeDefs = gql`
   }
 
   enum ApiGameStatusChoices {
-    GAA
+    AWAITING_CZAR_ANSWERS
 
-    GAC
+    AWAITING_CZAR_QUESTION
 
-    GAP
+    AWAITING_PLAYERS
 
-    GC
+    AWAITING_PLAYER_ANSWERS
 
-    GE
+    GAME_CANCELED
 
-    GS
+    GAME_ENDED
+
+    GAME_STARTED
+
+    SHOW_ROUND_RESULT
   }
 
   enum ApiPlayerAvatarChoices {
@@ -238,6 +243,22 @@ export const typeDefs = gql`
   }
 
   type BlackCardNode implements Node {
+    answerSet(
+      after: String
+      before: String
+      card: ID
+      createdAt: DateTime
+      first: Int
+      game: ID
+      last: Int
+      offset: Int
+      player: ID
+      question: ID
+      rating: String
+      round: Int
+      selected: Boolean
+      updatedAt: DateTime
+    ): AnswerNodeConnection!
     availablequestionSet(
       after: String
       before: String
@@ -296,6 +317,22 @@ export const typeDefs = gql`
     LOVE
     MEH
     NORMAL
+  }
+
+  input ChatInput {
+    message: String!
+    room: ID!
+    sender: ID!
+  }
+
+  type ChatNode {
+    message: String!
+    room: ID!
+    sender: ID!
+  }
+
+  type ChatSubscription {
+    chat(input: ChatInput!): ChatNode
   }
 
   input CreateGameInput {
@@ -380,11 +417,12 @@ export const typeDefs = gql`
   }
 
   type GameNode implements Node {
-    answers: [WhiteCardNode]
-    availableAnswers: [WhiteCardNode]
-    availableQuestions: [BlackCardNode]
+    answers: [AnswerNode]
+    availableAnswers: [AvailableAnswerNode]
+    availableQuestions: [AvailableQuestionNode]
     createdAt: DateTime!
     creator: UserNode!
+    czarAnswers: [AnswerNode]
     genres(
       after: String
       before: String
@@ -438,7 +476,7 @@ export const typeDefs = gql`
       user: ID
     ): PlayerNodeConnection!
     private: Boolean!
-    question: BlackCardNode
+    question: QuestionNode
 
     round: Int!
 
@@ -447,6 +485,7 @@ export const typeDefs = gql`
     rounds: Int!
     status: ApiGameStatusChoices!
     updatedAt: DateTime!
+    userAnswers: [AnswerNode]
     winner: PlayerNode
   }
 
@@ -611,6 +650,8 @@ export const typeDefs = gql`
     joinGame(input: JoinGameMutationInput!): JoinGameMutation
     refreshToken(input: RefreshTokenMutationInput!): RefreshTokenMutationPayload
     revokeRefreshToken(input: RevokeInput!): RevokePayload
+    roundCzarAnswers(input: RoundCzarAnswersMutationInput!): RoundCzarAnswersMutation
+    roundPlayerAnswers(input: RoundPlayerAnswersMutationInput!): RoundPlayerAnswersMutation
     roundQuestion(input: RoundQuestionMutationInput!): RoundQuestionMutation
     setFullWidth(input: SetFullWidthMutationInput!): SetFullWidthMutation
 
@@ -642,9 +683,7 @@ export const typeDefs = gql`
   }
 
   type NotificationSubscription {
-    message: String
-    room: ID
-    sender: ID
+    notifications: NotificationNode
   }
 
   input ObtainJSONWebTokenMutationInput {
@@ -685,6 +724,7 @@ export const typeDefs = gql`
       question: ID
       rating: String
       round: Int
+      selected: Boolean
       updatedAt: DateTime
     ): AnswerNodeConnection!
     avatar: ApiPlayerAvatarChoices!
@@ -893,21 +933,6 @@ export const typeDefs = gql`
   }
 
   type QuestionNode implements Node {
-    answerSet(
-      after: String
-      before: String
-      card: ID
-      createdAt: DateTime
-      first: Int
-      game: ID
-      last: Int
-      offset: Int
-      player: ID
-      question: ID
-      rating: String
-      round: Int
-      updatedAt: DateTime
-    ): AnswerNodeConnection!
     card: BlackCardNode!
     createdAt: DateTime!
     game: GameNode!
@@ -956,6 +981,31 @@ export const typeDefs = gql`
   type RevokePayload {
     clientMutationId: String
     revoked: Int!
+  }
+
+  input RoundCardInput {
+    id: ID!
+    rating: CardRating!
+  }
+
+  type RoundCzarAnswersMutation {
+    ok: Boolean
+  }
+
+  input RoundCzarAnswersMutationInput {
+    cards: [RoundCardInput]!
+  }
+
+  type RoundPlayerAnswersMutation {
+    ok: Boolean
+  }
+
+  input RoundPlayerAnswersMutationInput {
+    cards: [RoundCardInput]!
+    game: ID!
+    player: ID!
+    question: ID!
+    round: Int!
   }
 
   type RoundQuestionMutation {
@@ -1016,8 +1066,9 @@ export const typeDefs = gql`
   }
 
   type Subscription {
+    chat: ChatSubscription
     gameInProgress: GameInProgressSubscription
-    notifications(message: String!, room: ID!, sender: ID!): NotificationSubscription
+    notifications: NotificationSubscription
   }
 
   type ToggleNavMutation {
@@ -1142,6 +1193,7 @@ export const typeDefs = gql`
       question: ID
       rating: String
       round: Int
+      selected: Boolean
       updatedAt: DateTime
     ): AnswerNodeConnection!
     availableanswerSet(

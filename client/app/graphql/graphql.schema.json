@@ -104,7 +104,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "QuestionNode",
+                "name": "BlackCardNode",
                 "ofType": null
               }
             },
@@ -137,6 +137,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "selected",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               }
             },
@@ -291,31 +307,31 @@
         "enumValues": [
           {
             "name": "BAD",
-            "description": "Bad",
+            "description": "BAD",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "LIKE",
-            "description": "Like",
+            "description": "LIKE",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "LOVE",
-            "description": "Love",
+            "description": "LOVE",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "MEH",
-            "description": "Meh",
+            "description": "MEH",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "NORMAL",
-            "description": "Normal",
+            "description": "NORMAL",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -332,19 +348,19 @@
         "enumValues": [
           {
             "name": "PICK_ONE",
-            "description": "Pick One",
+            "description": "PICK_ONE",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "PICK_THREE",
-            "description": "Pick Three",
+            "description": "PICK_THREE",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "PICK_TWO",
-            "description": "Pick Two",
+            "description": "PICK_TWO",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -360,38 +376,50 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "GAA",
-            "description": "Awaiting Answers",
+            "name": "AWAITING_CZAR_ANSWERS",
+            "description": "GACA",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "GAC",
-            "description": "Awaiting Czar",
+            "name": "AWAITING_CZAR_QUESTION",
+            "description": "GACQ",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "GAP",
-            "description": "Awaiting Players",
+            "name": "AWAITING_PLAYERS",
+            "description": "GAP",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "GC",
-            "description": "Game Canceled",
+            "name": "AWAITING_PLAYER_ANSWERS",
+            "description": "GAPA",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "GE",
-            "description": "Game Ended",
+            "name": "GAME_CANCELED",
+            "description": "GC",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "GS",
-            "description": "Game Started",
+            "name": "GAME_ENDED",
+            "description": "GE",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "GAME_STARTED",
+            "description": "GS",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SHOW_ROUND_RESULT",
+            "description": "GSRR",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -408,97 +436,97 @@
         "enumValues": [
           {
             "name": "ABBY",
-            "description": "abby",
+            "description": "ABBY",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "ALFRED",
-            "description": "alfred",
+            "description": "ALFRED",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "ANDINA",
-            "description": "andina",
+            "description": "ANDINA",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "ASTRO",
-            "description": "astro",
+            "description": "ASTRO",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "CAMILE",
-            "description": "camile",
+            "description": "CAMILE",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "DOROTHY",
-            "description": "dorothy",
+            "description": "DOROTHY",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "DUDAI",
-            "description": "dudai",
+            "description": "DUDAI",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "EDUARDO",
-            "description": "eduardo",
+            "description": "EDUARDO",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "GENERAL",
-            "description": "general",
+            "description": "GENERAL",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "GRACE",
-            "description": "grace",
+            "description": "GRACE",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "IRANIR",
-            "description": "iranir",
+            "description": "IRANIR",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "JENNIFER",
-            "description": "jennifer",
+            "description": "JENNIFER",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "LABRAT",
-            "description": "labrat",
+            "description": "LABRAT",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "LUTHER",
-            "description": "luther",
+            "description": "LUTHER",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "RAINBOWNESS",
-            "description": "rainbowness",
+            "description": "RAINBOWNESS",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "SHIN",
-            "description": "shin",
+            "description": "SHIN",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -515,97 +543,97 @@
         "enumValues": [
           {
             "name": "ABBY",
-            "description": "abby",
+            "description": "ABBY",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "ALFRED",
-            "description": "alfred",
+            "description": "ALFRED",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "ANDINA",
-            "description": "andina",
+            "description": "ANDINA",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "ASTRO",
-            "description": "astro",
+            "description": "ASTRO",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "CAMILE",
-            "description": "camile",
+            "description": "CAMILE",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "DOROTHY",
-            "description": "dorothy",
+            "description": "DOROTHY",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "DUDAI",
-            "description": "dudai",
+            "description": "DUDAI",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "EDUARDO",
-            "description": "eduardo",
+            "description": "EDUARDO",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "GENERAL",
-            "description": "general",
+            "description": "GENERAL",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "GRACE",
-            "description": "grace",
+            "description": "GRACE",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "IRANIR",
-            "description": "iranir",
+            "description": "IRANIR",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "JENNIFER",
-            "description": "jennifer",
+            "description": "JENNIFER",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "LABRAT",
-            "description": "labrat",
+            "description": "LABRAT",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "LUTHER",
-            "description": "luther",
+            "description": "LUTHER",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "RAINBOWNESS",
-            "description": "rainbowness",
+            "description": "RAINBOWNESS",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "SHIN",
-            "description": "shin",
+            "description": "SHIN",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -622,19 +650,19 @@
         "enumValues": [
           {
             "name": "FEMALE",
-            "description": "Female",
+            "description": "FEMALE",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "MALE",
-            "description": "Male",
+            "description": "MALE",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "OTHER",
-            "description": "Other",
+            "description": "OTHER",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -651,19 +679,19 @@
         "enumValues": [
           {
             "name": "CREATED",
-            "description": "Created",
+            "description": "CREATED",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "INVITED",
-            "description": "Invited",
+            "description": "INVITED",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "SUPERUSER",
-            "description": "Superuser",
+            "description": "SUPERUSER",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -680,31 +708,31 @@
         "enumValues": [
           {
             "name": "EMAIL",
-            "description": "Email",
+            "description": "EMAIL",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "FACEBOOK",
-            "description": "Facebook",
+            "description": "FACEBOOK",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "GOOGLE",
-            "description": "Google",
+            "description": "GOOGLE",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "INSTAGRAM",
-            "description": "Instagram",
+            "description": "INSTAGRAM",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "TWITTER",
-            "description": "Twitter",
+            "description": "TWITTER",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -721,31 +749,31 @@
         "enumValues": [
           {
             "name": "BAD",
-            "description": "Bad",
+            "description": "BAD",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "LIKE",
-            "description": "Like",
+            "description": "LIKE",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "LOVE",
-            "description": "Love",
+            "description": "LOVE",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "MEH",
-            "description": "Meh",
+            "description": "MEH",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "NORMAL",
-            "description": "Normal",
+            "description": "NORMAL",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -1270,6 +1298,191 @@
         "name": "BlackCardNode",
         "description": null,
         "fields": [
+          {
+            "name": "answerSet",
+            "description": null,
+            "args": [
+              {
+                "name": "after",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "before",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "card",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "createdAt",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "first",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "game",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "last",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "player",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "question",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "rating",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "round",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "selected",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "updatedAt",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "AnswerNodeConnection",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "availablequestionSet",
             "description": null,
@@ -1847,6 +2060,164 @@
             "deprecationReason": null
           }
         ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ChatInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "message",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "room",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "ChatNode",
+        "description": null,
+        "fields": [
+          {
+            "name": "message",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "room",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "ChatSubscription",
+        "description": "chat room subscriptions",
+        "fields": [
+          {
+            "name": "chat",
+            "description": null,
+            "args": [
+              {
+                "name": "input",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "ChatInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ChatNode",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
         "possibleTypes": null
       },
       {
@@ -2505,7 +2876,7 @@
       {
         "kind": "OBJECT",
         "name": "GameInProgressSubscription",
-        "description": null,
+        "description": "join game in progress",
         "fields": [
           {
             "name": "gameInProgress",
@@ -2566,7 +2937,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "WhiteCardNode",
+                "name": "AnswerNode",
                 "ofType": null
               }
             },
@@ -2582,7 +2953,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "WhiteCardNode",
+                "name": "AvailableAnswerNode",
                 "ofType": null
               }
             },
@@ -2598,7 +2969,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "BlackCardNode",
+                "name": "AvailableQuestionNode",
                 "ofType": null
               }
             },
@@ -2631,6 +3002,22 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "UserNode",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "czarAnswers",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "AnswerNode",
                 "ofType": null
               }
             },
@@ -3230,7 +3617,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "BlackCardNode",
+              "name": "QuestionNode",
               "ofType": null
             },
             "isDeprecated": false,
@@ -3310,6 +3697,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "userAnswers",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "AnswerNode",
                 "ofType": null
               }
             },
@@ -5081,6 +5484,64 @@
             "deprecationReason": null
           },
           {
+            "name": "roundCzarAnswers",
+            "description": null,
+            "args": [
+              {
+                "name": "input",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "RoundCzarAnswersMutationInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "RoundCzarAnswersMutation",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "roundPlayerAnswers",
+            "description": null,
+            "args": [
+              {
+                "name": "input",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "RoundPlayerAnswersMutationInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "RoundPlayerAnswersMutation",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "roundQuestion",
             "description": null,
             "args": [
@@ -5598,39 +6059,15 @@
       {
         "kind": "OBJECT",
         "name": "NotificationSubscription",
-        "description": null,
+        "description": "notifications subscription",
         "fields": [
           {
-            "name": "message",
+            "name": "notifications",
             "description": null,
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "room",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "sender",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
+              "kind": "OBJECT",
+              "name": "NotificationNode",
               "ofType": null
             },
             "isDeprecated": false,
@@ -5994,6 +6431,18 @@
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "selected",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -8173,179 +8622,6 @@
         "description": null,
         "fields": [
           {
-            "name": "answerSet",
-            "description": null,
-            "args": [
-              {
-                "name": "after",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "before",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "card",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "createdAt",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "DateTime",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "first",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "game",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "last",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "offset",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "player",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "question",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "rating",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "round",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "updatedAt",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "DateTime",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "AnswerNodeConnection",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "card",
             "description": null,
             "args": [],
@@ -8784,6 +9060,221 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "RoundCardInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "rating",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "CardRating",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "RoundCzarAnswersMutation",
+        "description": null,
+        "fields": [
+          {
+            "name": "ok",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "RoundCzarAnswersMutationInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "cards",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "RoundCardInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "RoundPlayerAnswersMutation",
+        "description": null,
+        "fields": [
+          {
+            "name": "ok",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "RoundPlayerAnswersMutationInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "cards",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "RoundCardInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "game",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "player",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "question",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "round",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },
@@ -9290,6 +9781,18 @@
         "description": "Root Subscription for the cards against humanity api.",
         "fields": [
           {
+            "name": "chat",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ChatSubscription",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "gameInProgress",
             "description": null,
             "args": [],
@@ -9304,56 +9807,7 @@
           {
             "name": "notifications",
             "description": null,
-            "args": [
-              {
-                "name": "message",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "room",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "sender",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
+            "args": [],
             "type": {
               "kind": "OBJECT",
               "name": "NotificationSubscription",
@@ -10607,6 +11061,18 @@
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "selected",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
                   "ofType": null
                 },
                 "defaultValue": null,

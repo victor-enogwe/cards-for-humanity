@@ -4,18 +4,14 @@
 
 .card {
   max-width: 207px;
+  min-height: 272px;
+  max-height: 272px;
   cursor: pointer;
-}
-
-.card-selected {
-  border: 2px solid #283593;
 }
 
 .selection {
   opacity: 0;
   cursor: pointer;
-  color: #283593;
-  background: #fff;
   position: absolute;
   right:-10px;
   top:-10px;

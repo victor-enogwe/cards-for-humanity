@@ -18,12 +18,13 @@
       <strong>INVITE URL: </strong><span class="text-muted">{{host + '/play/join-game/' + game.id}}</span>
     </div>
 
-    <div class="d-flex flex-row align-items-center justify-content-between">
-      <cah-countdown-timer [title]="game.status.replace('_', ' ') | uppercase" [date]="game.joinEndsAt" color="primary">
+    <div *ngIf="{ title: game.status.replace('_', ' ') | uppercase } as stat"
+      class="d-flex flex-row align-items-center justify-content-between">
+      <cah-countdown-timer *ngIf="game.status=== 'AWAITING_PLAYERS'" [title]="stat.title" [date]="game.joinEndsAt" color="primary">
       </cah-countdown-timer>
 
-      <cah-countdown-timer *ngIf="!['AWAITING_PLAYERS', 'GAME_ENDED'].includes(game.status)" title="" icon="timer" [date]="game.joinEndsAt"
-        color="primary">
+      <cah-countdown-timer *ngIf="!['AWAITING_PLAYERS', 'GAME_ENDED'].includes(game.status)" [title]="stat.title" icon="timer"
+        [date]="timer(game)" color="primary">
       </cah-countdown-timer>
       <mat-slide-toggle *ngIf="data.canJoin" #toggle color="primary" (change)="inviteOnly.emit($event)"
         aria-label="toggle if game-play is only by invitation" matTooltip="{{toggle.checked ? 'private game' : 'public game'}}"

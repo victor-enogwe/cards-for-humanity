@@ -51,12 +51,9 @@
           </mat-form-field>
 
           <mat-form-field class="game-options-stepper col-sm-12 col-md-6">
-            <mat-label for="numPlayers">
-              number of players
-              <span *ngIf="gameOptionsForm.controls.numPlayers.value === 1" class="badge bg-info">COMPETE AGAINST THE AI</span>
-            </mat-label>
-            <input matInput type="number" min="0" max="9" step="1" formControlName="numPlayers" class="d-none invisible" />
-            <mat-slider [min]="1" [max]="9" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
+            <mat-label for="numPlayers">number of players</mat-label>
+            <input matInput type="number" min="3" max="9" step="1" formControlName="numPlayers" class="d-none invisible" />
+            <mat-slider [min]="3" [max]="9" [step]="1" [tickInterval]="1" thumbLabel showTicks class="w-100"
               [value]="gameOptionsForm.controls.numPlayers.value" (change)="gameOptionsForm.controls.numPlayers.setValue($event.value)"
               aria-labelledby="no of players">
             </mat-slider>

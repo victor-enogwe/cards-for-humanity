@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Apollo } from 'apollo-angular';
-import { Query } from '../../@types/graphql';
-import { NOTIFICATIONS_QUERY } from '../../graphql';
+import { NotificationNode, Query } from '../../@types/graphql';
+import { NOTIFICATIONS_QUERY, NOTIFICATIONS_SUBSCRIPTION } from '../../graphql';
 
 @Injectable({
   providedIn: 'root',
@@ -22,12 +22,23 @@ export class NotificationService {
     });
   }
 
-  // fetchNotificationsSubscription(email: string) {
-  //   return this.fetchNotifications(email).subscribeToMore({
-  //     document: 'NOTIFICATIONS_SUBSCRIPTION',
-  //     updateQuery: (prev, { subscriptionData }) => {
-  //       return subscriptionData.data;
-  //     },
-  //   });
-  // }
+  notificationsSubscription(email: string) {
+    return this.fetchNotifications(email).subscribeToMore({
+      document: NOTIFICATIONS_SUBSCRIPTION,
+      variables: { email },
+      updateQuery: (prev, { subscriptionData }) => {
+        console.log(subscriptionData);
+        const { notifications } = subscriptionData.data;
+        console.log(notifications);
+        if (!notifications) return prev;
+        const update: { notifications: NotificationNode } = {
+          notifications: {
+            ...prev.notifications,
+            ...notifications.notifications,
+          },
+        };
+        return update;
+      },
+    });
+  }
 }

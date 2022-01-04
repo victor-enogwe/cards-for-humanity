@@ -44,7 +44,7 @@ import { UtilsService } from '../utils/utils.service';
 })
 export class AuthService extends Service {
   rememberCookieName = 'CAH_RM';
-  REFRESH_TOKEN_INTERVAL = 299995;
+  REFRESH_TOKEN_INTERVAL = 299999;
   refreshTokenTimer$ = timer(this.REFRESH_TOKEN_INTERVAL, this.REFRESH_TOKEN_INTERVAL);
   refreshTokenBroadcast$ = this.refreshTokenTimer$.pipe(switchMap(() => this.refreshTokenFactory()));
   refreshToken$ = this.auth_token$.pipe(switchMap((token) => iif(() => Boolean(token), this.refreshTokenBroadcast$, of())));
@@ -206,7 +206,6 @@ export class AuthService extends Service {
     return ({ payload, token }: Partial<ObtainJsonWebTokenMutationPayload | RefreshTokenMutationPayload>) => {
       this.auth_token$.next(token!);
       this.profile$.next(payload);
-      this.wsClient.protocols.next(['graphql-ws', String(token)]);
       const url = this.authUrls[event];
       if (url) this.router.navigate(url);
     };

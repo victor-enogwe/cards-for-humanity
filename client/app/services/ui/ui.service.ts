@@ -13,8 +13,10 @@ import { STATIC_URL } from '../../modules/cah/cah.module';
 export class UIService {
   breakpointMobile$ = this.breakpointObserver.observe('(max-width: 576px)');
   breakpointTablet$ = this.breakpointObserver.observe('(min-width: 577px) and (max-width: 992px)');
+  breakpointDesktop$ = this.breakpointObserver.observe('(min-width: 993px)');
   isMobile$ = this.breakpointMobile$.pipe(map(({ matches }) => matches));
   isTablet$ = this.breakpointTablet$.pipe(map(({ matches }) => matches));
+  isDesktop$ = this.breakpointDesktop$.pipe(map(({ matches }) => matches));
   fullWidth$ = this.getFulWidth().valueChanges.pipe(map(({ data: { fullWidth } }) => fullWidth));
   navOpen$ = this.navOpen().valueChanges.pipe(map(({ data: { navOpen } }) => navOpen));
   avatarNames: Avatar['name'][] = [

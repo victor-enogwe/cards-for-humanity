@@ -16,6 +16,7 @@ export const GAME_NODE_FRAGMENT = gql`
     }
     roundTime
     rounds
+    round
     numPlayers
     numSpectators
     status
@@ -25,40 +26,245 @@ export const GAME_NODE_FRAGMENT = gql`
     updatedAt
     availableQuestions {
       id
-      rating
-      text
-      pick
-      genre {
-        description
-        credit
+      createdAt
+      updatedAt
+      round
+      game {
+        id
+        roundTime
+        rounds
+        round
+        numPlayers
+        numSpectators
+        status
+        private
+        joinEndsAt
+        createdAt
+        updatedAt
+      }
+      card {
+        id
+        createdAt
+        updatedAt
+        rating
+        text
+        pick
+        genre {
+          description
+          credit
+        }
       }
     }
     availableAnswers {
       id
-      rating
-      text
-      genre {
-        description
-        credit
+      createdAt
+      updatedAt
+      round
+      game {
+        id
+        roundTime
+        rounds
+        round
+        numPlayers
+        numSpectators
+        status
+        private
+        joinEndsAt
+        createdAt
+        updatedAt
+      }
+      card {
+        id
+        createdAt
+        updatedAt
+        rating
+        text
+        genre {
+          description
+          credit
+        }
       }
     }
     question {
       id
-      rating
-      text
-      pick
-      genre {
-        description
-        credit
+      createdAt
+      updatedAt
+      round
+      game {
+        id
+        roundTime
+        rounds
+        round
+        numPlayers
+        numSpectators
+        status
+        private
+        joinEndsAt
+        createdAt
+        updatedAt
+      }
+      player {
+        id
+        user {
+          id
+        }
+        czar
+      }
+      card {
+        id
+        createdAt
+        updatedAt
+        rating
+        text
+        pick
+        genre {
+          description
+          credit
+        }
       }
     }
     answers {
       id
       rating
-      text
-      genre {
-        description
-        credit
+      round
+      selected
+      card {
+        id
+        rating
+        text
+        genre {
+          description
+          credit
+        }
+      }
+      question {
+        id
+        rating
+        text
+        pick
+        genre {
+          description
+          credit
+        }
+      }
+      game {
+        id
+        roundTime
+        rounds
+        round
+        numPlayers
+        numSpectators
+        status
+        private
+        joinEndsAt
+        createdAt
+        updatedAt
+      }
+      player {
+        id
+        czar
+        spectator
+        avatar
+        score
+        user {
+          id
+        }
+      }
+    }
+    czarAnswers {
+      id
+      rating
+      round
+      selected
+      card {
+        id
+        rating
+        text
+        genre {
+          description
+          credit
+        }
+      }
+      question {
+        id
+        rating
+        text
+        pick
+        genre {
+          description
+          credit
+        }
+      }
+      game {
+        id
+        roundTime
+        rounds
+        round
+        numPlayers
+        numSpectators
+        status
+        private
+        joinEndsAt
+        createdAt
+        updatedAt
+      }
+      player {
+        id
+        czar
+        spectator
+        avatar
+        score
+        user {
+          id
+        }
+      }
+    }
+    userAnswers {
+      id
+      rating
+      round
+      selected
+      card {
+        id
+        rating
+        text
+        genre {
+          description
+          credit
+        }
+      }
+      question {
+        id
+        rating
+        text
+        pick
+        genre {
+          description
+          credit
+        }
+      }
+      game {
+        id
+        roundTime
+        rounds
+        round
+        numPlayers
+        numSpectators
+        status
+        private
+        joinEndsAt
+        createdAt
+        updatedAt
+      }
+      player {
+        id
+        czar
+        spectator
+        avatar
+        score
+        user {
+          id
+        }
       }
     }
     creator {

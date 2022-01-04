@@ -12,7 +12,7 @@ import { fabStagger, fabToggle } from '../../../animations/fab';
   animations: [fabToggle, fabStagger],
 })
 export class FabMenuComponent {
-  @HostBinding('class') hostCLass = 'position-absolute end-25';
+  @HostBinding('class') hostCLass = 'position-absolute end-10';
   @Input() title = 'Open';
   @Input() tooltipPosition: TooltipPosition = 'above';
   @Input() fabButtons!: MatFabMenu[];

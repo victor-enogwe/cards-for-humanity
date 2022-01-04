@@ -5,6 +5,7 @@ import { MatFabMenu } from '../../../@types/global';
 import { GameNode, Maybe } from '../../../@types/graphql';
 import { AuthService } from '../../../services/auth/auth.service';
 import { GameService } from '../../../services/game/game.service';
+import { UIService } from '../../../services/ui/ui.service';
 import { InviteComponent } from '../../shared/invite/invite.component';
 
 @Component({
@@ -16,25 +17,37 @@ import { InviteComponent } from '../../shared/invite/invite.component';
 export class LobbyComponent implements OnInit, OnDestroy {
   fab: MatFabMenu[] = [];
   inviteOnly = false;
+  isDesktop = true;
   inviteComponent = InviteComponent;
+  isDesktop$ = this.uiService.isDesktop$.pipe(map((desktop) => desktop));
+  game!: GameNode;
   gameInProgress$ = this.gameService.watchGameInProgress().valueChanges.pipe(
     share(),
     map(({ data }) => data?.gameInProgress),
     tap((game) => this.onGameEnd(game)),
   );
+  isDesktopSubscription!: Subscription;
   gameInProgressUnsubscribe!: Subscription['unsubscribe'];
 
-  constructor(private route: ActivatedRoute, private router: Router, private authService: AuthService, private gameService: GameService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private authService: AuthService,
+    private gameService: GameService,
+    private uiService: UIService,
+  ) {}
 
   ngOnInit(): void {
     this.route.data
       .pipe(first())
       .pipe(tap(({ gameInProgress: game }) => this.fabMenu(game)))
       .subscribe();
+    this.isDesktopSubscription = this.isDesktop$.subscribe((value) => [(this.isDesktop = value), this.fabMenu(this.game)]);
     this.gameInProgressUnsubscribe = this.gameService.gameInProgressSubscription(this.fabMenu.bind(this));
   }
 
   ngOnDestroy(): void {
+    this.isDesktopSubscription.unsubscribe();
     this.gameInProgressUnsubscribe();
   }
 
@@ -53,7 +66,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
         directives: {
           cahConfirmDialog: {
             config: { data: { title: `Cancel Game`, description: game.id } },
-            confirmClick: () => lastValueFrom(this.gameService.updateGameStatus(game.id, { status: 'GE' })),
+            confirmClick: () => lastValueFrom(this.gameService.updateGameStatus(game.id, { status: 'GAME_ENDED' })),
           },
         },
       },
@@ -66,7 +79,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
         directives: {
           cahConfirmDialog: {
             config: { data: { title: `Start Game`, description: game.id } },
-            confirmClick: () => lastValueFrom(this.gameService.updateGameStatus(game.id, { status: 'GS' })),
+            confirmClick: () => lastValueFrom(this.gameService.updateGameStatus(game.id, { status: 'GAME_STARTED' })),
           },
         },
       },
@@ -77,7 +90,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
         tooltipPosition: 'left',
         color: 'queued',
         directives: {
-          cahDialogComponent: {
+          [this.isDesktop ? 'cahConfirmDialog' : 'cahDialogComponent']: {
             component: InviteComponent,
             config: { data: { game: game, inviteOnly: game.private, spectator: true }, maxHeight: '420px' },
           },
@@ -90,7 +103,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
         tooltipPosition: 'left',
         color: 'warn',
         directives: {
-          cahDialogComponent: {
+          [this.isDesktop ? 'cahConfirmDialog' : 'cahDialogComponent']: {
             component: InviteComponent,
             config: { data: { game: game, inviteOnly: game.private }, maxHeight: '420px' },
           },
@@ -109,6 +122,8 @@ export class LobbyComponent implements OnInit, OnDestroy {
     const canJoin = new Date(game.joinEndsAt).getTime() > new Date(Date.now()).getTime();
     const players = game.inviteSet.edges.filter((player) => !player?.node?.spectator);
     const spectators = game.inviteSet.edges.filter((player) => player?.node?.spectator);
+    const canStart = game.playerSet.edges.length >= 3;
+    this.game = game;
 
     this.fab = menus.filter(({ id }) => {
       switch (id) {
@@ -119,7 +134,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
         case 'cancel_game':
           return this.authService.profile$.getValue()?.sub === game.creator.id;
         case 'start_game':
-          return !canJoin;
+          return !canJoin || canStart;
         default:
           return true;
       }
@@ -134,7 +149,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
   }
 
   async onGameEnd(game?: Maybe<GameNode>): Promise<boolean> {
-    if (!game || game?.status === 'GE') return this.router.navigate(['/play']);
+    if (!game || game?.status === 'GAME_ENDED') return this.router.navigate(['/play']);
     return Promise.resolve(false);
   }
 }

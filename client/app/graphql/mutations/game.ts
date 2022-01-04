@@ -71,3 +71,27 @@ export const JOIN_GAME_MUTATION = gql`
     }
   }
 `;
+
+export const ROUND_QUESTION_MUTATION = gql`
+  mutation RoundQuestion($input: RoundQuestionMutationInput!) {
+    roundQuestion(input: $input) {
+      ok
+    }
+  }
+`;
+
+export const ROUND_PLAYER_ANSWERS_MUTATION = gql`
+  mutation RoundPlayerAnswers($input: RoundPlayerAnswersMutationInput!) {
+    roundPlayerAnswers(input: $input) {
+      ok
+    }
+  }
+`;
+
+export const ROUND_CZAR_ANSWERS_MUTATION = gql`
+  mutation RoundCzarAnswers($input: RoundCzarAnswersMutationInput!) {
+    roundCzarAnswers(input: $input) {
+      ok
+    }
+  }
+`;

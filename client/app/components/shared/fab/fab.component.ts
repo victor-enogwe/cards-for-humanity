@@ -9,7 +9,7 @@ import { TooltipPosition } from '@angular/material/tooltip';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FabComponent {
-  @HostBinding('class') hostCLass = 'position-absolute end-25';
+  @HostBinding('class') hostCLass = 'position-absolute end-10';
   @Input() tooltipPosition: TooltipPosition = 'above';
   @Input() icon = 'add';
   @Input() label = 'add';

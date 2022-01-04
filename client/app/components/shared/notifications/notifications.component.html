@@ -1,4 +1,4 @@
-<ng-container *ngIf="{ notifications: notifications$ | async } as data">
+<div *ngIf="{ notifications: notifications$ | async } as data" class="d-flex flex-column flex-grow-1 flex-fill h-100">
   <div *ngIf="data.notifications as notifications" class="toast-container d-flex justify-content-center align-items-center w-100">
     <div *ngFor="let notice of notifications.invites?.edges" class="toast text-white bg-primary d-block" role="alert" aria-live="assertive"
       aria-atomic="true">
@@ -16,10 +16,9 @@
       </div>
     </div>
   </div>
-
-  <mat-nav-list *ngIf="!data.notifications">
+  <mat-nav-list *ngIf="!data.notifications?.invites?.edges?.length" class="align-self-center">
     <mat-list-item>
-      No notification available
+      No notifications available
     </mat-list-item>
   </mat-nav-list>
-</ng-container>
+</div>

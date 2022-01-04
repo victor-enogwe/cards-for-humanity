@@ -6,7 +6,7 @@ import { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
 import { QueryInfo } from '@apollo/client/core/QueryInfo';
 import { TIncomingRelay as TIncoming } from '@apollo/client/utilities/policies/pagination';
 import { Observable } from 'rxjs';
-import { ApiPlayerAvatarChoices } from './graphql';
+import { ApiPlayerAvatarChoices, GenreNode } from './graphql';
 
 declare global {
   interface Window {
@@ -52,14 +52,7 @@ export interface TIncomingRelay<TNode> extends TIncoming<TNode> {
   totalCount: number;
 }
 
-export interface Genre {
-  id: number;
-  description: string;
-  credit: string;
-  selected: boolean;
-}
-
-export interface AllGenreGeneric extends Partial<Genre> {
+export interface AllGenreGeneric extends Partial<GenreNode> {
   offset?: number;
   before?: string;
   after?: string;
@@ -80,24 +73,6 @@ export interface AllGenreLast extends AllGenreGeneric {
 }
 
 export type AllGenre = AllGenreFirst | AllGenreLast;
-
-export enum GAME_STATUS {
-  GAP = 'Awaiting Players',
-  GAC = 'Awaiting Czar',
-  GS = 'Game Started',
-  GE = 'Game Ended',
-}
-
-export interface Game {
-  id: number;
-  rounds: number;
-  roundTime: number;
-  numPlayers: number;
-  numSpectators: number;
-  status: GAME_STATUS;
-  genres: number[];
-  playerSet?: number[];
-}
 
 export interface SignUpData {
   tokenAuth: {

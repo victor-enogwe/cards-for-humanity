@@ -79,4 +79,11 @@ export class UtilsService {
   fromRelayID(id: string): string {
     return atob(id).split(':')[1];
   }
+
+  distinctUntilKeyChangeComparator<T>(key: keyof T) {
+    return (prev: T[], next: T[]) => {
+      const unique = new Set([...prev.map((item) => item[key]), ...next.map((i) => i[key])]);
+      return unique.size === prev.length;
+    };
+  }
 }

@@ -50,7 +50,8 @@ export const WS_CLIENT = new InjectionToken<BehaviorSubject<WSSubscriptionClient
 const hostFactory = (document: Document) => document.location.origin;
 const staticURLFactory = (host: string, platformId: Object) => `${host}/${isPlatformServer(platformId) ? 'static/browser' : ''}`;
 const seoFactory = (seoService: SeoService) => seoService.start.bind(seoService);
-const wsClientFactory = () => new WSSubscriptionClient(environment.WS_LINK, { reconnect: true, lazy: true });
+const wsClientFactory = (token$: BehaviorSubject<string | null>) =>
+  new WSSubscriptionClient(environment.WS_LINK, token$, { reconnect: true, lazy: true });
 const storageFactory = (config: StorageConfig, pId: Object) => (isPlatformServer(pId) ? new NoopStorage() : new Storage(config));
 const cacheFactory = (gqlService: GraphqlService) => () => gqlService.initCache();
 const broadcastChannelFactory = (broadcastService: BroadcastService) => () => broadcastService.createChannel();
@@ -68,7 +69,7 @@ const authFactory = (broadcastService: BroadcastService, auth: AuthService, rout
       cookieName: 'csrftoken',
       headerName: 'X-CSRFTOKEN',
     }),
-    BrowserAnimationsModule,
+    BrowserAnimationsModule.withConfig({ disableAnimations: window?.matchMedia('(prefers-reduced-motion)').matches }),
     MatSnackBarModule,
     CahRoutingModule,
     SharedModule,
@@ -137,9 +138,9 @@ const authFactory = (broadcastService: BroadcastService, auth: AuthService, rout
     { provide: APP_INITIALIZER, useFactory: authFactory, multi: true, deps: [BroadcastService, AuthService, Router] },
     { provide: APP_INITIALIZER, useFactory: refreshTokenKeepAliveFactory, multi: true, deps: [AuthService] },
     { provide: APP_INITIALIZER, useFactory: seoFactory, multi: true, deps: [SeoService] },
-    { provide: WS_CLIENT, useFactory: wsClientFactory },
     { provide: CRYPT, useFactory: cryptrFactory, deps: [APP_HOST] },
     { provide: AUTH_TOKEN$, useValue: new BehaviorSubject<string | null>(null) },
+    { provide: WS_CLIENT, useFactory: wsClientFactory, deps: [AUTH_TOKEN$] },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
     { provide: ErrorHandler, useClass: GlobalErrorInterceptor },

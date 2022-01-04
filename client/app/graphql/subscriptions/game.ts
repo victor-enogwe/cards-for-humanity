@@ -6,8 +6,8 @@ export const GAME_IN_PROGRESS_SUBSCRIPTION = gql`
 
   subscription GameInProgress {
     gameInProgress {
-      __typename
       gameInProgress {
+        __typename
         ...GameNode
       }
     }
