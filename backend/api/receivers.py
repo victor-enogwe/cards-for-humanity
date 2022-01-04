@@ -1,9 +1,16 @@
+from api.graphql.nodes import NotificationNode
 from api.graphql.subscription.game_in_progress import GameInProgressSubscription
+from api.graphql.subscription.notification import NotificationSubscription
+from api.models.answer import Answer
+from api.models.available_answer import AvailableAnswer
+from api.models.available_question import AvailableQuestion
 from api.models.game import Game
 from api.models.invite import Invite
 from api.models.player import Player
 from api.models.provider import Provider
+from api.models.question import Question
 from api.models.verification_code import VerificationCode
+from api.utils.functions import get_invites
 from django.contrib.auth import user_logged_in
 from django.contrib.auth.signals import user_logged_in
 from django.db.models.base import Model
@@ -27,24 +34,40 @@ def updated_at_timestamp(sender, instance: Model, **kwargs):
 @receiver(pre_save, sender=VerificationCode)
 def updated_at_timestamp(sender, instance: VerificationCode, **kwargs):
     default_expiry = timezone.now() + timezone.timedelta(minutes=5)
-    print(instance.previous)
     setattr(instance, "expires_at", default_expiry)
+    instance.save()
 
 
 @receiver(post_save, sender=Game)
 def broadcast_game(sender, instance, created, **kwargs):
-    # @TODO add ai to game if single player
-    GameInProgressSubscription.on_game_updated(gameInProgress=instance)
+    GameInProgressSubscription.on_game_updated(game_in_progress=instance)
 
 
 @receiver([post_save, post_delete], sender=Invite)
 def broadcast_game(sender, instance, **kwargs):
-    GameInProgressSubscription.on_game_updated(gameInProgress=instance.game)
+    try:
+        GameInProgressSubscription.on_game_updated(game_in_progress=instance.game)
+        email = instance.email
+        user = Provider.objects.get(email=email).user
+        notifications = {
+            "id": user,
+            "invites": list(
+                get_invites(user=user, email=email, first=10, revoked=False).values()
+            ),
+        }
+
+        NotificationSubscription.on_new_notification(notifications=notifications)
+    except Provider.DoesNotExist as e:
+        pass
 
 
+@receiver([post_save, post_delete], sender=AvailableQuestion)
+@receiver([post_save, post_delete], sender=AvailableAnswer)
+@receiver([post_save, post_delete], sender=Question)
+@receiver([post_save, post_delete], sender=Answer)
 @receiver([post_save, post_delete], sender=Player)
 def broadcast_game(sender, instance, **kwargs):
-    GameInProgressSubscription.on_game_updated(gameInProgress=instance.game)
+    GameInProgressSubscription.on_game_updated(game_in_progress=instance.game)
 
 
 @receiver(user_logged_in)

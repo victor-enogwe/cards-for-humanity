@@ -1,3 +1,4 @@
+import functools
 import json
 import os
 import re
@@ -7,8 +8,11 @@ from datetime import datetime
 from functools import wraps
 from os import listdir, path
 from os.path import isfile, join
+from re import IGNORECASE, compile
+from sys import exc_info
 from uuid import uuid4
 
+from api.graphql.filtersets import InvitesFilter
 from api.utils.enums import GameStatus
 from api.utils.graphql_errors import GraphQLErrors
 from config.settings import env
@@ -16,6 +20,7 @@ from django.apps import apps
 from django.contrib.auth import authenticate, get_user_model, user_logged_in
 from django.core import management
 from django.db import models
+from django.db.models.expressions import OuterRef
 from django.http.request import HttpRequest
 from django.urls import reverse
 from django.utils import timezone
@@ -33,6 +38,19 @@ from graphql_jwt.decorators import (
 )
 from graphql_jwt.settings import jwt_settings
 from graphql_jwt.utils import delete_cookie, get_payload, set_cookie
+
+
+def catch_errors(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs) if func else None
+        except Exception as e:
+            regex = compile(r"\nCONTEXT.+", IGNORECASE)
+            message = regex.sub("", str(e))
+            raise GraphQLError(message)
+
+    return wrapper
 
 
 def load_data(filepath):
@@ -367,7 +385,7 @@ def game_in_progress(user):
 
     try:
         player = player_model.objects.filter(
-            ~models.Q(game__status=GameStatus.GE), models.Q(user=user)
+            ~models.Q(game__status=GameStatus.GE._value_), models.Q(user=user)
         ).first()
         if player is None:
             raise player_model.DoesNotExist()
@@ -377,7 +395,7 @@ def game_in_progress(user):
         player_model.game.RelatedObjectDoesNotExist,
     ):
         return game_model.objects.filter(
-            ~models.Q(status=GameStatus.GE), models.Q(creator=user)
+            ~models.Q(status=GameStatus.GE._value_), models.Q(creator=user)
         ).first()
 
 
@@ -388,3 +406,28 @@ def get_ws_authorization(payload):
     if len(auth) != 2 or auth[0].lower() != prefix.lower():
         return None
     return auth[1]
+
+
+def get_invites(user, **kwargs):
+    try:
+        kwargs["game__status"] = GameStatus.GAP._value_
+        email = kwargs.get("email")
+        query_set = (
+            InvitesFilter(kwargs)
+            .qs.filter(game__status=GameStatus.GAP._value_)
+            .extra(
+                tables=["api_provider"],
+                select={
+                    "api_provider.user_id": "api_provider.user_id",
+                },
+                where=["api_provider.email = %s", "api_provider.user_id = %s"],
+                params=[email, user.id],
+            )
+            .exclude(
+                game__player_set__game=OuterRef("game"), game__player_set__user=user
+            )
+        )
+
+        return query_set
+    except apps.get_model("api.Provider").DoesNotExist:
+        raise GraphQLError(GraphQLErrors.NOT_AUTHORIZED)

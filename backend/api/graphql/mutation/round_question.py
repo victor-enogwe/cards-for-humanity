@@ -1,8 +1,6 @@
 import graphene
 from api.graphql.inputs import RoundQuestionMutationInput
-from api.graphql.nodes import GameNode
-from api.models.game import Game
-from api.models.player import Player
+from api.models.question import Question
 from graphene.types.mutation import Mutation
 
 
@@ -13,8 +11,9 @@ class RoundQuestionMutation(Mutation):
         input = RoundQuestionMutationInput(required=True)
 
     def mutate(root, info, input):
-        print(input)
-        # input['game'] = game
-        # player = Player(**input, user=info.context.user)
-        # player.save()
+        input["player_id"] = input.get("player")
+        input["game_id"] = input.get("game")
+        input["card_id"] = input.get("card")
+        [input.pop(item) for item in ["player", "game", "card"]]
+        Question.objects.get_or_create(**input)
         return RoundQuestionMutation(ok=True)

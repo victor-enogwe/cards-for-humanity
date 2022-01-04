@@ -24,4 +24,5 @@ class CardBase(TimestampBase):
 
     @property
     def rating(self):
-        return CardRating.NORMAL
+        # @TODO get it from cumulative questions/answer ratings
+        return CardRating.NORMAL._value_

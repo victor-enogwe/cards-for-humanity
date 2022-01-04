@@ -1,6 +1,8 @@
+import graphene
 from api.utils.enums import CardRating
 from graphene.types import InputObjectType
 from graphene.types.scalars import ID, Boolean, Int, String
+from graphene.types.structures import List
 
 
 class FilterInput(InputObjectType):
@@ -42,3 +44,24 @@ class RoundQuestionMutationInput(InputObjectType):
     card = ID(required=True)
     round = Int(required=True)
     rating = CardRating(required=True)
+
+
+class RoundCardInput(InputObjectType):
+    id = ID(required=True)
+    rating = CardRating(required=True)
+
+
+class RoundPlayerAnswersMutationInput(InputObjectType):
+    question = ID(required=True)
+    player = ID(required=True)
+    game = ID(required=True)
+    cards = List(RoundCardInput, required=True)
+    round = Int(required=True)
+
+class RoundCzarAnswersMutationInput(InputObjectType):
+    cards = List(RoundCardInput, required=True)
+
+class ChatInput(InputObjectType):
+    room = graphene.ID(required=True)
+    sender = graphene.ID(required=True)
+    message = graphene.String(required=True)

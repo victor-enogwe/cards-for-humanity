@@ -26,7 +26,7 @@ class AvailableQuestion(TimestampBase):
         constraints = [
             # restrict duplicate question
             models.UniqueConstraint(
-                name="unique_available_question_player_game_round",
+                name="unique_available_question_player_game_card_round",
                 fields=(
                     "game",
                     "card",

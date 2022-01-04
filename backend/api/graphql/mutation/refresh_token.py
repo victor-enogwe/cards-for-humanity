@@ -1,7 +1,6 @@
+from api.graphql.nodes import JWTPayloadNode
 from graphene import ClientIDMutation, Field
 from graphql_jwt.mixins import RefreshMixin
-
-from api.graphql.nodes import JWTPayloadNode
 
 
 class RefreshTokenMutation(RefreshMixin, ClientIDMutation):
@@ -11,5 +10,5 @@ class RefreshTokenMutation(RefreshMixin, ClientIDMutation):
         """Refresh Input"""
 
     @classmethod
-    def mutate_and_get_payload(cls, *args, **kwargs):
-        return cls.refresh(*args, **kwargs)
+    def mutate_and_get_payload(cls, root, info, **kwargs):
+        return cls.refresh(root, info, **kwargs)

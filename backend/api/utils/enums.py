@@ -7,7 +7,7 @@ class EnumChoices:
     @classmethod
     def choices(self):
         attributes = getmembers(self, lambda a: not (isroutine(a)))
-        values = [(a[0], a[1]._value_) for a in attributes if hasattr(a[1], "_value_")]
+        values = [(a[1]._value_, a[0]) for a in attributes if hasattr(a[1], "_value_")]
         return values
 
 
@@ -15,8 +15,10 @@ class GameStatus(EnumChoices, Enum):
     GAP = "Awaiting Players"
     GS = "Game Started"
     GC = "Game Canceled"
-    GAC = "Awaiting Czar"
-    GAA = "Awaiting Answers"
+    GACQ = "Awaiting Czar Question"
+    GAPA = "Awaiting Player Answers"
+    GACA = "Awaiting Czar Answers"
+    GSRR = "Show Round Result"
     GE = "Game Ended"
 
 

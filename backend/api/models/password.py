@@ -1,3 +1,7 @@
+from api.models.timestamp import TimestampBase
+from api.utils.constants import password_allowed_chars, password_error_message
+from api.utils.validators import password_validators
+from config.settings import AUTH_USER_MODEL
 from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import (
     check_password,
@@ -9,11 +13,6 @@ from django.db import models
 from django.utils.crypto import get_random_string
 from pgtrigger import F, Protect, Q, Update, register
 from pgtrigger.core import SoftDelete
-
-from api.models.timestamp import TimestampBase
-from api.utils.constants import password_allowed_chars, password_error_message
-from api.utils.validators import password_validators
-from config.settings import AUTH_USER_MODEL
 
 
 @register(
@@ -36,12 +35,23 @@ class Password(TimestampBase):
         max_length=128,
         verbose_name="password",
         validators=password_validators,
-        unique=True,
         error_messages={"unique": "You already used this password."},
         help_text=password_error_message,
     )
     _password = None
     objects = models.Manager()
+
+    class Meta:
+        indexes = (models.Index(fields=("is_active",)),)
+        constraints = [
+            models.UniqueConstraint(
+                name="unique_user_password",
+                fields=(
+                    "user",
+                    "password",
+                ),
+            ),
+        ]
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

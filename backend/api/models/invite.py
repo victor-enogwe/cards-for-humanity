@@ -1,14 +1,11 @@
 from uuid import uuid4
 
-from django.core.validators import MinValueValidator
+from api.models.timestamp import TimestampBase
+from api.utils.sql import INVITE_TRIGGER
 from django.db import models
 from django.utils import timezone
 from pgtrigger import F, Insert, Protect, Q, Update, register
 from pgtrigger.core import Before, Trigger
-
-from api.models.timestamp import TimestampBase
-from api.utils.functions import expiry_date_min
-from api.utils.sql import INVITE_TRIGGER
 
 
 @register(

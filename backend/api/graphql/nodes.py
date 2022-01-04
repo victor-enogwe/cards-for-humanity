@@ -1,4 +1,4 @@
-from base64 import b64encode
+from math import floor
 
 import graphene
 from api.graphql.filtersets import InvitesFilter
@@ -14,8 +14,9 @@ from api.models.profile import Profile
 from api.models.provider import Provider
 from api.models.question import Question
 from api.models.whitecard import WhiteCard
-from api.utils.enums import CardRating, GameStatus
+from api.utils.enums import CardRating
 from api.utils.extended_connection import ExtendedConnection
+from api.utils.functions import get_invites
 from api.utils.graphql_errors import GraphQLErrors
 from django.contrib.auth import get_user_model
 from django.db.models.expressions import OuterRef
@@ -102,14 +103,12 @@ class AnswerNode(DjangoObjectType):
 
 
 class GameNode(DjangoObjectType):
-    available_questions = graphene.Field(
-        graphene.List(BlackCardNode), source="available_questions"
-    )
-    available_answers = graphene.Field(
-        graphene.List(WhiteCardNode), source="available_answers"
-    )
-    question = graphene.Field(BlackCardNode, source="question")
-    answers = graphene.Field(graphene.List(WhiteCardNode), source="answers")
+    available_questions = graphene.Field(graphene.List(AvailableQuestionNode))
+    available_answers = graphene.Field(graphene.List(AvailableAnswerNode))
+    question = graphene.Field(QuestionNode, source="question")
+    answers = graphene.Field(graphene.List(AnswerNode), source="answers")
+    czar_answers = graphene.Field(graphene.List(AnswerNode))
+    user_answers = graphene.Field(graphene.List(AnswerNode))
 
     class Meta:
         model = Game
@@ -122,6 +121,42 @@ class GameNode(DjangoObjectType):
         ]
         interfaces = (relay.Node,)
         connection_class = ExtendedConnection
+
+    def resolve_available_questions(self, info, **kwargs):
+        try:
+            user = info.context.user
+            player = self.player_set.get(user=user)
+            return self.available_questions if player.czar else None
+        except:
+            return None
+
+    def resolve_available_answers(self, info, **kwargs):
+        try:
+            user = info.context.user
+            players = self.player_set.order_by("created_at").all()
+            player_ids = [x.user.id for x in players if x.czar == False]
+            player_index = player_ids.index(user.id)
+            num_players = self.num_players - 1
+            answers = self.available_answers
+            no_of_answers = len(answers)
+            step = floor(no_of_answers / num_players)
+            start = player_index * step
+            stop = (player_index + 1) * step
+            return answers[start:stop]
+        except:
+            return None
+
+    def resolve_czar_answers(self, info, **kwargs):
+        answers = self.answers.filter(selected=True) if self.answers else []
+
+        return None if (len(list(answers)) < 1) else answers
+
+    def resolve_user_answers(self, info, **kwargs):
+        answers = (
+            self.answers.filter(player__user=info.context.user) if self.answers else []
+        )
+
+        return None if (len(list(answers)) < 1) else answers
 
 
 class JWTPayloadNode(graphene.ObjectType):
@@ -188,25 +223,12 @@ class NotificationNode(graphene.ObjectType):
 
     def resolve_invites(self, info, **kwargs):
         try:
-            kwargs["game__status"] = GameStatus.GAP
-            email = kwargs.get("email")
-            user = info.context.user
-            query_set = (
-                InvitesFilter(kwargs)
-                .qs.filter(game__status=GameStatus.GAP)
-                .extra(
-                    tables=["api_provider"],
-                    select={
-                        "api_provider.user_id": "api_provider.user_id",
-                    },
-                    where=["api_provider.email = %s", "api_provider.user_id = %s"],
-                    params=[email, user.id],
-                )
-                .exclude(
-                    game__player_set__game=OuterRef("game"), game__player_set__user=user
-                )
-            )
-
-            return query_set
+            return get_invites(user=info.context.user, **kwargs)
         except Provider.DoesNotExist:
             raise GraphQLError(GraphQLErrors.NOT_AUTHORIZED)
+
+
+class ChatNode(graphene.ObjectType):
+    room = graphene.ID(required=True)
+    sender = graphene.ID(required=True)
+    message = graphene.String(required=True)

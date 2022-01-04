@@ -27,11 +27,11 @@ class BlackCard(CardBase):
     pick = models.CharField(
         max_length=10,
         choices=BlackCardPickChoices.choices(),
-        default=BlackCardPickChoices.PICK_ONE,
+        default=BlackCardPickChoices.PICK_ONE._value_,
     )
 
     class Meta:
         indexes = (models.Index(fields=("pick",)),)
 
     def text_words(self):
-        return findall(r"\w+", self.text)
+        return findall(r"([A-Za-z]+)", self.text)

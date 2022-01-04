@@ -7,3 +7,4 @@ class InvitesFilter(FilterSet):
     class Meta:
         model = Invite
         fields = ["email", "revoked"]
+        exclude = ["game"]

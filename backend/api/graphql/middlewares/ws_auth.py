@@ -1,13 +1,15 @@
 from urllib.parse import parse_qs
 
+from api.utils.functions import get_user_by_token
+from api.utils.graphql_errors import GraphQLErrors
 from asgiref.sync import sync_to_async
 from channels.auth import AuthMiddleware
 from channels.middleware import BaseMiddleware
 from channels.sessions import CookieMiddleware, SessionMiddleware
 from django.contrib.auth.models import AnonymousUser
 from django.db import close_old_connections
-
-from api.utils.functions import get_user_by_token
+from graphql import GraphQLError
+from graphql_jwt.exceptions import JSONWebTokenExpired
 
 
 class WSAuthMiddleware(BaseMiddleware):
@@ -34,15 +36,18 @@ class WSAuthMiddleware(BaseMiddleware):
             scope["user"] = user
 
     async def __call__(self, scope, receive, send):
-        # Close old database connections to prevent usage of timed out connections
-        close_old_connections()
+        try:
+            # Close old database connections to prevent usage of timed out connections
+            close_old_connections()
 
-        scope = dict(scope)
+            scope = dict(scope)
 
-        # Scope injection/mutation per this middleware's needs.
-        await self.populate_scope(scope)
+            # Scope injection/mutation per this middleware's needs.
+            await self.populate_scope(scope)
 
-        return await super().__call__(scope, receive, send)
+            return await super().__call__(scope, receive, send)
+        except JSONWebTokenExpired as e:
+            raise GraphQLError(GraphQLErrors.NOT_AUTHENTICATED)
 
 
 # Handy shortcut for applying all three layers at once

@@ -1,13 +1,12 @@
-from graphene.types.objecttype import ObjectType
-
+from api.graphql.subscription.chat import ChatSubscription
 from api.graphql.subscription.game_in_progress import GameInProgressSubscription
 from api.graphql.subscription.notification import NotificationSubscription
+from graphene.types.objecttype import ObjectType
 
 
 class Subscription(ObjectType):
     """Root Subscription for the cards against humanity api."""
 
-    "join a notification channel"
-    notifications = NotificationSubscription.Field()
-    """join game in progress"""
+    chat = ChatSubscription.Field()
     game_in_progress = GameInProgressSubscription.Field()
+    notifications = NotificationSubscription.Field()

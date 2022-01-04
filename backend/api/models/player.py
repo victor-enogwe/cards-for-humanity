@@ -38,7 +38,7 @@ class Player(TimestampBase):
     czar = models.BooleanField(default=False)
     spectator = models.BooleanField(default=False)
     avatar = models.CharField(
-        max_length=20, choices=Avatars.choices(), default=Avatars.DOROTHY
+        max_length=20, choices=Avatars.choices(), default=Avatars.DOROTHY._value_
     )
     objects = models.Manager()
 

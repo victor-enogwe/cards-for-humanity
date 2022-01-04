@@ -12,6 +12,6 @@ class GameStatusMutation(DjangoUpdateMutation):
 
     @classmethod
     def after_mutate(cls, root, info, id, input, game: Game, return_data):
-        if game.status == GameStatus.GS:
+        if game.status == GameStatus.GS._value_:
             game.create_task()
         return super().after_mutate(root, info, id, input, game, return_data)

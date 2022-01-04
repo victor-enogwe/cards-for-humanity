@@ -2,9 +2,11 @@ from functools import reduce
 from operator import and_
 from random import sample
 
+from api.celery import celery_app
 from api.models.timestamp import TimestampBase
-from api.utils.enums import BlackCardPickChoices, GameStatus
+from api.utils.enums import GameStatus
 from api.utils.functions import join_end_default
+from api.utils.sql import GAME_TRIGGER
 from api.utils.validators import min_max_validator
 from config.settings import AUTH_USER_MODEL
 from django.apps import apps
@@ -14,7 +16,7 @@ from django_celery_beat.models import IntervalSchedule, PeriodicTask
 from django_redis import get_redis_connection, pool
 from kombu.utils.json import dumps
 from pgtrigger import Delete, F, Protect, Q, Update, register
-from pgtrigger.core import FSM
+from pgtrigger.core import FSM, Before, Trigger
 
 
 @register(
@@ -29,25 +31,33 @@ from pgtrigger.core import FSM
             | Q(old__rounds__df=F("new__rounds"))
             | Q(old__num_players__df=F("new__num_players"))
             | Q(old__num_spectators__df=F("new__num_spectators"))
-            | Q(old__task__df=F("new__task"), old__status__df=GameStatus.GE)
-            | Q(old__task=F("new__task"), old__status=GameStatus.GE)
             | Q(old__winner_id__isnull=False)
-            | Q(
-                old__private__df=F("new__private"),
-                old__status__df=GameStatus.GAP,
-            )
+            | Q(old__private__df=F("new__private"))
+            & Q(old__status__df=GameStatus.GAP._value_)
+            | Q(new__task__isnull=False) & Q(old__status__df=GameStatus.GE._value_)
         ),
+    ),
+    Trigger(
+        name="protect_players_creation",
+        operation=(Update),
+        when=Before,
+        declare=[
+            ("game_summary", "RECORD"),
+        ],
+        func=GAME_TRIGGER,
     ),
     FSM(
         name="validate_game_status_transitions",
         field="status",
         transitions=(
-            (GameStatus.GAP, GameStatus.GS),
-            (GameStatus.GAP, GameStatus.GE),
-            (GameStatus.GS, GameStatus.GAC),
-            (GameStatus.GAC, GameStatus.GAA),
-            (GameStatus.GAA, GameStatus.GAC),
-            (GameStatus.GAA, GameStatus.GE),
+            (GameStatus.GAP._value_, GameStatus.GS._value_),
+            (GameStatus.GAP._value_, GameStatus.GE._value_),
+            (GameStatus.GS._value_, GameStatus.GACQ._value_),
+            (GameStatus.GACQ._value_, GameStatus.GAPA._value_),
+            (GameStatus.GAPA._value_, GameStatus.GACA._value_),
+            (GameStatus.GACA._value_, GameStatus.GSRR._value_),
+            (GameStatus.GSRR._value_, GameStatus.GACQ._value_),
+            (GameStatus.GSRR._value_, GameStatus.GE._value_),
         ),
     ),
 )
@@ -81,8 +91,8 @@ class Game(TimestampBase):
         editable=False,
     )
     num_players = models.PositiveSmallIntegerField(
-        default=1,
-        validators=min_max_validator(1, 9),
+        default=3,
+        validators=min_max_validator(3, 9),
         help_text="no of players",
         editable=False,
     )
@@ -93,7 +103,7 @@ class Game(TimestampBase):
         editable=False,
     )
     status = models.CharField(
-        max_length=20, choices=GameStatus.choices(), default=GameStatus.GAP
+        max_length=23, choices=GameStatus.choices(), default=GameStatus.GAP._value_
     )
     winner = models.ForeignKey(
         "api.Player",
@@ -116,7 +126,7 @@ class Game(TimestampBase):
             models.UniqueConstraint(
                 name="unique_game_status",
                 fields=("creator",),
-                condition=Q(status=GameStatus.GAP),
+                condition=Q(status=GameStatus.GAP._value_),
             ),
         ]
 
@@ -138,7 +148,9 @@ class Game(TimestampBase):
         return task
 
     def remove_task(self):
-        return self.task.delete() if self.task != None else None
+        if self.task:
+            celery_app.control.revoke(self.task.id, terminate=True)
+            return self.task.delete() if self.task != None else None
 
     def select_czar(self):
         redis: pool.Redis = get_redis_connection("default")
@@ -180,8 +192,8 @@ class Game(TimestampBase):
             return None
 
         question_model = apps.get_model("api.AvailableQuestion")
-        questions = question_model.objects.filter(game=self, round=self.round)
-        questions = [question.card for question in questions]
+        all_questions = question_model.objects.filter(game=self)
+        questions = all_questions.filter(round=self.round)
         len_questions = len(questions)
 
         if len_questions > 0:
@@ -189,7 +201,8 @@ class Game(TimestampBase):
 
         card_model = apps.get_model("api.BlackCard")
         genres = self.genres.all()
-        cards = card_model.objects.filter(genre__in=genres)
+        existing_cards = [quest.card.id for quest in all_questions]
+        cards = card_model.objects.filter(~Q(id__in=existing_cards), genre__in=genres)
         card_ids = sample([card.id for card in cards], 4)
         cards = card_model.objects.filter(id__in=card_ids)
         question_model.objects.bulk_create(
@@ -206,29 +219,20 @@ class Game(TimestampBase):
         if self.question == None:
             return None
 
-        question = self.question.card
-        text = question.sanitized_text()
-        picks = {
-            [BlackCardPickChoices.PICK_ONE]: 1,
-            [BlackCardPickChoices.PICK_TWO]: 2,
-            [BlackCardPickChoices.PICK_THREE]: 3,
-        }
-        print(picks)
-        pick = picks[question.pick]
         answer_model = apps.get_model("api.AvailableAnswer")
-        answers = answer_model.objects.filter(game=self, round=self.round)
-        answers = [answer.card for answer in answers]
+        all_answers = answer_model.objects.filter(game=self)
+        answers = all_answers.filter(round=self.round)
         len_answers = len(answers)
 
         if len_answers > 0:
             return answers
 
         card_model = apps.get_model("api.WhiteCard")
-        cards = card_model.objects.filter(
-            reduce(and_, [Q(text__icontains=word) for word in text]),
-            genres__in=self.genres,
-        ).values_list("id", flat=True)
-        card_ids = sample(list(cards), 12 * pick)
+        genres = self.genres.all()
+        existing_cards = [quest.card.id for quest in all_answers]
+        cards = card_model.objects.filter(~Q(id__in=existing_cards), genre__in=genres)
+        cards = cards.values_list("id", flat=True)
+        card_ids = sample(list(cards), 12 * self.num_players - 1)
         cards = card_model.objects.filter(id__in=card_ids)
         answer_model.objects.bulk_create(
             [answer_model(game=self, round=self.round, card=card) for card in cards]
@@ -238,8 +242,16 @@ class Game(TimestampBase):
 
     @property
     def question(self):
-        return self.question_set.objects.get(round=self.round).card
+        try:
+            return self.question_set.get(round=self.round)
+        except:
+            return None
 
     @property
     def answers(self):
-        return self.answer_set.objects.filter(round=self.round).values("card")
+        try:
+            nodes = self.answer_set.filter(round=self.round)
+
+            return None if len(list(nodes)) < 1 else nodes
+        except:
+            return None

@@ -1,5 +1,4 @@
 from api.graphql.subscription.game_in_progress import GameInProgressSubscription
-from api.models.game import Game
 from api.utils.enums import GameStatus
 from celery import shared_task
 from django.apps import apps
@@ -11,29 +10,31 @@ def game_heartbeat(pk: int):
     game = game_model.objects.get(pk=pk)
     status = game.status
 
-    if status == GameStatus.GE:
+    if status == GameStatus.GE._value_:
         return game.remove_task()
 
     states = {
-        GameStatus.GS: GameStatus.GAC,
-        GameStatus.GAC: GameStatus.GAA,
-        GameStatus.GAA: GameStatus.GAC,
-        GameStatus.GE: GameStatus.GE,
+        GameStatus.GS._value_: GameStatus.GACQ._value_,
+        GameStatus.GACQ._value_: GameStatus.GAPA._value_,
+        GameStatus.GAPA._value_: GameStatus.GACA._value_,
+        GameStatus.GACA._value_: GameStatus.GSRR._value_,
+        GameStatus.GSRR._value_: GameStatus.GACQ._value_,
+        GameStatus.GE._value_: GameStatus.GE._value_,
     }
 
     new_status = states[status]
-    round = game.round + 1 if new_status == GameStatus.GAC else game.round
+    round = game.round + 1 if new_status == GameStatus.GACQ._value_ else game.round
 
     if round > game.rounds:
-        new_status = GameStatus.GE
+        new_status = GameStatus.GE._value_
         round = game.round
 
     game.status = new_status
     game.round = round
 
-    if new_status == GameStatus.GAC:
+    if new_status == GameStatus.GACQ._value_:
         game.select_czar()
 
     game.save()
 
-    GameInProgressSubscription.on_game_updated(gameInProgress=game)
+    GameInProgressSubscription.on_game_updated(game_in_progress=game)

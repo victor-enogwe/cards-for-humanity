@@ -14,7 +14,7 @@ class Question(TimestampBase):
     game = models.ForeignKey("api.Game", on_delete=models.CASCADE)
     card = models.ForeignKey("api.BlackCard", on_delete=models.CASCADE)
     rating = models.CharField(
-        max_length=6, choices=CardRating.choices(), default=CardRating.NORMAL
+        max_length=6, choices=CardRating.choices(), default=CardRating.NORMAL._value_
     )
     round = models.SmallIntegerField(
         default=0,
@@ -34,7 +34,6 @@ class Question(TimestampBase):
                 name="unique_question_player_game_round",
                 fields=(
                     "game",
-                    "card",
                     "round",
                 ),
             ),

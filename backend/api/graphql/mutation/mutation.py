@@ -1,10 +1,3 @@
-from graphene.types.objecttype import ObjectType
-from graphql_jwt.relay import (
-    DeleteRefreshTokenCookie as DeleteRefreshTokenCookieMutation,
-)
-from graphql_jwt.relay import Revoke as RevokeRefreshTokenMutation
-from graphql_social_auth.relay import SocialAuthJWT as SocialAuthJWTMutation
-
 from api.graphql.mutation.create_game import CreateGameMutation
 from api.graphql.mutation.create_user import CreateUserMutation
 from api.graphql.mutation.game_invite import GameInviteMutation
@@ -13,7 +6,15 @@ from api.graphql.mutation.game_status import GameStatusMutation
 from api.graphql.mutation.join_game import JoinGameMutation
 from api.graphql.mutation.obtain_jwt import ObtainJSONWebTokenMutation
 from api.graphql.mutation.refresh_token import RefreshTokenMutation
+from api.graphql.mutation.round_czar_answers import RoundCzarAnswersMutation
+from api.graphql.mutation.round_player_answers import RoundPlayerAnswersMutation
 from api.graphql.mutation.round_question import RoundQuestionMutation
+from graphene.types.objecttype import ObjectType
+from graphql_jwt.relay import (
+    DeleteRefreshTokenCookie as DeleteRefreshTokenCookieMutation,
+)
+from graphql_jwt.relay import Revoke as RevokeRefreshTokenMutation
+from graphql_social_auth.relay import SocialAuthJWT as SocialAuthJWTMutation
 
 
 class Mutation(ObjectType):
@@ -26,6 +27,8 @@ class Mutation(ObjectType):
     game_invitation = GameInviteMutation.Field()
     join_game = JoinGameMutation.Field()
     round_question = RoundQuestionMutation.Field()
+    round_player_answers = RoundPlayerAnswersMutation.Field()
+    round_czar_answers = RoundCzarAnswersMutation.Field()
     social_auth = SocialAuthJWTMutation.Field()
     token_auth = ObtainJSONWebTokenMutation.Field()
     refresh_token = RefreshTokenMutation.Field()

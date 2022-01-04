@@ -4,6 +4,34 @@ GAME_SUMMARY_SQL = """
     SELECT
         api_game.id,
         api_game.creator_id,
+        api_game.task_id,
+        api_game.private,
+        api_game.status,
+        api_game.num_players,
+        api_game.num_spectators,
+        api_game.join_ends_at,
+        players_stats.total_players_joined,
+        players_stats.num_spectators_joined,
+        players_stats.num_players_joined
+    FROM api_game
+    LEFT JOIN(
+        SELECT
+            api_player.game_id,
+            COUNT(*) as total_players_joined,
+            COUNT(CASE api_player.spectator WHEN TRUE THEN 1 ELSE NULL END) AS num_spectators_joined,
+            COUNT(CASE api_player.spectator WHEN FALSE THEN 1 ELSE NULL END) AS num_players_joined
+        FROM api_player
+        WHERE api_player.game_id = NEW.id
+        GROUP BY api_player.game_id
+    ) AS players_stats
+    ON api_game.id = players_stats.game_id
+    WHERE api_game.id = NEW.id
+"""
+
+PLAYER_GAME_SUMMARY_SQL = """
+    SELECT
+        api_game.id,
+        api_game.creator_id,
         api_game.private,
         api_game.status,
         api_game.num_players,
@@ -40,6 +68,19 @@ GAME_SUMMARY_SQL = """
     ON invite.game_id = api_game.id
     WHERE api_game.id = NEW.game_id
 """
+
+GAME_TRIGGER = """
+    {game_summary} INTO game_summary;
+
+    IF game_summary.total_players_joined < 3 AND game_summary.status = 'Game Started'
+    THEN
+        RAISE EXCEPTION 'game needs a minimum of 3 players to start.';
+    END IF;
+
+    RETURN NEW;
+""".format(
+    game_summary=GAME_SUMMARY_SQL
+)
 
 PLAYER_TRIGGER = """
     {game_summary} INTO game_summary;
@@ -80,9 +121,9 @@ PLAYER_TRIGGER = """
     RETURN NEW;
 
 """.format(
-    game_summary=GAME_SUMMARY_SQL,
-    game_ended=GameStatus.GE,
-    game_awaiting_players=GameStatus.GAP,
+    game_summary=PLAYER_GAME_SUMMARY_SQL,
+    game_ended=GameStatus.GE._value_,
+    game_awaiting_players=GameStatus.GAP._value_,
 )
 
 INVITE_TRIGGER = """
@@ -140,6 +181,6 @@ INVITE_TRIGGER = """
 
     RETURN NEW;
 """.format(
-    game_ended=GameStatus.GE,
-    game_awaiting_players=GameStatus.GAP,
+    game_ended=GameStatus.GE._value_,
+    game_awaiting_players=GameStatus.GAP._value_,
 )

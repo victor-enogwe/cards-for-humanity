@@ -1,6 +1,7 @@
 class GraphQLErrors:
     """Constant strings used to represent graphql errors to the client."""
 
+    NOT_AUTHENTICATED = "NOT_AUTHENTICATED"
     NOT_AUTHORIZED = "NOT_AUTHORIZED"
     NOT_VERIFIED = "NOT_VERIFIED"
     # Validation errors are returned all at once (using GraphQL "extensions")
