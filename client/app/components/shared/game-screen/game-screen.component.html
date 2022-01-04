@@ -1,13 +1,98 @@
-<div class="d-flex flex-column flex-grow-1 flex-fill justify-content-between px-4 pb-4 game-screen">
-  <div class="d-flex flex-column flex-grow-1 flex-fill justify-content-around h-100 game-deck overflow-hidden">
-    <cah-card-deck [czar]="player?.node?.czar" [show]="game.status === 'GAC'"
-      [deck]="game.availableQuestions" [player]="player" type="question" (onCardSelect)="onCardSelect($event)">
-    </cah-card-deck>
+<ng-container *ngIf="{ profile: profile$ | async } as user">
+  <div *ngIf="{ pick: pickChoices[game.question?.card?.pick!], czar: player?.node?.czar ? 'czar' : 'not-czar' } as data"
+    class="d-flex flex-column flex-grow-1 flex-fill justify-content-between px-4 pb-4 game-screen">
+    <div class="d-flex flex-column flex-grow-1 flex-fill justify-content-around h-100 game-deck overflow-hidden">
+      <ng-container [ngSwitch]="game.status">
+        <ng-container *ngSwitchCase="'AWAITING_CZAR_QUESTION'">
+          <ng-container [ngSwitch]="data.czar">
+            <ng-container *ngSwitchCase="'czar'">
+              <p *ngIf="!game.question" class="mb-3 text-center badge bg-primary">Choose A Question Card For Round {{game.round}}</p>
+
+              <p *ngIf="game.question | bool" class="mb-3 text-center badge bg-secondary">
+                Question Already Chosen For Round {{game.round}}
+              </p>
+
+              <cah-card-deck [profile]="user.profile!" [deck]="game.question ? [game.question] : game.availableQuestions"
+                [disabled]="game.question | bool" (onCardSelect)="onCzarSelectQuestion($any($event))">
+              </cah-card-deck>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'not-czar'">
+              <div class="d-flex flex-column justify-content-center align-items-center">
+                <p class="mb-4 text-center badge bg-dark">Waiting For <strong>CZAR</strong> To Pick A Question Card</p>
+                <mat-progress-spinner color="primary" mode="indeterminate" [value]="100"
+                  class="d-flex justify-content-center align-items-center">
+                </mat-progress-spinner>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
 
 
-    <!-- <cah-card-deck [czar]="player?.node?.czar" [show]="game.status === 'GAA'"
-      [deck]="answers" [player]="player" type="answer" (onCardSelect)="onCardSelect($event)">
-    </cah-card-deck> -->
+        <ng-container *ngSwitchCase="'AWAITING_PLAYER_ANSWERS'">
+          <ng-container [ngSwitch]="data.czar">
+            <ng-container *ngSwitchCase="'czar'">
+              <div class="d-flex flex-column justify-content-center align-items-center">
+                <p class="mb-4 text-center badge bg-dark">Waiting For <strong>Players</strong> To Pick Their Answers</p>
+                <mat-progress-spinner color="primary" mode="indeterminate" [value]="100"
+                  class="d-flex justify-content-center align-items-center">
+                </mat-progress-spinner>
+              </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'not-czar'">
+              <p *ngIf="!game.userAnswers | bool" class="mb-3 text-center badge bg-primary">Choose An Answer Card For Round {{game.round}}
+              </p>
+
+              <p *ngIf="game.userAnswers | bool" class="mb-3 text-center badge bg-secondary">
+                Answers Already Chosen For Round {{game.round}}
+              </p>
+
+              <p class="mb-3 text-center text-wrap text-capitalize font-monospace fs-6">{{game?.question?.card?.text}}</p>
+
+              <cah-card-deck [profile]="user.profile!" [deck]="game.userAnswers ? game.userAnswers : game.availableAnswers"
+                [pick]="data.pick" [disabled]="game.userAnswers | bool" (onCardSelect)="onPlayerSelectAnswers($any($event))">
+              </cah-card-deck>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+
+
+        <ng-container *ngSwitchCase="'AWAITING_CZAR_ANSWERS'">
+          <ng-container [ngSwitch]="player?.node?.czar ? 'czar' : 'not-czar'">
+            <ng-container *ngSwitchCase="'czar'">
+              <p class="mb-3 text-center badge bg-primary">Choose Your Answer Card{{data.pick > 1 ? 's' : ''}} For Round {{game.round}}</p>
+
+              <p class="mb-3 text-center text-wrap text-capitalize font-monospace fs-6">{{game?.question?.card?.text}}</p>
+
+              <cah-card-deck [profile]="user.profile!" [deck]="game.answers" [pick]="data.pick"
+                (onCardSelect)="onCzarSelectAnswers($any($event))"></cah-card-deck>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'not-czar'">
+              <div class="d-flex flex-column justify-content-center align-items-center">
+                <p class="mb-4 text-center badge bg-dark">
+                  Waiting For <strong>CZAR</strong> To Pick Their Answer Card{{data.pick > 1 ? 's' : ''}}
+                </p>
+                <mat-progress-spinner color="primary" mode="indeterminate" [value]="100"
+                  class="d-flex justify-content-center align-items-center">
+                </mat-progress-spinner>
+              </div>
+            </ng-container>
+          </ng-container>
+
+        </ng-container>
+
+
+        <ng-container *ngSwitchCase="'SHOW_ROUND_RESULT'">
+          <p class="mb-4 text-center badge bg-primary">Stats For Round {{game.round}}</p>
+
+          <p class="mb-3 text-center text-wrap text-capitalize font-monospace fs-6">{{game?.question?.card?.text}}</p>
+
+          <cah-card-deck [profile]="user.profile!" [deck]="game.answers"></cah-card-deck>
+        </ng-container>
+      </ng-container>
+    </div>
+    <cah-players-small [players]="game?.playerSet?.edges"></cah-players-small>
   </div>
-  <cah-players-small [players]="game?.playerSet?.edges"></cah-players-small>
-</div>
+</ng-container>
