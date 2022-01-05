@@ -18,7 +18,7 @@ from graphql_social_auth.relay import SocialAuthJWT as SocialAuthJWTMutation
 
 
 class Mutation(ObjectType):
-    """Root Mutation for the cards against humanity api."""
+    """Root Mutation for the cards for humanity api."""
 
     create_user = CreateUserMutation.Field()
     create_game = CreateGameMutation.Field()

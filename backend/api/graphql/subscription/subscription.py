@@ -5,7 +5,7 @@ from graphene.types.objecttype import ObjectType
 
 
 class Subscription(ObjectType):
-    """Root Subscription for the cards against humanity api."""
+    """Root Subscription for the cards for humanity api."""
 
     chat = ChatSubscription.Field()
     game_in_progress = GameInProgressSubscription.Field()

@@ -1,5 +1,5 @@
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
+import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache'
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -732,7 +732,7 @@ export interface JoinGameMutationInput {
   readonly spectator?: InputMaybe<Scalars['Boolean']>;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface Mutation {
   readonly __typename?: 'Mutation';
   readonly createGame?: Maybe<CreateGameMutation>;
@@ -755,84 +755,84 @@ export interface Mutation {
   readonly tokenAuth?: Maybe<ObtainJsonWebTokenMutationPayload>;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationCreateGameArgs {
   input: CreateGameInput;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationCreateNewGameArgs {
   input: CreateGameMutationInput;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationCreateUserArgs {
   input: CreateUserMutationInput;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationDeleteRefreshTokenCookieArgs {
   input: DeleteRefreshTokenCookieInput;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationGameInvitationArgs {
   input: ReadonlyArray<InputMaybe<BatchCreateInviteInput>>;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationGamePrivacyArgs {
   id: Scalars['ID'];
   input: UpdateGamePrivacyInput;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationGameStatusArgs {
   id: Scalars['ID'];
   input: UpdateGameStatusInput;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationJoinGameArgs {
   input: JoinGameMutationInput;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationRefreshTokenArgs {
   input: RefreshTokenMutationInput;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationRevokeRefreshTokenArgs {
   input: RevokeInput;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationRoundCzarAnswersArgs {
   input: RoundCzarAnswersMutationInput;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationRoundPlayerAnswersArgs {
   input: RoundPlayerAnswersMutationInput;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationRoundQuestionArgs {
   input: RoundQuestionMutationInput;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationSetFullWidthArgs {
   input: SetFullWidthMutationInput;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationSocialAuthArgs {
   input: SocialAuthJwtInput;
 }
 
-/** Root Mutation for the cards against humanity api. */
+/** Root Mutation for the cards for humanity api. */
 export interface MutationTokenAuthArgs {
   input: ObtainJsonWebTokenMutationInput;
 }
@@ -1057,7 +1057,7 @@ export interface ProviderNodeEdge {
   readonly node?: Maybe<ProviderNode>;
 }
 
-/** Root Query for the cards against humanity api. */
+/** Root Query for the cards for humanity api. */
 export interface Query {
   readonly __typename?: 'Query';
   readonly blackCards?: Maybe<BlackCardNodeConnection>;
@@ -1084,7 +1084,7 @@ export interface Query {
   readonly whiteCards?: Maybe<WhiteCardNodeConnection>;
 }
 
-/** Root Query for the cards against humanity api. */
+/** Root Query for the cards for humanity api. */
 export interface QueryBlackCardsArgs {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -1098,7 +1098,7 @@ export interface QueryBlackCardsArgs {
   updatedAt?: InputMaybe<Scalars['DateTime']>;
 }
 
-/** Root Query for the cards against humanity api. */
+/** Root Query for the cards for humanity api. */
 export interface QueryGamesArgs {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -1121,7 +1121,7 @@ export interface QueryGamesArgs {
   winner?: InputMaybe<Scalars['ID']>;
 }
 
-/** Root Query for the cards against humanity api. */
+/** Root Query for the cards for humanity api. */
 export interface QueryGenresArgs {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -1139,17 +1139,17 @@ export interface QueryGenresArgs {
   offset?: InputMaybe<Scalars['Int']>;
 }
 
-/** Root Query for the cards against humanity api. */
+/** Root Query for the cards for humanity api. */
 export interface QueryInvitedGameArgs {
   input: InvitedGameInput;
 }
 
-/** Root Query for the cards against humanity api. */
+/** Root Query for the cards for humanity api. */
 export interface QueryNewGameArgs {
   id: Scalars['ID'];
 }
 
-/** Root Query for the cards against humanity api. */
+/** Root Query for the cards for humanity api. */
 export interface QueryUsersArgs {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -1166,7 +1166,7 @@ export interface QueryUsersArgs {
   userPermissions?: InputMaybe<ReadonlyArray<InputMaybe<Scalars['ID']>>>;
 }
 
-/** Root Query for the cards against humanity api. */
+/** Root Query for the cards for humanity api. */
 export interface QueryWhiteCardsArgs {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -1329,7 +1329,7 @@ export interface SocialNodeEdge {
   readonly node?: Maybe<SocialNode>;
 }
 
-/** Root Subscription for the cards against humanity api. */
+/** Root Subscription for the cards for humanity api. */
 export interface Subscription {
   readonly __typename?: 'Subscription';
   readonly chat?: Maybe<ChatSubscription>;

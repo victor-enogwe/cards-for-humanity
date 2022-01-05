@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "cards-against-humanity"
+name = "cards-for-humanity"
 version = "0.1.0"
 description = "A party game for horrible people."
 authors = ["Victor Enogwe <victor.enogwe@gmail.com>"]
 license = "UNLICENSED"
 readme = "README.md"
-repository = "https://github.com/victor-enogwe/cards-against-humanity"
+repository = "https://github.com/victor-enogwe/cards-for-humanity"
 homepage = "https://www.victorenogwe.me"
-keywords = ["cards", "cards against humanity"]
+keywords = ["cards", "cards for humanity"]
 
 [tool.poetry.dependencies]
 python = "^3.9"

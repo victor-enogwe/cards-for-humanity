@@ -1,20 +1,20 @@
 {
-  "name": "cards-against-humanity",
+  "name": "cards-for-humanity",
   "version": "1.0.0",
   "description": "A party game for horrible people.",
   "main": "index.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:ssr": "ng run cards-against-humanity:serve-ssr:production",
+    "start:ssr": "ng run cards-for-humanity:serve-ssr:production",
     "start:server": "python backend/manage.py runserver",
     "start:tunnel": "ngrok http 8000 -host-header=\"localhost:8000\"",
-    "prerender": "ng run cards-against-humanity:prerender",
+    "prerender": "ng run cards-for-humanity:prerender",
     "start:dev": "concurrently 'yarn start' 'yarn start:server' 'yarn build:gql'",
     "build": "ng build --subresource-integrity",
     "build:prod": "yarn build --configuration=production --output-hashing none",
-    "build:shell": "ng run cards-against-humanity:app-shell:production",
-    "build:ssr": "yarn build:prod && ng run cards-against-humanity:server:production",
+    "build:shell": "ng run cards-for-humanity:app-shell:production",
+    "build:ssr": "yarn build:prod && ng run cards-for-humanity:server:production",
     "build:gql": "graphql-codegen --config codegen.yml",
     "cron": "python manage.py runcrons",
     "test": "ng test",
@@ -36,15 +36,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/victor-enogwe/cards-against-humanity.git"
+    "url": "git+https://github.com/victor-enogwe/cards-for-humanity.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/victor-enogwe/cards-against-humanity/issues"
+    "url": "https://github.com/victor-enogwe/cards-for-humanity/issues"
   },
-  "homepage": "https://github.com/victor-enogwe/cards-against-humanity#readme",
+  "homepage": "https://github.com/victor-enogwe/cards-for-humanity#readme",
   "private": true,
   "engines": {
     "node": ">=12.16.3 <=16.13.0",

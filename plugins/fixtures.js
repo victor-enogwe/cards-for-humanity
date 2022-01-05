@@ -2801,7 +2801,7 @@ const cards = [{
     {
         "id": 400,
         "cardType": "A",
-        "text": "Cards Against Humanity.",
+        "text": "cards for humanity.",
         "numAnswers": 0,
         "expansion": "Base"
     },
@@ -20504,7 +20504,7 @@ const cards = [{
     {
         "id": 2929,
         "cardType": "A",
-        "text": "No longer finding any Cards Against Humanity card funny.",
+        "text": "No longer finding any cards for humanity card funny.",
         "numAnswers": 0,
         "expansion": "CAHe6"
     },

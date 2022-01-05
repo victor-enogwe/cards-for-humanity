@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "cards-against-humanity": {
+    "cards-for-humanity": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -85,10 +85,10 @@
           "options": {},
           "configurations": {
             "production": {
-              "browserTarget": "cards-against-humanity:build:production"
+              "browserTarget": "cards-for-humanity:build:production"
             },
             "development": {
-              "browserTarget": "cards-against-humanity:build:development"
+              "browserTarget": "cards-for-humanity:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -96,24 +96,24 @@
         "serve-ssr": {
           "builder": "./ssr/builders:ssr-dev-server",
           "options": {
-            "browserTarget": "cards-against-humanity:build",
-            "serverTarget": "cards-against-humanity:server",
+            "browserTarget": "cards-for-humanity:build",
+            "serverTarget": "cards-for-humanity:server",
             "host": "localhost",
             "port": 8000,
             "serverStartCommand": "python manage.py runserver"
           },
           "configurations": {
             "production": {
-              "browserTarget": "cards-against-humanity:build:production",
-              "serverTarget": "cards-against-humanity:server:production"
+              "browserTarget": "cards-for-humanity:build:production",
+              "serverTarget": "cards-for-humanity:server:production"
             }
           }
         },
         "prerender": {
           "builder": "@nguniversal/builders:prerender",
           "options": {
-            "browserTarget": "cards-against-humanity:build:production",
-            "serverTarget": "cards-against-humanity:server:production",
+            "browserTarget": "cards-for-humanity:build:production",
+            "serverTarget": "cards-for-humanity:server:production",
             "guessRoutes": false,
             "routes": [
               "/"
@@ -126,7 +126,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "cards-against-humanity:build"
+            "browserTarget": "cards-for-humanity:build"
           }
         },
         "test": {
@@ -162,10 +162,10 @@
           },
           "configurations": {
             "production": {
-              "devServerTarget": "cards-against-humanity:serve:production"
+              "devServerTarget": "cards-for-humanity:serve:production"
             },
             "development": {
-              "devServerTarget": "cards-against-humanity:serve:development"
+              "devServerTarget": "cards-for-humanity:serve:development"
             }
           },
           "defaultConfiguration": "development"
@@ -203,14 +203,14 @@
         "app-shell": {
           "builder": "@angular-devkit/build-angular:app-shell",
           "options": {
-            "browserTarget": "cards-against-humanity:build",
-            "serverTarget": "cards-against-humanity:server-shell",
+            "browserTarget": "cards-for-humanity:build",
+            "serverTarget": "cards-for-humanity:server-shell",
             "route": "shell"
           },
           "configurations": {
             "production": {
-              "browserTarget": "cards-against-humanity:build:production",
-              "serverTarget": "cards-against-humanity:server-shell:production"
+              "browserTarget": "cards-for-humanity:build:production",
+              "serverTarget": "cards-for-humanity:server-shell:production"
             }
           }
         },
@@ -238,7 +238,7 @@
       }
     }
   },
-  "defaultProject": "cards-against-humanity",
+  "defaultProject": "cards-for-humanity",
   "cli": {
     "defaultCollection": "@angular-eslint/schematics",
     "cache": {

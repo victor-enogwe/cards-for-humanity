@@ -561,7 +561,7 @@ input JoinGameMutationInput {
   spectator: Boolean
 }
 
-"""Root Mutation for the cards against humanity api."""
+"""Root Mutation for the cards for humanity api."""
 type Mutation {
   createGame(input: CreateGameInput!): CreateGameMutation
   createNewGame(input: CreateGameMutationInput!): CreateNewGameMutation
@@ -727,7 +727,7 @@ type ProviderNodeEdge {
   node: ProviderNode
 }
 
-"""Root Query for the cards against humanity api."""
+"""Root Query for the cards for humanity api."""
 type Query {
   blackCards(after: String, before: String, createdAt: DateTime, first: Int, genre: ID, last: Int, offset: Int, pick: String, text: String, updatedAt: DateTime): BlackCardNodeConnection
   """
@@ -892,7 +892,7 @@ type SocialNodeEdge {
   node: SocialNode
 }
 
-"""Root Subscription for the cards against humanity api."""
+"""Root Subscription for the cards for humanity api."""
 type Subscription {
   chat: ChatSubscription
   gameInProgress: GameInProgressSubscription

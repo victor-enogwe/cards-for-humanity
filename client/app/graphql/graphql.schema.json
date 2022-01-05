@@ -5167,7 +5167,7 @@
       {
         "kind": "OBJECT",
         "name": "Mutation",
-        "description": "Root Mutation for the cards against humanity api.",
+        "description": "Root Mutation for the cards for humanity api.",
         "fields": [
           {
             "name": "createGame",
@@ -7641,7 +7641,7 @@
       {
         "kind": "OBJECT",
         "name": "Query",
-        "description": "Root Query for the cards against humanity api.",
+        "description": "Root Query for the cards for humanity api.",
         "fields": [
           {
             "name": "blackCards",
@@ -9774,7 +9774,7 @@
       {
         "kind": "OBJECT",
         "name": "Subscription",
-        "description": "Root Subscription for the cards against humanity api.",
+        "description": "Root Subscription for the cards for humanity api.",
         "fields": [
           {
             "name": "chat",

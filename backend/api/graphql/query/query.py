@@ -16,6 +16,6 @@ class Query(
     NotificationQuery,
     ObjectType,
 ):
-    """Root Query for the cards against humanity api."""
+    """Root Query for the cards for humanity api."""
 
     pass
