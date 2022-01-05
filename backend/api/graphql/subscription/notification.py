@@ -16,7 +16,7 @@ class NotificationSubscription(Subscription):
         user = info.context.user
 
         # Return the list of subscription group names.
-        return [str(user.id)] if user is not None else None
+        return ["notifications:{0}".format(user.id)] if user is not None else None
 
     @classmethod
     def publish(cls, payload, info, *args, **kwargs):
@@ -36,5 +36,6 @@ class NotificationSubscription(Subscription):
     @classmethod
     def on_new_notification(cls, notifications):
         return cls.broadcast(
-            group=str(notifications["id"]), payload={"notifications": notifications}
+            group=str("notifications:{0}".format(notifications["id"])),
+            payload={"notifications": notifications},
         )

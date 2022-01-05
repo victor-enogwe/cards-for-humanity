@@ -92,7 +92,7 @@ PLAYER_TRIGGER = """
 
     IF TG_OP = 'INSERT'
     THEN
-        IF game_summary.status != '{game_awaiting_players}'
+        IF game_summary.status != '{game_awaiting_players}' AND NEW.spectator = FALSE
         THEN
             RAISE EXCEPTION 'game already started.';
         END IF;
@@ -102,17 +102,17 @@ PLAYER_TRIGGER = """
             RAISE EXCEPTION 'this game is private.';
         END IF;
 
-        IF game_summary.join_ends_at <= NOW()
+        IF game_summary.join_ends_at <= NOW() AND NEW.spectator = FALSE
         THEN
-            RAISE EXCEPTION 'game join period ended.';
+            RAISE EXCEPTION 'player join period ended.';
         END IF;
 
-        IF game_summary.num_players_joined >= game_summary.num_players
+        IF game_summary.num_players_joined >= game_summary.num_players AND NEW.spectator = FALSE
         THEN
             RAISE EXCEPTION 'maximum players for this game reached.';
         END IF;
 
-        IF game_summary.num_spectators > 0 AND game_summary.num_spectators_joined >= game_summary.num_spectators
+        IF NEW.spectator = TRUE AND game_summary.num_spectators > 0 AND game_summary.num_spectators_joined >= game_summary.num_spectators
         THEN
             RAISE EXCEPTION 'maximum spectators for this game reached.';
         END IF;

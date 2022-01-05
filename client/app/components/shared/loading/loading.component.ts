@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatProgressSpinnerOptions } from '../../../utils/mat-progress-spinner';
 
 @Component({
-  selector: 'cah-loading',
+  selector: 'cfh-loading',
   templateUrl: './loading.component.html',
   styleUrls: ['./loading.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

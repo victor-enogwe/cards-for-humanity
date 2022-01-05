@@ -2,7 +2,7 @@ import graphene
 from api.utils.functions import catch_errors
 
 
-class CahObjectType(graphene.ObjectType):
+class CfhObjectType(graphene.ObjectType):
     class Meta:
         abstract = True
 

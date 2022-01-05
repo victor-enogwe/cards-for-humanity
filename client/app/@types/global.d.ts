@@ -10,7 +10,7 @@ import { ApiPlayerAvatarChoices, GenreNode } from './graphql';
 
 declare global {
   interface Window {
-    __APOLLO_CLIENT__: ApolloCahClient<NormalizedCacheObject>;
+    __APOLLO_CLIENT__: ApolloCfhClient<NormalizedCacheObject>;
     __APOLLO_DEVTOOLS_GLOBAL_HOOK__: Hook;
   }
 }
@@ -30,7 +30,7 @@ export interface BroadCast<T = any> extends AnyObject {
   data?: T;
 }
 
-interface ApolloCahClient<TCache> extends Omit<ApolloClient<TCache>, 'devToolsHookCb'> {
+interface ApolloCfhClient<TCache> extends Omit<ApolloClient<TCache>, 'devToolsHookCb'> {
   devToolsHookCb: Function;
 }
 
@@ -142,7 +142,7 @@ export type FabMenuLayout = 'flex-column' | 'flex-column-reverse' | 'flex-row' |
 
 export type FabMenuLayoutDirections = { [key in MatFabMenuDirection]: FabMenuLayout };
 
-export type CahPallette = ThemePalette | 'pending' | 'approved' | 'admin-approved' | 'success' | 'warning' | 'danger' | 'queued' | 'info';
+export type CfhPallette = ThemePalette | 'pending' | 'approved' | 'admin-approved' | 'success' | 'warning' | 'danger' | 'queued' | 'info';
 
 export interface MatFabMenu {
   id: string | number;
@@ -150,15 +150,15 @@ export interface MatFabMenu {
   iconColor?: ThemePalette;
   tooltip?: string;
   tooltipPosition?: TooltipPosition;
-  color?: CahPallette;
+  color?: CfhPallette;
   imgUrl?: string;
   directives?: {
-    cahConfirmDialog?: {
+    cfhConfirmDialog?: {
       component?: any;
       config: MatDialogConfig;
       confirmClick?: Function;
     };
-    cahDialogComponent?: {
+    cfhDialogComponent?: {
       component: any;
       config: MatDialogConfig;
     };

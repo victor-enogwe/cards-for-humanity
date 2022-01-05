@@ -10,7 +10,7 @@ import { UIService } from '../../../services/ui/ui.service';
 import { UtilsService } from '../../../services/utils/utils.service';
 
 @Component({
-  selector: 'cah-login',
+  selector: 'cfh-login',
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

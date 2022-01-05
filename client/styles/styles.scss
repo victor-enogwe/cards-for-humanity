@@ -13,30 +13,30 @@
 $bootstrap-primary: mat-palette($bootstrap-dark-palette, 700);
 $bootstrap-accent: mat-palette($bootstrap-primary-palette, A200, A100, A400);
 $bootstrap-warn: mat-palette($bootstrap-colors, warning);
-$bootstrap-cah: mat-palette($bootstrap-colors, cah);
+$bootstrap-cfh: mat-palette($bootstrap-colors, cfh);
 
 $bootstrap-theme: mat-light-theme($bootstrap-primary, $bootstrap-accent, $bootstrap-warn);
-$bootstrap-theme: map-merge($bootstrap-theme, (cah: $bootstrap-cah));
-$cah: map-get($bootstrap-theme, cah);
+$bootstrap-theme: map-merge($bootstrap-theme, (cfh: $bootstrap-cfh));
+$cfh: map-get($bootstrap-theme, cfh);
 
-@mixin cah-color($color) {
+@mixin cfh-color($color) {
   .text-#{$color} {
-    color: mat-color($cah, $color) !important;
+    color: mat-color($cfh, $color) !important;
   }
 
   .mat-#{$color},
   .color-#{$color} {
-    background-color: mat-color($cah, $color) !important;
-    color: mat-color($cah, $color + -contrast) !important;
-    border-color: mat-color($cah, $color) !important;
+    background-color: mat-color($cfh, $color) !important;
+    color: mat-color($cfh, $color + -contrast) !important;
+    border-color: mat-color($cfh, $color) !important;
 
     &[class^="mat-"] {
       background-color: inherit !important;
-      color: mat-color($cah, $color) !important;
+      color: mat-color($cfh, $color) !important;
       svg {
-        fill: mat-color($cah, $color) !important;
+        fill: mat-color($cfh, $color) !important;
         path {
-          stroke: mat-color($cah, $color) !important;
+          stroke: mat-color($cfh, $color) !important;
         }
       }
     }
@@ -53,13 +53,13 @@ $cah: map-get($bootstrap-theme, cah);
   overflow-y: scroll;
 }
 
-@include cah-color(pending);
-@include cah-color(queued);
-@include cah-color(warning);
-@include cah-color(approved);
-@include cah-color(admin-approved);
-@include cah-color(success);
-@include cah-color(danger);
+@include cfh-color(pending);
+@include cfh-color(queued);
+@include cfh-color(warning);
+@include cfh-color(approved);
+@include cfh-color(admin-approved);
+@include cfh-color(success);
+@include cfh-color(danger);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -97,7 +97,7 @@ body {
 body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   margin: 0;
-  // background: url(/assets/img/cah-bg.jpg) center 50% no-repeat;
+  // background: url(/assets/img/cfh-bg.jpg) center 50% no-repeat;
   // background: linear-gradient(180deg, #fff 69%, #000 31%);
 }
 
@@ -194,10 +194,10 @@ mat-form-field[hidden] {
 }
 
 .mat-error {
-  color: mat-color($cah, 'danger');
+  color: mat-color($cfh, 'danger');
 }
 
-.cah-card {
+.cfh-card {
   max-width: 937.64px;
   border: 0;
   overflow: hidden;
@@ -315,7 +315,7 @@ mat-form-field[hidden] {
 // .list-item-active {
 //   background: rgba(0, 0, 0, 0.1) !important;
 //   border-radius: 10% 0% 0% 10% / 50% 0% 0% 50%;
-//   color: mat-color($cah, primary) !important;
+//   color: mat-color($cfh, primary) !important;
 //   font-weight: bold;
 // }
 

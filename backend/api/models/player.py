@@ -35,7 +35,6 @@ class Player(TimestampBase):
     )
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
     score = models.PositiveSmallIntegerField(default=0)
-    czar = models.BooleanField(default=False)
     spectator = models.BooleanField(default=False)
     avatar = models.CharField(
         max_length=20, choices=Avatars.choices(), default=Avatars.DOROTHY._value_
@@ -46,10 +45,6 @@ class Player(TimestampBase):
         return "Player: {0}".format(self.user.id)
 
     class Meta:
-        indexes = (
-            models.Index(fields=("czar",)),
-            models.Index(fields=("score",)),
-        )
         constraints = [
             # restrict duplicate join
             models.UniqueConstraint(
@@ -58,12 +53,6 @@ class Player(TimestampBase):
                     "user",
                     "game",
                 ),
-            ),
-            # unique czar
-            models.UniqueConstraint(
-                name="unique_player_game_czar",
-                fields=("game",),
-                condition=models.Q(czar=True),
             ),
             # unique avatar
             models.UniqueConstraint(

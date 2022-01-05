@@ -5,7 +5,7 @@ import { FabMenuLayout, FabMenuLayoutDirections, MatFabMenu, MatFabMenuDirection
 import { fabStagger, fabToggle } from '../../../animations/fab';
 
 @Component({
-  selector: 'cah-fab-menu',
+  selector: 'cfh-fab-menu',
   templateUrl: './fab-menu.component.html',
   styleUrls: ['./fab-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

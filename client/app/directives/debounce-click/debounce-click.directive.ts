@@ -3,7 +3,7 @@ import { Subject, Subscription } from 'rxjs';
 import { map, throttleTime } from 'rxjs/operators';
 
 @Directive({
-  selector: '[cahDebounceClick]',
+  selector: '[cfhDebounceClick]',
 })
 export class DebounceClickDirective implements OnInit, OnDestroy {
   @Input() debounceInterval = 500;

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { PlayType } from '../../../@types/global';
 
 @Component({
-  selector: 'cah-play-type',
+  selector: 'cfh-play-type',
   templateUrl: './play-type.component.html',
   styleUrls: ['./play-type.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

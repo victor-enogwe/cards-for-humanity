@@ -21,9 +21,33 @@ export const GAME_NODE_FRAGMENT = gql`
     numSpectators
     status
     private
+    tick
     joinEndsAt
     createdAt
     updatedAt
+    czar {
+      id
+      spectator
+      avatar
+      score
+      user {
+        id
+        providerSet(first: 10) {
+          edges {
+            node {
+              user {
+                id
+              }
+              email
+              profile {
+                username
+              }
+            }
+            cursor
+          }
+        }
+      }
+    }
     availableQuestions {
       id
       createdAt
@@ -108,7 +132,6 @@ export const GAME_NODE_FRAGMENT = gql`
         user {
           id
         }
-        czar
       }
       card {
         id
@@ -162,7 +185,6 @@ export const GAME_NODE_FRAGMENT = gql`
       }
       player {
         id
-        czar
         spectator
         avatar
         score
@@ -210,7 +232,6 @@ export const GAME_NODE_FRAGMENT = gql`
       }
       player {
         id
-        czar
         spectator
         avatar
         score
@@ -258,7 +279,6 @@ export const GAME_NODE_FRAGMENT = gql`
       }
       player {
         id
-        czar
         spectator
         avatar
         score
@@ -286,7 +306,6 @@ export const GAME_NODE_FRAGMENT = gql`
       edges {
         node {
           id
-          czar
           spectator
           avatar
           score

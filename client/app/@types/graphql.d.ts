@@ -484,6 +484,7 @@ export interface GameNode extends Node {
   readonly availableQuestions?: Maybe<ReadonlyArray<Maybe<AvailableQuestionNode>>>;
   readonly createdAt: Scalars['DateTime'];
   readonly creator: UserNode;
+  readonly czar?: Maybe<PlayerNode>;
   readonly czarAnswers?: Maybe<ReadonlyArray<Maybe<AnswerNode>>>;
   readonly genres: GenreNodeConnection;
   /** The ID of the object. */
@@ -505,6 +506,7 @@ export interface GameNode extends Node {
   /** no of game rounds */
   readonly rounds: Scalars['Int'];
   readonly status: ApiGameStatusChoices;
+  readonly tick?: Maybe<Scalars['DateTime']>;
   readonly updatedAt: Scalars['DateTime'];
   readonly userAnswers?: Maybe<ReadonlyArray<Maybe<AnswerNode>>>;
   readonly winner?: Maybe<PlayerNode>;
@@ -546,7 +548,6 @@ export interface GameNodePlayerSetArgs {
   avatar?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   createdAt?: InputMaybe<Scalars['DateTime']>;
-  czar?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
   game?: InputMaybe<Scalars['ID']>;
   last?: InputMaybe<Scalars['Int']>;
@@ -911,7 +912,6 @@ export interface PlayerNode extends Node {
   readonly answerSet: AnswerNodeConnection;
   readonly avatar: ApiPlayerAvatarChoices;
   readonly createdAt: Scalars['DateTime'];
-  readonly czar: Scalars['Boolean'];
   readonly game: GameNode;
   /** The ID of the object. */
   readonly id: Scalars['ID'];
@@ -1397,7 +1397,6 @@ export interface UserNodePlayerSetArgs {
   avatar?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   createdAt?: InputMaybe<Scalars['DateTime']>;
-  czar?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
   game?: InputMaybe<Scalars['ID']>;
   last?: InputMaybe<Scalars['Int']>;
@@ -1713,6 +1712,7 @@ export type GameNodeKeySpecifier = (
   | 'availableQuestions'
   | 'createdAt'
   | 'creator'
+  | 'czar'
   | 'czarAnswers'
   | 'genres'
   | 'id'
@@ -1727,6 +1727,7 @@ export type GameNodeKeySpecifier = (
   | 'roundTime'
   | 'rounds'
   | 'status'
+  | 'tick'
   | 'updatedAt'
   | 'userAnswers'
   | 'winner'
@@ -1738,6 +1739,7 @@ export type GameNodeFieldPolicy = {
   availableQuestions?: FieldPolicy<any> | FieldReadFunction<any>;
   createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
   creator?: FieldPolicy<any> | FieldReadFunction<any>;
+  czar?: FieldPolicy<any> | FieldReadFunction<any>;
   czarAnswers?: FieldPolicy<any> | FieldReadFunction<any>;
   genres?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1752,6 +1754,7 @@ export type GameNodeFieldPolicy = {
   roundTime?: FieldPolicy<any> | FieldReadFunction<any>;
   rounds?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
+  tick?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
   userAnswers?: FieldPolicy<any> | FieldReadFunction<any>;
   winner?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1975,7 +1978,6 @@ export type PlayerNodeKeySpecifier = (
   | 'answerSet'
   | 'avatar'
   | 'createdAt'
-  | 'czar'
   | 'game'
   | 'id'
   | 'questionSet'
@@ -1990,7 +1992,6 @@ export type PlayerNodeFieldPolicy = {
   answerSet?: FieldPolicy<any> | FieldReadFunction<any>;
   avatar?: FieldPolicy<any> | FieldReadFunction<any>;
   createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
-  czar?: FieldPolicy<any> | FieldReadFunction<any>;
   game?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   questionSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3128,6 +3129,7 @@ export type GameNodeResolvers<
   availableQuestions?: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes['AvailableQuestionNode']>>>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   creator?: Resolver<ResolversTypes['UserNode'], ParentType, ContextType>;
+  czar?: Resolver<Maybe<ResolversTypes['PlayerNode']>, ParentType, ContextType>;
   czarAnswers?: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes['AnswerNode']>>>, ParentType, ContextType>;
   genres?: Resolver<ResolversTypes['GenreNodeConnection'], ParentType, ContextType, RequireFields<GameNodeGenresArgs, never>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -3142,6 +3144,7 @@ export type GameNodeResolvers<
   roundTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   rounds?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['ApiGameStatusChoices'], ParentType, ContextType>;
+  tick?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   userAnswers?: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes['AnswerNode']>>>, ParentType, ContextType>;
   winner?: Resolver<Maybe<ResolversTypes['PlayerNode']>, ParentType, ContextType>;
@@ -3482,7 +3485,6 @@ export type PlayerNodeResolvers<
   answerSet?: Resolver<ResolversTypes['AnswerNodeConnection'], ParentType, ContextType, RequireFields<PlayerNodeAnswerSetArgs, never>>;
   avatar?: Resolver<ResolversTypes['ApiPlayerAvatarChoices'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  czar?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   game?: Resolver<ResolversTypes['GameNode'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   questionSet?: Resolver<

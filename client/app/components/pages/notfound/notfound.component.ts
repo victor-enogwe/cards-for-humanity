@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'cah-notfound',
+  selector: 'cfh-notfound',
   templateUrl: './notfound.component.html',
   styleUrls: ['./notfound.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

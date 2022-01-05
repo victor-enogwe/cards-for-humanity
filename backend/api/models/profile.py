@@ -21,7 +21,11 @@ class Profile(TimestampBase):
         max_length=20, choices=Avatars.choices(), default=None, blank=True, null=True
     )
     gender = models.CharField(
-        max_length=6, choices=Gender.choices(), null=True, blank=True, help_text="Gender"
+        max_length=6,
+        choices=Gender.choices(),
+        null=True,
+        blank=True,
+        help_text="Gender",
     )
     date_of_birth = models.DateField(help_text="Birth Date", blank=True, null=True)
 

@@ -10,7 +10,7 @@ import { FormService } from '../../../services/form/form.service';
 import { UIService } from '../../../services/ui/ui.service';
 
 @Component({
-  selector: 'cah-register',
+  selector: 'cfh-register',
   templateUrl: './register.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

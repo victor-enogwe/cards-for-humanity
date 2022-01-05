@@ -4,13 +4,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { lastValueFrom, tap } from 'rxjs';
 import { ConfirmDialogData } from '../../../@types/global';
 import { NewGameNode } from '../../../@types/graphql';
-import { APP_HOST } from '../../../modules/cah/cah.module';
+import { APP_HOST } from '../../../modules/cfh/cfh.module';
 import { FormService } from '../../../services/form/form.service';
 import { GameService } from '../../../services/game/game.service';
 import { NotificationService } from '../../../services/notification/notification.service';
 
 @Component({
-  selector: 'cah-invite',
+  selector: 'cfh-invite',
   templateUrl: './invite.component.html',
   styleUrls: ['./invite.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

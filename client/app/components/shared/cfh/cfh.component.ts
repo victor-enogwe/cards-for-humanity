@@ -2,19 +2,19 @@ import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, E
 import { MatIconRegistry } from '@angular/material/icon';
 import { BehaviorSubject, first, lastValueFrom } from 'rxjs';
 import { loadingAnimations, navigationAnimations } from '../../../animations';
-import { AUTH_TOKEN$, STATIC_URL } from '../../../modules/cah/cah.module';
+import { AUTH_TOKEN$, STATIC_URL } from '../../../modules/cfh/cfh.module';
 import { SafeUrlPipe } from '../../../pipes/safe-url/safe-url.pipe';
 import { AuthService } from '../../../services/auth/auth.service';
 import { MainContentRefService } from '../../../services/main-content-ref/main-content-ref.service';
 import { UIService } from '../../../services/ui/ui.service';
 
 @Component({
-  selector: 'cah-root',
-  templateUrl: './cah.component.html',
+  selector: 'cfh-root',
+  templateUrl: './cfh.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [navigationAnimations, loadingAnimations],
 })
-export class CahComponent implements OnInit, AfterViewInit {
+export class CfhComponent implements OnInit, AfterViewInit {
   @ViewChild('mainContent') mainContent!: ElementRef<HTMLBaseElement>;
   @ViewChild('content') content!: ElementRef<HTMLBaseElement>;
   fullWidth$ = this.uiService.fullWidth$;
@@ -22,7 +22,7 @@ export class CahComponent implements OnInit, AfterViewInit {
   isMobile$ = this.uiService.isMobile$;
   authenticated$ = this.authService.authenticated$;
   svgIcons: { [key: string]: string } = {
-    cah_card: 'assets/img/card.svg',
+    cfh_card: 'assets/img/card.svg',
   };
 
   constructor(

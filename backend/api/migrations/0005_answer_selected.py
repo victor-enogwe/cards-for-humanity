@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0004_alter_game_num_players'),
+        ("api", "0004_alter_game_num_players"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='answer',
-            name='selected',
+            model_name="answer",
+            name="selected",
             field=models.BooleanField(default=False),
         ),
     ]

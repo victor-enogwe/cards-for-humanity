@@ -19,6 +19,7 @@ class GameStatus(EnumChoices, Enum):
     GAPA = "Awaiting Player Answers"
     GACA = "Awaiting Czar Answers"
     GSRR = "Show Round Result"
+    GRF = "Game Rounds Finished"
     GE = "Game Ended"
 
 

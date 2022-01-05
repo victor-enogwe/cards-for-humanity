@@ -14,13 +14,13 @@
       </h5>
       <ng-container *ngIf="game.creator.id === auth.profile?.sub">
         <button *ngIf="data.player.avatar && (game.creator.id !== data.player?.user?.id)" mat-button class="btn btn-danger rounded-0"
-          [cahConfirmDialog]="true" [config]="{ data: { title: 'Remove Player', description: data.player.id } }"
+          [cfhConfirmDialog]="true" [config]="{ data: { title: 'Remove Player', description: data.player.id } }"
           (confirmClick)="removePlayer(data.player)">
           Remove Player <mat-icon color="warn">close</mat-icon>
         </button>
 
         <button *ngIf="!data.player.avatar && (game.creator.id !== data.player?.user?.id)" mat-button class="btn btn-danger rounded-0"
-          [cahConfirmDialog]="true" [config]="{ data: { title: 'Rescind Invite', description: data.player.email } }"
+          [cfhConfirmDialog]="true" [config]="{ data: { title: 'Rescind Invite', description: data.player.email } }"
           (confirmClick)="rescindInvite(data.player)">
           Rescind Invite <mat-icon color="warn">close</mat-icon>
         </button>

@@ -72,7 +72,7 @@
 
       <div class="btn-toolbar" role="toolbar" aria-label="game options navigation buttons">
         <div class="btn-group btn-group-lg flex-fill" role="group" aria-label="reset button">
-          <button mat-icon-button matTooltip="reset" matTooltipPosition="right" aria-label="reset options" cahDebounceClick
+          <button mat-icon-button matTooltip="reset" matTooltipPosition="right" aria-label="reset options" cfhDebounceClick
             (debounceClick)="resetGameOptions()">
             <mat-icon>settings_backup_restore</mat-icon>
           </button>
@@ -85,7 +85,7 @@
           </button>
 
           <button mat-mini-fab flexFill aria-label="start game" matTooltip="Start New Game" matTooltipPosition="left"
-            [disabled]="!gameOptionsForm.valid" color="primary" cahDebounceClick (debounceClick)="createGame(gameOptionsForm.value)">
+            [disabled]="!gameOptionsForm.valid" color="primary" cfhDebounceClick (debounceClick)="createGame(gameOptionsForm.value)">
             <mat-icon>play_arrow</mat-icon>
           </button>
         </div>

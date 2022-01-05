@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Avatar, PlayType } from '../../../@types/global';
 
 @Component({
-  selector: 'cah-select-avatar',
+  selector: 'cfh-select-avatar',
   templateUrl: './select-avatar.component.html',
   styleUrls: ['./select-avatar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

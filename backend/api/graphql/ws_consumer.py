@@ -15,6 +15,7 @@ class GraphqlWsConsumer(GQLConsumer):
     schema = gql_schema
     send_keepalive_every = 60
     confirm_subscriptions = True
+    group_name_prefix = "CFH"
     subscription_confirmation_message = {
         "data": {"gameInProgress": None, "notifications": None, "chat": None},
         "errors": None,

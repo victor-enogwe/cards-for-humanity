@@ -10,19 +10,17 @@ import { Router } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { Drivers, Storage, StorageConfig } from '@ionic/storage';
 import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } from 'angularx-social-login';
-import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
+import { APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject, from, switchMap, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { CahComponent } from '../../components/shared/cah/cah.component';
+import { CfhComponent } from '../../components/shared/cfh/cfh.component';
 import { GlobalErrorInterceptor } from '../../interceptors/global-error/global-error';
 import { HttpErrorInterceptor } from '../../interceptors/http-error/http.error.interceptor';
-import { CahRoutingModule } from '../../modules/routing/routing.module';
-import { SharedModule } from '../../modules/shared/shared.module';
 import { AuthService } from '../../services/auth/auth.service';
 import { BroadcastService } from '../../services/broadcast/broadcast.service';
-import { CahDialogService } from '../../services/cah-dialog/cah-dialog.service';
+import { CfhDialogService } from '../../services/cfh-dialog/cfh-dialog.service';
 import { DynamicOverlayService } from '../../services/dynamic-overlay/dynamic-overlay.service';
 import { GraphqlService } from '../../services/graphql/graphql.service';
 import { HttpLinkService } from '../../services/http-link/http-link.service';
@@ -37,6 +35,8 @@ import { UtilsService } from '../../services/utils/utils.service';
 import { Crypt } from '../../utils/crypt';
 import { NoopStorage } from '../../utils/noop-storage';
 import { WSSubscriptionClient } from '../../utils/ws';
+import { CfhRoutingModule } from '../routing/routing.module';
+import { SharedModule } from '../shared/shared.module';
 
 export const APP_HOST = new InjectionToken<string>('host');
 export const STATIC_URL = new InjectionToken<string>('static_path');
@@ -61,9 +61,9 @@ const authFactory = (broadcastService: BroadcastService, auth: AuthService, rout
   from(broadcastService.electLeader()).pipe(switchMap(() => auth.refreshTokenFactory().pipe(tap(() => router.initialNavigation()))));
 
 @NgModule({
-  declarations: [CahComponent],
+  declarations: [CfhComponent],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'cards-against-humanity' }),
+    BrowserModule.withServerTransition({ appId: 'cards-for-humanity' }),
     HttpClientModule,
     HttpClientXsrfModule.withOptions({
       cookieName: 'csrftoken',
@@ -71,7 +71,7 @@ const authFactory = (broadcastService: BroadcastService, auth: AuthService, rout
     }),
     BrowserAnimationsModule.withConfig({ disableAnimations: window?.matchMedia('(prefers-reduced-motion)').matches }),
     MatSnackBarModule,
-    CahRoutingModule,
+    CfhRoutingModule,
     SharedModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
@@ -81,7 +81,6 @@ const authFactory = (broadcastService: BroadcastService, auth: AuthService, rout
     }),
   ],
   providers: [
-    { provide: 'apollo', useFactory: (apollo: Apollo) => console.log(apollo), deps: [Apollo] },
     SeoService,
     HttpLink,
     HttpLinkService,
@@ -92,7 +91,7 @@ const authFactory = (broadcastService: BroadcastService, auth: AuthService, rout
     UIService,
     DynamicOverlayService,
     LoadingOverlayService,
-    CahDialogService,
+    CfhDialogService,
     LoggerService,
     UtilsService,
     AuthService,
@@ -100,10 +99,10 @@ const authFactory = (broadcastService: BroadcastService, auth: AuthService, rout
     {
       provide: STORAGE_CONFIG_TOKEN,
       useValue: {
-        name: '__cah',
-        storeName: 'cah',
-        description: 'cah store',
-        dbKey: '__CAH',
+        name: '__cfh',
+        storeName: 'cfh',
+        description: 'cfh store',
+        dbKey: '__CFH',
         driverOrder: [Drivers.IndexedDB, Drivers.LocalStorage],
       },
     },
@@ -130,7 +129,7 @@ const authFactory = (broadcastService: BroadcastService, auth: AuthService, rout
     { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: false, closeOnNavigation: true } },
     { provide: ɵDomSharedStylesHost, useClass: NonceService },
     { provide: APP_BASE_HREF, useValue: '/' },
-    { provide: APP_ID, useValue: 'cah' },
+    { provide: APP_ID, useValue: 'cfh' },
     { provide: APP_HOST, useFactory: hostFactory, deps: [DOCUMENT] },
     { provide: STATIC_URL, useFactory: staticURLFactory, deps: [APP_HOST, PLATFORM_ID] },
     { provide: APP_INITIALIZER, useFactory: broadcastChannelFactory, multi: true, deps: [BroadcastService] },
@@ -145,6 +144,6 @@ const authFactory = (broadcastService: BroadcastService, auth: AuthService, rout
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
     { provide: ErrorHandler, useClass: GlobalErrorInterceptor },
   ],
-  bootstrap: [CahComponent],
+  bootstrap: [CfhComponent],
 })
-export class CahModule {}
+export class CfhModule {}

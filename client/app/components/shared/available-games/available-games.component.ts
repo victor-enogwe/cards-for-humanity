@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { GameNode } from '../../../@types/graphql';
 
 @Component({
-  selector: 'cah-available-games',
+  selector: 'cfh-available-games',
   templateUrl: './available-games.component.html',
   styleUrls: ['./available-games.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

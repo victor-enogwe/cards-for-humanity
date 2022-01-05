@@ -10,7 +10,7 @@ import { LoadingOverlayService } from '../../services/loading-overlay/loading-ov
 import { MatProgressSpinnerOptions } from '../../utils/mat-progress-spinner';
 
 @Directive({
-  selector: '[cahOverlayLoading]',
+  selector: '[cfhOverlayLoading]',
 })
 export class LoadingOverlayDirective implements OnInit, OnDestroy {
   @Input() loading!: Observable<boolean>;
@@ -31,7 +31,7 @@ export class LoadingOverlayDirective implements OnInit, OnDestroy {
   }
 
   toggleOverlay(show: boolean): ComponentRef<LoadingComponent> {
-    const injector = this.getInjector({ ...this.loaderOptions, loaderClass: 'cah-loading' }, this.parentInjector);
+    const injector = this.getInjector({ ...this.loaderOptions, loaderClass: 'cfh-loading' }, this.parentInjector);
     return show ? this.overlayRef.attach(new ComponentPortal(LoadingComponent, null, injector)) : this.overlayRef.detach();
   }
 

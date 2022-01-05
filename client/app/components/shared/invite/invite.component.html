@@ -29,18 +29,18 @@
         <span>enter player {{playerIndex + 1}} email.</span>
         <span *ngIf="hasDuplicate(playerControl.value, player.value)" [ngClass]="{ 'text-danger': true}">duplicate entry</span>
       </mat-hint>
-      <button matPrefix mat-icon-button color="primary" [disabled]="playerControl.controls.length === 1" cahDebounceClick
+      <button matPrefix mat-icon-button color="primary" [disabled]="playerControl.controls.length === 1" cfhDebounceClick
         (debounceClick)="removePlayerControl(playerIndex)">
         <mat-icon>remove_circle_outline</mat-icon>
       </button>
       <button
         [disabled]="!inviteForm.valid || !player.valid || playerControl.controls.length > playerIndex + 1 || playerControl.controls.length + 1 > numPlayers"
-        matSuffix mat-icon-button color="primary" cahDebounceClick (debounceClick)="addNewPlayerControl()">
+        matSuffix mat-icon-button color="primary" cfhDebounceClick (debounceClick)="addNewPlayerControl()">
         <mat-icon>add_circle_outline</mat-icon>
       </button>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" class="btn btn-block w-100" cahDebounceClick (debounceClick)="invitePlayers(inviteForm.value)"
+    <button mat-raised-button color="primary" class="btn btn-block w-100" cfhDebounceClick (debounceClick)="invitePlayers(inviteForm.value)"
       [disabled]="!inviteForm.valid || !inviteForm.dirty">
       Invite players
     </button>

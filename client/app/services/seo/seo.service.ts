@@ -59,8 +59,8 @@ export class SeoService {
 
   setTitle(title: string = environment.APP_TITLE): void {
     const metas = ['twitter:title', 'twitter:image:alt', 'og:image:alt', 'og:title', 'title'];
-    this.title.setTitle(`CAH: ${title}`);
-    return metas.forEach((name) => this.meta.updateTag({ name, content: `CAH: ${title}` }));
+    this.title.setTitle(`CFH: ${title}`);
+    return metas.forEach((name) => this.meta.updateTag({ name, content: `CFH: ${title}` }));
   }
 
   setType(type?: string) {

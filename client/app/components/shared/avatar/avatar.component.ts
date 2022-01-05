@@ -19,7 +19,7 @@ import { Avatar } from '../../../@types/global';
 import { UIService } from '../../../services/ui/ui.service';
 
 @Component({
-  selector: 'cah-avatar',
+  selector: 'cfh-avatar',
   templateUrl: './avatar.component.html',
   styleUrls: ['./avatar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

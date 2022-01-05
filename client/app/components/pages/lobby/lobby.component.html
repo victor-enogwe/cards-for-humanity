@@ -1,12 +1,12 @@
 <div class="d-flex flex-column flex-fill flex-grow-1" *ngIf="gameInProgress$ | async as game">
-  <cah-game-toolbar [game]="game!" (inviteOnly)="setPrivacy({ game, privacy: $event.checked})"></cah-game-toolbar>
-  <cah-players *ngIf="game.status === 'AWAITING_PLAYERS'" [game]="game"></cah-players>
-  <cah-game-screen *ngIf="game.status !== 'AWAITING_PLAYERS'" [game]="game"></cah-game-screen>
+  <cfh-game-toolbar [game]="game!" (inviteOnly)="setPrivacy({ game, privacy: $event.checked})"></cfh-game-toolbar>
+  <cfh-players *ngIf="game.status === 'AWAITING_PLAYERS'" [game]="game"></cfh-players>
+  <cfh-game-screen *ngIf="game.status !== 'AWAITING_PLAYERS'" [game]="game"></cfh-game-screen>
   <ng-container *ngIf="{ isCreator: isCreator(game) } as data">
-    <cah-fab-menu *ngIf="data.isCreator && game.status === 'AWAITING_PLAYERS'" [fabButtons]="fab" color="primary" icon="settings_suggest"
+    <cfh-fab-menu *ngIf="data.isCreator && game.status === 'AWAITING_PLAYERS'" [fabButtons]="fab" color="primary" icon="settings_suggest"
       (ngClick)="fabItemClicked({ id: $any($event), game })">
-    </cah-fab-menu>
+    </cfh-fab-menu>
 
-    <cah-fab *ngIf="!data.isCreator || game.status !== 'AWAITING_PLAYERS'" icon="chat" label="chat"></cah-fab>
+    <cfh-fab *ngIf="!data.isCreator || game.status !== 'AWAITING_PLAYERS'" icon="chat" label="chat"></cfh-fab>
   </ng-container>
 </div>

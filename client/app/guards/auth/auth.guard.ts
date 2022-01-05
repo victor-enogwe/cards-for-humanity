@@ -3,7 +3,7 @@ import { CanActivate, CanActivateChild, CanLoad, Route, Router, UrlSegment, UrlT
 import { BehaviorSubject, iif, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { CanActivateType } from '../../@types/global';
-import { AUTH_TOKEN$ } from '../../modules/cah/cah.module';
+import { AUTH_TOKEN$ } from '../../modules/cfh/cfh.module';
 
 @Injectable({
   providedIn: 'root',

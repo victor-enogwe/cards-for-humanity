@@ -9,7 +9,7 @@ import { UIService } from '../../../services/ui/ui.service';
 import { UtilsService } from '../../../services/utils/utils.service';
 
 @Component({
-  selector: 'cah-join-game',
+  selector: 'cfh-join-game',
   templateUrl: './join-game.component.html',
   styleUrls: ['./join-game.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

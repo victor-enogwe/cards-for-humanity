@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { CahDialogService } from './cah-dialog.service';
+import { CfhDialogService } from './cfh-dialog.service';
 
-describe('CahDialogService', () => {
-  let service: CahDialogService;
+describe('CfhDialogService', () => {
+  let service: CfhDialogService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(CahDialogService);
+    service = TestBed.inject(CfhDialogService);
   });
 
   it('should be created', () => {

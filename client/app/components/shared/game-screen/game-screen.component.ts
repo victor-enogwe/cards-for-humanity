@@ -17,7 +17,7 @@ import { NotificationService } from '../../../services/notification/notification
 import { UtilsService } from '../../../services/utils/utils.service';
 
 @Component({
-  selector: 'cah-game-screen',
+  selector: 'cfh-game-screen',
   templateUrl: './game-screen.component.html',
   styleUrls: ['./game-screen.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,7 +41,7 @@ export class GameScreenComponent implements OnChanges {
     const game: GameNode = changes.game.currentValue;
     if (game !== changes.game.previousValue) {
       this.player = game.playerSet.edges.find((player) => player?.node?.user.id === this.authService.profile$.getValue()?.sub);
-      if (this.player?.node?.czar) this.notificationService.notify('You are the CZAR', 'YIPPEE!');
+      if (this.player?.node?.id === game?.czar?.id) this.notificationService.notify('You are the CZAR', 'YIPPEE!');
     }
   }
 

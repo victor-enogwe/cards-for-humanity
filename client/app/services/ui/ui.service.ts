@@ -5,7 +5,7 @@ import { map } from 'rxjs';
 import { Avatar } from '../../@types/global';
 import { Mutation, Query, SetFullWidthMutationInput } from '../../@types/graphql';
 import { FULL_WIDTH_QUERY, NAV_OPEN_QUERY, SET_FULL_WIDTH_MUTATION, TOGGLE_NAV_MUTATION } from '../../graphql';
-import { STATIC_URL } from '../../modules/cah/cah.module';
+import { STATIC_URL } from '../../modules/cfh/cfh.module';
 
 @Injectable({
   providedIn: 'root',

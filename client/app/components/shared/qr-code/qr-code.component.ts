@@ -5,7 +5,7 @@ import { ConfirmDialogData, RGBAColor } from '../../../@types/global';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
-  selector: 'cah-qrcode',
+  selector: 'cfh-qrcode',
   templateUrl: './qr-code.component.html',
   styleUrls: ['./qr-code.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

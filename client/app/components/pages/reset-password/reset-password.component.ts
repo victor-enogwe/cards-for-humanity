@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormService } from '../../../services/form/form.service';
 
 @Component({
-  selector: 'cah-reset-password',
+  selector: 'cfh-reset-password',
   templateUrl: './reset-password.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -19,18 +19,20 @@
     "cron": "python manage.py runcrons",
     "test": "ng test",
     "lint": "ng lint",
+    "lint:backend": "python -m black ./backend",
     "lint:fix": "ng lint --fix && yarn format",
     "format": "prettier --ignore-path .gitignore \"client/**/*.+(ts|js|tsx)\" --write",
     "e2e": "ng e2e",
     "migrate:fixtures": "./plugins/fixtures.js -d",
     "migrate:clear:admin": "find . -path '*/backend/migrations/*.pyc'  -delete",
-    "migrate:clear:cah": "find . -path '*/backend/migrations/*.py' -not -name '__init__.py' -not -name '0002_cah.py' -delete",
-    "migrate:clear": "yarn migrate:clear:admin && yarn migrate:clear:cah",
+    "migrate:clear:cfh": "find . -path '*/backend/migrations/*.py' -not -name '__init__.py' -not -name '0002_cfh.py' -delete",
+    "migrate:clear": "yarn migrate:clear:admin && yarn migrate:clear:cfh",
     "migrate:reinstall": "pip install --upgrade --force-reinstall  Django",
     "migrate:create": "python backend/manage.py makemigrations",
     "migrate:run": "python backend/manage.py migrate",
     "migrate:load": "python backend/manage.py loaddata *.json",
-    "celery-beat": "celery -A api beat -l info --without-heartbeat --without-gossip --without-mingle"
+    "celery-beat": "celery -A api beat -l info --without-heartbeat --without-gossip --without-mingle",
+    "celery-worker": "celery -A api worker -l INFO"
   },
   "repository": {
     "type": "git",

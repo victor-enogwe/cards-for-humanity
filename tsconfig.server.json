@@ -13,6 +13,6 @@
     "ssr/ssr.ts"
   ],
   "angularCompilerOptions": {
-    "entryModule": "./client/app/modules/cah-server/cah.server.module#CahServerModule"
+    "entryModule": "./client/app/modules/cfh-server/cfh.server.module#CfhServerModule"
   }
 }

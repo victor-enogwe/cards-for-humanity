@@ -4,7 +4,7 @@
       aria-atomic="true">
       <div class="toast-header">
         <strong class="me-auto"> Game Invite</strong>
-        <small class="me-auto">{{notice?.node?.game?.createdAt | cahTimeAgo}}</small>
+        <small class="me-auto">{{notice?.node?.game?.createdAt | timeAgo}}</small>
         <button mat-raised-button color="primary" [routerLink]="['/play', 'join-game', notice?.node?.game?.id]"
           [state]="{ playType: 'join' }">
           <mat-icon>videogame_asset</mat-icon>

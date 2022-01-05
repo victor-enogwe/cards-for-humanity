@@ -20756,7 +20756,7 @@ function makeGenreFixtures(genres) {
 }
 
 function getDirectories() {
-  const baseDir = 'api/fixtures/cah'
+  const baseDir = 'api/fixtures/cfh'
   const genreDir = path.join(__dirname, `../${baseDir}/genres`)
   const blackCardDir = path.join(__dirname, `../${baseDir}/blackcards`)
   const whiteCardDir = path.join(__dirname, `../${baseDir}/whitecards`)

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { AnyObject } from '../../@types/global';
-import { CRYPT } from '../../modules/cah/cah.module';
+import { CRYPT } from '../../modules/cfh/cfh.module';
 import { Crypt } from '../../utils/crypt';
 
 @Injectable({

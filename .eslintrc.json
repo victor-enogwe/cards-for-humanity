@@ -43,7 +43,7 @@
           "error",
           {
             "type": "attribute",
-            "prefix": "cah",
+            "prefix": "cfh",
             "style": "camelCase"
           }
         ],
@@ -51,7 +51,7 @@
           "error",
           {
             "type": "element",
-            "prefix": "cah",
+            "prefix": "cfh",
             "style": "kebab-case"
           }
         ]

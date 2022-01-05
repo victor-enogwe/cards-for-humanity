@@ -1,10 +1,9 @@
-from functools import reduce
-from operator import and_
-from random import sample
+from datetime import timedelta
+from random import randrange, sample
 
 from api.celery import celery_app
 from api.models.timestamp import TimestampBase
-from api.utils.enums import GameStatus
+from api.utils.enums import BlackCardPickChoices, GameStatus
 from api.utils.functions import join_end_default
 from api.utils.sql import GAME_TRIGGER
 from api.utils.validators import min_max_validator
@@ -13,7 +12,6 @@ from django.apps import apps
 from django.core.validators import MinValueValidator
 from django.db import models
 from django_celery_beat.models import IntervalSchedule, PeriodicTask
-from django_redis import get_redis_connection, pool
 from kombu.utils.json import dumps
 from pgtrigger import Delete, F, Protect, Q, Update, register
 from pgtrigger.core import FSM, Before, Trigger
@@ -34,11 +32,10 @@ from pgtrigger.core import FSM, Before, Trigger
             | Q(old__winner_id__isnull=False)
             | Q(old__private__df=F("new__private"))
             & Q(old__status__df=GameStatus.GAP._value_)
-            | Q(new__task__isnull=False) & Q(old__status__df=GameStatus.GE._value_)
         ),
     ),
     Trigger(
-        name="protect_players_creation",
+        name="protect_game_start",
         operation=(Update),
         when=Before,
         declare=[
@@ -57,7 +54,8 @@ from pgtrigger.core import FSM, Before, Trigger
             (GameStatus.GAPA._value_, GameStatus.GACA._value_),
             (GameStatus.GACA._value_, GameStatus.GSRR._value_),
             (GameStatus.GSRR._value_, GameStatus.GACQ._value_),
-            (GameStatus.GSRR._value_, GameStatus.GE._value_),
+            (GameStatus.GSRR._value_, GameStatus.GRF._value_),
+            (GameStatus.GRF._value_, GameStatus.GE._value_),
         ),
     ),
 )
@@ -149,34 +147,13 @@ class Game(TimestampBase):
 
     def remove_task(self):
         if self.task:
+            task_model = apps.get_model("django_celery_beat.PeriodicTask")
             celery_app.control.revoke(self.task.id, terminate=True)
-            return self.task.delete() if self.task != None else None
-
-    def select_czar(self):
-        redis: pool.Redis = get_redis_connection("default")
-        key_prefix = f"czar-{self.pk}"
-        round = self.round + 1
-        players = self.player_set.all()
-        czars_instance = redis.hgetall(key_prefix)
-        czars = list([czar.decode("utf-8") for czar in czars_instance.values()])
-        players_length = len(players)
-        czars_length = len(czars)
-        rotate = czars_length > 0 and czars_length >= players_length
-
-        if rotate:
-            all_czars = list(czars_instance.keys())
-            redis.hdel(key_prefix, *all_czars)
-            czars = []
-
-        players.filter(game=self).update(czar=False)
-
-        czar = players.filter(~Q(id__in=czars)).first()
-
-        czar.czar = True
-
-        czar.save()
-
-        redis.hset(key_prefix, round, czar.pk)
+            return (
+                task_model.objects.get(pk=self.task.id).delete()
+                if self.task != None
+                else None
+            )
 
     @property
     def interval(self):
@@ -244,14 +221,115 @@ class Game(TimestampBase):
     def question(self):
         try:
             return self.question_set.get(round=self.round)
+
         except:
+            if self.status == GameStatus.GAPA._value_:
+                player = self.czar
+                round = self.round
+                available_questions = self.available_questions
+                random_index = randrange(len(available_questions))
+                card = self.available_questions[random_index].card
+                question_model = apps.get_model("api.Question")
+                question = question_model(
+                    player=player, game=self, card=card, round=round
+                )
+                question.save()
+
+                return question
+
             return None
 
     @property
     def answers(self):
         try:
+            if self.status not in [GameStatus.GACA._value_, GameStatus.GSRR._value_]:
+                return None
+
             nodes = self.answer_set.filter(round=self.round)
+            answers_len = len(nodes)
+            pick_choices = {
+                BlackCardPickChoices.PICK_ONE._value_: 1,
+                BlackCardPickChoices.PICK_TWO._value_: 2,
+                BlackCardPickChoices.PICK_THREE._value_: 3,
+            }
+            pick = pick_choices[self.question.card.pick]
+
+            if answers_len < 1:
+                players = self.player_set.order_by("created_at").all()
+                players_len = len(players)
+                available_answers = self.available_answers
+                nodes = sample(list(available_answers), pick * players_len)
+                answer_model = apps.get_model("api.Answer")
+                question = self.question.card
+
+                for index, player in enumerate(players):
+                    start = index * pick
+                    stop = start + pick
+                    answer_nodes = nodes[start:stop]
+
+                    for answer_node in answer_nodes:
+                        card = answer_model(
+                            player=player,
+                            game=self,
+                            question=question,
+                            card=answer_node.card,
+                            round=self.round,
+                        )
+                        card.save()
+
+                return self.answers
 
             return None if len(list(nodes)) < 1 else nodes
         except:
             return None
+
+    @property
+    def czar_answers(self):
+        try:
+            if self.status != GameStatus.GSRR._value_:
+                return None
+
+            answers = self.answers.filter(selected=True)
+            answers_len = len(answers)
+
+            if answers_len < 1:
+                pick_choices = {
+                    BlackCardPickChoices.PICK_ONE._value_: 1,
+                    BlackCardPickChoices.PICK_TWO._value_: 2,
+                    BlackCardPickChoices.PICK_THREE._value_: 3,
+                }
+                pick = pick_choices[self.question.card.pick]
+                answers = sample(list(self.answers), pick)
+
+                for answer in answers:
+                    answer.selected = True
+                    answer.player.score += 10
+                    answer.save()
+                    answer.player.save()  # @TODO lazy - move to receiver duplicated code
+
+            return None if len(answers) < 1 else answers
+        except:
+            return None
+
+    @property
+    def czar(self):
+        try:
+            if self.round < 1:
+                return None
+
+            players = self.player_set.order_by("created_at").all()
+            players_length = len(players)
+            index = self.round % players_length
+            czar = players[index]
+
+            return czar
+        except:
+            return None
+
+    @property
+    def tick(self):
+        return (
+            self.task.last_run_at + timedelta(seconds=self.round_time + 5)
+            if self.task.last_run_at
+            else None
+        )

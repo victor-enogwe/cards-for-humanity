@@ -7,12 +7,12 @@
     </button>
   </div>
   <div *ngIf="isActive" [@fabStagger]="fabButtons.length" class="d-flex {{layout}} align-items-center justify-content-center my-2">
-    <button *ngFor=" let fab of fabButtons" cahDebounceClick (debounceClick)="selectFabMenu(fab)" [color]="fab?.color"
+    <button *ngFor=" let fab of fabButtons" cfhDebounceClick (debounceClick)="selectFabMenu(fab)" [color]="fab?.color"
       [matTooltip]="fab?.tooltip!" [matTooltipPosition]="fab?.tooltipPosition!" [ngClass]="{'fullSVG' : fab?.imgUrl, 'my-3': true }" mat-fab
-      [cahConfirmDialog]="fab.directives?.cahConfirmDialog" [cahDialogComponent]="fab.directives?.cahDialogComponent"
-      (confirmClick)="fab.directives?.cahConfirmDialog?.confirmClick($event)!"
-      [config]="fab.directives?.cahDialogComponent?.config! ?? fab.directives?.cahConfirmDialog?.config!"
-      [component]="fab?.directives?.cahDialogComponent?.component ?? fab?.directives?.cahConfirmDialog?.component">
+      [cfhConfirmDialog]="fab.directives?.cfhConfirmDialog" [cfhDialogComponent]="fab.directives?.cfhDialogComponent"
+      (confirmClick)="fab.directives?.cfhConfirmDialog?.confirmClick($event)!"
+      [config]="fab.directives?.cfhDialogComponent?.config! ?? fab.directives?.cfhConfirmDialog?.config!"
+      [component]="fab?.directives?.cfhDialogComponent?.component ?? fab?.directives?.cfhConfirmDialog?.component">
       <mat-icon *ngIf="fab?.icon" [color]="fab?.iconColor">{{fab?.icon}}</mat-icon>
       <img *ngIf="fab?.imgUrl" [src]="fab?.imgUrl" alt="icon">
     </button>

@@ -22,7 +22,7 @@
     </div>
 
     <div *ngIf="!data?.isMobile" class="col-sm col-md-6 d-flex flex-column flex-grow-1 justify-content-center">
-      <cah-instructions></cah-instructions>
+      <cfh-instructions></cfh-instructions>
       <div class="d-md-flex w-100 flex-row row row-cols-3 align-items-center justify-content-center">
         <button mat-raised-button type="button" class="btn btn-lg btn-dark text-uppercase font-weight-bolder" routerLink="auth">
           PLAY
@@ -31,6 +31,6 @@
       </div>
     </div>
   </div>
-  <cah-fab-menu *ngIf="data?.isMobile" [fabButtons]="playFabMenu" color="primary" icon="gamepad" (ngClick)="fabItemClicked($event)">
-  </cah-fab-menu>
+  <cfh-fab-menu *ngIf="data?.isMobile" [fabButtons]="playFabMenu" color="primary" icon="gamepad" (ngClick)="fabItemClicked($event)">
+  </cfh-fab-menu>
 </div>

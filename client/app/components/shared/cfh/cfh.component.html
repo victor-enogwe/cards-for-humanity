@@ -1,5 +1,5 @@
 <header>
-  <cah-nav></cah-nav>
+  <cfh-nav></cfh-nav>
 </header>
 <main
   *ngIf="{ fullWidth: fullWidth$ | async, navOpen: navOpen$ | async, isMobile: isMobile$ | async, authenticated: authenticated$ | async } as container"
@@ -8,7 +8,7 @@
   <mat-sidenav-container class="d-flex flex-grow-1 flex-fill" [hasBackdrop]="container.isMobile" (backdropClick)="toggleNav()">
     <mat-sidenav *ngIf="container.authenticated" [mode]="container.isMobile ? 'push' : 'side'" [fixedInViewport]="false" position="end"
       color="primary" [opened]="container.navOpen" class="d-flex flex-column px-5 py-3" [style.width.px]="480">
-      <cah-notifications></cah-notifications>
+      <cfh-notifications></cfh-notifications>
     </mat-sidenav>
 
     <mat-sidenav-content #content class="d-flex flex-column flex-fill flex-grow-1">

@@ -4,7 +4,7 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { NotificationService } from '../../../services/notification/notification.service';
 
 @Component({
-  selector: 'cah-notifications',
+  selector: 'cfh-notifications',
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,7 +18,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       switchMap((profile) =>
         iif(
           () => Boolean(profile?.email),
-          this.notificationService.fetchNotifications(profile?.email!).valueChanges.pipe(map(({ data }) => data.notifications)),
+          this.notificationService.watchNotifications(profile?.email!).valueChanges.pipe(map(({ data }) => data.notifications)),
           of(),
         ),
       ),

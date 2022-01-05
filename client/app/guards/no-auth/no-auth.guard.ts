@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { CanActivate, CanActivateChild, CanLoad, Router, UrlTree } from '@angular/router';
 import { BehaviorSubject, iif, map, Observable, of, switchMap, tap } from 'rxjs';
-import { AUTH_TOKEN$ } from '../../modules/cah/cah.module';
+import { AUTH_TOKEN$ } from '../../modules/cfh/cfh.module';
 
 @Injectable({
   providedIn: 'root',

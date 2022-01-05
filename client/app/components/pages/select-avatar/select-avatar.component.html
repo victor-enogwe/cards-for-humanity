@@ -2,11 +2,11 @@
   <mat-step state="smart_toy" aria-label="select an avatar">
     <ng-template matStepLabel>Select Your Avatar</ng-template>
     <ng-template matStepContent>
-      <cah-avatar (onAvatarSelect)="selectAvatar($event)" [selected]="avatar"></cah-avatar>
+      <cfh-avatar (onAvatarSelect)="selectAvatar($event)" [selected]="avatar"></cfh-avatar>
 
       <div class="btn-toolbar" role="toolbar" aria-label="game options navigation buttons">
         <div class="btn-group btn-group-lg flex-fill" role="group" aria-label="reset button">
-          <button mat-icon-button aria-label="reset steps" matTooltip="reset" matTooltipPosition="right" cahDebounceClick
+          <button mat-icon-button aria-label="reset steps" matTooltip="reset" matTooltipPosition="right" cfhDebounceClick
             (debounceClick)="selectAvatar()">
             <mat-icon>settings_backup_restore</mat-icon>
           </button>

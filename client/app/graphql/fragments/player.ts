@@ -22,7 +22,6 @@ export const PLAYER_NODE_FRAGMENT = gql`
       ...UserNode
     }
     score
-    czar
     createdAt
     updatedAt
   }

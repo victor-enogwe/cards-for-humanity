@@ -26,7 +26,7 @@ import { environment } from '../../../environments/environment';
 import { AnyObject, Definition } from '../../@types/global';
 import { IntrospectionLink, resolvers, typeDefs, typePolicies } from '../../graphql';
 import possibleTypes from '../../graphql/possible-types';
-import { AUTH_TOKEN$, WS_CLIENT } from '../../modules/cah/cah.module';
+import { AUTH_TOKEN$, WS_CLIENT } from '../../modules/cfh/cfh.module';
 import { WSSubscriptionClient } from '../../utils/ws';
 import { HttpLinkService } from '../http-link/http-link.service';
 
@@ -61,7 +61,7 @@ export class GraphqlService {
     queryDeduplication: true,
     typeDefs,
     assumeImmutableResults: true,
-    name: 'cah',
+    name: 'cfh',
     version: '0.1',
     ssrMode: this.ssr,
     uri: environment.HTTP_LINK,
@@ -95,7 +95,7 @@ export class GraphqlService {
     return this.storage.create().then((store) =>
       persistCache({
         cache: this.cache,
-        key: '__cah',
+        key: '__cfh',
         debug: !environment.production,
         storage: new IonicStorageWrapper(store),
       }),

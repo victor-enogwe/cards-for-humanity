@@ -1,6 +1,5 @@
 import graphene
 from api.graphql.nodes import GameNode
-from api.models.game import Game
 from api.utils.functions import game_in_progress
 from channels_graphql_ws import Subscription
 
@@ -18,13 +17,13 @@ class GameInProgressSubscription(Subscription):
         game = game_in_progress(user=info.context.user)
 
         # Return the list of subscription group names.
-        return [str(game.id)] if game is not None else None
+        return ["game_in_progress:{0}".format(game.id)] if game is not None else None
 
     @classmethod
     def publish(cls, payload, info, *args, **kwargs):
         """Called to notify the client."""
 
-        game_in_progress: Game = payload.get("game_in_progress")
+        game_in_progress = payload.get("game_in_progress")
 
         assert game_in_progress.id is not None
 
@@ -36,8 +35,8 @@ class GameInProgressSubscription(Subscription):
         return GameInProgressSubscription(game_in_progress=game_in_progress)
 
     @classmethod
-    def on_game_updated(cls, game_in_progress: Game):
+    def on_game_updated(cls, game_in_progress):
         return cls.broadcast(
-            group=str(game_in_progress.id),
+            group="game_in_progress:{0}".format(game_in_progress.id),
             payload={"game_in_progress": game_in_progress},
         )

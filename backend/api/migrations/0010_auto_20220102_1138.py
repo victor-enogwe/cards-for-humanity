@@ -6,24 +6,30 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0009_auto_20220102_1137'),
+        ("api", "0009_auto_20220102_1137"),
     ]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='availableanswer',
-            name='unique_available_answer_player_game_round',
+            model_name="availableanswer",
+            name="unique_available_answer_player_game_round",
         ),
         migrations.RemoveConstraint(
-            model_name='availablequestion',
-            name='unique_available_question_player_game_round',
+            model_name="availablequestion",
+            name="unique_available_question_player_game_round",
         ),
         migrations.AddConstraint(
-            model_name='availableanswer',
-            constraint=models.UniqueConstraint(fields=('game', 'card', 'round'), name='unique_available_answer_game_card_round'),
+            model_name="availableanswer",
+            constraint=models.UniqueConstraint(
+                fields=("game", "card", "round"),
+                name="unique_available_answer_game_card_round",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='availablequestion',
-            constraint=models.UniqueConstraint(fields=('game', 'card', 'round'), name='unique_available_question_player_game_card_round'),
+            model_name="availablequestion",
+            constraint=models.UniqueConstraint(
+                fields=("game", "card", "round"),
+                name="unique_available_question_player_game_card_round",
+            ),
         ),
     ]

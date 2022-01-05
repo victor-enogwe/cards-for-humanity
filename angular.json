@@ -13,7 +13,7 @@
       },
       "root": "",
       "sourceRoot": "client",
-      "prefix": "cah",
+      "prefix": "cfh",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",

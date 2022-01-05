@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { interval, map } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
-import { CahPallette, Timer } from '../../../@types/global';
+import { CfhPallette, Timer } from '../../../@types/global';
 
 @Component({
-  selector: 'cah-countdown-timer',
+  selector: 'cfh-countdown-timer',
   templateUrl: './countdown-timer.component.html',
   styleUrls: ['./countdown-timer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -13,7 +13,7 @@ export class CountdownTimerComponent {
   @Input() title = 'countdown timer';
   @Input() status = 'countdown ended';
   @Input() date!: Date;
-  @Input() color: CahPallette = 'admin-approved';
+  @Input() color: CfhPallette = 'admin-approved';
   @Input() icon!: string;
   timer$ = interval(1000).pipe(
     map(() => this.timeDifferenceInSeconds()),

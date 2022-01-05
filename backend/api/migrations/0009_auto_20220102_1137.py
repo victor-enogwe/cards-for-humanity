@@ -6,16 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0008_alter_game_status'),
+        ("api", "0008_alter_game_status"),
     ]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='question',
-            name='unique_question_player_game_card_round',
+            model_name="question",
+            name="unique_question_player_game_card_round",
         ),
         migrations.AddConstraint(
-            model_name='question',
-            constraint=models.UniqueConstraint(fields=('game', 'round'), name='unique_question_player_game_round'),
+            model_name="question",
+            constraint=models.UniqueConstraint(
+                fields=("game", "round"), name="unique_question_player_game_round"
+            ),
         ),
     ]

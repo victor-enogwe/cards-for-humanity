@@ -58,8 +58,10 @@ class RoundPlayerAnswersMutationInput(InputObjectType):
     cards = List(RoundCardInput, required=True)
     round = Int(required=True)
 
+
 class RoundCzarAnswersMutationInput(InputObjectType):
     cards = List(RoundCardInput, required=True)
+
 
 class ChatInput(InputObjectType):
     room = graphene.ID(required=True)

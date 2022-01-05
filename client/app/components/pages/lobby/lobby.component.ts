@@ -9,7 +9,7 @@ import { UIService } from '../../../services/ui/ui.service';
 import { InviteComponent } from '../../shared/invite/invite.component';
 
 @Component({
-  selector: 'cah-lobby',
+  selector: 'cfh-lobby',
   templateUrl: './lobby.component.html',
   styleUrls: ['./lobby.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,7 +64,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
         tooltipPosition: 'left',
         color: 'danger',
         directives: {
-          cahConfirmDialog: {
+          cfhConfirmDialog: {
             config: { data: { title: `Cancel Game`, description: game.id } },
             confirmClick: () => lastValueFrom(this.gameService.updateGameStatus(game.id, { status: 'GAME_ENDED' })),
           },
@@ -77,7 +77,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
         tooltipPosition: 'left',
         color: 'success',
         directives: {
-          cahConfirmDialog: {
+          cfhConfirmDialog: {
             config: { data: { title: `Start Game`, description: game.id } },
             confirmClick: () => lastValueFrom(this.gameService.updateGameStatus(game.id, { status: 'GAME_STARTED' })),
           },
@@ -90,7 +90,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
         tooltipPosition: 'left',
         color: 'queued',
         directives: {
-          [this.isDesktop ? 'cahConfirmDialog' : 'cahDialogComponent']: {
+          [this.isDesktop ? 'cfhConfirmDialog' : 'cfhDialogComponent']: {
             component: InviteComponent,
             config: { data: { game: game, inviteOnly: game.private, spectator: true }, maxHeight: '420px' },
           },
@@ -103,7 +103,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
         tooltipPosition: 'left',
         color: 'warn',
         directives: {
-          [this.isDesktop ? 'cahConfirmDialog' : 'cahDialogComponent']: {
+          [this.isDesktop ? 'cfhConfirmDialog' : 'cfhDialogComponent']: {
             component: InviteComponent,
             config: { data: { game: game, inviteOnly: game.private }, maxHeight: '420px' },
           },

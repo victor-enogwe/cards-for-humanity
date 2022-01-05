@@ -418,6 +418,7 @@ type GameNode implements Node {
   availableQuestions: [AvailableQuestionNode]
   createdAt: DateTime!
   creator: UserNode!
+  czar: PlayerNode
   czarAnswers: [AnswerNode]
   genres(after: String, before: String, credit: String, credit_Icontains: String, credit_Istartswith: String, description: String, description_Icontains: String, description_Istartswith: String, first: Int, id: Float, id_Gt: Float, id_Lt: Float, last: Int, offset: Int): GenreNodeConnection!
   """The ID of the object."""
@@ -429,7 +430,7 @@ type GameNode implements Node {
   numPlayers: Int!
   """no of spectators"""
   numSpectators: Int!
-  playerSet(after: String, avatar: String, before: String, createdAt: DateTime, czar: Boolean, first: Int, game: ID, last: Int, offset: Int, score: Int, spectator: Boolean, updatedAt: DateTime, user: ID): PlayerNodeConnection!
+  playerSet(after: String, avatar: String, before: String, createdAt: DateTime, first: Int, game: ID, last: Int, offset: Int, score: Int, spectator: Boolean, updatedAt: DateTime, user: ID): PlayerNodeConnection!
   private: Boolean!
   question: QuestionNode
   """game round"""
@@ -439,6 +440,7 @@ type GameNode implements Node {
   """no of game rounds"""
   rounds: Int!
   status: ApiGameStatusChoices!
+  tick: DateTime
   updatedAt: DateTime!
   userAnswers: [AnswerNode]
   winner: PlayerNode
@@ -640,7 +642,6 @@ type PlayerNode implements Node {
   answerSet(after: String, before: String, card: ID, createdAt: DateTime, first: Int, game: ID, last: Int, offset: Int, player: ID, question: ID, rating: String, round: Int, selected: Boolean, updatedAt: DateTime): AnswerNodeConnection!
   avatar: ApiPlayerAvatarChoices!
   createdAt: DateTime!
-  czar: Boolean!
   game: GameNode!
   """The ID of the object."""
   id: ID!
@@ -923,7 +924,7 @@ type UserNode implements Node {
   isStaff: Boolean!
   """Is Superuser"""
   isSuperuser: Boolean!
-  playerSet(after: String, avatar: String, before: String, createdAt: DateTime, czar: Boolean, first: Int, game: ID, last: Int, offset: Int, score: Int, spectator: Boolean, updatedAt: DateTime, user: ID): PlayerNodeConnection!
+  playerSet(after: String, avatar: String, before: String, createdAt: DateTime, first: Int, game: ID, last: Int, offset: Int, score: Int, spectator: Boolean, updatedAt: DateTime, user: ID): PlayerNodeConnection!
   providerSet(after: String, before: String, conversionMode: String, createdAt: DateTime, email: String, first: Int, last: Int, lastLogin: DateTime, lastLogout: DateTime, offset: Int, phone: String, primary: Boolean, provider: String, seed: String, updatedAt: DateTime, user: ID, verifiedAt: DateTime): ProviderNodeConnection!
   socialAuth(after: String, before: String, first: Int, last: Int, offset: Int, provider: String, provider_In: [String], uid: String, uid_In: [String]): SocialNodeConnection!
   updatedAt: DateTime!

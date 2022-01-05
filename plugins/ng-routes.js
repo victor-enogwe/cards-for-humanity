@@ -1,3 +1,3 @@
 const { parseAngularRoutes } =  require('guess-parser');
 
-console.log(parseAngularRoutes('tsconfig.app.json'));
+console.info(parseAngularRoutes('tsconfig.app.json'));

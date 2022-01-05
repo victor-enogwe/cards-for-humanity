@@ -1,4 +1,4 @@
-<cah-auth-container title="Register" class="flex-fill" *ngIf="{ isMobile: isMobile$ | async } as data">
+<cfh-auth-container title="Register" class="flex-fill" *ngIf="{ isMobile: isMobile$ | async } as data">
   <div *ngIf="data?.isMobile" class="btn-group d-md-none mb-3" role="group" aria-label="registration methods">
     <button mat-stroked-button type="button" class="btn" [ngClass]="{ 'btn-secondary': !showSocialAuth, 'btn-light': showSocialAuth}"
       (click)="showSocialAuth=!showSocialAuth">Email</button>
@@ -13,12 +13,12 @@
         'progress-bar': facebook.disabled,
         'progress-bar-striped': facebook.disabled,
         'progress-bar-animated': facebook.disabled
-      }" cahDebounceClick (debounceClick)="signUpSocial($event)">
+      }" cfhDebounceClick (debounceClick)="signUpSocial($event)">
         Sign up With Facebook
       </button>
       <button mat-raised-button #google class="btn btn-lg btn-block btn-danger mt-3" [hidden]="facebook.disabled"
         [ngClass]="{ 'progress-bar': google.disabled, 'progress-bar-striped': google.disabled, 'progress-bar-animated': google.disabled }"
-        cahDebounceClick (debounceClick)="signUpSocial($event)">
+        cfhDebounceClick (debounceClick)="signUpSocial($event)">
         Sign up With Google
       </button>
     </div>
@@ -97,7 +97,7 @@
               </mat-icon>
             </span>
           </mat-hint>
-          <button mat-icon-button matSuffix cahDebounceClick (debounceClick)="showPassword=!showPassword"
+          <button mat-icon-button matSuffix cfhDebounceClick (debounceClick)="showPassword=!showPassword"
             [attr.aria-label]="'Hide password'" [attr.aria-pressed]="showPassword">
             <mat-icon>{{showPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
@@ -117,7 +117,7 @@
               check_circle
             </mat-icon>
           </mat-hint>
-          <button mat-icon-button matSuffix cahDebounceClick (debounceClick)="showRepeatPassword=!showRepeatPassword"
+          <button mat-icon-button matSuffix cfhDebounceClick (debounceClick)="showRepeatPassword=!showRepeatPassword"
             [attr.aria-label]="'Hide password'" [attr.aria-pressed]="showRepeatPassword">
             <mat-icon>{{showRepeatPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
@@ -126,7 +126,7 @@
 
       <div class="d-grid gap-2 d-flex justify-content-around">
         <button mat-stroked-button type="button" class="btn btn-sm btn-link text-dark" routerLink="/auth/login">Back to Login</button>
-        <button mat-raised-button #register type="button" class="col btn btn-lg btn-block btn-dark" cahDebounceClick
+        <button mat-raised-button #register type="button" class="col btn btn-lg btn-block btn-dark" cfhDebounceClick
           (debounceClick)="signUpManual($event, registerForm)" [disabled]="!registerForm.valid || facebook.disabled || google.disabled"
           [ngClass]="{
             'progress-bar': registerForm.valid && register.disabled,
@@ -139,4 +139,4 @@
       </div>
     </form>
   </div>
-</cah-auth-container>
+</cfh-auth-container>

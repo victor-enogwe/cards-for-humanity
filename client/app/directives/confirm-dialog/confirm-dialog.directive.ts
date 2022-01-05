@@ -6,14 +6,14 @@ import { first, tap } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from '../../components/shared/confirmation-dialog/confirmation-dialog.component';
 
 @Directive({
-  selector: '[cahConfirmDialog]',
+  selector: '[cfhConfirmDialog]',
 })
 export class ConfirmDialogDirective {
-  @Input('cahConfirmDialog') useDirective: boolean | undefined | any = false;
+  @Input('cfhConfirmDialog') useDirective: boolean | undefined | any = false;
   @Input() listen = true;
   @Input() component!: ComponentType<any>;
   @Input() config!: MatDialogConfig;
-  @Output() cahClick = new EventEmitter();
+  @Output() cfhClick = new EventEmitter();
   @Output() confirmClick = new EventEmitter();
   @Output() denyClick = new EventEmitter();
   @Output() afterOpen: EventEmitter<string> = new EventEmitter();

@@ -1,7 +1,7 @@
 <div class="row row-cols-4 flex-fill flex-grow-1 flex-grow-1 overflow-hidden overflow-y-scroll g-2">
   <div #avatarDiv class="d-flex col justify-content-center align-items-center p-3" *ngFor="let avatar of avatars"
     matTooltip="{{avatar.name | uppercase}}" matTooltipPosition="above"
-    [ngClass]="{ 'shadow-sm border border-3': avatar.name === avatar$.value?.name }" cahDebounceClick (debounceClick)="avatar$.next(avatar)"
+    [ngClass]="{ 'shadow-sm border border-3': avatar.name === avatar$.value?.name }" cfhDebounceClick (debounceClick)="avatar$.next(avatar)"
     tabindex="-1" role="div">
     <img [src]="avatar.link| safeUrl" class="avatar" alt="{{avatar.name}}" />
   </div>

@@ -14,7 +14,7 @@ export class NotificationService {
     return this.snackBar.open(message, action, { duration: 3000, ...config });
   }
 
-  fetchNotifications(email: string) {
+  watchNotifications(email: string) {
     return this.apollo.watchQuery<Pick<Query, 'notifications'>>({
       query: NOTIFICATIONS_QUERY,
       variables: { email },
@@ -23,7 +23,7 @@ export class NotificationService {
   }
 
   notificationsSubscription(email: string) {
-    return this.fetchNotifications(email).subscribeToMore({
+    return this.watchNotifications(email).subscribeToMore({
       document: NOTIFICATIONS_SUBSCRIPTION,
       variables: { email },
       updateQuery: (prev, { subscriptionData }) => {

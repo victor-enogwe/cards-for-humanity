@@ -1,4 +1,4 @@
-<cah-auth-container title="Login" class="flex-fill" *ngIf="{ isMobile: isMobile$ | async }  as data">
+<cfh-auth-container title="Login" class="flex-fill" *ngIf="{ isMobile: isMobile$ | async }  as data">
   <div *ngIf="data?.isMobile" class="btn-group d-md-none mb-3" role="group" aria-label="authentication methods">
     <button mat-stroked-button type="button" class="btn" [ngClass]="{ 'btn-secondary': !showSocialAuth, 'btn-light': showSocialAuth}"
       (click)="showSocialAuth=!showSocialAuth">Email</button>
@@ -9,7 +9,7 @@
   <div class="col-md-12 col-lg-6 mb-5 p-md-5 d-md-block flex-fill" [ngClass]="{ 'd-none': (data?.isMobile) && !showSocialAuth}">
     <div class="row px-3 p-md-0">
       <h6 *ngIf="data?.isMobile" class="card-title text-center text-muted mb-3">Social Login</h6>
-      <button mat-raised-button #facebook class="btn btn-lg btn-block btn-primary" cahDebounceClick (debounceClick)="loginSocial($event)"
+      <button mat-raised-button #facebook class="btn btn-lg btn-block btn-primary" cfhDebounceClick (debounceClick)="loginSocial($event)"
         [hidden]="google.disabled" [ngClass]="{
         'progress-bar': facebook.disabled,
         'progress-bar-striped': facebook.disabled,
@@ -17,7 +17,7 @@
       }">
         Login With Facebook
       </button>
-      <button mat-raised-button #google class="btn btn-lg btn-block btn-danger mt-3" cahDebounceClick (debounceClick)="loginSocial($event)"
+      <button mat-raised-button #google class="btn btn-lg btn-block btn-danger mt-3" cfhDebounceClick (debounceClick)="loginSocial($event)"
         [hidden]="facebook.disabled"
         [ngClass]="{ 'progress-bar': google.disabled, 'progress-bar-striped': google.disabled, 'progress-bar-animated': google.disabled }">
         Login With Google
@@ -40,7 +40,7 @@
         <mat-label for="password">password</mat-label>
         <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" id="password" />
         <mat-hint class="form-text text-muted">enter your account password.</mat-hint>
-        <button mat-icon-button matSuffix cahDebounceClick (debounceClick)="showPassword=!showPassword" [attr.aria-label]="'Hide password'"
+        <button mat-icon-button matSuffix cfhDebounceClick (debounceClick)="showPassword=!showPassword" [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="showPassword">
           <mat-icon>{{showPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
@@ -49,7 +49,7 @@
       <div class="d-grid gap-2 d-flex justify-content-around align-items-center mb-3">
         <mat-checkbox color="primary" matInput formControlName="remember" class="flex-grow-1">Remember me</mat-checkbox>
 
-        <button mat-raised-button #login type="button" class="btn btn-lg btn-dark flex-grow-1" cahDebounceClick
+        <button mat-raised-button #login type="button" class="btn btn-lg btn-dark flex-grow-1" cfhDebounceClick
           (debounceClick)="loginManual(loginForm)" [disabled]="!loginForm.valid || facebook.disabled || google.disabled" [ngClass]="{
             'progress-bar': loginForm.valid && login.disabled,
             'progress-bar-striped': loginForm.valid && login.disabled,
@@ -68,4 +68,4 @@
       </div>
     </form>
   </div>
-</cah-auth-container>
+</cfh-auth-container>

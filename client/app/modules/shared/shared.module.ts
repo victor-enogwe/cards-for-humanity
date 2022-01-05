@@ -23,7 +23,7 @@ import { MapToIterablePipe } from '../../pipes/map-to-iterable/map-to-iterable.p
 import { MapToKeyPipe } from '../../pipes/map-to-key/map-to-key.pipe';
 import { SafeUrlPipe } from '../../pipes/safe-url/safe-url.pipe';
 import { TimeAgoPipe } from '../../pipes/time-ago/time-ago.pipe';
-import { CahDialogService } from '../../services/cah-dialog/cah-dialog.service';
+import { CfhDialogService } from '../../services/cfh-dialog/cfh-dialog.service';
 import { MaterialModule } from '../material/material.module';
 
 @NgModule({
@@ -48,7 +48,7 @@ import { MaterialModule } from '../material/material.module';
     BoolPipe,
     MapToKeyPipe,
   ],
-  providers: [SafeUrlPipe, MapToIterablePipe, TimeAgoPipe, BoolPipe, MapToKeyPipe, CahDialogService],
+  providers: [SafeUrlPipe, MapToIterablePipe, TimeAgoPipe, BoolPipe, MapToKeyPipe, CfhDialogService],
   exports: [
     CommonModule,
     FormsModule,

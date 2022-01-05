@@ -14,9 +14,9 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-    genres = filenames(path.join(BASE_DIR, "api/fixtures/cah/genres"))
-    blackcards = filenames(path.join(BASE_DIR, "api/fixtures/cah/blackcards"))
-    whitecards = filenames(path.join(BASE_DIR, "api/fixtures/cah/whitecards"))
+    genres = filenames(path.join(BASE_DIR, "api/fixtures/cfh/genres"))
+    blackcards = filenames(path.join(BASE_DIR, "api/fixtures/cfh/blackcards"))
+    whitecards = filenames(path.join(BASE_DIR, "api/fixtures/cfh/whitecards"))
 
     dependencies = [
         ("api", "0001_initial"),

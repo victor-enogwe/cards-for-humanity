@@ -93,7 +93,7 @@ CSRF_COOKIE_SAMESITE = "Strict"
 
 SESSION_COOKIE_AGE = 604800
 
-SESSION_COOKIE_NAME = "cah_session"
+SESSION_COOKIE_NAME = "cfh_session"
 
 CSP_DEFAULT_SRC = "'self'"
 
@@ -229,9 +229,9 @@ GRAPHENE = {
 }
 
 GRAPHQL_JWT = {
-    "JWT_AUDIENCE": "cah",
-    "JWT_COOKIE_NAME": "CAH",
-    "JWT_REFRESH_TOKEN_COOKIE_NAME": "CAH_TM",
+    "JWT_AUDIENCE": "cfh",
+    "JWT_COOKIE_NAME": "CFH",
+    "JWT_REFRESH_TOKEN_COOKIE_NAME": "CFH_TM",
     "JWT_AUTH_HEADER_PREFIX": "Bearer",
     "JWT_PAYLOAD_HANDLER": "api.utils.functions.jwt_payload",
     "JWT_PAYLOAD_GET_USERNAME_HANDLER": (lambda payload: payload.get("email")),
@@ -250,7 +250,7 @@ GRAPHQL_JWT = {
 }
 
 FIXTURE_DIRS = [
-    os.path.join(BASE_DIR, "api/fixtures/cah/{path}".format(path=path))
+    os.path.join(BASE_DIR, "api/fixtures/cfh/{path}".format(path=path))
     for path in ["genres", "blackcards", "whitecards"]
 ]
 
@@ -319,7 +319,7 @@ DATABASES = {
         "CONN_MAX_AGE": 0,
         "CHARSET": "UTF8",
         "OPTIONS": {},
-        "TEST": {"NAME": "cah-test-db"},
+        "TEST": {"NAME": "cfh-test-db"},
     }
 }
 
@@ -353,7 +353,7 @@ CACHES = {
             "COMPRESSOR_CLASS_KWARGS": {"level": 5},
             "SERIALIZER_CLASS_KWARGS": {},
         },
-        "KEY_PREFIX": "cah",
+        "KEY_PREFIX": "cfh",
     }
 }
 

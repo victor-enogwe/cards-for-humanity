@@ -1,3 +1,4 @@
+from datetime import timedelta
 from math import floor
 
 import graphene
@@ -14,12 +15,11 @@ from api.models.profile import Profile
 from api.models.provider import Provider
 from api.models.question import Question
 from api.models.whitecard import WhiteCard
-from api.utils.enums import CardRating
+from api.utils.enums import CardRating, GameStatus
 from api.utils.extended_connection import ExtendedConnection
 from api.utils.functions import get_invites
 from api.utils.graphql_errors import GraphQLErrors
 from django.contrib.auth import get_user_model
-from django.db.models.expressions import OuterRef
 from graphene import relay
 from graphene_django import DjangoObjectType
 from graphene_django.filter.fields import DjangoFilterConnectionField
@@ -103,12 +103,14 @@ class AnswerNode(DjangoObjectType):
 
 
 class GameNode(DjangoObjectType):
+    user_answers = graphene.Field(graphene.List(AnswerNode))
     available_questions = graphene.Field(graphene.List(AvailableQuestionNode))
     available_answers = graphene.Field(graphene.List(AvailableAnswerNode))
+    tick = graphene.DateTime(source="tick")
+    czar = graphene.Field(PlayerNode, source="czar")
     question = graphene.Field(QuestionNode, source="question")
     answers = graphene.Field(graphene.List(AnswerNode), source="answers")
-    czar_answers = graphene.Field(graphene.List(AnswerNode))
-    user_answers = graphene.Field(graphene.List(AnswerNode))
+    czar_answers = graphene.Field(graphene.List(AnswerNode), source="czar_answers")
 
     class Meta:
         model = Game
@@ -126,7 +128,8 @@ class GameNode(DjangoObjectType):
         try:
             user = info.context.user
             player = self.player_set.get(user=user)
-            return self.available_questions if player.czar else None
+            is_czar = self.czar.user.id == user.id
+            return self.available_questions if is_czar else None
         except:
             return None
 
@@ -134,7 +137,7 @@ class GameNode(DjangoObjectType):
         try:
             user = info.context.user
             players = self.player_set.order_by("created_at").all()
-            player_ids = [x.user.id for x in players if x.czar == False]
+            player_ids = [x.user.id for x in players if x.user.id != self.czar.user.id]
             player_index = player_ids.index(user.id)
             num_players = self.num_players - 1
             answers = self.available_answers
@@ -145,11 +148,6 @@ class GameNode(DjangoObjectType):
             return answers[start:stop]
         except:
             return None
-
-    def resolve_czar_answers(self, info, **kwargs):
-        answers = self.answers.filter(selected=True) if self.answers else []
-
-        return None if (len(list(answers)) < 1) else answers
 
     def resolve_user_answers(self, info, **kwargs):
         answers = (

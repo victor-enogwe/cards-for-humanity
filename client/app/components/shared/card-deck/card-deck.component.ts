@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnDestroy, Output } from '@angular/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Subscription } from 'rxjs';
-import { AnswerNode, AvailableAnswerNode, AvailableQuestionNode, JwtPayloadNode, Maybe, QuestionNode } from '../../../@types/graphql';
+import { AnswerNode, AvailableAnswerNode, AvailableQuestionNode, Maybe, PlayerNodeEdge, QuestionNode } from '../../../@types/graphql';
 import { slideAnimation } from '../../../animations';
 import { UIService } from '../../../services/ui/ui.service';
 import { UtilsService } from '../../../services/utils/utils.service';
 
 @Component({
-  selector: 'cah-card-deck',
+  selector: 'cfh-card-deck',
   templateUrl: './card-deck.component.html',
   styleUrls: ['./card-deck.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,7 +19,7 @@ export class CardDeckComponent implements OnDestroy {
   @Input() deck?: Maybe<ReadonlyArray<Maybe<AvailableQuestionNode | AvailableAnswerNode | QuestionNode | AnswerNode>>> = [];
   @Input() pick: number = 1;
   @Input() disabled = false;
-  @Input() profile!: Maybe<JwtPayloadNode>;
+  @Input() player?: Maybe<PlayerNodeEdge>;
   avatars = this.uiService.avatarMemo;
   activeIndex = 0;
   selected$ = new BehaviorSubject<Array<AvailableQuestionNode | AvailableAnswerNode | QuestionNode | AnswerNode>>([]);
@@ -67,7 +67,5 @@ export class CardDeckComponent implements OnDestroy {
     return this.selected$.next(concat ? prevValue.concat(card) : [...slice, card]);
   }
 
-  animated($event: any) {
-    console.log($event);
-  }
+  animated($event: any) {}
 }

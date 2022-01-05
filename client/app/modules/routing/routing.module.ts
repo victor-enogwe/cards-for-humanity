@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../guards/auth/auth.guard';
 import { NoAuthGuard } from '../../guards/no-auth/no-auth.guard';
-import { CahRouteReuseStrategy } from '../../utils/route-reuse-strategy';
+import { CfhRouteReuseStrategy } from '../../utils/route-reuse-strategy';
 
 const routes: Routes = [
   {
@@ -33,6 +33,6 @@ const routes: Routes = [
     }),
   ],
   exports: [RouterModule],
-  providers: [NoAuthGuard, AuthGuard, { provide: RouteReuseStrategy, useClass: CahRouteReuseStrategy }],
+  providers: [NoAuthGuard, AuthGuard, { provide: RouteReuseStrategy, useClass: CfhRouteReuseStrategy }],
 })
-export class CahRoutingModule {}
+export class CfhRoutingModule {}

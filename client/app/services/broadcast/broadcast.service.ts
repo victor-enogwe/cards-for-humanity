@@ -62,10 +62,10 @@ export class BroadcastService {
   }
 
   async createChannel(): Promise<BroadcastChannel<BroadCast>> {
-    const channel: BroadcastChannel<BroadCast> = new BroadcastChannel('cah-broadcast');
+    const channel: BroadcastChannel<BroadCast> = new BroadcastChannel('cfh-broadcast');
     const elector = createLeaderElection(channel, { fallbackInterval: 2000, responseTime: 1000 });
     channel.onmessage = this.onMessage.bind(this);
-    elector.onduplicate = () => console.log('duplicate tab leaders');
+    elector.onduplicate = () => console.info('duplicate tab leaders');
     this.channel$.next(channel);
     this.elector$.next(elector);
     return channel;

@@ -3,21 +3,21 @@ import { Directive, ElementRef, EventEmitter, HostListener, Input, Output } from
 import { MatDialogConfig } from '@angular/material/dialog';
 import get from 'lodash.get';
 import { first, tap } from 'rxjs/operators';
-import { CahDialogService } from '../../services/cah-dialog/cah-dialog.service';
+import { CfhDialogService } from '../../services/cfh-dialog/cfh-dialog.service';
 import { MainContentRefService } from '../../services/main-content-ref/main-content-ref.service';
 
 @Directive({
-  selector: '[cahDialogComponent]',
+  selector: '[cfhDialogComponent]',
 })
 export class DialogComponentDirective {
-  @Input('cahDialogComponent') useDirective: boolean | undefined | any = false;
+  @Input('cfhDialogComponent') useDirective: boolean | undefined | any = false;
   @Input() config!: MatDialogConfig;
   @Output() afterOpen: EventEmitter<string> = new EventEmitter();
   @Output() beforeClosed: EventEmitter<string> = new EventEmitter();
   @Output() afterClosed: EventEmitter<string> = new EventEmitter();
   @Input() component!: ComponentType<unknown>;
 
-  constructor(public dialog: CahDialogService, public mainContentRefService: MainContentRefService) {}
+  constructor(public dialog: CfhDialogService, public mainContentRefService: MainContentRefService) {}
 
   @HostListener('click', ['$event'])
   async clickEvent(event: MouseEvent): Promise<void> {

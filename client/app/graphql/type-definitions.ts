@@ -422,6 +422,7 @@ export const typeDefs = gql`
     availableQuestions: [AvailableQuestionNode]
     createdAt: DateTime!
     creator: UserNode!
+    czar: PlayerNode
     czarAnswers: [AnswerNode]
     genres(
       after: String
@@ -465,7 +466,6 @@ export const typeDefs = gql`
       avatar: String
       before: String
       createdAt: DateTime
-      czar: Boolean
       first: Int
       game: ID
       last: Int
@@ -484,6 +484,7 @@ export const typeDefs = gql`
 
     rounds: Int!
     status: ApiGameStatusChoices!
+    tick: DateTime
     updatedAt: DateTime!
     userAnswers: [AnswerNode]
     winner: PlayerNode
@@ -729,7 +730,6 @@ export const typeDefs = gql`
     ): AnswerNodeConnection!
     avatar: ApiPlayerAvatarChoices!
     createdAt: DateTime!
-    czar: Boolean!
     game: GameNode!
 
     id: ID!
@@ -1121,7 +1121,6 @@ export const typeDefs = gql`
       avatar: String
       before: String
       createdAt: DateTime
-      czar: Boolean
       first: Int
       game: ID
       last: Int

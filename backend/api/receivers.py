@@ -27,12 +27,12 @@ def revoke_refresh_token(sender, request, refresh_token, **kwargs):
 
 
 @receiver(pre_save)
-def updated_at_timestamp(sender, instance: Model, **kwargs):
+def update_edit_timestamp(sender, instance: Model, **kwargs):
     setattr(instance, "updated_at", timezone.now())
 
 
 @receiver(pre_save, sender=VerificationCode)
-def updated_at_timestamp(sender, instance: VerificationCode, **kwargs):
+def update_expiry(sender, instance: VerificationCode, **kwargs):
     default_expiry = timezone.now() + timezone.timedelta(minutes=5)
     setattr(instance, "expires_at", default_expiry)
     instance.save()
@@ -44,13 +44,13 @@ def broadcast_game(sender, instance, created, **kwargs):
 
 
 @receiver([post_save, post_delete], sender=Invite)
-def broadcast_game(sender, instance, **kwargs):
+def broadcast_invite(sender, instance, **kwargs):
     try:
         GameInProgressSubscription.on_game_updated(game_in_progress=instance.game)
         email = instance.email
         user = Provider.objects.get(email=email).user
         notifications = {
-            "id": user,
+            "id": user.id,
             "invites": list(
                 get_invites(user=user, email=email, first=10, revoked=False).values()
             ),
@@ -66,7 +66,7 @@ def broadcast_game(sender, instance, **kwargs):
 @receiver([post_save, post_delete], sender=Question)
 @receiver([post_save, post_delete], sender=Answer)
 @receiver([post_save, post_delete], sender=Player)
-def broadcast_game(sender, instance, **kwargs):
+def broadcast_question_answer(sender, instance, **kwargs):
     GameInProgressSubscription.on_game_updated(game_in_progress=instance.game)
 
 

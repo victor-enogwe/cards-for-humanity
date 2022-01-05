@@ -5,7 +5,7 @@ import { UIService } from '../../../services/ui/ui.service';
 import { UtilsService } from '../../../services/utils/utils.service';
 
 @Component({
-  selector: 'cah-instructions',
+  selector: 'cfh-instructions',
   templateUrl: './instructions.component.html',
   styleUrls: ['./instructions.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -13,9 +13,9 @@ import { UtilsService } from '../../../services/utils/utils.service';
 })
 export class InstructionsComponent {
   instructions = [
-    'Each player begins with, and will always have, 12 white answer cards.',
+    'Each player begins with some white answer cards.',
     'For each round, one player is randomly chosen as the Card Czar.',
-    'Everyone else answers the black question card, clicks on the answer card they want.',
+    'Everyone else answers the black question card, clicks on the white answer card they want.',
     'The Card Czar picks a favorite answer, and whoever played that answer wins the round.',
   ];
   avatars = this.utilsService.randomItemsFromArray<Avatar>(this.instructions.length)(this.uiService.avatars);

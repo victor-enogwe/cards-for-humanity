@@ -6,7 +6,7 @@ import { UIService } from '../../../services/ui/ui.service';
 import { InstructionsComponent } from '../../shared/instructions/instructions.component';
 
 @Component({
-  selector: 'cah-home',
+  selector: 'cfh-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,7 +28,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       tooltipPosition: 'left',
       color: 'accent',
       directives: {
-        cahDialogComponent: {
+        cfhDialogComponent: {
           component: InstructionsComponent,
           config: { data: { showDialogClose: true } },
         },

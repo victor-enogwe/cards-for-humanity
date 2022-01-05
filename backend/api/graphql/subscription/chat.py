@@ -17,26 +17,24 @@ class ChatSubscription(Subscription):
         room = kwargs.get("room")
 
         # Return the list of subscription group names.
-        return [room] if room is not None else None
+        return ["chat:{0}".format(room)] if room is not None else None
 
     @classmethod
     def publish(cls, payload, info, *args, **kwargs):
         """Called to notify the client."""
+        chat = payload.get("chat")
 
-        room = payload.get("room")
-        sender = payload.get("sender")
-        message = payload.get("message")
-
-        assert room is not None
+        assert chat["room"] is not None
 
         # Here `payload` contains the `payload` from the `broadcast()`
         # invocation (see below). You can return `MySubscription.SKIP`
         # if you wish to suppress the notification to a particular
         # client. For example, this allows to avoid notifications for
         # the actions made by this particular client.
-        return ChatSubscription(sender=sender, room=room, message=message)
+        return ChatSubscription(chat=chat)
 
     @classmethod
-    def new_message(cls, **payload):
-        room = payload.get("room")
-        return cls.broadcast(group=room, payload=payload)
+    def new_message(cls, chat):
+        return cls.broadcast(
+            group="chat:{0}".format(chat["room"]), payload={"chat": chat}
+        )

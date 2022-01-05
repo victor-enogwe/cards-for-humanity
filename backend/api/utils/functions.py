@@ -62,7 +62,7 @@ def load_data(filepath):
 
 def create_superuser(apps, schema_editor):
     try:
-        management.call_command("createsuperusercah", interactive=False)
+        management.call_command("createsuperusercfh", interactive=False)
     except Exception as error:
         return print(error)
 
@@ -333,9 +333,9 @@ def jwt_payload(user, context):
         "email": provider.email,
         "email_verified": provider.is_verified,
         claims_url: {
-            "x-cah-allowed-roles": [],
-            "x-cah-default-role": None,
-            "x-cah-user-id": str(user.id),
+            "x-cfh-allowed-roles": [],
+            "x-cfh-default-role": None,
+            "x-cfh-user-id": str(user.id),
         },
     }
 

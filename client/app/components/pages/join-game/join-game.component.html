@@ -2,7 +2,7 @@
   <mat-step step="videogame_asset" aria-label="choose game to join">
     <ng-template matStepLabel>Select An Avatar</ng-template>
     <ng-template matStepContent>
-      <cah-avatar [taken]="taken$ | async" [selected]="avatar?.name" (onAvatarSelect)="avatarSelected($event)"></cah-avatar>
+      <cfh-avatar [taken]="taken$ | async" [selected]="avatar?.name" (onAvatarSelect)="avatarSelected($event)"></cfh-avatar>
 
       <div class="btn-toolbar pt-3" role="toolbar" aria-label="game options navigation buttons">
         <div class="btn-group btn-group-lg flex-fill" role="group" aria-label="reset button">
@@ -13,7 +13,7 @@
 
         <div class="btn-group btn-group-lg flex-fill justify-content-end" role="group" aria-label="next button">
           <button mat-mini-fab flexFill aria-label="start game" matTooltip="Join Game" matTooltipPosition="left" color="primary"
-            cahDebounceClick (debounceClick)="joinGame()" [disabled]="!avatar?.name">
+            cfhDebounceClick (debounceClick)="joinGame()" [disabled]="!avatar?.name">
             <mat-icon>play_arrow</mat-icon>
           </button>
         </div>

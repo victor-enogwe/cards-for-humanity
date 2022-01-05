@@ -1,7 +1,6 @@
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-import { CahModule } from './app/modules/cah/cah.module';
+import { CfhModule } from './app/modules/cfh/cfh.module';
 import { environment } from './environments/environment';
 
 if (environment.production) {
@@ -11,6 +10,6 @@ if (environment.production) {
 
 document.addEventListener('DOMContentLoaded', () => {
   platformBrowserDynamic()
-    .bootstrapModule(CahModule)
+    .bootstrapModule(CfhModule)
     .catch((err) => console.error(err));
 });

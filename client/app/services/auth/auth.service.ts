@@ -32,7 +32,7 @@ import {
   REFRESH_TOKEN,
   REVOKE_REFRESH_TOKEN,
 } from '../../graphql';
-import { APP_HOST, AUTH_TOKEN$, SOCIAL_AUTH_CONFIG, WS_CLIENT } from '../../modules/cah/cah.module';
+import { APP_HOST, AUTH_TOKEN$, SOCIAL_AUTH_CONFIG, WS_CLIENT } from '../../modules/cfh/cfh.module';
 import { WSSubscriptionClient } from '../../utils/ws';
 import { BroadcastService } from '../broadcast/broadcast.service';
 import { NotificationService } from '../notification/notification.service';
@@ -43,7 +43,7 @@ import { UtilsService } from '../utils/utils.service';
   deps: ['SocialAuthServiceConfig'],
 })
 export class AuthService extends Service {
-  rememberCookieName = 'CAH_RM';
+  rememberCookieName = 'CFH_RM';
   REFRESH_TOKEN_INTERVAL = 299999;
   refreshTokenTimer$ = timer(this.REFRESH_TOKEN_INTERVAL, this.REFRESH_TOKEN_INTERVAL);
   refreshTokenBroadcast$ = this.refreshTokenTimer$.pipe(switchMap(() => this.refreshTokenFactory()));

@@ -11,7 +11,7 @@ import { GenreService } from '../../../services/genre/genre.service';
 import { UIService } from '../../../services/ui/ui.service';
 
 @Component({
-  selector: 'cah-create-game',
+  selector: 'cfh-create-game',
   templateUrl: './create-game.component.html',
   styleUrls: ['./create-game.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

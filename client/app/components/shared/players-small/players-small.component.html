@@ -2,17 +2,17 @@
   class="d-flex justify-content-center align-items-center row row-cols-{{players?.length}}">
   <div *ngFor="let player of players" class="d-flex justify-content-center align-items-center col p-0">
     <div class="d-flex flex-column justify-content-center align-items-center position-relative">
-      <div [matBadge]="player?.node?.score" matBadgePosition="below" matBadgeColor="accent"
+      <div [matTooltip]="'score: ' + player?.node?.score" [matBadge]="player?.node?.score" matBadgePosition="below" matBadgeColor="accent"
         matBadgeDescription="player {{player?.node?.avatar}}'s score">
         <img *ngIf="avatars[player?.node?.avatar!] as avatar" [src]="avatar.link| safeUrl" class="avatar" alt="{{avatar.name}}"
           class="img-fluid img-thumbnail border rounded-circle" width="25"
-          [ngClass]="{ 'border-5 border-success': player?.node?.czar, 'border-3 border-warning': player?.node?.user?.id === userId }" />
+          [ngClass]="{ 'border-5 border-success': player?.node?.id === czar?.id, 'border-3 border-warning': player?.node?.user?.id === userId }" />
       </div>
       <span
         class="d-flex justify-content-center align-items-center badge bg-secondary rounded-pill position-absolute start-50 translate-middle"
         [ngClass]="{ 'bottom-100': !data.isMobile, 'bottom-0': data.isMobile }">
-        <small *ngIf="!player?.node?.czar">{{player?.node?.avatar}}</small>
-        <small *ngIf="player?.node?.czar">CZAR</small>
+        <small *ngIf="player?.node?.id !== czar?.id">{{player?.node?.avatar}}</small>
+        <small *ngIf="player?.node?.id === czar?.id">CZAR</small>
       </span>
     </div>
   </div>

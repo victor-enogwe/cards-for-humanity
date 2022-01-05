@@ -8,7 +8,7 @@ import { LoadingOverlayService } from '../loading-overlay/loading-overlay.servic
 @Injectable({
   providedIn: 'root',
 })
-export class CahDialogService extends MatDialog {
+export class CfhDialogService extends MatDialog {
   private customOverlay: LoadingOverlayService;
 
   constructor(
@@ -17,7 +17,7 @@ export class CahDialogService extends MatDialog {
     @Optional() location: Location,
     @Inject(MAT_DIALOG_DEFAULT_OPTIONS) config: MatDialogConfig,
     @Inject(MAT_DIALOG_SCROLL_STRATEGY) scrollStrategy: ScrollStrategy,
-    @Optional() @SkipSelf() parentDialog: CahDialogService,
+    @Optional() @SkipSelf() parentDialog: CfhDialogService,
     overlayContainer: DynamicOverlayService,
   ) {
     super(overlay, injector, location, config, scrollStrategy, parentDialog, overlayContainer);

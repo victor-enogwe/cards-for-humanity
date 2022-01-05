@@ -5,7 +5,7 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { UIService } from '../../../services/ui/ui.service';
 
 @Component({
-  selector: 'cah-players',
+  selector: 'cfh-players',
   templateUrl: './players.component.html',
   styleUrls: ['./players.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
