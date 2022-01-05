@@ -1,4 +1,3 @@
-from datetime import timedelta
 from math import floor
 
 import graphene
@@ -15,7 +14,7 @@ from api.models.profile import Profile
 from api.models.provider import Provider
 from api.models.question import Question
 from api.models.whitecard import WhiteCard
-from api.utils.enums import CardRating, GameStatus
+from api.utils.enums import CardRating
 from api.utils.extended_connection import ExtendedConnection
 from api.utils.functions import get_invites
 from api.utils.graphql_errors import GraphQLErrors
@@ -125,29 +124,22 @@ class GameNode(DjangoObjectType):
         connection_class = ExtendedConnection
 
     def resolve_available_questions(self, info, **kwargs):
-        try:
-            user = info.context.user
-            player = self.player_set.get(user=user)
-            is_czar = self.czar.user.id == user.id
-            return self.available_questions if is_czar else None
-        except:
-            return None
+        user = info.context.user
+        is_czar = self.czar.user.id == user.id
+        return self.available_questions if is_czar else None
 
     def resolve_available_answers(self, info, **kwargs):
-        try:
-            user = info.context.user
-            players = self.player_set.order_by("created_at").all()
-            player_ids = [x.user.id for x in players if x.user.id != self.czar.user.id]
-            player_index = player_ids.index(user.id)
-            num_players = self.num_players - 1
-            answers = self.available_answers
-            no_of_answers = len(answers)
-            step = floor(no_of_answers / num_players)
-            start = player_index * step
-            stop = (player_index + 1) * step
-            return answers[start:stop]
-        except:
-            return None
+        user = info.context.user
+        players = self.player_set.order_by("created_at").all()
+        player_ids = [x.user.id for x in players if x.user.id != self.czar.user.id]
+        player_index = player_ids.index(user.id)
+        num_players = self.num_players - 1
+        answers = self.available_answers
+        no_of_answers = len(answers)
+        step = floor(no_of_answers / num_players)
+        start = player_index * step
+        stop = (player_index + 1) * step
+        return answers[start:stop]
 
     def resolve_user_answers(self, info, **kwargs):
         answers = (

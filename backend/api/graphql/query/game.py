@@ -1,11 +1,8 @@
-from datetime import datetime
-
 import graphene
 from api.graphql.inputs import InvitedGameInput
 from api.graphql.nodes import GameNode
 from api.models.game import Game
 from api.utils.functions import game_in_progress
-from django.db.models.query_utils import Q
 from graphene_django.filter import DjangoFilterConnectionField
 
 

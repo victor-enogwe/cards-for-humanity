@@ -56,14 +56,14 @@ PLAYER_GAME_SUMMARY_SQL = """
     ON api_game.id = players_stats.game_id
     LEFT JOIN(
         SELECT
-		    api_invite.email, api_invite.game_id
-		FROM api_invite
-		WHERE api_invite.email IN (
-			SELECT
-		        api_provider.email
-		    FROM api_provider
-		    WHERE api_provider.user_id = NEW.user_id
-		)
+            api_invite.email, api_invite.game_id
+        FROM api_invite
+        WHERE api_invite.email IN (
+            SELECT
+                api_provider.email
+            FROM api_provider
+            WHERE api_provider.user_id = NEW.user_id
+        )
     ) invite
     ON invite.game_id = api_game.id
     WHERE api_game.id = NEW.game_id

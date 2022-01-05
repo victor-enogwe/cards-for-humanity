@@ -13,3 +13,21 @@ from api.models.question import Question
 from api.models.user import User
 from api.models.verification_code import VerificationCode
 from api.models.whitecard import WhiteCard
+
+__all__ = [
+    "Answer",
+    "AvailableAnswer",
+    "AvailableQuestion",
+    "BlackCard",
+    "Game",
+    "Genre",
+    "Invite",
+    "Password",
+    "Player",
+    "Profile",
+    "Provider",
+    "Question",
+    "User",
+    "VerificationCode",
+    "WhiteCard",
+]

@@ -14,7 +14,6 @@ from django.db import DEFAULT_DB_ALIAS
 
 from api.models.password import Password
 from api.models.provider import Provider
-from api.utils.validators import password_validators
 
 PASSWORD_FIELD = "password"
 

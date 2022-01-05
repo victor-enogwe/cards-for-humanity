@@ -1,12 +1,10 @@
+from api.utils.constants import password_error_message, text_error_message
 from django.core.validators import (
     MaxValueValidator,
     MinLengthValidator,
     MinValueValidator,
     RegexValidator,
 )
-from django.utils.translation import gettext_lazy as _
-
-from api.utils.constants import password_error_message, text_error_message
 
 password_regex = RegexValidator(
     r"^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$",

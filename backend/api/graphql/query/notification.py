@@ -1,6 +1,4 @@
 import graphene
-from pprint import pprint
-
 from api.graphql.nodes import NotificationNode
 
 

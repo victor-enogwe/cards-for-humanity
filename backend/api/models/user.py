@@ -1,5 +1,6 @@
-from pprint import pprint
-
+from api.models.password import Password
+from api.models.timestamp import TimestampBase
+from api.utils.user_manager import UserManager
 from django.conf.global_settings import DEFAULT_HASHING_ALGORITHM
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
@@ -7,10 +8,6 @@ from django.utils.crypto import salted_hmac
 from django.utils.translation import gettext_lazy as _
 from pgtrigger import F, Protect, Q, Update, register
 from pgtrigger.core import SoftDelete
-
-from api.models.password import Password
-from api.models.timestamp import TimestampBase
-from api.utils.user_manager import UserManager
 
 
 @register(

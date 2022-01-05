@@ -1,5 +1,3 @@
-from urllib.parse import parse_qs
-
 from api.utils.functions import get_user_by_token
 from api.utils.graphql_errors import GraphQLErrors
 from asgiref.sync import sync_to_async
@@ -46,7 +44,7 @@ class WSAuthMiddleware(BaseMiddleware):
             await self.populate_scope(scope)
 
             return await super().__call__(scope, receive, send)
-        except JSONWebTokenExpired as e:
+        except JSONWebTokenExpired:
             raise GraphQLError(GraphQLErrors.NOT_AUTHENTICATED)
 
 

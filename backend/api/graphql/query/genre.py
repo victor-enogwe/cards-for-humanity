@@ -1,7 +1,6 @@
 import graphene
-from graphene_django.filter import DjangoFilterConnectionField
-
 from api.graphql.nodes import GenreNode
+from graphene_django.filter import DjangoFilterConnectionField
 
 
 class GenreQuery(graphene.ObjectType):

@@ -2,7 +2,6 @@ from api.graphql.middlewares.gql_depromise_subscription import depromise_subscri
 from api.graphql.mutation.mutation import Mutation
 from api.graphql.query.query import Query
 from api.graphql.subscription.subscription import Subscription
-from channels import auth
 from channels_graphql_ws import GraphqlWsConsumer as GQLConsumer
 from graphene import Schema
 

@@ -1,7 +1,5 @@
-from django.db import models
-from pgtrigger import Delete, F, Protect, Q, Update, register
-
 from api.models.card_base import CardBase
+from pgtrigger import Delete, F, Protect, Q, Update, register
 
 
 @register(

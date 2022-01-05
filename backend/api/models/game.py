@@ -2,6 +2,7 @@ from datetime import timedelta
 from random import randrange, sample
 
 from api.celery import celery_app
+from api.models.question import Question
 from api.models.timestamp import TimestampBase
 from api.utils.enums import BlackCardPickChoices, GameStatus
 from api.utils.functions import join_end_default
@@ -151,7 +152,7 @@ class Game(TimestampBase):
             celery_app.control.revoke(self.task.id, terminate=True)
             return (
                 task_model.objects.get(pk=self.task.id).delete()
-                if self.task != None
+                if self.task is not None
                 else None
             )
 
@@ -193,7 +194,7 @@ class Game(TimestampBase):
         if self.round < 1:
             return None
 
-        if self.question == None:
+        if self.question is None:
             return None
 
         answer_model = apps.get_model("api.AvailableAnswer")
@@ -222,7 +223,7 @@ class Game(TimestampBase):
         try:
             return self.question_set.get(round=self.round)
 
-        except:
+        except Question.DoesNotExist:
             if self.status == GameStatus.GAPA._value_:
                 player = self.czar
                 round = self.round
@@ -241,90 +242,81 @@ class Game(TimestampBase):
 
     @property
     def answers(self):
-        try:
-            if self.status not in [GameStatus.GACA._value_, GameStatus.GSRR._value_]:
-                return None
+        if self.status not in [GameStatus.GACA._value_, GameStatus.GSRR._value_]:
+            return None
 
-            nodes = self.answer_set.filter(round=self.round)
-            answers_len = len(nodes)
+        nodes = self.answer_set.filter(round=self.round)
+        answers_len = len(nodes)
+        pick_choices = {
+            BlackCardPickChoices.PICK_ONE._value_: 1,
+            BlackCardPickChoices.PICK_TWO._value_: 2,
+            BlackCardPickChoices.PICK_THREE._value_: 3,
+        }
+        pick = pick_choices[self.question.card.pick]
+
+        if answers_len < 1:
+            players = self.player_set.order_by("created_at").all()
+            players_len = len(players)
+            available_answers = self.available_answers
+            nodes = sample(list(available_answers), pick * players_len)
+            answer_model = apps.get_model("api.Answer")
+            question = self.question.card
+
+            for index, player in enumerate(players):
+                start = index * pick
+                stop = start + pick
+                answer_nodes = nodes[start:stop]
+
+                for answer_node in answer_nodes:
+                    card = answer_model(
+                        player=player,
+                        game=self,
+                        question=question,
+                        card=answer_node.card,
+                        round=self.round,
+                    )
+                    card.save()
+
+            return self.answers
+
+        return None if len(list(nodes)) < 1 else nodes
+
+    @property
+    def czar_answers(self):
+        if self.status != GameStatus.GSRR._value_:
+            return None
+
+        answers = self.answers.filter(selected=True)
+        answers_len = len(answers)
+
+        if answers_len < 1:
             pick_choices = {
                 BlackCardPickChoices.PICK_ONE._value_: 1,
                 BlackCardPickChoices.PICK_TWO._value_: 2,
                 BlackCardPickChoices.PICK_THREE._value_: 3,
             }
             pick = pick_choices[self.question.card.pick]
+            answers = sample(list(self.answers), pick)
 
-            if answers_len < 1:
-                players = self.player_set.order_by("created_at").all()
-                players_len = len(players)
-                available_answers = self.available_answers
-                nodes = sample(list(available_answers), pick * players_len)
-                answer_model = apps.get_model("api.Answer")
-                question = self.question.card
+            for answer in answers:
+                answer.selected = True
+                answer.player.score += 10
+                answer.save()
+                answer.player.save()  # @TODO lazy - move to receiver duplicated code
 
-                for index, player in enumerate(players):
-                    start = index * pick
-                    stop = start + pick
-                    answer_nodes = nodes[start:stop]
-
-                    for answer_node in answer_nodes:
-                        card = answer_model(
-                            player=player,
-                            game=self,
-                            question=question,
-                            card=answer_node.card,
-                            round=self.round,
-                        )
-                        card.save()
-
-                return self.answers
-
-            return None if len(list(nodes)) < 1 else nodes
-        except:
-            return None
-
-    @property
-    def czar_answers(self):
-        try:
-            if self.status != GameStatus.GSRR._value_:
-                return None
-
-            answers = self.answers.filter(selected=True)
-            answers_len = len(answers)
-
-            if answers_len < 1:
-                pick_choices = {
-                    BlackCardPickChoices.PICK_ONE._value_: 1,
-                    BlackCardPickChoices.PICK_TWO._value_: 2,
-                    BlackCardPickChoices.PICK_THREE._value_: 3,
-                }
-                pick = pick_choices[self.question.card.pick]
-                answers = sample(list(self.answers), pick)
-
-                for answer in answers:
-                    answer.selected = True
-                    answer.player.score += 10
-                    answer.save()
-                    answer.player.save()  # @TODO lazy - move to receiver duplicated code
-
-            return None if len(answers) < 1 else answers
-        except:
-            return None
+        return None if len(answers) < 1 else answers
 
     @property
     def czar(self):
-        try:
-            if self.round < 1:
-                return None
-
-            players = self.player_set.order_by("created_at").all()
-            players_length = len(players)
-            index = self.round % players_length
-            czar = players[index]
-
-            return czar
-        except:
+        if self.round < 1:
             return None
+
+        players = self.player_set.order_by("created_at").all()
+        players_length = len(players)
+        index = self.round % players_length
+        czar = players[index]
+
+        return czar
 
     @property
     def tick(self):

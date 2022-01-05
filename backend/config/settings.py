@@ -16,7 +16,6 @@ from datetime import timedelta
 
 import environ
 from corsheaders.defaults import default_headers
-from django.contrib.auth.password_validation import get_default_password_validators
 
 env = environ.Env(DEBUG=(bool, True))
 

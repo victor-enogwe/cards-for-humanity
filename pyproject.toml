@@ -47,12 +47,21 @@ pre-commit = "*"
 pydocstyle = "*"
 pylint = "*"
 pytest = "^3.4"
+flake8 = "^4.0.1"
 
 # ---------------------------------------------------------------- BLACK
 # Black - the uncompromising code formatter.
+flake8-colors = "^0.1.9"
 # https://black.readthedocs.io/en/stable/index.html
 [tool.black]
 target-version = ['py39']
+
+[tool.flake8]
+ignore= ['E203', 'E501', 'W503']
+select = ['B', 'C', 'E', 'F', 'W', 'T4' ,'B9']
+format = "colored"
+max-complexity = 18
+max-line-length = 88
 
 # --------------------------------------------------------------- PYLINT
 # Pylint code checker configuration.

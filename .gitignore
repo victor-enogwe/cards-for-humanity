@@ -103,8 +103,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-.vscode
-
 node_modules
 
 static/

@@ -9,7 +9,6 @@ from functools import wraps
 from os import listdir, path
 from os.path import isfile, join
 from re import IGNORECASE, compile
-from sys import exc_info
 from uuid import uuid4
 
 from api.graphql.filtersets import InvitesFilter
@@ -84,10 +83,7 @@ def create_genres(filepath):
 
 
 def find_genre(description, genres):
-    try:
-        return [item for item in genres if item.description == description][0]
-    except:
-        return None
+    return genres.get(description=description)
 
 
 def create_blackcards(filepath):

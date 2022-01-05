@@ -1,4 +1,3 @@
-from api.graphql.nodes import NotificationNode
 from api.graphql.subscription.game_in_progress import GameInProgressSubscription
 from api.graphql.subscription.notification import NotificationSubscription
 from api.models.answer import Answer
@@ -11,7 +10,6 @@ from api.models.provider import Provider
 from api.models.question import Question
 from api.models.verification_code import VerificationCode
 from api.utils.functions import get_invites
-from django.contrib.auth import user_logged_in
 from django.contrib.auth.signals import user_logged_in
 from django.db.models.base import Model
 from django.db.models.signals import post_delete, post_save, pre_save
@@ -45,20 +43,17 @@ def broadcast_game(sender, instance, created, **kwargs):
 
 @receiver([post_save, post_delete], sender=Invite)
 def broadcast_invite(sender, instance, **kwargs):
-    try:
-        GameInProgressSubscription.on_game_updated(game_in_progress=instance.game)
-        email = instance.email
-        user = Provider.objects.get(email=email).user
-        notifications = {
-            "id": user.id,
-            "invites": list(
-                get_invites(user=user, email=email, first=10, revoked=False).values()
-            ),
-        }
+    GameInProgressSubscription.on_game_updated(game_in_progress=instance.game)
+    email = instance.email
+    user = Provider.objects.get(email=email).user
+    notifications = {
+        "id": user.id,
+        "invites": list(
+            get_invites(user=user, email=email, first=10, revoked=False).values()
+        ),
+    }
 
-        NotificationSubscription.on_new_notification(notifications=notifications)
-    except Provider.DoesNotExist as e:
-        pass
+    NotificationSubscription.on_new_notification(notifications=notifications)
 
 
 @receiver([post_save, post_delete], sender=AvailableQuestion)

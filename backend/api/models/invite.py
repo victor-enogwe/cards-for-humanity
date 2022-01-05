@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 from api.models.timestamp import TimestampBase
 from api.utils.sql import INVITE_TRIGGER
 from django.db import models

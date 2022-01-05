@@ -8,7 +8,6 @@ from django.contrib.auth.hashers import (
     is_password_usable,
     make_password,
 )
-from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django.utils.crypto import get_random_string
 from pgtrigger import F, Protect, Q, Update, register
