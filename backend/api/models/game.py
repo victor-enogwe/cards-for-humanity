@@ -4,7 +4,7 @@ from random import randrange, sample
 from api.celery import celery_app
 from api.models.question import Question
 from api.models.timestamp import TimestampBase
-from api.utils.enums import BlackCardPickChoices, GameStatus
+from api.utils.enums import GameStatus
 from api.utils.functions import join_end_default
 from api.utils.sql import GAME_TRIGGER
 from api.utils.validators import min_max_validator
@@ -33,6 +33,7 @@ from pgtrigger.core import FSM, Before, Trigger
             | Q(old__winner_id__isnull=False)
             | Q(old__private__df=F("new__private"))
             & Q(old__status__df=GameStatus.GAP._value_)
+            | Q(old__status=GameStatus.GE._value_) & Q(old__task__isnull=True)
         ),
     ),
     Trigger(
@@ -74,16 +75,16 @@ class Game(TimestampBase):
         validators=[MinValueValidator(limit_value=join_end_default)],
         help_text="seconds",
     )
-    round_time = models.SmallIntegerField(
+    round_time = models.PositiveSmallIntegerField(
         default=10, validators=min_max_validator(10, 60), help_text="seconds"
     )
-    rounds = models.SmallIntegerField(
+    rounds = models.PositiveSmallIntegerField(
         default=5,
         validators=min_max_validator(5, 50),
         help_text="no of game rounds",
         editable=False,
     )
-    round = models.SmallIntegerField(
+    round = models.PositiveSmallIntegerField(
         default=0,
         validators=min_max_validator(1, 50),
         help_text="game round",
@@ -247,12 +248,7 @@ class Game(TimestampBase):
 
         nodes = self.answer_set.filter(round=self.round)
         answers_len = len(nodes)
-        pick_choices = {
-            BlackCardPickChoices.PICK_ONE._value_: 1,
-            BlackCardPickChoices.PICK_TWO._value_: 2,
-            BlackCardPickChoices.PICK_THREE._value_: 3,
-        }
-        pick = pick_choices[self.question.card.pick]
+        pick = self.question.card.pick
 
         if answers_len < 1:
             players = self.player_set.order_by("created_at").all()
@@ -290,12 +286,7 @@ class Game(TimestampBase):
         answers_len = len(answers)
 
         if answers_len < 1:
-            pick_choices = {
-                BlackCardPickChoices.PICK_ONE._value_: 1,
-                BlackCardPickChoices.PICK_TWO._value_: 2,
-                BlackCardPickChoices.PICK_THREE._value_: 3,
-            }
-            pick = pick_choices[self.question.card.pick]
+            pick = self.question.card.pick
             answers = sample(list(self.answers), pick)
 
             for answer in answers:

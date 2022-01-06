@@ -1,18 +1,9 @@
 from api.models.card_base import CardBase
-from pgtrigger import Delete, F, Protect, Q, Update, register
+from pgtrigger import Delete, Protect, Update, register
 
 
 @register(
-    Protect(name="protect_deletes_white_card", operation=Delete),
-    Protect(
-        name="protect_fields_white_card",
-        operation=Update,
-        condition=(
-            Q(old__created_at__df=F("new__created_at"))
-            | Q(old__text__df=F("new__text"))
-            | Q(old__genre_id__df=F("new__genre_id"))
-        ),
-    ),
+    Protect(name="protect_update_delete_white_card", operation=Update | Delete),
 )
 class WhiteCard(CardBase):
     ...

@@ -1,5 +1,5 @@
 <ng-container *ngIf="{ profile: profile$ | async } as user">
-  <div *ngIf="{ pick: pickChoices[game.question?.card?.pick!], czar: player?.node?.id === game?.czar?.id ? 'czar' : 'not-czar' } as data"
+  <div *ngIf="{ pick: game.question?.card?.pick, czar: player?.node?.id === game?.czar?.id ? 'czar' : 'not-czar' } as data"
     class="d-flex flex-column flex-grow-1 flex-fill justify-content-between px-4 pb-4 game-screen">
     <div class="d-flex flex-column flex-grow-1 flex-fill justify-content-around h-100 game-deck overflow-hidden">
       <ng-container [ngSwitch]="game.status">
@@ -50,10 +50,10 @@
 
               <p class="mb-3 text-center text-wrap text-capitalize font-monospace fs-6">
                 <span class="d-block fs-6 text-wrap">{{game?.question?.card?.text}}</span>
-                <span class="small badge bg-secondary">{{game?.question?.card?.pick?.replace('_', ' ')}}</span>
+                <span class="small badge bg-secondary">Pick {{game?.question?.card?.pick}}</span>
               </p>
 
-              <cfh-card-deck [player]="player" [deck]="game.userAnswers ? game.userAnswers : game.availableAnswers" [pick]="data.pick"
+              <cfh-card-deck [player]="player" [deck]="game.userAnswers ? game.userAnswers : game.availableAnswers" [pick]="data?.pick!"
                 [disabled]="game.userAnswers | bool" (onCardSelect)="onPlayerSelectAnswers($any($event))">
               </cfh-card-deck>
             </ng-container>
@@ -64,21 +64,22 @@
         <ng-container *ngSwitchCase="'AWAITING_CZAR_ANSWERS'">
           <ng-container [ngSwitch]="player?.node?.id === game?.czar?.id ? 'czar' : 'not-czar'">
             <ng-container *ngSwitchCase="'czar'">
-              <p class="mb-3 text-center badge bg-primary">Choose Your Answer Card{{data.pick > 1 ? 's' : ''}} For Round {{game.round}}</p>
+              <p class="mb-3 text-center badge bg-primary">Choose Your Answer Card{{data.pick! > 1 ? 's' : ''}} For Round {{game.round}}</p>
 
               <p class="mb-3 text-center text-wrap text-capitalize font-monospace fs-6">
                 <span class="d-block fs-6 text-wrap">{{game?.question?.card?.text}}</span>
-                <span class="small badge bg-secondary">{{game?.question?.card?.pick?.replace('_', ' ')}}</span>
+                <span class="small badge bg-secondary">Pick {{game?.question?.card?.pick}}</span>
               </p>
 
-              <cfh-card-deck [player]="player" [deck]="game.answers" [pick]="data.pick" (onCardSelect)="onCzarSelectAnswers($any($event))">
+              <cfh-card-deck [player]="player" [deck]="game.answers" [pick]="data?.pick!"
+                (onCardSelect)="onCzarSelectAnswers($any($event))">
               </cfh-card-deck>
             </ng-container>
 
             <ng-container *ngSwitchCase="'not-czar'">
               <div class="d-flex flex-column justify-content-center align-items-center">
                 <p class="mb-4 text-center badge bg-dark">
-                  Waiting For <strong>CZAR</strong> To Pick Their Answer Card{{data.pick > 1 ? 's' : ''}}
+                  Waiting For <strong>CZAR</strong> To Pick Their Answer Card{{data?.pick! > 1 ? 's' : ''}}
                 </p>
                 <mat-progress-spinner color="primary" mode="indeterminate" [value]="100"
                   class="d-flex justify-content-center align-items-center">
@@ -95,7 +96,7 @@
 
           <p class="mb-3 text-center text-wrap text-capitalize font-monospace fs-6">
             <span class="d-block fs-6 text-wrap">{{game?.question?.card?.text}}</span>
-            <span class="small badge bg-secondary">{{game?.question?.card?.pick?.replace('_', ' ')}}</span>
+            <span class="small badge bg-secondary">Pick {{game?.question?.card?.pick}}</span>
           </p>
 
           <cfh-card-deck [player]="player" [deck]="game.czarAnswers"></cfh-card-deck>

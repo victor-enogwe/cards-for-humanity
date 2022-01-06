@@ -11,7 +11,7 @@ from pgtrigger.core import Delete
 class AvailableAnswer(TimestampBase):
     game = models.ForeignKey("api.Game", on_delete=models.CASCADE)
     card = models.ForeignKey("api.WhiteCard", on_delete=models.CASCADE)
-    round = models.SmallIntegerField(
+    round = models.PositiveSmallIntegerField(
         default=0,
         validators=min_max_validator(1, 50),
         help_text="game round",

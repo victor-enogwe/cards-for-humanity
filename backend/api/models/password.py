@@ -20,9 +20,9 @@ from pgtrigger.core import SoftDelete
         name="protect_update_password",
         operation=Update,
         condition=(
-            Q(old__created_at__df=F("new__created_at"))
-            | Q(old__user_id__df=F("new__user_id"))
+            Q(old__user_id__df=F("new__user_id"))
             | Q(old__password__df=F("new__password"))
+            | Q(old__created_at__df=F("new__created_at"))
         ),
     ),
 )

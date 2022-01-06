@@ -49,14 +49,6 @@ export const typeDefs = gql`
     NORMAL
   }
 
-  enum ApiBlackCardPickChoices {
-    PICK_ONE
-
-    PICK_THREE
-
-    PICK_TWO
-  }
-
   enum ApiGameStatusChoices {
     AWAITING_CZAR_ANSWERS
 
@@ -69,6 +61,8 @@ export const typeDefs = gql`
     GAME_CANCELED
 
     GAME_ENDED
+
+    GAME_ROUNDS_FINISHED
 
     GAME_STARTED
 
@@ -275,7 +269,7 @@ export const typeDefs = gql`
     genre: GenreNode!
 
     id: ID!
-    pick: ApiBlackCardPickChoices!
+    pick: Int!
     questionSet(
       after: String
       before: String

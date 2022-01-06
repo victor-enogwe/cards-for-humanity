@@ -1,5 +1,5 @@
-import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache'
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -77,15 +77,6 @@ export type ApiAnswerRatingChoices =
   | 'NORMAL';
 
 /** An enumeration. */
-export type ApiBlackCardPickChoices =
-  /** PICK_ONE */
-  | 'PICK_ONE'
-  /** PICK_THREE */
-  | 'PICK_THREE'
-  /** PICK_TWO */
-  | 'PICK_TWO';
-
-/** An enumeration. */
 export type ApiGameStatusChoices =
   /** GACA */
   | 'AWAITING_CZAR_ANSWERS'
@@ -99,6 +90,8 @@ export type ApiGameStatusChoices =
   | 'GAME_CANCELED'
   /** GE */
   | 'GAME_ENDED'
+  /** GRF */
+  | 'GAME_ROUNDS_FINISHED'
   /** GS */
   | 'GAME_STARTED'
   /** GSRR */
@@ -295,7 +288,7 @@ export interface BlackCardNode extends Node {
   readonly genre: GenreNode;
   /** The ID of the object. */
   readonly id: Scalars['ID'];
-  readonly pick: ApiBlackCardPickChoices;
+  readonly pick: Scalars['Int'];
   readonly questionSet: QuestionNodeConnection;
   readonly rating?: Maybe<CardRating>;
   /** text allows 2-255 characters(alphabets and -,_,.,',",space) */
@@ -2661,7 +2654,6 @@ export type ResolversTypes = ResolversObject<{
   AnswerNodeConnection: ResolverTypeWrapper<AnswerNodeConnection>;
   AnswerNodeEdge: ResolverTypeWrapper<AnswerNodeEdge>;
   ApiAnswerRatingChoices: ApiAnswerRatingChoices;
-  ApiBlackCardPickChoices: ApiBlackCardPickChoices;
   ApiGameStatusChoices: ApiGameStatusChoices;
   ApiPlayerAvatarChoices: ApiPlayerAvatarChoices;
   ApiProfileAvatarChoices: ApiProfileAvatarChoices;
@@ -3012,7 +3004,7 @@ export type BlackCardNodeResolvers<
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   genre?: Resolver<ResolversTypes['GenreNode'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  pick?: Resolver<ResolversTypes['ApiBlackCardPickChoices'], ParentType, ContextType>;
+  pick?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   questionSet?: Resolver<
     ResolversTypes['QuestionNodeConnection'],
     ParentType,

@@ -11,7 +11,14 @@ from pgtrigger.core import Delete, F, Q
     Protect(
         name="protect_update_fields_answer",
         operation=Update,
-        condition=(~Q(old__selected__df=F("new__selected"))),
+        condition=(
+            Q(old__player_id__df=F("new__player_id"))
+            | Q(old__game_id__df=F("new__game_id"))
+            | Q(old__question_id__df=F("new__question_id"))
+            | Q(old__card_id__df=F("new__card_id"))
+            | Q(old__round__df=F("new__round"))
+            | Q(old__created_at__df=F("new__created_at"))
+        ),
     ),
 )
 class Answer(TimestampBase):
@@ -22,7 +29,7 @@ class Answer(TimestampBase):
     rating = models.CharField(
         max_length=6, choices=CardRating.choices(), default=CardRating.NORMAL._value_
     )
-    round = models.SmallIntegerField(
+    round = models.PositiveSmallIntegerField(
         default=0,
         validators=min_max_validator(1, 50),
         help_text="game round",

@@ -74,9 +74,3 @@ class CardRating(EnumChoices, Enum):
     NORMAL = "Normal"
     LIKE = "Like"
     LOVE = "Love"
-
-
-class BlackCardPickChoices(EnumChoices, Enum):
-    PICK_ONE = "Pick One"
-    PICK_TWO = "Pick Two"
-    PICK_THREE = "Pick Three"

@@ -1,15 +1,15 @@
 from uuid import uuid4
 
+from api.models.timestamp import TimestampBase
+from api.utils.functions import expiry_date_min
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
 from pgtrigger import Protect, Update, register
-
-from api.models.timestamp import TimestampBase
-from api.utils.functions import expiry_date_min
+from pgtrigger.core import Delete
 
 
-@register(Protect(name="protect_mutate_code", operation=Update))
+@register(Protect(name="protect_update_delete_code", operation=Update | Delete))
 class VerificationCode(TimestampBase):
     code = models.UUIDField(
         default=uuid4, help_text="verification code", unique=True, editable=False

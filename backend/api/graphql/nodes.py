@@ -65,6 +65,7 @@ class BlackCardNode(DjangoObjectType):
     class Meta:
         model = BlackCard
         filter_fields = "__all__"
+        convert_choices_to_enum = False
         interfaces = (relay.Node,)
         connection_class = ExtendedConnection
 
@@ -124,11 +125,17 @@ class GameNode(DjangoObjectType):
         connection_class = ExtendedConnection
 
     def resolve_available_questions(self, info, **kwargs):
+        if self.czar is None:
+            return None
+
         user = info.context.user
         is_czar = self.czar.user.id == user.id
         return self.available_questions if is_czar else None
 
     def resolve_available_answers(self, info, **kwargs):
+        if self.czar is None:
+            return None
+
         user = info.context.user
         players = self.player_set.order_by("created_at").all()
         player_ids = [x.user.id for x in players if x.user.id != self.czar.user.id]

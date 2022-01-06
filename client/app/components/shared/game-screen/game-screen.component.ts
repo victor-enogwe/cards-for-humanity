@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, HostBinding, Input, OnChanges, Simp
 import { lastValueFrom } from 'rxjs';
 import {
   AnswerNode,
-  ApiBlackCardPickChoices,
   AvailableAnswerNode,
   AvailableQuestionNode,
   BlackCardNodeEdge,
@@ -27,7 +26,6 @@ export class GameScreenComponent implements OnChanges {
   @Input() game!: GameNode;
   player?: Maybe<PlayerNodeEdge>;
   decks?: { blackcardSet: Maybe<BlackCardNodeEdge>[]; whitecardSet: Maybe<WhiteCardNodeEdge>[] };
-  pickChoices: { [key in ApiBlackCardPickChoices]: number } = { PICK_ONE: 1, PICK_TWO: 2, PICK_THREE: 3 };
   profile$ = this.authService.profile$;
 
   constructor(

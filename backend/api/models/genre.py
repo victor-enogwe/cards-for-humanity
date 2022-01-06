@@ -1,12 +1,10 @@
+from api.utils.constants import text_error_message, text_validators
 from django.db import models
 from pgtrigger import Delete, Protect, Update, register
 
-from api.utils.constants import text_error_message, text_validators
-
 
 @register(
-    Protect(name="protect_deletes_genre", operation=Delete),
-    Protect(name="protect_fields_genre", operation=Update),
+    Protect(name="protect_update_delete_genre", operation=Update | Delete),
 )
 class Genre(models.Model):
     description = models.CharField(

@@ -20,10 +20,10 @@ from pgtrigger.core import Before, Trigger
         name="protect_mutate_invite",
         operation=Update,
         condition=(
-            Q(old__created_at__df=F("new__created_at"))
-            | Q(old__game_id__df=F("new__game_id"))
+            Q(old__game_id__df=F("new__game_id"))
             | Q(old__spectator__df=F("new__spectator"))
             | Q(old__email__df=F("new__email"))
+            | Q(old__created_at__df=F("new__created_at"))
         ),
     ),
 )
