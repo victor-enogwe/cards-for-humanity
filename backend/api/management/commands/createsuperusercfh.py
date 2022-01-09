@@ -83,7 +83,7 @@ class Command(Command):
                 # Non-interactive mode.
                 # Use password from environment variable, if provided.
                 if "SUPERUSER_PASSWORD" in os.environ:
-                    password_data[PASSWORD_FIELD] = os.environ["SUPERUSER_PASSWORD"]
+                    password_data[PASSWORD_FIELD] = os.environ.get("SUPERUSER_PASSWORD")
                 # Use username from environment variable, if not provided in
                 # options.
                 if email is None:

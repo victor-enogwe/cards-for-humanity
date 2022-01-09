@@ -15,18 +15,17 @@ Including another URLconf
 """
 from os import environ
 
+from api.graphql.middlewares.ws_auth import AuthMiddlewareStack
+from api.graphql.ws_consumer import GraphqlWsConsumer
+from api.utils.functions import jwt_cookie
 from channels.routing import ProtocolTypeRouter, URLRouter
+from config.settings import DEBUG
+from config.views import AngularView, GraphiQLView
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView
-
-from api.graphql.middlewares.ws_auth import AuthMiddlewareStack
-from api.graphql.ws_consumer import GraphqlWsConsumer
-from api.utils.functions import jwt_cookie
-from config.settings import DEBUG
-from config.views import AngularView, GraphiQLView
 
 angular_paths = [
     "auth/?",
@@ -53,7 +52,7 @@ asgiurlpatterns = ProtocolTypeRouter(
     }
 )
 
-graphql_view = GraphiQLView.as_view(graphiql=environ["DEBUG"])
+graphql_view = GraphiQLView.as_view(graphiql=environ.get("DEBUG", False))
 
 urlpatterns = [
     path("admin/doc/", include("django.contrib.admindocs.urls")),

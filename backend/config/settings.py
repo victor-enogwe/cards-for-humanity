@@ -22,9 +22,12 @@ env = environ.Env(DEBUG=(bool, True))
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = environ.Path(__file__) - 2
 
-environ.Env.read_env(
-    env.str("ENV_PATH", "%s/.env" % (BASE_DIR - 1))
-)  # reading .env file
+DEBUG = env("DEBUG")
+
+if DEBUG:
+    environ.Env.read_env(
+        env.str("ENV_PATH", "%s/.env" % (BASE_DIR - 1))
+    )  # reading .env file
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
