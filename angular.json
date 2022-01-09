@@ -52,8 +52,6 @@
                   "with": "client/environments/environment.prod.ts"
                 }
               ],
-              "baseHref": "/",
-              "deployUrl": "/static/browser/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -73,9 +71,6 @@
                   "maximumError": "10kb"
                 }
               ]
-            },
-            "development": {
-              "baseHref": "/"
             }
           },
           "defaultConfiguration": "production"

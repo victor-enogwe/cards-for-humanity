@@ -128,7 +128,7 @@ const authFactory = (broadcastService: BroadcastService, auth: AuthService, rout
     { provide: CSP_NONCE_META, useValue: 'meta[name="CSP-NONCE"]' },
     { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: false, closeOnNavigation: true } },
     { provide: ɵDomSharedStylesHost, useClass: NonceService },
-    { provide: APP_BASE_HREF, useValue: '/' },
+    { provide: APP_BASE_HREF, useValue: environment.BASE_HREF },
     { provide: APP_ID, useValue: 'cfh' },
     { provide: APP_HOST, useFactory: hostFactory, deps: [DOCUMENT] },
     { provide: STATIC_URL, useFactory: staticURLFactory, deps: [APP_HOST, PLATFORM_ID] },
