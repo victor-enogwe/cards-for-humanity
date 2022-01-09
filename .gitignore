@@ -107,11 +107,11 @@ node_modules
 
 !static/
 static/*
-!static/browser
+!static/browser/
 static/browser/*
+!.gitkeep
 !backend/static
 !backend/**/static
-!static/browser/.gitkeep
 
 # compiled output
 /dist
