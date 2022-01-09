@@ -40,14 +40,22 @@ ENV = env("ENV")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-HOSTS = env("ALLOWED_HOSTS")
+HOSTS = env.get_value("ALLOWED_HOSTS", None, "")
 
 ENV_HOSTS = HOSTS.split(",") if len(HOSTS) > 0 else []
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-ALLOWED_HOSTS = (["localhost", "127.0.0.1", "lvh.me"] if DEBUG else ENV_HOSTS)
+NO_ALLOWED_HOST = len(ENV_HOSTS) < 1
+
+ALLOWED_HOSTS = (
+    ["localhost", "127.0.0.1", "lvh.me"]
+    if DEBUG
+    else ["*"]
+    if NO_ALLOWED_HOST
+    else ENV_HOSTS
+)
 
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 
@@ -65,7 +73,7 @@ SECURE = True
 
 CORS_ORIGIN_WHITELIST = ENV_HOSTS
 
-CORS_ORIGIN_ALLOW_ALL = len(ENV_HOSTS) < 1
+CORS_ORIGIN_ALLOW_ALL = NO_ALLOWED_HOST
 
 CSRF_TRUSTED_ORIGINS = ENV_HOSTS
 
