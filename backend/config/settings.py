@@ -42,6 +42,9 @@ DEBUG = env("DEBUG")
 
 ENV_HOSTS = env("ALLOWED_HOSTS").split(",")
 
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 ALLOWED_HOSTS = (["localhost", "127.0.0.1", "lvh.me"] if DEBUG else []) + ENV_HOSTS
 
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
