@@ -71,6 +71,9 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "baseHref": "/"
             }
           },
           "defaultConfiguration": "production"
