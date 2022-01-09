@@ -408,9 +408,10 @@ def get_invites(user, **kwargs):
     try:
         kwargs["game__status"] = GameStatus.GAP._value_
         email = kwargs.get("email")
+        now = datetime.now()
         query_set = (
             InvitesFilter(kwargs)
-            .qs.filter(game__status=GameStatus.GAP._value_)
+            .qs.filter(game__status=GameStatus.GAP._value_, game__join_ends_at__gt=now)
             .extra(
                 tables=["api_provider"],
                 select={

@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../components/shared/confirmation-dialog/confirmation-dialog.component';
+import { CountdownTimerComponent } from '../../components/shared/countdown-timer/countdown-timer.component';
 import { FabMenuComponent } from '../../components/shared/fab-menu/fab-menu.component';
 import { FabComponent } from '../../components/shared/fab/fab.component';
 import { InstructionsComponent } from '../../components/shared/instructions/instructions.component';
@@ -25,6 +26,7 @@ import { SafeUrlPipe } from '../../pipes/safe-url/safe-url.pipe';
 import { TimeAgoPipe } from '../../pipes/time-ago/time-ago.pipe';
 import { CfhDialogService } from '../../services/cfh-dialog/cfh-dialog.service';
 import { MaterialModule } from '../material/material.module';
+import { ToDatePipe } from '../../pipes/toDate/to-date.pipe';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,7 @@ import { MaterialModule } from '../material/material.module';
     FabMenuComponent,
     InstructionsComponent,
     NotificationsComponent,
+    CountdownTimerComponent,
     ConfirmDialogDirective,
     DebounceClickDirective,
     DialogComponentDirective,
@@ -47,6 +50,7 @@ import { MaterialModule } from '../material/material.module';
     TimeAgoPipe,
     BoolPipe,
     MapToKeyPipe,
+    ToDatePipe,
   ],
   providers: [SafeUrlPipe, MapToIterablePipe, TimeAgoPipe, BoolPipe, MapToKeyPipe, CfhDialogService],
   exports: [
@@ -64,6 +68,7 @@ import { MaterialModule } from '../material/material.module';
     FabMenuComponent,
     InstructionsComponent,
     NotificationsComponent,
+    CountdownTimerComponent,
     SafeUrlPipe,
     MapToIterablePipe,
     TimeAgoPipe,

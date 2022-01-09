@@ -3,11 +3,14 @@
     <div *ngFor="let notice of notifications.invites?.edges" class="toast text-white bg-primary d-block" role="alert" aria-live="assertive"
       aria-atomic="true">
       <div class="toast-header">
-        <strong class="me-auto"> Game Invite</strong>
-        <small class="me-auto">{{notice?.node?.game?.createdAt | timeAgo}}</small>
-        <button mat-raised-button color="primary" [routerLink]="['/play', 'join-game', notice?.node?.game?.id]"
+        <strong *ngIf="notice?.node?.spectator" class="me-auto"> Game Invite</strong>
+        <cfh-countdown-timer *ngIf="!notice?.node?.spectator" [title]="'Invite'" [date]="notice?.node?.game?.joinEndsAt"
+          color="primary" class="me-auto">
+        </cfh-countdown-timer>
+        <small class="me-auto">{{notice?.node?.game?.createdAt | timeAgo: true}}</small>
+        <button mat-icon-button color="primary" [routerLink]="['/play', 'join-game', notice?.node?.game?.id]"
           [state]="{ playType: 'join' }">
-          <mat-icon>videogame_asset</mat-icon>
+          <mat-icon>link</mat-icon>
         </button>
       </div>
       <div class="toast-body">

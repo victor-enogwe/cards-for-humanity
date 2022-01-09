@@ -9,7 +9,6 @@ import { SelectAvatarComponent } from '../../components/pages/select-avatar/sele
 import { AvailableGamesComponent } from '../../components/shared/available-games/available-games.component';
 import { AvatarComponent } from '../../components/shared/avatar/avatar.component';
 import { CardDeckComponent } from '../../components/shared/card-deck/card-deck.component';
-import { CountdownTimerComponent } from '../../components/shared/countdown-timer/countdown-timer.component';
 import { GameScreenComponent } from '../../components/shared/game-screen/game-screen.component';
 import { GameToolbarComponent } from '../../components/shared/game-toolbar/game-toolbar.component';
 import { GenreComponent } from '../../components/shared/genre/genre.component';
@@ -78,7 +77,6 @@ const routes: Routes = [
     SelectAvatarComponent,
     CreateGameComponent,
     JoinGameComponent,
-    CountdownTimerComponent,
     GameToolbarComponent,
     PlayersComponent,
     GameScreenComponent,
