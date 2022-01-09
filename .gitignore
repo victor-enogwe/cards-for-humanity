@@ -106,7 +106,8 @@ venv.bak/
 node_modules
 
 static/
-
+!static/browser
+static/browser/*
 # compiled output
 /dist
 /tmp

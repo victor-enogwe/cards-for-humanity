@@ -255,6 +255,8 @@ FIXTURE_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "uploads/")
 
+STATIC_ROOT = os.path.join(BASE_DIR - 1, "static/")
+
 ANGULAR_STATIC_PATH = os.path.join(BASE_DIR - 1, "static/browser/")
 
 DJANGO_TEMPLATE_PATH = os.path.join(BASE_DIR, "config/template/static/")
