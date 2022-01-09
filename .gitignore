@@ -105,7 +105,12 @@ venv.bak/
 
 node_modules
 
-static/
+!static/
+static/*
+!static/browser
+static/browser/*
+!backend/static
+!backend/**/static
 !static/browser/.gitkeep
 
 # compiled output
